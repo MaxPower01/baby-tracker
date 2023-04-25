@@ -1,3 +1,7 @@
+/* -------------------------------------------------------------------------- */
+/*                                 Local state                                */
+/* -------------------------------------------------------------------------- */
+
 export function getLocalState<T>(key: string, defaultValue: T): T {
   const localState = localStorage.getItem(key);
   if (localState) {
@@ -12,6 +16,14 @@ export function setLocalState<T>(key: string, value: T) {
   } catch (error) {
     console.error(error);
   }
+}
+
+export function getInitialState<T>(key: string, defaultValue: T): T {
+  const localState = getLocalState(key, defaultValue);
+  // TODO:
+  // Check if the local state is valid. If not, use the default state
+  // and save it to local storage.
+  return localState;
 }
 
 /* -------------------------------------------------------------------------- */

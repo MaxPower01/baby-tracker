@@ -13,9 +13,14 @@ type ThemeProviderProps = {
 export default function ThemeProvider(props: ThemeProviderProps) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-  const [mode, setMode] = React.useState<"light" | "dark">(
-    prefersDarkMode ? "dark" : "light"
-  );
+  const systemMode = prefersDarkMode ? "dark" : "light";
+
+  // TODO:
+  // Check state to see if user has selected a theme other than the system default.
+
+  const defaultMode = systemMode;
+
+  const [mode, setMode] = React.useState<"light" | "dark">(defaultMode);
 
   useEffect(() => {
     setMode(prefersDarkMode ? "dark" : "light");
