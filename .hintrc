@@ -11,5 +11,8 @@
     "not firefox <= 112",
     "not safari <= 16.4",
     "not samsung <= 20"
-  ]
+  ],
+  "hints": {
+    "disown-opener": "off"
+  }
 }
