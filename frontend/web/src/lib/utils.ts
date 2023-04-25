@@ -1,3 +1,19 @@
+export function getLocalState<T>(key: string, defaultValue: T): T {
+  const localState = localStorage.getItem(key);
+  if (localState) {
+    return JSON.parse(localState);
+  }
+  return defaultValue;
+}
+
+export function setLocalState<T>(key: string, value: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              Array extensions                              */
 /* -------------------------------------------------------------------------- */
