@@ -1,12 +1,19 @@
 import { Box } from "@mui/material";
-import { ActivityIconType } from "../lib/enums";
+import { ActivityType } from "../lib/enums";
+import { Activity } from "../lib/models";
 import ActivityIcon from "./ActivityIcon";
 
 type Props = {
-  onActivityIconClick?: (type: ActivityIconType) => void;
+  onActivityIconClick?: (type: ActivityType) => void;
 };
 
 export default function ActivityIconsList({ onActivityIconClick }: Props) {
+  const activities = Object.values(ActivityType)
+    .map((value) => {
+      const activityType = value as ActivityType;
+      return new Activity(activityType);
+    })
+    .sort((a, b) => a.order - b.order);
   return (
     <Box
       sx={{
@@ -15,19 +22,21 @@ export default function ActivityIconsList({ onActivityIconClick }: Props) {
         gap: 1,
       }}
     >
-      {Object.values(ActivityIconType).map((key) => (
-        <ActivityIcon
-          key={key}
-          type={key as ActivityIconType}
-          showLabel
-          sx={{ paddingTop: 4, paddingBottom: 4 }}
-          onClick={() => {
-            if (onActivityIconClick) {
-              onActivityIconClick(key as ActivityIconType);
-            }
-          }}
-        />
-      ))}
+      {activities.map((activity) => {
+        return (
+          <ActivityIcon
+            key={activity.activityType}
+            activity={activity}
+            showLabel
+            sx={{ paddingTop: 4, paddingBottom: 4 }}
+            onClick={() => {
+              if (onActivityIconClick) {
+                onActivityIconClick(activity.activityType);
+              }
+            }}
+          />
+        );
+      })}
     </Box>
   );
 }

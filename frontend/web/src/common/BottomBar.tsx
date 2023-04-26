@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ActivityIconType, CSSBreakpoint } from "../lib/enums";
-import { getActivityIconLabel, getPath } from "../lib/utils";
+import { ActivityType, CSSBreakpoint } from "../lib/enums";
+import { getPath } from "../lib/utils";
 import ActivityIconsList from "./ActivityIconsList";
 
 type Props = {
@@ -115,8 +115,8 @@ export default function BottomBar(props: Props) {
     },
   ];
 
-  const handleActivityIconClick = (type: ActivityIconType) => {
-    alert(getActivityIconLabel(type));
+  const handleActivityIconClick = (type: ActivityType) => {
+    // TODO: Navigate to new entry page
   };
 
   /* -------------------------------------------------------------------------- */
