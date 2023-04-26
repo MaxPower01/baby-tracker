@@ -8,6 +8,14 @@
 			"problemMatcher": [],
 			"label": "npm: dev - frontend/web",
 			"detail": "vite"
+		},
+		{
+			"type": "npm",
+			"script": "host",
+			"path": "frontend/web",
+			"problemMatcher": [],
+			"label": "npm: host - frontend/web",
+			"detail": "vite --host"
 		}
 	]
 }

@@ -5,11 +5,12 @@ import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
+  Box,
   Container,
-  Drawer,
   Fab,
   IconButton as MuiIconButton,
   Stack,
+  SwipeableDrawer,
   Toolbar,
   styled,
 } from "@mui/material";
@@ -17,6 +18,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CSSBreakpoint } from "../lib/enums";
 import { getPath } from "../lib/utils";
+import ActivityIconsList from "./ActivityIconsList";
 
 type Props = {
   component: React.ElementType<any> | undefined;
@@ -166,13 +168,21 @@ export default function BottomBar(props: Props) {
               )
             )}
           </Stack>
-          <Drawer
+          <SwipeableDrawer
             anchor="bottom"
             open={newEntryDrawerIsOpen}
+            onOpen={() => {}}
             onClose={() => toggleNewEntryDrawer(false)}
+            disableSwipeToOpen={true}
           >
-            Test
-          </Drawer>
+            <Box
+              sx={{
+                maxHeight: "80vh",
+              }}
+            >
+              <ActivityIconsList />
+            </Box>
+          </SwipeableDrawer>
         </Toolbar>
       </Container>
     </AppBar>

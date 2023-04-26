@@ -27,9 +27,23 @@ export enum CSSBreakpoint {
   ExtraLarge = "xl",
 }
 
-export enum Anchor {
+export enum AnchorPosition {
   Top = "top",
   Right = "right",
   Bottom = "bottom",
   Left = "left",
+}
+
+export enum ActivityIconType {
+  BreastFeedingLeft,
+  BreastFeedingRight,
+  FeedingBottle,
+  Diaper,
+  WaterDrops,
+  Poop,
+  Sleep,
+  Bath,
+  Scale,
+  Ruler,
+  MeasuringTape,
 }

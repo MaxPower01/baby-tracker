@@ -1,3 +1,38 @@
+import { ActivityIconType } from "./enums";
+
+/* -------------------------------------------------------------------------- */
+/*                                 Ressources                                 */
+/* -------------------------------------------------------------------------- */
+
+export function getIconLabel(type: ActivityIconType) {
+  switch (type) {
+    case ActivityIconType.BreastFeedingLeft:
+      return "Allaitement (gauche)";
+    case ActivityIconType.BreastFeedingRight:
+      return "Allaitement (droite)";
+    case ActivityIconType.FeedingBottle:
+      return "Biberon";
+    case ActivityIconType.Diaper:
+      return "Couche";
+    case ActivityIconType.WaterDrops:
+      return "Pipi";
+    case ActivityIconType.Poop:
+      return "Caca";
+    case ActivityIconType.Sleep:
+      return "Sommeil";
+    case ActivityIconType.Bath:
+      return "Bain";
+    case ActivityIconType.Ruler:
+      return "Taille";
+    case ActivityIconType.Scale:
+      return "Poids";
+    case ActivityIconType.MeasuringTape:
+      return "Circonférence de la tête";
+    default:
+      return "";
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                 Navigation                                 */
 /* -------------------------------------------------------------------------- */

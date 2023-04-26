@@ -1,9 +1,9 @@
 import { Container } from "@mui/material";
 import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import BottomBar from "../../common/BottomBar";
+import TopBar from "../../common/TopBar";
 import { CSSBreakpoint } from "../../lib/enums";
-import BottomBar from "../../modules/BottomBar";
-import TopBar from "../../modules/TopBar";
 import Home from "../../pages/Home";
 import "./App.scss";
 
