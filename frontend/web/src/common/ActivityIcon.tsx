@@ -1,21 +1,15 @@
-import { Box, SxProps, Typography } from "@mui/material";
+import { Button, SxProps, Typography } from "@mui/material";
 import { ReactSVG } from "react-svg";
 import { ActivityIconType } from "../lib/enums";
-import { getIconLabel } from "../lib/utils";
+import { getActivityIconLabel } from "../lib/utils";
 import classes from "./ActivityIcon.module.scss";
 
 function BathIcon() {
   return <ReactSVG src="/bath.svg" />;
 }
 
-function BreastFeedingLeftIcon() {
+function BreastFeedingIcon() {
   return <ReactSVG src="/breast-feeding.svg" />;
-}
-
-function BreastFeedingRightIcon() {
-  return (
-    <ReactSVG src="/breast-feeding.svg" style={{ transform: "scaleX(-1)" }} />
-  );
 }
 
 function DiaperIcon() {
@@ -47,20 +41,25 @@ function SleepIcon() {
 }
 
 function WaterDropsIcon() {
-  return <ReactSVG src="/water-drops.svg" />;
+  return <ReactSVG src="/water-drops--yellow.svg" />;
 }
 
 type Props = {
   type: ActivityIconType;
   sx?: SxProps | undefined;
   showLabel?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
-export default function ActivityIcon({ type, sx, showLabel }: Props) {
+export default function ActivityIcon({ type, sx, showLabel, onClick }: Props) {
   if (typeof type !== "number") return null;
   if (!Object.values(ActivityIconType).includes(type)) return null;
   return (
-    <Box
+    <Button
+      className={classes.ActivityIcon}
+      variant="text"
+      color="inherit"
+      onClick={onClick}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -68,16 +67,13 @@ export default function ActivityIcon({ type, sx, showLabel }: Props) {
         alignItems: "center",
         ...sx,
       }}
-      className={classes.ActivityIcon}
     >
       {(() => {
         switch (type) {
           case ActivityIconType.Bath:
             return <BathIcon />;
-          case ActivityIconType.BreastFeedingLeft:
-            return <BreastFeedingLeftIcon />;
-          case ActivityIconType.BreastFeedingRight:
-            return <BreastFeedingRightIcon />;
+          case ActivityIconType.BreastFeeding:
+            return <BreastFeedingIcon />;
           case ActivityIconType.Diaper:
             return <DiaperIcon />;
           case ActivityIconType.FeedingBottle:
@@ -99,10 +95,10 @@ export default function ActivityIcon({ type, sx, showLabel }: Props) {
         }
       })()}
       {showLabel && (
-        <Typography variant="body1" textAlign="center">
-          {getIconLabel(type)}
+        <Typography variant="button" textAlign="center">
+          {getActivityIconLabel(type)}
         </Typography>
       )}
-    </Box>
+    </Button>
   );
 }

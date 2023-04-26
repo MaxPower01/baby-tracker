@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CSSBreakpoint } from "../lib/enums";
-import { getPath } from "../lib/utils";
+import { ActivityIconType, CSSBreakpoint } from "../lib/enums";
+import { getActivityIconLabel, getPath } from "../lib/utils";
 import ActivityIconsList from "./ActivityIconsList";
 
 type Props = {
@@ -115,6 +115,10 @@ export default function BottomBar(props: Props) {
     },
   ];
 
+  const handleActivityIconClick = (type: ActivityIconType) => {
+    alert(getActivityIconLabel(type));
+  };
+
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
@@ -180,7 +184,9 @@ export default function BottomBar(props: Props) {
                 maxHeight: "80vh",
               }}
             >
-              <ActivityIconsList />
+              <ActivityIconsList
+                onActivityIconClick={handleActivityIconClick}
+              />
             </Box>
           </SwipeableDrawer>
         </Toolbar>

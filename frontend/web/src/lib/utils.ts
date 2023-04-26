@@ -4,12 +4,10 @@ import { ActivityIconType } from "./enums";
 /*                                 Ressources                                 */
 /* -------------------------------------------------------------------------- */
 
-export function getIconLabel(type: ActivityIconType) {
+export function getActivityIconLabel(type: ActivityIconType) {
   switch (type) {
-    case ActivityIconType.BreastFeedingLeft:
-      return "Allaitement (gauche)";
-    case ActivityIconType.BreastFeedingRight:
-      return "Allaitement (droite)";
+    case ActivityIconType.BreastFeeding:
+      return "Allaitement";
     case ActivityIconType.FeedingBottle:
       return "Biberon";
     case ActivityIconType.Diaper:

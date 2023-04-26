@@ -2,7 +2,11 @@ import { Box } from "@mui/material";
 import { ActivityIconType } from "../lib/enums";
 import ActivityIcon from "./ActivityIcon";
 
-export default function ActivityIconsList() {
+type Props = {
+  onActivityIconClick?: (type: ActivityIconType) => void;
+};
+
+export default function ActivityIconsList({ onActivityIconClick }: Props) {
   return (
     <Box
       sx={{
@@ -17,6 +21,11 @@ export default function ActivityIconsList() {
           type={key as ActivityIconType}
           showLabel
           sx={{ paddingTop: 4, paddingBottom: 4 }}
+          onClick={() => {
+            if (onActivityIconClick) {
+              onActivityIconClick(key as ActivityIconType);
+            }
+          }}
         />
       ))}
     </Box>

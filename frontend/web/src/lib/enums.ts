@@ -35,13 +35,12 @@ export enum AnchorPosition {
 }
 
 export enum ActivityIconType {
-  BreastFeedingLeft,
-  BreastFeedingRight,
+  BreastFeeding,
   FeedingBottle,
+  Sleep,
   Diaper,
   WaterDrops,
   Poop,
-  Sleep,
   Bath,
   Scale,
   Ruler,
