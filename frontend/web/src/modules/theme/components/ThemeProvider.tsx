@@ -4,7 +4,7 @@ import {
 } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import React, { useEffect } from "react";
-import { ColorModeContext } from "./ColorModeContext";
+import ColorModeContext from "./ColorModeContext";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -42,7 +42,7 @@ export default function ThemeProvider(props: ThemeProviderProps) {
           mode,
         },
         shape: {
-          borderRadius: 16,
+          borderRadius: 8,
         },
       }),
     [mode]

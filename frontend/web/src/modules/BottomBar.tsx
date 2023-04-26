@@ -6,15 +6,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Container,
+  Drawer,
   Fab,
   IconButton as MuiIconButton,
   Stack,
   Toolbar,
   styled,
 } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CSSBreakpoint } from "../../lib/enums";
-import { getPath } from "../../lib/utils";
+import { CSSBreakpoint } from "../lib/enums";
+import { getPath } from "../lib/utils";
 
 type Props = {
   component: React.ElementType<any> | undefined;
@@ -55,11 +57,10 @@ export default function BottomBar(props: Props) {
 
   const navigate = useNavigate();
 
-  const handleNewEntryButtonClick = (
-    e: React.MouseEvent<Element, MouseEvent>
-  ) => {
-    e.preventDefault();
-    navigate(getPath(""));
+  const [newEntryDrawerIsOpen, setNewEntryDrawerIsOpen] = useState(false);
+
+  const toggleNewEntryDrawer = (open: boolean) => {
+    setNewEntryDrawerIsOpen(open);
   };
 
   const items: Array<BottomBarItem> = [
@@ -88,7 +89,7 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "new-entry",
-      onClick: handleNewEntryButtonClick,
+      onClick: () => toggleNewEntryDrawer(true),
       IconWrapper: FloatingActionButton,
       Icon: AddIcon,
       color: "primary",
@@ -165,6 +166,13 @@ export default function BottomBar(props: Props) {
               )
             )}
           </Stack>
+          <Drawer
+            anchor="bottom"
+            open={newEntryDrawerIsOpen}
+            onClose={() => toggleNewEntryDrawer(false)}
+          >
+            Test
+          </Drawer>
         </Toolbar>
       </Container>
     </AppBar>

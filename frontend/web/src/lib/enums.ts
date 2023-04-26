@@ -26,3 +26,10 @@ export enum CSSBreakpoint {
   Large = "lg",
   ExtraLarge = "xl",
 }
+
+export enum Anchor {
+  Top = "top",
+  Right = "right",
+  Bottom = "bottom",
+  Left = "left",
+}

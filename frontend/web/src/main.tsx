@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./app/components/App";
+import MenuProvider from "./modules/menu/components/MenuProvider";
 import StoreProvider from "./modules/store/components/StoreProvider";
 import ThemeProvider from "./modules/theme/components/ThemeProvider";
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <ThemeProvider>
         <CssBaseline />
         <BrowserRouter>
-          <App />
+          <MenuProvider>
+            <App />
+          </MenuProvider>
         </BrowserRouter>
       </ThemeProvider>
     </StoreProvider>

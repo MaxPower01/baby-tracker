@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CSSBreakpoint } from "../../lib/enums";
+import { CSSBreakpoint } from "../lib/enums";
 
 type Props = {
   component: React.ElementType<any> | undefined;
