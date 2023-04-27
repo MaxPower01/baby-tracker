@@ -1,12 +1,14 @@
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Box,
   Container,
+  Divider,
   Fab,
   IconButton as MuiIconButton,
   Stack,
@@ -15,10 +17,10 @@ import {
   styled,
 } from "@mui/material";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ActivityType, CSSBreakpoint } from "../lib/enums";
-import { getPath } from "../lib/utils";
-import ActivityButtons from "../modules/activities/components/ActivityButtons";
+import { useNavigate } from "react-router-dom";
+import { ActivityType, CSSBreakpoint, PageName } from "../../lib/enums";
+import { getPath } from "../../lib/utils";
+import ActivityButtons from "../../modules/activities/components/ActivityButtons";
 
 type Props = {
   component: React.ElementType<any> | undefined;
@@ -58,19 +60,22 @@ export default function BottomBar(props: Props) {
   /* -------------------------------------------------------------------------- */
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [newEntryDrawerIsOpen, setNewEntryDrawerIsOpen] = useState(false);
+  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
 
-  const toggleNewEntryDrawer = (open: boolean) => {
-    setNewEntryDrawerIsOpen(open);
+  const openActivitiesDrawer = () => {
+    setActivitiesDrawerIsOpen(true);
+  };
+
+  const closeActivitiesDrawer = () => {
+    setActivitiesDrawerIsOpen(false);
   };
 
   const items: Array<BottomBarItem> = [
     {
-      id: "entries",
-      label: "Entrées",
-      onClick: () => navigate(getPath("")),
+      id: "home",
+      label: "Accueil",
+      onClick: () => navigate(getPath({ page: PageName.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
       color: "default",
@@ -78,7 +83,7 @@ export default function BottomBar(props: Props) {
     {
       id: "stats",
       label: "Stats",
-      onClick: () => navigate(getPath("")),
+      onClick: () => navigate(getPath({ page: PageName.Stats })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "default",
@@ -92,7 +97,7 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "new-entry",
-      onClick: () => toggleNewEntryDrawer(true),
+      onClick: () => openActivitiesDrawer(),
       IconWrapper: FloatingActionButton,
       Icon: AddIcon,
       color: "primary",
@@ -101,7 +106,7 @@ export default function BottomBar(props: Props) {
     {
       id: "calendar",
       label: "Calendrier",
-      onClick: () => navigate(getPath("")),
+      onClick: () => navigate(getPath({ page: PageName.Calendar })),
       IconWrapper: IconButton,
       Icon: CalendarTodayIcon,
       color: "default",
@@ -109,7 +114,7 @@ export default function BottomBar(props: Props) {
     {
       id: "settings",
       label: "Paramètres",
-      onClick: () => navigate(getPath("")),
+      onClick: () => navigate(getPath({ page: PageName.Settings })),
       IconWrapper: IconButton,
       Icon: MenuIcon,
       color: "default",
@@ -117,7 +122,13 @@ export default function BottomBar(props: Props) {
   ];
 
   const handleActivityIconClick = (type: ActivityType) => {
-    // TODO: Navigate to new entry page
+    closeActivitiesDrawer();
+    navigate(
+      getPath({
+        page: PageName.Entry,
+        params: { activity: type.toString() },
+      })
+    );
   };
 
   /* -------------------------------------------------------------------------- */
@@ -175,14 +186,31 @@ export default function BottomBar(props: Props) {
           </Stack>
           <SwipeableDrawer
             anchor="bottom"
-            open={newEntryDrawerIsOpen}
+            open={activitiesDrawerIsOpen}
             onOpen={() => {}}
-            onClose={() => toggleNewEntryDrawer(false)}
+            onClose={() => closeActivitiesDrawer()}
             disableSwipeToOpen={true}
           >
             <Box
               sx={{
-                maxHeight: "80vh",
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+                backgroundColor: "inherit",
+                backgroundImage: "inherit",
+              }}
+            >
+              <Toolbar disableGutters>
+                <Box sx={{ flexGrow: 1 }} />
+                <IconButton onClick={() => closeActivitiesDrawer()}>
+                  <CloseIcon />
+                </IconButton>
+              </Toolbar>
+              <Divider />
+            </Box>
+            <Box
+              sx={{
+                maxHeight: "70vh",
               }}
             >
               <ActivityButtons onClick={handleActivityIconClick} />

@@ -26,13 +26,13 @@ export default function ActivityButtons({ onClick }: Props) {
         {activities.map((activity) => {
           return (
             <ActivityButton
-              key={activity.activityType}
+              key={activity.type}
               activity={activity}
               showLabel
               sx={{ paddingTop: 4, paddingBottom: 4 }}
               onClick={() => {
                 if (onClick) {
-                  onClick(activity.activityType);
+                  onClick(activity.type);
                 }
               }}
             />

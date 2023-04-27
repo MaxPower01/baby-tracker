@@ -62,4 +62,5 @@ export enum PageName {
   Stats = "stats",
   Calendar = "calendar",
   Settings = "settings",
+  Entry = "entry",
 }

@@ -15,7 +15,14 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
 };
 
 export default function useMenu() {
-  const { setAnchorEl } = React.useContext(MenuContext);
+  const menuContext = React.useContext(MenuContext);
+  if (!menuContext) {
+    throw new Error(
+      "No MenuContext provided. Make sure to call useMenu() inside a MenuProvider."
+    );
+  }
+
+  const { setAnchorEl } = menuContext;
 
   const openMenu = React.useCallback(
     (event: React.MouseEvent<HTMLElement>) => {

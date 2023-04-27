@@ -1,16 +1,94 @@
+import { useLocation } from "react-router-dom";
+import { ActivityType, PageName } from "./enums";
+
+/* -------------------------------------------------------------------------- */
+/*                                 Activities                                 */
+/* -------------------------------------------------------------------------- */
+
+export function isValidActivityType(type: any) {
+  if (typeof type === "number") {
+    return Object.values(ActivityType).includes(type);
+  }
+  if (typeof type === "string") {
+    return Object.values(ActivityType).includes(parseInt(type));
+  }
+  return false;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                 Navigation                                 */
 /* -------------------------------------------------------------------------- */
 
-import { useLocation } from "react-router-dom";
-
-export function getPath(page: string) {
-  // TODO: Implement this function.
-  return "/";
+export function getPath({
+  page,
+  id,
+  params,
+}: {
+  page: PageName;
+  id?: string | number;
+  params?: Record<string, string>;
+}) {
+  let path = getPagePath(page);
+  if (typeof id !== "undefined") {
+    path += `/${id}`;
+  }
+  if (params) {
+    path += `?${new URLSearchParams(params).toString()}`;
+  }
+  return path;
 }
 
-export function getCurrentPage() {
+export function getPagePath(page: PageName) {
+  switch (page) {
+    case PageName.Home:
+      return "/home";
+    case PageName.Stats:
+      return "/stats";
+    case PageName.Settings:
+      return "/settings";
+    case PageName.Calendar:
+      return "/calendar";
+    case PageName.Entry:
+      return "/entry";
+    default:
+      return "";
+  }
+}
+
+export function getPageTitle(page: PageName) {
+  switch (page) {
+    case PageName.Home:
+      return "Accueil";
+    case PageName.Stats:
+      return "Statistiques";
+    case PageName.Settings:
+      return "Paramètres";
+    case PageName.Calendar:
+      return "Calendrier";
+    case PageName.Entry:
+      const location = useLocation();
+      const { pathname } = location;
+      const entryId = pathname.substring(1).split("/")[1];
+      if (entryId) {
+        return "Modifier une entrée";
+      }
+      return "Ajouter une entrée";
+    default:
+      return "";
+  }
+}
+
+export function getCurrentPage(): PageName {
   const location = useLocation();
+  const { pathname } = location;
+  let page = pathname.substring(1).split("/")[0];
+  if (page === "") {
+    page = PageName.Home;
+  }
+  if (Object.values(PageName).includes(page as PageName)) {
+    return page as PageName;
+  }
+  return PageName.Home;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -139,45 +217,26 @@ export function toggle(value: boolean) {
 /*                              Number extensions                             */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Increments a number by a given amount.
- * @param number The number to increment.
- * @param increment The amount to increment the number by. Defaults to 1.
- * @returns The incremented number.
- */
 export function increment(value: number, increment: number = 1) {
   return value + increment;
 }
 
-/**
- * Decrements a number by a given amount.
- * @param number The number to decrement.
- * @param decrement The amount to decrement the number by. Defaults to 1.
- * @returns The decremented number.
- */
 export function decrement(value: number, decrement: number = 1) {
   return value - decrement;
+}
+
+export function isNumber(value: string) {
+  return !isNaN(Number(value));
 }
 
 /* -------------------------------------------------------------------------- */
 /*                              String extensions                             */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Adds a prefix to the string.
- * @param value The string to add the prefix to.
- * @param pre Prefix to add to the string.
- * @returns The string with the prefix added.
- */
-export function addPrefix(value: string, pre: string) {
-  return pre + value;
+export function addPrefix(value: string, prefix: string) {
+  return prefix + value;
 }
 
-/**
- * Checks if the string is null or whitespace.
- * @param value The string to check.
- * @returns True if the string is null or whitespace, false otherwise.
- */
 export function isNullOrWhiteSpace(value: string | undefined | null) {
   if (value === undefined || value === null) return true;
   return value === null || value.match(/^ *$/) !== null;
