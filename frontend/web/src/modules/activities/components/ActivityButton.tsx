@@ -1,8 +1,8 @@
 import { Button, SxProps, Typography } from "@mui/material";
 import { ReactSVG } from "react-svg";
-import { ActivityType } from "../lib/enums";
-import { Activity } from "../lib/models";
-import classes from "./ActivityIcon.module.scss";
+import { ActivityType } from "../../../lib/enums";
+import { Activity } from "../models/Activity";
+import classes from "./ActivityButton.module.scss";
 
 function BathIcon() {
   return <ReactSVG src="/bath.svg" />;
@@ -91,7 +91,7 @@ type Props = {
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
-export default function ActivityIcon({
+export default function ActivityButton({
   activity,
   sx,
   showLabel,
@@ -101,7 +101,7 @@ export default function ActivityIcon({
   if (!Object.values(ActivityType).includes(activity.activityType)) return null;
   return (
     <Button
-      className={classes.ActivityIcon}
+      className={classes.ActivityButton}
       variant="text"
       color="inherit"
       onClick={onClick}

@@ -2,9 +2,15 @@
 /*                                 Navigation                                 */
 /* -------------------------------------------------------------------------- */
 
+import { useLocation } from "react-router-dom";
+
 export function getPath(page: string) {
   // TODO: Implement this function.
   return "/";
+}
+
+export function getCurrentPage() {
+  const location = useLocation();
 }
 
 /* -------------------------------------------------------------------------- */

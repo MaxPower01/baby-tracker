@@ -46,7 +46,7 @@ export default function TopBar(props: Props) {
         // backgroundImage: "none",
       }}
     >
-      <Container maxWidth={CSSBreakpoint.Large}>
+      <Container maxWidth={CSSBreakpoint.Medium}>
         <Toolbar disableGutters>
           {shouldRenderBackButton && (
             <IconButton onClick={handleBackButtonClick}>

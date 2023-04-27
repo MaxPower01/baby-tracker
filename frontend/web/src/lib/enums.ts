@@ -56,3 +56,10 @@ export enum ActivityType {
   Walk,
   Weight,
 }
+
+export enum PageName {
+  Home = "home",
+  Stats = "stats",
+  Calendar = "calendar",
+  Settings = "settings",
+}

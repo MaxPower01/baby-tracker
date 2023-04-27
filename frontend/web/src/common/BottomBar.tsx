@@ -15,10 +15,10 @@ import {
   styled,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActivityType, CSSBreakpoint } from "../lib/enums";
 import { getPath } from "../lib/utils";
-import ActivityIconsList from "./ActivityIconsList";
+import ActivityButtons from "../modules/activities/components/ActivityButtons";
 
 type Props = {
   component: React.ElementType<any> | undefined;
@@ -58,6 +58,7 @@ export default function BottomBar(props: Props) {
   /* -------------------------------------------------------------------------- */
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [newEntryDrawerIsOpen, setNewEntryDrawerIsOpen] = useState(false);
 
@@ -68,7 +69,7 @@ export default function BottomBar(props: Props) {
   const items: Array<BottomBarItem> = [
     {
       id: "entries",
-      label: "Entries",
+      label: "Entrées",
       onClick: () => navigate(getPath("")),
       IconWrapper: IconButton,
       Icon: HomeIcon,
@@ -99,7 +100,7 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "calendar",
-      label: "Calendar",
+      label: "Calendrier",
       onClick: () => navigate(getPath("")),
       IconWrapper: IconButton,
       Icon: CalendarTodayIcon,
@@ -107,7 +108,7 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "settings",
-      label: "Settings",
+      label: "Paramètres",
       onClick: () => navigate(getPath("")),
       IconWrapper: IconButton,
       Icon: MenuIcon,
@@ -130,7 +131,7 @@ export default function BottomBar(props: Props) {
       sx={{ top: "auto", bottom: 0 }}
       color="default"
     >
-      <Container maxWidth={CSSBreakpoint.Large}>
+      <Container maxWidth={CSSBreakpoint.Medium}>
         <Toolbar disableGutters>
           <Stack
             flexGrow={1}
@@ -184,9 +185,7 @@ export default function BottomBar(props: Props) {
                 maxHeight: "80vh",
               }}
             >
-              <ActivityIconsList
-                onActivityIconClick={handleActivityIconClick}
-              />
+              <ActivityButtons onClick={handleActivityIconClick} />
             </Box>
           </SwipeableDrawer>
         </Toolbar>

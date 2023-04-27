@@ -1,4 +1,4 @@
-import { ActivityType } from "./enums";
+import { ActivityType } from "../../../lib/enums";
 
 export class Activity {
   private _activityType: ActivityType;
