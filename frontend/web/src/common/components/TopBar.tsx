@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { CSSBreakpoint, PageName } from "../../lib/enums";
-import { getCurrentPage, getPageTitle } from "../../lib/utils";
+import { getCurrentPageName, getPageTitle } from "../../lib/utils";
 import useLayout from "../hooks/useLayout";
 
 type Props = {
@@ -24,7 +24,7 @@ export default function TopBar(props: Props) {
 
   const layout = useLayout();
   const navigate = useNavigate();
-  const currentPage = getCurrentPage();
+  const currentPage = getCurrentPageName();
   const pageTitle = getPageTitle(currentPage);
 
   const shouldRenderBackButton = currentPage == PageName.Entry;

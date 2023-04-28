@@ -1,10 +1,10 @@
 import { Container } from "@mui/material";
-import { useState } from "react";
+import { useMemo } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import BottomBar from "../../common/components/BottomBar";
 import TopBar from "../../common/components/TopBar";
 import { CSSBreakpoint, PageName } from "../../lib/enums";
-import { getPath } from "../../lib/utils";
+import { getCurrentPageName, getPath } from "../../lib/utils";
 import Calendar from "../../pages/Calendar";
 import Entry from "../../pages/Entry";
 import Home from "../../pages/Home";
@@ -17,8 +17,10 @@ export default function App() {
   /*                                    Setup                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [shouldRenderTopBar, setShouldRenderTopBar] = useState(true);
-  const [shouldRenderBottomBar, setShouldRenderBottomBar] = useState(true);
+  const pageName = getCurrentPageName();
+  const shouldRenderBottomBar = useMemo(() => {
+    return pageName !== PageName.Entry;
+  }, [pageName]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
@@ -26,7 +28,7 @@ export default function App() {
 
   return (
     <>
-      {shouldRenderTopBar && <TopBar component={"header"} />}
+      <TopBar component={"header"} />
 
       <Container
         component={"main"}

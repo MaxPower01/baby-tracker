@@ -2,6 +2,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Button, Stack, SxProps, Typography } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
+import { formatDateTime } from "../../../lib/utils";
 
 type Props = {
   startDateTime?: Date | null;
@@ -9,12 +10,19 @@ type Props = {
   durationInSeconds?: number;
   label?: string;
   sx?: SxProps | undefined;
+  onDurationChange?: (
+    startDateTime: Date,
+    stopDateTime: Date,
+    durationInSeconds: number
+  ) => void;
 };
 
 export default function StopWatch(props: Props) {
   /* -------------------------------------------------------------------------- */
   /*                                    Setup                                   */
   /* -------------------------------------------------------------------------- */
+
+  const { onDurationChange } = props;
 
   const [startDateTime, setStartDateTime] = useState<Date>(
     props.startDateTime || new Date()
@@ -49,20 +57,12 @@ export default function StopWatch(props: Props) {
 
   const startDateTimeLabel = useMemo(() => {
     if (!startDateTime) return "";
-    // return startDateTime.toLocaleTimeString([], {
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    // });
-    return startDateTime.toLocaleTimeString();
+    return formatDateTime(startDateTime);
   }, [startDateTime]);
 
   const stopDateTimeLabel = useMemo(() => {
     if (!stopDateTime) return "";
-    // return stopDateTime.toLocaleTimeString([], {
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    // });
-    return stopDateTime.toLocaleTimeString();
+    return formatDateTime(stopDateTime);
   }, [stopDateTime]);
 
   const handleClick = useCallback(() => {
@@ -99,39 +99,91 @@ export default function StopWatch(props: Props) {
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
+
   return (
-    <Stack spacing={2} sx={props.sx}>
-      <Stack spacing={0}>
-        <Typography
-          textAlign="center"
-          variant="body2"
-          sx={{
-            opacity: hasStarted ? 1 : 0.5,
-          }}
-        >
-          {startDateTimeLabel}
-        </Typography>
-        <Typography
-          textAlign="center"
-          variant="body2"
-          sx={{
-            opacity: isRunning ? 0.5 : hasStarted ? 1 : 0.5,
-          }}
-        >
-          {stopDateTimeLabel}
-        </Typography>
-      </Stack>
+    <Stack
+      spacing={2}
+      sx={props.sx}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      {/* <Stack
+        sx={{
+          width: "100%",
+        }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <Container maxWidth={CSSBreakpoint.ExtraSmall}>
+          <Stack
+            direction="row"
+            justifyContent={"space-between"}
+            sx={{
+              width: "100%",
+            }}
+          >
+            <Typography
+              textAlign="left"
+              variant="body1"
+              sx={{
+                opacity: hasStarted ? 0.75 : 0.35,
+              }}
+            >
+              Début
+            </Typography>
+            <Typography
+              textAlign="right"
+              variant="body1"
+              sx={{
+                opacity: hasStarted ? 1 : 0.5,
+                fontWeight: "bold",
+              }}
+            >
+              {startDateTimeLabel}
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent={"space-between"}
+            sx={{
+              width: "100%",
+            }}
+          >
+            <Typography
+              textAlign="left"
+              variant="body1"
+              sx={{
+                opacity: isRunning ? 0.35 : hasStarted ? 0.75 : 0.35,
+              }}
+            >
+              Fin
+            </Typography>
+            <Typography
+              textAlign="right"
+              variant="body1"
+              sx={{
+                opacity: isRunning ? 0.5 : hasStarted ? 1 : 0.5,
+                fontWeight: "bold",
+              }}
+            >
+              {stopDateTimeLabel}
+            </Typography>
+          </Stack>
+        </Container>
+      </Stack> */}
 
       <Button
         onClick={handleClick}
         sx={{
-          //   width: "10em",
-          //   height: "10em",
           borderRadius: "9999px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
+          paddingLeft: 4,
+          paddingRight: 4,
+          paddingTop: 1,
+          paddingBottom: 1,
         }}
         variant={isRunning ? "contained" : "outlined"}
       >

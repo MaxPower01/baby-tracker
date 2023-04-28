@@ -1,3 +1,4 @@
+import { Box, SxProps } from "@mui/material";
 import { ReactSVG } from "react-svg";
 import { ActivityType } from "../../../lib/enums";
 import { Activity } from "../models/Activity";
@@ -95,51 +96,58 @@ function WeightIcon() {
 
 type Props = {
   activity: Activity;
+  sx?: SxProps | undefined;
 };
 
-export default function ActivityIcon({ activity }: Props) {
-  switch (activity.type) {
-    case ActivityType.Bath:
-      return <BathIcon />;
-    case ActivityType.BottleFeeding:
-      return <BottleFeedingIcon />;
-    case ActivityType.BreastFeeding:
-      return <BreastFeedingIcon />;
-    case ActivityType.Cry:
-      return <CryIcon />;
-    case ActivityType.Diaper:
-      return <DiaperIcon />;
-    case ActivityType.HeadCircumference:
-      return <HeadCircumferenceIcon />;
-    case ActivityType.HospitalVisit:
-      return <HospitalVisitIcon />;
-    case ActivityType.Medicine:
-      return <MedicineIcon />;
-    case ActivityType.MilkExtraction:
-      return <MilkExtractionIcon />;
-    case ActivityType.Play:
-      return <PlayIcon />;
-    case ActivityType.Poop:
-      return <PoopIcon />;
-    case ActivityType.Size:
-      return <SizeIcon />;
-    case ActivityType.Sleep:
-      return <SleepIcon />;
-    case ActivityType.SolidFood:
-      return <SolidFoodIcon />;
-    case ActivityType.Temperature:
-      return <TemperatureIcon />;
-    case ActivityType.Teeth:
-      return <TeethIcon />;
-    case ActivityType.Urine:
-      return <UrineIcon />;
-    case ActivityType.Vaccine:
-      return <VaccineIcon />;
-    case ActivityType.Walk:
-      return <WalkIcon />;
-    case ActivityType.Weight:
-      return <WeightIcon />;
-    default:
-      return null;
-  }
+export default function ActivityIcon({ activity, sx }: Props) {
+  return (
+    <Box sx={sx}>
+      {(() => {
+        switch (activity.type) {
+          case ActivityType.Bath:
+            return <BathIcon />;
+          case ActivityType.BottleFeeding:
+            return <BottleFeedingIcon />;
+          case ActivityType.BreastFeeding:
+            return <BreastFeedingIcon />;
+          case ActivityType.Cry:
+            return <CryIcon />;
+          case ActivityType.Diaper:
+            return <DiaperIcon />;
+          case ActivityType.HeadCircumference:
+            return <HeadCircumferenceIcon />;
+          case ActivityType.HospitalVisit:
+            return <HospitalVisitIcon />;
+          case ActivityType.Medicine:
+            return <MedicineIcon />;
+          case ActivityType.MilkExtraction:
+            return <MilkExtractionIcon />;
+          case ActivityType.Play:
+            return <PlayIcon />;
+          case ActivityType.Poop:
+            return <PoopIcon />;
+          case ActivityType.Size:
+            return <SizeIcon />;
+          case ActivityType.Sleep:
+            return <SleepIcon />;
+          case ActivityType.SolidFood:
+            return <SolidFoodIcon />;
+          case ActivityType.Temperature:
+            return <TemperatureIcon />;
+          case ActivityType.Teeth:
+            return <TeethIcon />;
+          case ActivityType.Urine:
+            return <UrineIcon />;
+          case ActivityType.Vaccine:
+            return <VaccineIcon />;
+          case ActivityType.Walk:
+            return <WalkIcon />;
+          case ActivityType.Weight:
+            return <WeightIcon />;
+          default:
+            return null;
+        }
+      })()}
+    </Box>
+  );
 }

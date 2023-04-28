@@ -2,6 +2,26 @@ import { useLocation } from "react-router-dom";
 import { ActivityType, PageName } from "./enums";
 
 /* -------------------------------------------------------------------------- */
+/*                                    Dates                                   */
+/* -------------------------------------------------------------------------- */
+
+export function formatTime(time: Date) {
+  // return stopDateTime.toLocaleTimeString([], {
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
+  return time.toLocaleTimeString();
+}
+
+export function formatDate(date: Date) {
+  return date.toLocaleDateString();
+}
+
+export function formatDateTime(dateTime: Date) {
+  return dateTime.toLocaleString();
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                 Activities                                 */
 /* -------------------------------------------------------------------------- */
 
@@ -78,7 +98,7 @@ export function getPageTitle(page: PageName) {
   }
 }
 
-export function getCurrentPage(): PageName {
+export function getCurrentPageName(): PageName {
   const location = useLocation();
   const { pathname } = location;
   let page = pathname.substring(1).split("/")[0];

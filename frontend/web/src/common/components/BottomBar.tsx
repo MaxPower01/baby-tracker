@@ -14,6 +14,7 @@ import {
   Stack,
   SwipeableDrawer,
   Toolbar,
+  Typography,
   styled,
 } from "@mui/material";
 import { useState } from "react";
@@ -200,12 +201,15 @@ export default function BottomBar(props: Props) {
                 backgroundImage: "inherit",
               }}
             >
-              <Toolbar disableGutters>
-                <Box sx={{ flexGrow: 1 }} />
-                <IconButton onClick={() => closeActivitiesDrawer()}>
-                  <CloseIcon />
-                </IconButton>
-              </Toolbar>
+              <Container maxWidth={CSSBreakpoint.Medium}>
+                <Toolbar disableGutters>
+                  <Typography variant="h6">Ajouter une entrée</Typography>
+                  <Box sx={{ flexGrow: 1 }} />
+                  <IconButton onClick={() => closeActivitiesDrawer()}>
+                    <CloseIcon />
+                  </IconButton>
+                </Toolbar>
+              </Container>
               <Divider />
             </Box>
             <Box
