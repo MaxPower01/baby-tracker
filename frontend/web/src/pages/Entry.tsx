@@ -2,44 +2,25 @@ import { Divider, Stack, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import useLayout from "../common/hooks/useLayout";
 import { ActivityType } from "../lib/enums";
-import { isValidActivityType } from "../lib/utils";
+import { formatStopwatchesTime, isValidActivityType } from "../lib/utils";
 import ActivityIcon from "../modules/activities/components/ActivityIcon";
 import { Activity } from "../modules/activities/models/Activity";
-import StopWatch from "../modules/stopwatch/components/StopWatch";
+import Stopwatch from "../modules/stopwatch/components/Stopwatch";
 
 export default function Entry() {
-  /* -------------------------------------------------------------------------- */
-  /*                                    Setup                                   */
-  /* -------------------------------------------------------------------------- */
-
   const layout = useLayout();
-
-  const { entryId } = useParams();
-  const isNewEntry = useMemo(() => !entryId, [entryId]);
-
+  const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activityType = searchParams.get("activity");
-  const activity = useMemo(() => {
-    if (isValidActivityType(activityType)) {
-      return new Activity(Number(activityType) as ActivityType);
-    } else {
-      return null;
-    }
-  }, [activityType]);
 
-  const shouldDisplayOneStopWatch = useMemo(() => {
-    return activity && activity.hasDuration && !activity.hasSides;
-  }, [activity]);
+  // Check if it's a new entry or an existing one
 
-  const shouldDisplayTwoStopWatches = useMemo(() => {
-    return activity && activity.hasDuration && activity.hasSides;
-  }, [activity]);
+  const isNewEntry = useMemo(() => !params.entryId, [params.entryId]);
 
   useEffect(() => {
     if (isNewEntry) {
@@ -52,31 +33,44 @@ export default function Entry() {
     };
   }, [isNewEntry]);
 
-  const [startDateTime, setStartDateTime] = useState<Date>(new Date());
-  const [stopDateTime, setStopDateTime] = useState<Date>(new Date());
-  const [durationInSeconds, setDurationInSeconds] = useState<number | null>(
-    null
-  );
-  const durationLabel = useMemo(() => {
-    if (durationInSeconds === null) {
-      return "00:00";
-    }
-    const minutes = Math.floor(durationInSeconds / 60);
-    let minutesLabel = minutes.toString();
-    if (minutes < 10) {
-      minutesLabel = `0${minutesLabel}`;
-    }
-    const seconds = durationInSeconds % 60;
-    let secondsLabel = seconds.toString();
-    if (seconds < 10) {
-      secondsLabel = `0${secondsLabel}`;
-    }
-    return `${minutesLabel}:${secondsLabel}`;
-  }, [durationInSeconds]);
+  // Get the activity
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   Render                                   */
-  /* -------------------------------------------------------------------------- */
+  const activity = useMemo(() => {
+    const activityType = searchParams.get("activity");
+    if (isValidActivityType(activityType)) {
+      return new Activity(Number(activityType) as ActivityType);
+    } else {
+      return null;
+    }
+  }, [searchParams]);
+
+  // Handle the start date and time
+
+  const [value, setValue] = useState<Dayjs | null>(dayjs());
+
+  // Handle the stopwatches
+
+  const [leftStopwatchTimeInSeconds, setLeftStopWatchTimeInSeconds] =
+    useState<number>(0);
+  const [rightStopwatchTimeInSeconds, setRightStopWatchTimeInSeconds] =
+    useState<number>(0);
+
+  const [leftStopWatchIsRunning, setLeftStopWatchIsRunning] =
+    useState<boolean>(false);
+  const [rightStopWatchIsRunning, setRightStopWatchIsRunning] =
+    useState<boolean>(false);
+
+  const anyStopwatchIsRunning = useMemo(
+    () => leftStopWatchIsRunning || rightStopWatchIsRunning,
+    [leftStopWatchIsRunning, rightStopWatchIsRunning]
+  );
+
+  const stopWatchTimeLabel = useMemo(() => {
+    return formatStopwatchesTime([
+      leftStopwatchTimeInSeconds,
+      rightStopwatchTimeInSeconds,
+    ]);
+  }, [leftStopwatchTimeInSeconds, rightStopwatchTimeInSeconds]);
 
   return (
     <>
@@ -106,80 +100,96 @@ export default function Entry() {
               <Typography variant="h4" textAlign="center">
                 {activity.name}
               </Typography>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale={localeFrCa}
+              >
+                <MobileDateTimePicker
+                  value={value}
+                  onChange={(newValue) => setValue(newValue)}
+                  disabled={anyStopwatchIsRunning}
+                  disableFuture={true}
+                  label="Départ"
+                  ampm={false}
+                  localeText={{
+                    toolbarTitle: "",
+                    okButtonLabel: "OK",
+                    cancelButtonLabel: "Annuler",
+                    nextMonth: "Mois suivant",
+                    previousMonth: "Mois précédent",
+                  }}
+                />
+              </LocalizationProvider>
             </Section>
           </Stack>
 
-          <Divider sx={{ width: "100%" }} />
-
-          <Section>
-            <SectionTitle title="Durée" />
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale={localeFrCa}
-            >
-              <MobileDateTimePicker
-                label="Départ"
-                defaultValue={dayjs("2022-04-17T15:30")}
-                ampm={false}
-                localeText={{
-                  toolbarTitle: "",
-                  okButtonLabel: "OK",
-                  cancelButtonLabel: "Annuler",
-                  nextMonth: "Mois suivant",
-                  previousMonth: "Mois précédent",
+          {activity?.hasDuration && (
+            <Section dividerPosition="top">
+              <SectionTitle title="Durée" />
+              <Typography textAlign="center" variant="h4">
+                {stopWatchTimeLabel}
+              </Typography>
+              <Stack
+                direction={"row"}
+                sx={{
+                  width: "100%",
                 }}
-              />
-            </LocalizationProvider>
-            <Typography textAlign="center" variant="h4">
-              {durationLabel}
-            </Typography>
-            <Stack
-              direction={"row"}
-              sx={{
-                width: "100%",
-              }}
-            >
-              <StopWatch
-                label={activity.hasSides ? "Gauche" : undefined}
-                sx={{ flex: 1 }}
-              />
-              {activity.hasSides && (
-                <StopWatch label="Droite" sx={{ flex: 1 }} />
-              )}
-            </Stack>
-          </Section>
+              >
+                <Stopwatch
+                  timeInSeconds={leftStopwatchTimeInSeconds}
+                  setTimeInSeconds={setLeftStopWatchTimeInSeconds}
+                  isRunning={leftStopWatchIsRunning}
+                  setIsRunning={setLeftStopWatchIsRunning}
+                  isDisabled={rightStopWatchIsRunning}
+                  label={activity.hasSides ? "Gauche" : undefined}
+                  sx={{ flex: 1 }}
+                />
+                {activity.hasSides && (
+                  <Stopwatch
+                    timeInSeconds={rightStopwatchTimeInSeconds}
+                    setTimeInSeconds={setRightStopWatchTimeInSeconds}
+                    isRunning={rightStopWatchIsRunning}
+                    setIsRunning={setRightStopWatchIsRunning}
+                    isDisabled={leftStopWatchIsRunning}
+                    label="Droite"
+                    sx={{ flex: 1 }}
+                  />
+                )}
+              </Stack>
+            </Section>
+          )}
 
-          <Divider sx={{ width: "100%" }} />
-
-          <Stack
-            component={"section"}
-            alignItems="center"
-            spacing={2}
-            sx={{
-              width: "100%",
-            }}
-          >
+          <Section dividerPosition="top">
             <SectionTitle title="Notes" />
             <Typography>À faire</Typography>
-          </Stack>
+          </Section>
         </Stack>
       )}
     </>
   );
 }
 
-function Section(props: { children: React.ReactNode }) {
+function Section(props: {
+  children: React.ReactNode;
+  dividerPosition?: "top" | "bottom";
+}) {
   return (
-    <Stack
-      component={"section"}
-      alignItems="center"
-      spacing={2}
-      sx={{
-        width: "100%",
-      }}
-    >
-      {props.children}
-    </Stack>
+    <>
+      {props.dividerPosition === "top" && <Divider sx={{ width: "100%" }} />}
+
+      <Stack
+        component={"section"}
+        alignItems="center"
+        spacing={2}
+        sx={{
+          width: "100%",
+        }}
+      >
+        {props.children}
+      </Stack>
+
+      {props.dividerPosition === "bottom" && <Divider sx={{ width: "100%" }} />}
+    </>
   );
 }
 

@@ -2,6 +2,20 @@ import { useLocation } from "react-router-dom";
 import { ActivityType, PageName } from "./enums";
 
 /* -------------------------------------------------------------------------- */
+/*                                 Stopwatches                                */
+/* -------------------------------------------------------------------------- */
+
+export function formatStopwatchesTime(stopwatches: number[]) {
+  const totalSeconds = stopwatches.reduce((a, b) => a + b, 0);
+  if (totalSeconds === 0) return "00:00";
+  const seconds = totalSeconds % 60;
+  const secondsLabel = seconds.toString().padStart(2, "0");
+  const minutes = Math.floor(totalSeconds / 60);
+  const minutesLabel = minutes.toString().padStart(2, "0");
+  return `${minutesLabel}:${secondsLabel}`;
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                    Dates                                   */
 /* -------------------------------------------------------------------------- */
 

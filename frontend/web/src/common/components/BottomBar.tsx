@@ -56,10 +56,6 @@ const InvisibleIconButton = styled(IconButton)({
 });
 
 export default function BottomBar(props: Props) {
-  /* -------------------------------------------------------------------------- */
-  /*                                    Setup                                   */
-  /* -------------------------------------------------------------------------- */
-
   const navigate = useNavigate();
 
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
@@ -131,10 +127,6 @@ export default function BottomBar(props: Props) {
       })
     );
   };
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   Render                                   */
-  /* -------------------------------------------------------------------------- */
 
   return (
     <AppBar

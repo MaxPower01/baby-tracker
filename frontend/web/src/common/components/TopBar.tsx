@@ -18,10 +18,6 @@ type Props = {
 };
 
 export default function TopBar(props: Props) {
-  /* -------------------------------------------------------------------------- */
-  /*                                    Setup                                   */
-  /* -------------------------------------------------------------------------- */
-
   const layout = useLayout();
   const navigate = useNavigate();
   const currentPage = getCurrentPageName();
@@ -35,10 +31,6 @@ export default function TopBar(props: Props) {
     e.preventDefault();
     navigate(-1);
   };
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   Render                                   */
-  /* -------------------------------------------------------------------------- */
 
   return (
     <AppBar

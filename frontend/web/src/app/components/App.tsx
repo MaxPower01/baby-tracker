@@ -13,18 +13,10 @@ import Stats from "../../pages/Stats";
 import "./App.scss";
 
 export default function App() {
-  /* -------------------------------------------------------------------------- */
-  /*                                    Setup                                   */
-  /* -------------------------------------------------------------------------- */
-
   const pageName = getCurrentPageName();
   const shouldRenderBottomBar = useMemo(() => {
     return pageName !== PageName.Entry;
   }, [pageName]);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   Render                                   */
-  /* -------------------------------------------------------------------------- */
 
   return (
     <>
