@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import { ActivityType, PageName } from "./enums";
 
 /* -------------------------------------------------------------------------- */
@@ -93,8 +92,9 @@ export function getPagePath(page: PageName) {
   }
 }
 
-export function getPageTitle(page: PageName) {
-  switch (page) {
+export function getPageTitle(pathname: string) {
+  const pageName = getPageName(pathname);
+  switch (pageName) {
     case PageName.Home:
       return "Accueil";
     case PageName.Stats:
@@ -104,8 +104,6 @@ export function getPageTitle(page: PageName) {
     case PageName.Calendar:
       return "Calendrier";
     case PageName.Entry:
-      const location = useLocation();
-      const { pathname } = location;
       const entryId = pathname.substring(1).split("/")[1];
       if (entryId) {
         return "Modifier une entrée";
@@ -116,9 +114,7 @@ export function getPageTitle(page: PageName) {
   }
 }
 
-export function getCurrentPageName(): PageName {
-  const location = useLocation();
-  const { pathname } = location;
+export function getPageName(pathname: string): PageName {
   let page = pathname.substring(1).split("/")[0];
   if (page === "") {
     page = PageName.Home;

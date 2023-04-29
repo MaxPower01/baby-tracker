@@ -43,12 +43,13 @@ export class Entry {
   }
 
   public constructor(params: {
+    id?: string;
     activity: Activity;
     dateTime: Dayjs;
     durationInSeconds?: number;
     note?: string;
   }) {
-    this._id = crypto.randomUUID();
+    this._id = params.id || Math.random().toString(36);
     this._activity = params.activity;
     this._dateTime = params.dateTime;
     this._durationInSeconds = params.durationInSeconds;
@@ -57,6 +58,7 @@ export class Entry {
 
   public toJSON() {
     return {
+      id: this._id,
       activity: this._activity.serialize(),
       dateTime: this._dateTime.toISOString(),
       durationInSeconds: this._durationInSeconds,
@@ -66,6 +68,7 @@ export class Entry {
 
   public static fromJSON(json: any): Entry {
     const entry = new Entry({
+      id: json.id,
       activity: Activity.deserialize(json.activity),
       dateTime: dayjs(json.dateTime),
       durationInSeconds: json.durationInSeconds,

@@ -15,8 +15,8 @@ const slice = createSlice({
   name: StoreReducerName.Entries,
   initialState: getInitialState(key, defaultState),
   reducers: {
-    addEntry: (state, action: PayloadAction<Entry>) => {
-      state.entries.push(action.payload.serialize());
+    addEntry: (state, action: PayloadAction<string>) => {
+      state.entries.push(action.payload);
       setLocalState(key, state);
     },
   },
@@ -25,11 +25,9 @@ const slice = createSlice({
 export const { addEntry } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
-  return (
-    state.entriesReducer.entries
-      ?.map((entry) => Entry.deserialize(entry))
-      .sort((a, b) => b.dateTime.diff(a.dateTime)) ?? []
-  );
+  return state.entriesReducer.entries
+    ?.map((entry) => Entry.deserialize(entry))
+    .sort((a, b) => b.dateTime.diff(a.dateTime));
 };
 
 export default slice.reducer;

@@ -1,5 +1,5 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DeleteIcon from "@mui/icons-material/Delete";
+// import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AppBar,
   Box,
@@ -8,22 +8,29 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CSSBreakpoint, PageName } from "../../lib/enums";
-import { getCurrentPageName, getPageTitle } from "../../lib/utils";
-import useLayout from "../hooks/useLayout";
+import { getPageName, getPageTitle } from "../../lib/utils";
 
 type Props = {
   component: React.ElementType<any> | undefined;
 };
 
 export default function TopBar(props: Props) {
-  const layout = useLayout();
   const navigate = useNavigate();
-  const currentPage = getCurrentPageName();
-  const pageTitle = getPageTitle(currentPage);
+  const { pathname } = useLocation();
 
-  const shouldRenderBackButton = currentPage == PageName.Entry;
+  const { pageName, pageTitle } = useMemo(() => {
+    return {
+      pageName: getPageName(pathname),
+      pageTitle: getPageTitle(pathname),
+    };
+  }, [location.pathname]);
+
+  const shouldRenderBackButton = useMemo(() => {
+    return pageName === PageName.Entry;
+  }, [pageName]);
 
   const handleBackButtonClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -54,11 +61,11 @@ export default function TopBar(props: Props) {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {layout.shouldRenderDeleteButton && (
+          {/* {shouldRenderDeleteButton && (
             <IconButton onClick={() => {}}>
               <DeleteIcon />
             </IconButton>
-          )}
+          )} */}
         </Toolbar>
       </Container>
     </AppBar>

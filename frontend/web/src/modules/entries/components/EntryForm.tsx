@@ -15,7 +15,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
-import { formatStopwatchesTime } from "../../../lib/utils";
+import { useNavigate } from "react-router-dom";
+import { PageName } from "../../../lib/enums";
+import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { Activity } from "../../activities/models/Activity";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
@@ -28,6 +30,7 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Handle the date and time
@@ -75,8 +78,9 @@ export default function EntryForm(props: EntryFormProps) {
       durationInSeconds,
       note,
     });
-    dispatch(addEntry(entry));
-  }, [props.activity, dateTime, durationInSeconds, note, dispatch]);
+    dispatch(addEntry(entry.serialize()));
+    navigate(getPagePath(PageName.Home));
+  }, [props.activity, dateTime, durationInSeconds, note, dispatch, navigate]);
 
   return (
     <Stack

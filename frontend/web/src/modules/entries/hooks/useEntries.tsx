@@ -10,7 +10,7 @@ const useEntries = () => {
   const localStateEntries = useSelector(selectEntries);
 
   useEffect(() => {
-    if (localStateEntries && localStateEntries.length) {
+    if (localStateEntries) {
       setEntries(localStateEntries);
       setIsLoading(false);
     }
