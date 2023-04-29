@@ -6,8 +6,6 @@ import AppState from "./AppState";
 const key = LocalStorageKey.AppState;
 
 const defaultState: AppState = {
-  isLoading: false,
-  errorMessage: null,
   colorMode: "system",
 };
 
@@ -16,7 +14,8 @@ const slice = createSlice({
   initialState: getInitialState(key, defaultState),
   reducers: {
     resetAppState: (state) => {
-      setLocalState(key, defaultState);
+      Object.assign(state, defaultState);
+      setLocalState(key, state);
     },
     setColorMode: (
       state,

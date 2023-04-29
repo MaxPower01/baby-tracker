@@ -18,20 +18,36 @@ export class Entry {
     this._activity = v;
   }
 
-  private _dateTime: Dayjs;
-  public get dateTime(): Dayjs {
-    return this._dateTime;
+  private _startDate: Dayjs;
+  public get startDate(): Dayjs {
+    return this._startDate;
   }
-  public set dateTime(v: Dayjs) {
-    this._dateTime = v;
+  public set startDate(v: Dayjs) {
+    this._startDate = v;
   }
 
-  private _durationInSeconds: number | undefined;
-  public get durationInSeconds(): number | undefined {
-    return this._durationInSeconds;
+  private _time: number | undefined;
+  public get time(): number | undefined {
+    return this._time;
   }
-  public set durationInSeconds(v: number | undefined) {
-    this._durationInSeconds = v;
+  public set time(v: number | undefined) {
+    this._time = v;
+  }
+
+  private _leftTime: number | undefined;
+  public get leftTime(): number | undefined {
+    return this._leftTime;
+  }
+  public set leftTime(v: number | undefined) {
+    this._leftTime = v;
+  }
+
+  private _rightTime: number | undefined;
+  public get rightTime(): number | undefined {
+    return this._rightTime;
+  }
+  public set rightTime(v: number | undefined) {
+    this._rightTime = v;
   }
 
   private _note: string | undefined;
@@ -45,14 +61,18 @@ export class Entry {
   public constructor(params: {
     id?: string;
     activity: Activity;
-    dateTime: Dayjs;
-    durationInSeconds?: number;
+    startDate: Dayjs;
+    time?: number;
+    leftTime?: number;
+    rightTime?: number;
     note?: string;
   }) {
     this._id = params.id || Math.random().toString(36);
     this._activity = params.activity;
-    this._dateTime = params.dateTime;
-    this._durationInSeconds = params.durationInSeconds;
+    this._startDate = params.startDate;
+    this._time = params.time;
+    this._leftTime = params.leftTime;
+    this._rightTime = params.rightTime;
     this._note = params.note;
   }
 
@@ -60,8 +80,10 @@ export class Entry {
     return {
       id: this._id,
       activity: this._activity.serialize(),
-      dateTime: this._dateTime.toISOString(),
-      durationInSeconds: this._durationInSeconds,
+      startDate: this._startDate.toISOString(),
+      time: this._time,
+      leftTime: this._leftTime,
+      rightTime: this._rightTime,
       note: this._note,
     };
   }
@@ -70,8 +92,10 @@ export class Entry {
     const entry = new Entry({
       id: json.id,
       activity: Activity.deserialize(json.activity),
-      dateTime: dayjs(json.dateTime),
-      durationInSeconds: json.durationInSeconds,
+      startDate: dayjs(json.dateTime),
+      time: json.time,
+      leftTime: json.leftTime,
+      rightTime: json.rightTime,
       note: json.note,
     });
     return entry;

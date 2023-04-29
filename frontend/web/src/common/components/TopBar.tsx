@@ -19,8 +19,8 @@ type Props = {
 
 export default function TopBar(props: Props) {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
+  const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
     return {
       pageName: getPageName(pathname),

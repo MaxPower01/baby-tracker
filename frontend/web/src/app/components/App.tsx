@@ -22,8 +22,8 @@ export default function App() {
           maxWidth: {
             [CSSBreakpoint.Small]: CSSBreakpoint.Medium,
           },
-          paddingTop: 3,
-          paddingBottom: 12,
+          paddingTop: 2,
+          paddingBottom: 8,
         }}
       >
         {/* {userIsSignedIn ? <PrivateRoutes /> : <PublicRoutes />} */}

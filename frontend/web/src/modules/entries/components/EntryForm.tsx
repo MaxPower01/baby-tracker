@@ -1,10 +1,13 @@
 import {
+  AppBar,
   Button,
+  Container,
   Divider,
   Paper,
   Stack,
   SxProps,
   TextField,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import {
@@ -16,7 +19,7 @@ import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PageName } from "../../../lib/enums";
+import { CSSBreakpoint, PageName } from "../../../lib/enums";
 import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { Activity } from "../../activities/models/Activity";
@@ -35,18 +38,16 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the date and time
 
-  const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs());
+  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
 
   // Handle the stopwatches
 
-  const [leftStopwatchTimeInSeconds, setLeftStopWatchTimeInSeconds] =
-    useState<number>(0);
-  const [rightStopwatchTimeInSeconds, setRightStopWatchTimeInSeconds] =
-    useState<number>(0);
+  const [leftStopwatchTime, setLeftStopWatchTime] = useState<number>(0);
+  const [rightStopwatchTime, setRightStopWatchTime] = useState<number>(0);
 
-  const durationInSeconds = useMemo(() => {
-    return leftStopwatchTimeInSeconds + rightStopwatchTimeInSeconds;
-  }, [leftStopwatchTimeInSeconds, rightStopwatchTimeInSeconds]);
+  const time = useMemo(() => {
+    return leftStopwatchTime + rightStopwatchTime;
+  }, [leftStopwatchTime, rightStopwatchTime]);
 
   const [leftStopWatchIsRunning, setLeftStopWatchIsRunning] =
     useState<boolean>(false);
@@ -59,11 +60,8 @@ export default function EntryForm(props: EntryFormProps) {
   );
 
   const stopWatchTimeLabel = useMemo(() => {
-    return formatStopwatchesTime([
-      leftStopwatchTimeInSeconds,
-      rightStopwatchTimeInSeconds,
-    ]);
-  }, [leftStopwatchTimeInSeconds, rightStopwatchTimeInSeconds]);
+    return formatStopwatchesTime([leftStopwatchTime, rightStopwatchTime]);
+  }, [leftStopwatchTime, rightStopwatchTime]);
 
   // Handle the notes
 
@@ -74,115 +72,145 @@ export default function EntryForm(props: EntryFormProps) {
   const handleSubmit = useCallback(() => {
     const entry = new Entry({
       activity: props.activity,
-      dateTime: dateTime ?? dayjs(),
-      durationInSeconds,
+      startDate: startDate ?? dayjs(),
+      time,
+      leftTime: leftStopwatchTime,
+      rightTime: rightStopwatchTime,
       note,
     });
     dispatch(addEntry(entry.serialize()));
     navigate(getPagePath(PageName.Home));
-  }, [props.activity, dateTime, durationInSeconds, note, dispatch, navigate]);
+  }, [props.activity, startDate, time, note, dispatch, navigate]);
 
   return (
-    <Stack
-      spacing={4}
-      alignItems="center"
-      sx={{
-        width: "100%",
-      }}
-    >
-      <Section>
-        <ActivityIcon
-          activity={props.activity}
-          sx={{
-            fontSize: "150%",
-          }}
-        />
-        <Typography variant="h4" textAlign="center">
-          {props.activity.name}
-        </Typography>
-        <LocalizationProvider
-          dateAdapter={AdapterDayjs}
-          adapterLocale={localeFrCa}
-        >
-          <MobileDateTimePicker
-            value={dateTime}
-            onChange={(newValue) => setDateTime(newValue)}
-            disabled={anyStopwatchIsRunning}
-            disableFuture={true}
-            label="Départ"
-            ampm={false}
-            localeText={{
-              toolbarTitle: "",
-              okButtonLabel: "OK",
-              cancelButtonLabel: "Annuler",
-              nextMonth: "Mois suivant",
-              previousMonth: "Mois précédent",
+    <>
+      <Stack
+        spacing={4}
+        alignItems="center"
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Section>
+          <ActivityIcon
+            activity={props.activity}
+            sx={{
+              fontSize: "150%",
             }}
           />
-        </LocalizationProvider>
-      </Section>
-
-      {props.activity?.hasDuration && (
-        <Section dividerPosition="top">
-          <SectionTitle title="Durée" />
-          <Typography textAlign="center" variant="h4">
-            {stopWatchTimeLabel}
+          <Typography variant="h4" textAlign="center">
+            {props.activity.name}
           </Typography>
-          <Stack
-            direction={"row"}
-            sx={{
-              width: "100%",
-            }}
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale={localeFrCa}
           >
-            <Stopwatch
-              timeInSeconds={leftStopwatchTimeInSeconds}
-              setTimeInSeconds={setLeftStopWatchTimeInSeconds}
-              isRunning={leftStopWatchIsRunning}
-              setIsRunning={setLeftStopWatchIsRunning}
-              isDisabled={rightStopWatchIsRunning}
-              label={props.activity.hasSides ? "Gauche" : undefined}
-              sx={{ flex: 1 }}
+            <MobileDateTimePicker
+              value={startDate}
+              onChange={(newValue) => setStartDate(newValue)}
+              disabled={anyStopwatchIsRunning}
+              disableFuture={true}
+              label="Départ"
+              ampm={false}
+              localeText={{
+                toolbarTitle: "",
+                okButtonLabel: "OK",
+                cancelButtonLabel: "Annuler",
+                nextMonth: "Mois suivant",
+                previousMonth: "Mois précédent",
+              }}
             />
-            {props.activity.hasSides && (
+          </LocalizationProvider>
+        </Section>
+        {props.activity?.hasDuration && (
+          <Section dividerPosition="top">
+            <SectionTitle title="Durée" />
+            <Typography textAlign="center" variant="h4">
+              {stopWatchTimeLabel}
+            </Typography>
+            <Stack
+              direction={"row"}
+              sx={{
+                width: "100%",
+              }}
+            >
               <Stopwatch
-                timeInSeconds={rightStopwatchTimeInSeconds}
-                setTimeInSeconds={setRightStopWatchTimeInSeconds}
-                isRunning={rightStopWatchIsRunning}
-                setIsRunning={setRightStopWatchIsRunning}
-                isDisabled={leftStopWatchIsRunning}
-                label="Droite"
+                time={leftStopwatchTime}
+                setTime={setLeftStopWatchTime}
+                isRunning={leftStopWatchIsRunning}
+                setIsRunning={setLeftStopWatchIsRunning}
+                isDisabled={rightStopWatchIsRunning}
+                label={props.activity.hasSides ? "Gauche" : undefined}
                 sx={{ flex: 1 }}
               />
-            )}
-          </Stack>
+              {props.activity.hasSides && (
+                <Stopwatch
+                  time={rightStopwatchTime}
+                  setTime={setRightStopWatchTime}
+                  isRunning={rightStopWatchIsRunning}
+                  setIsRunning={setRightStopWatchIsRunning}
+                  isDisabled={leftStopWatchIsRunning}
+                  label="Droite"
+                  sx={{ flex: 1 }}
+                />
+              )}
+            </Stack>
+          </Section>
+        )}
+        <Section dividerPosition="top">
+          <SectionTitle title="Notes" />
+          <TextField
+            label=""
+            name="note"
+            type="text"
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+            fullWidth
+            multiline
+            minRows={5}
+          />
         </Section>
-      )}
+      </Stack>
 
-      <Section dividerPosition="top">
-        <SectionTitle title="Notes" />
-        <TextField
-          label=""
-          name="note"
-          type="text"
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          fullWidth
-          multiline
-          minRows={5}
-        />
-      </Section>
-
-      <Section dividerPosition="top">
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={anyStopwatchIsRunning}
-          fullWidth
-        >
-          Enregistrer
-        </Button>
-      </Section>
-    </Stack>
+      <AppBar
+        {...props}
+        position="fixed"
+        sx={{
+          top: "auto",
+          bottom: 0,
+        }}
+        color="transparent"
+      >
+        <Container maxWidth={CSSBreakpoint.Medium}>
+          <Toolbar disableGutters>
+            <Stack
+              flexGrow={1}
+              direction="row"
+              sx={{ justifyContent: "space-between" }}
+            >
+              {/* {shouldDisplaySaveButton && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {}}
+                fullWidth
+              >
+                Enregistrer
+              </Button>
+            )} */}
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={anyStopwatchIsRunning}
+                fullWidth
+              >
+                Enregistrer
+              </Button>
+            </Stack>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </>
   );
 }
 

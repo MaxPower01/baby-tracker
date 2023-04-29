@@ -17,25 +17,11 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActivityType, CSSBreakpoint, PageName } from "../../lib/enums";
-import { getPath } from "../../lib/utils";
+import { getPageName, getPageTitle, getPath } from "../../lib/utils";
 import ActivityButtons from "../../modules/activities/components/ActivityButtons";
-
-type Props = {
-  component: React.ElementType<any> | undefined;
-};
-
-type BottomBarItem = {
-  id: string;
-  label?: string;
-  onClick: React.EventHandler<React.MouseEvent>;
-  IconWrapper: React.ElementType;
-  Icon: React.ElementType;
-  color: "primary" | "inherit" | "secondary" | "default" | undefined;
-  isFloatingActionButton?: boolean;
-};
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -55,8 +41,30 @@ const InvisibleIconButton = styled(IconButton)({
   pointerEvents: "none",
 });
 
+type BottomBarItem = {
+  id: string;
+  label?: string;
+  onClick: React.EventHandler<React.MouseEvent>;
+  IconWrapper: React.ElementType;
+  Icon?: React.ElementType;
+  color: "primary" | "inherit" | "secondary" | "default" | undefined;
+  isFloatingActionButton?: boolean;
+};
+
+type Props = {
+  component: React.ElementType<any> | undefined;
+};
+
 export default function BottomBar(props: Props) {
   const navigate = useNavigate();
+
+  const { pathname } = useLocation();
+  const { pageName, pageTitle } = useMemo(() => {
+    return {
+      pageName: getPageName(pathname),
+      pageTitle: getPageTitle(pathname),
+    };
+  }, [location.pathname]);
 
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
 
@@ -128,20 +136,37 @@ export default function BottomBar(props: Props) {
     );
   };
 
+  if (pageName === PageName.Entry) {
+    return null;
+  }
+
   return (
     <AppBar
       {...props}
-      position="sticky"
-      sx={{ top: "auto", bottom: 0 }}
-      color="default"
+      position="fixed"
+      sx={{
+        top: "auto",
+        bottom: 0,
+      }}
+      color="transparent"
     >
-      <Container maxWidth={CSSBreakpoint.Medium}>
+      <Container maxWidth={CSSBreakpoint.Medium} disableGutters>
         <Toolbar disableGutters>
           <Stack
             flexGrow={1}
             direction="row"
             sx={{ justifyContent: "space-between" }}
           >
+            {/* {shouldDisplaySaveButton && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {}}
+                fullWidth
+              >
+                Enregistrer
+              </Button>
+            )} */}
             {items.map(
               ({
                 id,
@@ -159,20 +184,20 @@ export default function BottomBar(props: Props) {
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    flexGrow: 1,
+                    flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
                   }}
                 >
-                  <Icon />
-                  {/* {label && (
-                  <Typography
-                    variant="h6"
-                    textAlign="center"
-                    sx={{ fontSize: "50%" }}
-                  >
-                    {label}
-                  </Typography>
-                )} */}
+                  {Icon && <Icon />}
+                  {label && (
+                    <Typography
+                      variant="h6"
+                      textAlign="center"
+                      sx={{ fontSize: "50%" }}
+                    >
+                      {label}
+                    </Typography>
+                  )}
                 </IconWrapper>
               )
             )}

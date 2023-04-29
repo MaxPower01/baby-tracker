@@ -19,15 +19,19 @@ const slice = createSlice({
       state.entries.push(action.payload);
       setLocalState(key, state);
     },
+    resetEntriesState: (state) => {
+      Object.assign(state, defaultState);
+      setLocalState(key, state);
+    },
   },
 });
 
-export const { addEntry } = slice.actions;
+export const { addEntry, resetEntriesState } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
     ?.map((entry) => Entry.deserialize(entry))
-    .sort((a, b) => b.dateTime.diff(a.dateTime));
+    .sort((a, b) => b.startDate.diff(a.startDate));
 };
 
 export default slice.reducer;

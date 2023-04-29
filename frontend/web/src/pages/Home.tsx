@@ -29,9 +29,8 @@ export default function Home() {
           <Typography variant="h5">{entry.activity.name}</Typography>
           <Typography variant="subtitle1"></Typography>
           <Typography variant="body1">
-            Date: {entry.dateTime.toString()}
-            {entry.durationInSeconds &&
-              ` • Durée: ${formatStopwatchTime(entry.durationInSeconds)}`}
+            Date: {entry.startDate.toString()}
+            {entry.time && ` • Durée: ${formatStopwatchTime(entry.time)}`}
           </Typography>
         </Box>
       ))}
