@@ -1,9 +1,11 @@
-export enum SliceName {
-  App = "app",
+export enum StoreReducerName {
+  App = "appReducer",
+  Entries = "entriesReducer",
 }
 
 export enum LocalStorageKey {
   AppState = "appState",
+  EntriesState = "entriesState",
 }
 
 /**

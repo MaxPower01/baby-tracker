@@ -16,6 +16,15 @@
 			"problemMatcher": [],
 			"label": "npm: host - frontend/web",
 			"detail": "vite --host"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "frontend/web",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - frontend/web",
+			"detail": "tsc && vite build"
 		}
 	]
 }

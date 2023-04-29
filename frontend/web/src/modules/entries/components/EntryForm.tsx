@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   Paper,
   Stack,
@@ -13,20 +14,25 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { formatStopwatchesTime } from "../../../lib/utils";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { Activity } from "../../activities/models/Activity";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
+import { useAppDispatch } from "../../store/hooks/useAppDispatch";
+import { Entry } from "../models/Entry";
+import { addEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
   activity: Activity;
 };
 
 export default function EntryForm(props: EntryFormProps) {
-  // Handle the start date and time
+  const dispatch = useAppDispatch();
 
-  const [startDateTime, setStartDateTime] = useState<Dayjs | null>(dayjs());
+  // Handle the date and time
+
+  const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs());
 
   // Handle the stopwatches
 
@@ -34,6 +40,10 @@ export default function EntryForm(props: EntryFormProps) {
     useState<number>(0);
   const [rightStopwatchTimeInSeconds, setRightStopWatchTimeInSeconds] =
     useState<number>(0);
+
+  const durationInSeconds = useMemo(() => {
+    return leftStopwatchTimeInSeconds + rightStopwatchTimeInSeconds;
+  }, [leftStopwatchTimeInSeconds, rightStopwatchTimeInSeconds]);
 
   const [leftStopWatchIsRunning, setLeftStopWatchIsRunning] =
     useState<boolean>(false);
@@ -54,7 +64,19 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the notes
 
-  const [notes, setNotes] = useState<string>("");
+  const [note, setNote] = useState<string>("");
+
+  // Handle the form submission
+
+  const handleSubmit = useCallback(() => {
+    const entry = new Entry({
+      activity: props.activity,
+      dateTime: dateTime ?? dayjs(),
+      durationInSeconds,
+      note,
+    });
+    dispatch(addEntry(entry));
+  }, [props.activity, dateTime, durationInSeconds, note, dispatch]);
 
   return (
     <Stack
@@ -79,8 +101,8 @@ export default function EntryForm(props: EntryFormProps) {
           adapterLocale={localeFrCa}
         >
           <MobileDateTimePicker
-            value={startDateTime}
-            onChange={(newValue) => setStartDateTime(newValue)}
+            value={dateTime}
+            onChange={(newValue) => setDateTime(newValue)}
             disabled={anyStopwatchIsRunning}
             disableFuture={true}
             label="Départ"
@@ -136,14 +158,25 @@ export default function EntryForm(props: EntryFormProps) {
         <SectionTitle title="Notes" />
         <TextField
           label=""
-          name="notes"
+          name="note"
           type="text"
-          value={notes}
-          onChange={(event) => setNotes(event.target.value)}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
           fullWidth
           multiline
           minRows={5}
         />
+      </Section>
+
+      <Section dividerPosition="top">
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={anyStopwatchIsRunning}
+          fullWidth
+        >
+          Enregistrer
+        </Button>
       </Section>
     </Stack>
   );

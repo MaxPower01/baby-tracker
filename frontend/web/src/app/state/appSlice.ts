@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LocalStorageKey, SliceName } from "../../lib/enums";
+import { LocalStorageKey, StoreReducerName } from "../../lib/enums";
 import { getInitialState, setLocalState } from "../../lib/utils";
 import AppState from "./AppState";
 
@@ -12,7 +12,7 @@ const defaultState: AppState = {
 };
 
 const slice = createSlice({
-  name: SliceName.App,
+  name: StoreReducerName.App,
   initialState: getInitialState(key, defaultState),
   reducers: {
     resetAppState: (state) => {

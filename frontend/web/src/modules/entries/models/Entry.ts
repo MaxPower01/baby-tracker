@@ -1,6 +1,15 @@
+import dayjs, { Dayjs } from "dayjs";
 import { Activity } from "../../activities/models/Activity";
 
 export class Entry {
+  private _id: string;
+  public get id(): string {
+    return this._id;
+  }
+  public set id(v: string) {
+    this._id = v;
+  }
+
   private _activity: Activity;
   public get activity(): Activity {
     return this._activity;
@@ -9,20 +18,12 @@ export class Entry {
     this._activity = v;
   }
 
-  private _startDate: Date;
-  public get startDate(): Date {
-    return this._startDate;
+  private _dateTime: Dayjs;
+  public get dateTime(): Dayjs {
+    return this._dateTime;
   }
-  public set startDate(v: Date) {
-    this._startDate = v;
-  }
-
-  private _endDate: Date | undefined;
-  public get endDate(): Date | undefined {
-    return this._endDate;
-  }
-  public set endDate(v: Date | undefined) {
-    this._endDate = v;
+  public set dateTime(v: Dayjs) {
+    this._dateTime = v;
   }
 
   private _durationInSeconds: number | undefined;
@@ -41,26 +42,35 @@ export class Entry {
     this._note = v;
   }
 
-  public constructor(activity: Activity, startDate?: Date) {
-    this._activity = activity;
-    this._startDate = startDate || new Date();
+  public constructor(params: {
+    activity: Activity;
+    dateTime: Dayjs;
+    durationInSeconds?: number;
+    note?: string;
+  }) {
+    this._id = crypto.randomUUID();
+    this._activity = params.activity;
+    this._dateTime = params.dateTime;
+    this._durationInSeconds = params.durationInSeconds;
+    this._note = params.note;
   }
 
   public toJSON() {
     return {
       activity: this._activity.serialize(),
-      startDate: this._startDate,
-      endDate: this._endDate,
+      dateTime: this._dateTime.toISOString(),
       durationInSeconds: this._durationInSeconds,
       note: this._note,
     };
   }
 
   public static fromJSON(json: any): Entry {
-    const entry = new Entry(json.activity, json.startDate);
-    entry.endDate = json.endDate;
-    entry.durationInSeconds = json.durationInSeconds;
-    entry.note = json.note;
+    const entry = new Entry({
+      activity: Activity.deserialize(json.activity),
+      dateTime: dayjs(json.dateTime),
+      durationInSeconds: json.durationInSeconds,
+      note: json.note,
+    });
     return entry;
   }
 
