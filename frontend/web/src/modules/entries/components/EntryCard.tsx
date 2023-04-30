@@ -31,36 +31,40 @@ export default function EntryCard(props: Props) {
       if (rightTime) {
         result.push(`Côté droit: ${formatStopwatchTime(rightTime)}`);
       }
-      if (leftTime && rightTime) {
-        result.push(`Durée totale: ${formatStopwatchTime(time)}`);
-      }
+      //   if (leftTime && rightTime) {
+      //     result.push(`Durée totale: ${formatStopwatchTime(time)}`);
+      //   }
     } else {
-      result.push(`Durée totale: ${formatStopwatchTime(time)}`);
+      result.push(`Durée : ${formatStopwatchTime(time)}`);
     }
     return result;
   }, []);
 
   return (
-    <Card>
+    <Card elevation={12}>
       <CardActionArea onClick={() => {}}>
         <CardHeader
           title={
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
               <Box
                 sx={{
-                  fontSize: "50%",
+                  fontSize: "60%",
                 }}
               >
                 <ActivityIcon activity={props.entry.activity} />
               </Box>
-              <Box>{props.entry.activity.name}</Box>
+              <Stack>
+                <Typography variant="body2">
+                  {startDate.toDate().toLocaleString()}
+                </Typography>
+                <Typography variant="h6" fontWeight={"bold"}>
+                  {props.entry.activity.name}
+                </Typography>
+              </Stack>
             </Stack>
           }
         />
         <CardContent>
-          <Typography variant="body1">
-            {startDate.toDate().toLocaleString()}
-          </Typography>
           {timeLabels.map((label, labelIndex) => (
             <Typography key={labelIndex} variant="body1">
               {label}
