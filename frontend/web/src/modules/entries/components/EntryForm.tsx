@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   Button,
   Container,
   Divider,
@@ -19,8 +20,13 @@ import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CSSBreakpoint, PageName } from "../../../lib/enums";
-import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
+import { ActivityType, CSSBreakpoint, PageName } from "../../../lib/enums";
+import {
+  formatStopwatchesTime,
+  getPagePath,
+  getPath,
+} from "../../../lib/utils";
+import ActivitiesDrawer from "../../activities/components/ActivitiesDrawer";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { Activity } from "../../activities/models/Activity";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
@@ -35,6 +41,10 @@ type EntryFormProps = {
 export default function EntryForm(props: EntryFormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  // Handle the activities drawer
+
+  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
 
   // Handle the date and time
 
@@ -92,15 +102,37 @@ export default function EntryForm(props: EntryFormProps) {
         }}
       >
         <Section>
-          <ActivityIcon
-            activity={props.activity}
-            sx={{
-              fontSize: "150%",
-            }}
+          <Button
+            onClick={() => setActivitiesDrawerIsOpen(true)}
+            color="inherit"
+          >
+            <Box>
+              <ActivityIcon
+                activity={props.activity}
+                sx={{
+                  fontSize: "150%",
+                }}
+              />
+              <Stack direction={"row"} alignItems={"center"}>
+                <Typography variant="h4" textAlign="center">
+                  {props.activity.name}
+                </Typography>
+                {/* <ExpandMoreIcon /> */}
+              </Stack>
+            </Box>
+          </Button>
+          <ActivitiesDrawer
+            isOpen={activitiesDrawerIsOpen}
+            onClose={() => setActivitiesDrawerIsOpen(false)}
+            handleActivityClick={(type: ActivityType) =>
+              navigate(
+                getPath({
+                  page: PageName.Entry,
+                  params: { activity: type.toString() },
+                })
+              )
+            }
           />
-          <Typography variant="h4" textAlign="center">
-            {props.activity.name}
-          </Typography>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             adapterLocale={localeFrCa}
@@ -178,6 +210,7 @@ export default function EntryForm(props: EntryFormProps) {
         sx={{
           top: "auto",
           bottom: 0,
+          backgroundColor: "background.paper",
         }}
         color="transparent"
       >
@@ -188,16 +221,6 @@ export default function EntryForm(props: EntryFormProps) {
               direction="row"
               sx={{ justifyContent: "space-between" }}
             >
-              {/* {shouldDisplaySaveButton && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {}}
-                fullWidth
-              >
-                Enregistrer
-              </Button>
-            )} */}
               <Button
                 variant="contained"
                 onClick={handleSubmit}

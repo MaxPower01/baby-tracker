@@ -18,10 +18,8 @@ export default function App() {
 
       <Container
         component={"main"}
+        maxWidth={CSSBreakpoint.Small}
         sx={{
-          maxWidth: {
-            [CSSBreakpoint.Small]: CSSBreakpoint.Medium,
-          },
           paddingTop: 2,
           paddingBottom: 8,
         }}

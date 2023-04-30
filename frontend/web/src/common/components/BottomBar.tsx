@@ -1,18 +1,14 @@
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
-  Box,
   Container,
-  Divider,
   Fab,
   IconButton as MuiIconButton,
   Stack,
-  SwipeableDrawer,
   Toolbar,
   Typography,
   styled,
@@ -21,7 +17,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ActivityType, CSSBreakpoint, PageName } from "../../lib/enums";
 import { getPageName, getPageTitle, getPath } from "../../lib/utils";
-import ActivityButtons from "../../modules/activities/components/ActivityButtons";
+import ActivitiesDrawer from "../../modules/activities/components/ActivitiesDrawer";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -68,14 +64,6 @@ export default function BottomBar(props: Props) {
 
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
 
-  const openActivitiesDrawer = () => {
-    setActivitiesDrawerIsOpen(true);
-  };
-
-  const closeActivitiesDrawer = () => {
-    setActivitiesDrawerIsOpen(false);
-  };
-
   const items: Array<BottomBarItem> = [
     {
       id: "home",
@@ -102,7 +90,7 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "new-entry",
-      onClick: () => openActivitiesDrawer(),
+      onClick: () => setActivitiesDrawerIsOpen(true),
       IconWrapper: FloatingActionButton,
       Icon: AddIcon,
       color: "primary",
@@ -126,16 +114,6 @@ export default function BottomBar(props: Props) {
     },
   ];
 
-  const handleActivityIconClick = (type: ActivityType) => {
-    closeActivitiesDrawer();
-    navigate(
-      getPath({
-        page: PageName.Entry,
-        params: { activity: type.toString() },
-      })
-    );
-  };
-
   if (pageName === PageName.Entry) {
     return null;
   }
@@ -148,9 +126,8 @@ export default function BottomBar(props: Props) {
         top: "auto",
         bottom: 0,
       }}
-      color="transparent"
     >
-      <Container maxWidth={CSSBreakpoint.Medium} disableGutters>
+      <Container maxWidth={CSSBreakpoint.Small} disableGutters>
         <Toolbar disableGutters>
           <Stack
             flexGrow={1}
@@ -202,41 +179,19 @@ export default function BottomBar(props: Props) {
               )
             )}
           </Stack>
-          <SwipeableDrawer
-            anchor="bottom"
-            open={activitiesDrawerIsOpen}
-            onOpen={() => {}}
-            onClose={() => closeActivitiesDrawer()}
-            disableSwipeToOpen={true}
-          >
-            <Box
-              sx={{
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-                backgroundColor: "inherit",
-                backgroundImage: "inherit",
-              }}
-            >
-              <Container maxWidth={CSSBreakpoint.Medium}>
-                <Toolbar disableGutters>
-                  <Typography variant="h6">Ajouter une entrée</Typography>
-                  <Box sx={{ flexGrow: 1 }} />
-                  <IconButton onClick={() => closeActivitiesDrawer()}>
-                    <CloseIcon />
-                  </IconButton>
-                </Toolbar>
-              </Container>
-              <Divider />
-            </Box>
-            <Box
-              sx={{
-                maxHeight: "70vh",
-              }}
-            >
-              <ActivityButtons onClick={handleActivityIconClick} />
-            </Box>
-          </SwipeableDrawer>
+
+          <ActivitiesDrawer
+            isOpen={activitiesDrawerIsOpen}
+            onClose={() => setActivitiesDrawerIsOpen(false)}
+            handleActivityClick={(type: ActivityType) =>
+              navigate(
+                getPath({
+                  page: PageName.Entry,
+                  params: { activity: type.toString() },
+                })
+              )
+            }
+          />
         </Toolbar>
       </Container>
     </AppBar>

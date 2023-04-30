@@ -31,7 +31,7 @@ export const { addEntry, resetEntriesState } = slice.actions;
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
     ?.map((entry) => Entry.deserialize(entry))
-    .sort((a, b) => b.startDate.diff(a.startDate));
+    .sort((a, b) => b.timestamp - a.timestamp);
 };
 
 export default slice.reducer;

@@ -26,6 +26,10 @@ export class Entry {
     this._startDate = v;
   }
 
+  public get timestamp(): number {
+    return this.startDate.unix();
+  }
+
   private _time: number | undefined;
   public get time(): number | undefined {
     return this._time;
@@ -92,7 +96,7 @@ export class Entry {
     const entry = new Entry({
       id: json.id,
       activity: Activity.deserialize(json.activity),
-      startDate: dayjs(json.dateTime),
+      startDate: dayjs(json.startDate),
       time: json.time,
       leftTime: json.leftTime,
       rightTime: json.rightTime,

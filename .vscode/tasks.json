@@ -25,6 +25,15 @@
 			"problemMatcher": [],
 			"label": "npm: build - frontend/web",
 			"detail": "tsc && vite build"
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"path": "frontend/web",
+			"group": "clean",
+			"problemMatcher": [],
+			"label": "npm: install - frontend/web",
+			"detail": "install dependencies from package"
 		}
 	]
 }

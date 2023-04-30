@@ -31,6 +31,8 @@ export default function Stopwatch(props: Props) {
     return `${minutesLabel}:${secondsLabel}`;
   }, [props.time]);
 
+  // TODO: Time should be editable by the user if the stopwatch is not running.
+
   useEffect(() => {
     let intervalId: NodeJS.Timer;
     if (props.isRunning) {
