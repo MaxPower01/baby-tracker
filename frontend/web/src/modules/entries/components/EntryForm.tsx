@@ -1,9 +1,10 @@
 import {
   AppBar,
-  Box,
   Button,
+  Chip,
   Container,
   Divider,
+  Grid,
   Paper,
   Stack,
   SxProps,
@@ -20,14 +21,10 @@ import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ActivityType, CSSBreakpoint, PageName } from "../../../lib/enums";
-import {
-  formatStopwatchesTime,
-  getPagePath,
-  getPath,
-} from "../../../lib/utils";
-import ActivitiesDrawer from "../../activities/components/ActivitiesDrawer";
+import { CSSBreakpoint, PageName } from "../../../lib/enums";
+import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
 import ActivityIcon from "../../activities/components/ActivityIcon";
+import { ActivityModel } from "../../activities/models/ActivityModel";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
 import { EntryModel } from "../models/EntryModel";
@@ -111,44 +108,31 @@ export default function EntryForm(props: EntryFormProps) {
   return (
     <>
       <Stack
-        spacing={4}
+        spacing={2}
         alignItems="center"
         sx={{
           width: "100%",
         }}
       >
         <Section>
-          <Button
+          {/* <Button
             onClick={() => setActivitiesDrawerIsOpen(true)}
             color="inherit"
-          >
-            <Box>
-              <ActivityIcon
-                activity={activity}
-                sx={{
-                  fontSize: "150%",
-                }}
-              />
-              <Stack direction={"row"} alignItems={"center"}>
-                <Typography variant="h4" textAlign="center">
-                  {activity?.name}
-                </Typography>
-                {/* <ExpandMoreIcon /> */}
-              </Stack>
-            </Box>
-          </Button>
-          <ActivitiesDrawer
-            isOpen={activitiesDrawerIsOpen}
-            onClose={() => setActivitiesDrawerIsOpen(false)}
-            handleActivityClick={(type: ActivityType) =>
-              navigate(
-                getPath({
-                  page: PageName.Entry,
-                  params: { activity: type.toString() },
-                })
-              )
-            }
-          />
+          > */}
+          <Stack justifyContent={"center"} alignItems={"center"}>
+            <ActivityIcon
+              activity={activity}
+              sx={{
+                fontSize: "5em",
+              }}
+            />
+            <Stack direction={"row"} alignItems={"center"}>
+              <Typography variant="h4" textAlign="center">
+                {activity?.name}
+              </Typography>
+            </Stack>
+          </Stack>
+          {/* </Button> */}
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             adapterLocale={localeFrCa}
@@ -158,7 +142,17 @@ export default function EntryForm(props: EntryFormProps) {
               onChange={(newValue) => setStartDate(newValue)}
               disabled={anyStopwatchIsRunning}
               disableFuture={true}
-              label="Départ"
+              label=""
+              slotProps={{
+                textField: {
+                  sx: {
+                    "& input": {
+                      textAlign: "center",
+                      width: "auto",
+                    },
+                  },
+                },
+              }}
               ampm={false}
               localeText={{
                 toolbarTitle: "",
@@ -169,6 +163,41 @@ export default function EntryForm(props: EntryFormProps) {
               }}
             />
           </LocalizationProvider>
+
+          {activity?.subTypes?.length && (
+            <Grid container spacing={2} justifyContent="center">
+              {activity.subTypes.map((subActivityType) => {
+                const subActivity = new ActivityModel(subActivityType);
+                return (
+                  <Chip
+                    key={`${activity.type}-${subActivity.type}`}
+                    label={
+                      <Typography variant="body2">{activity.name}</Typography>
+                    }
+                    icon={
+                      <ActivityIcon
+                        activity={subActivity}
+                        sx={{
+                          marginRight: 0,
+                          marginLeft: 1,
+                          fontSize: "1.35em",
+                        }}
+                      />
+                    }
+                    onClick={(e) => {}}
+                    // color={
+                    //   selectedTagIds.includes(tag.id) ? "primary" : undefined
+                    // }
+                    // variant={
+                    //   selectedTagIds.includes(tag.id) ? "filled" : "outlined"
+                    // }
+                    // size="small"
+                    sx={{ margin: 0.5 }}
+                  />
+                );
+              })}
+            </Grid>
+          )}
         </Section>
         {activity?.hasDuration && (
           <Section dividerPosition="top">
@@ -208,6 +237,7 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Section>
         )}
+
         <Section dividerPosition="top">
           <SectionTitle title="Notes" />
           <TextField
@@ -252,6 +282,19 @@ export default function EntryForm(props: EntryFormProps) {
           </Toolbar>
         </Container>
       </AppBar>
+
+      {/* <ActivitiesDrawer
+        isOpen={activitiesDrawerIsOpen}
+        onClose={() => setActivitiesDrawerIsOpen(false)}
+        handleActivityClick={(type: ActivityType) =>
+          navigate(
+            getPath({
+              page: PageName.Entry,
+              params: { activity: type.toString() },
+            })
+          )
+        }
+      /> */}
     </>
   );
 }

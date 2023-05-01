@@ -1,5 +1,5 @@
-import { Box, Container } from "@mui/material";
-import { ActivityType, CSSBreakpoint } from "../../../lib/enums";
+import { Box } from "@mui/material";
+import { ActivityType } from "../../../lib/enums";
 import { ActivityModel } from "../models/ActivityModel";
 import ActivityButton from "./ActivityButton";
 
@@ -15,30 +15,28 @@ export default function ActivityButtons({ onClick }: Props) {
     })
     .sort((a, b) => a.order - b.order);
   return (
-    <Container maxWidth={CSSBreakpoint.Medium}>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 1,
-        }}
-      >
-        {activities.map((activity) => {
-          return (
-            <ActivityButton
-              key={activity.type}
-              activity={activity}
-              showLabel
-              sx={{ paddingTop: 4, paddingBottom: 4 }}
-              onClick={() => {
-                if (onClick) {
-                  onClick(activity.type);
-                }
-              }}
-            />
-          );
-        })}
-      </Box>
-    </Container>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: 1,
+      }}
+    >
+      {activities.map((activity) => {
+        return (
+          <ActivityButton
+            key={activity.type}
+            activity={activity}
+            showLabel
+            sx={{ paddingTop: 4, paddingBottom: 4 }}
+            onClick={() => {
+              if (onClick) {
+                onClick(activity.type);
+              }
+            }}
+          />
+        );
+      })}
+    </Box>
   );
 }

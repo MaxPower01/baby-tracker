@@ -40,7 +40,7 @@ export default function EntryHeader(props: Props) {
         <Typography variant="h6" fontWeight={"bold"}>
           {title}
         </Typography>
-        <Typography variant="subtitle2">
+        <Typography variant="subtitle1">
           {props.entry.startDate.toDate().toLocaleTimeString(undefined, {
             hour: "2-digit",
             minute: "2-digit",

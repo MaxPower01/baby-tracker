@@ -19,6 +19,14 @@ export class EntryModel {
     this._activity = v;
   }
 
+  private _subActivities: ActivityModel[] = [];
+  public get subActivities(): ActivityModel[] {
+    return this._subActivities;
+  }
+  public set subActivities(v: ActivityModel[]) {
+    this._subActivities = v;
+  }
+
   private _startDate: Dayjs;
   public get startDate(): Dayjs {
     return this._startDate;
@@ -66,6 +74,7 @@ export class EntryModel {
   public constructor(params: {
     id?: string;
     activity: ActivityModel;
+    subActivities?: ActivityModel[];
     startDate?: Dayjs | null;
     time?: number;
     leftTime?: number;
@@ -74,6 +83,7 @@ export class EntryModel {
   }) {
     this._id = params.id || uuidv4();
     this._activity = params.activity;
+    this._subActivities = params.subActivities || [];
     this._startDate = params.startDate || dayjs();
     this._time = params.time;
     this._leftTime = params.leftTime;
@@ -85,6 +95,7 @@ export class EntryModel {
     return {
       id: this._id,
       activity: this._activity.serialize(),
+      subActivities: this._subActivities?.map((a) => a.serialize()),
       startDate: this._startDate.toISOString(),
       time: this._time,
       leftTime: this._leftTime,
@@ -97,6 +108,9 @@ export class EntryModel {
     const entry = new EntryModel({
       id: json.id,
       activity: ActivityModel.deserialize(json.activity),
+      subActivities: json.subActivities?.map((a: any) =>
+        ActivityModel.deserialize(a)
+      ),
       startDate: dayjs(json.startDate),
       time: json.time,
       leftTime: json.leftTime,

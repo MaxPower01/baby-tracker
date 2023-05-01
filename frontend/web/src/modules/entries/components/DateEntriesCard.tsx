@@ -4,7 +4,9 @@ import {
   CardActionArea,
   CardContent,
   CardHeader,
+  Divider,
   Stack,
+  Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageName } from "../../../lib/enums";
@@ -25,14 +27,24 @@ export default function DateEntriesCard(props: Props) {
   return (
     <Card elevation={12}>
       <CardHeader
-        title={entries[0].startDate.toDate().toLocaleDateString(undefined, {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        })}
+        title={
+          <Typography variant="subtitle1">
+            {entries[0].startDate.toDate().toLocaleDateString(undefined, {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </Typography>
+        }
         sx={{
           position: "sticky",
           top: 0,
+        }}
+      />
+      <Divider
+        sx={{
+          marginLeft: 2,
+          marginRight: 2,
         }}
       />
       {entries.map((entry, entryIndex) => {
@@ -51,16 +63,11 @@ export default function DateEntriesCard(props: Props) {
           >
             <CardContent>
               <Stack direction={"row"} spacing={2}>
-                <Stack
-                  spacing={1}
-                  alignItems={"center"}
-                  sx={{
-                    fontSize: "100%",
-                  }}
-                >
+                <Stack spacing={1} alignItems={"center"}>
                   <ActivityIcon
                     activity={entry.activity}
                     sx={{
+                      fontSize: "3em",
                       transform:
                         entry.activity.hasSides &&
                         entry.leftTime &&

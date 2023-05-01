@@ -33,29 +33,39 @@ export default function ActivitiesDrawer(props: {
           backgroundImage: "inherit",
         }}
       >
-        <Container maxWidth={CSSBreakpoint.Medium}>
-          <Toolbar disableGutters>
+        <Container maxWidth={CSSBreakpoint.Small} disableGutters>
+          <Toolbar>
             <Typography variant="h6">Ajouter une entrée</Typography>
             <Box sx={{ flexGrow: 1 }} />
             <IconButton onClick={() => props.onClose()}>
               <CloseIcon />
             </IconButton>
           </Toolbar>
+          <Divider
+            sx={{
+              marginLeft: 2,
+              marginRight: 2,
+            }}
+          />
         </Container>
-        <Divider />
       </Box>
-      <Box
-        sx={{
-          maxHeight: "70vh",
-        }}
-      >
-        <ActivityButtons
-          onClick={(type: ActivityType) => {
-            props.handleActivityClick(type);
-            props.onClose();
+      <Container maxWidth={CSSBreakpoint.Small} disableGutters>
+        <Box
+          sx={{
+            maxHeight: "70vh",
+            "& .ActivityIcon": {
+              fontSize: "4em",
+            },
           }}
-        />
-      </Box>
+        >
+          <ActivityButtons
+            onClick={(type: ActivityType) => {
+              props.handleActivityClick(type);
+              props.onClose();
+            }}
+          />
+        </Box>
+      </Container>
     </SwipeableDrawer>
   );
 }

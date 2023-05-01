@@ -9,12 +9,41 @@ export class ActivityModel {
     this._type = v;
   }
 
-  private _order: number;
-  public get order(): number {
-    return this._order;
+  private _subTypes: ActivityType[] = [];
+  public get subTypes(): ActivityType[] {
+    return this._subTypes;
   }
-  public set order(v: number) {
-    this._order = v;
+  public set subTypes(v: ActivityType[]) {
+    this._subTypes = v;
+  }
+
+  private _orderedTypes: ActivityType[] = [
+    ActivityType.BottleFeeding,
+    ActivityType.BreastFeeding,
+    ActivityType.MilkExtraction,
+    ActivityType.Diaper,
+    ActivityType.Poop,
+    ActivityType.Urine,
+    ActivityType.Cry,
+    ActivityType.Regurgitation,
+    ActivityType.Vomit,
+    ActivityType.Play,
+    ActivityType.Sleep,
+    ActivityType.Walk,
+    ActivityType.Bath,
+    ActivityType.SolidFood,
+    ActivityType.Medicine,
+    ActivityType.Vaccine,
+    ActivityType.Temperature,
+    ActivityType.Teeth,
+    ActivityType.HeadCircumference,
+    ActivityType.Size,
+    ActivityType.Weight,
+    ActivityType.HospitalVisit,
+  ];
+
+  public get order(): number {
+    return this._orderedTypes.indexOf(this._type);
   }
 
   private _name: string;
@@ -53,99 +82,86 @@ export class ActivityModel {
     this._type = type;
     switch (type) {
       case ActivityType.Bath:
-        this._order = 100;
         this._name = "Bain";
         this._hasDuration = true;
         break;
       case ActivityType.BottleFeeding:
-        this._order = 10;
         this._name = "Biberon";
         this._hasDuration = true;
         this._hasVolume = true;
         break;
       case ActivityType.BreastFeeding:
-        this._order = 20;
         this._name = "Allaitement";
         this._hasDuration = true;
         this._hasSides = true;
+        this._subTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.Cry:
-        this._order = 80;
         this._name = "Pleurs";
         this._hasDuration = true;
         break;
       case ActivityType.Diaper:
-        this._order = 50;
         this._name = "Couche";
+        this._subTypes = [ActivityType.Poop, ActivityType.Urine];
         break;
       case ActivityType.HeadCircumference:
-        this._order = 150;
         this._name = "Circonférence de la tête";
         break;
       case ActivityType.HospitalVisit:
-        this._order = 190;
         this._name = "Visite à l'hôpital";
         break;
       case ActivityType.Medicine:
-        this._order = 170;
         this._name = "Médicament";
         break;
       case ActivityType.MilkExtraction:
-        this._order = 30;
         this._name = "Extraction de lait";
         this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
         break;
       case ActivityType.Play:
-        this._order = 90;
         this._name = "Jeu";
         this._hasDuration = true;
         break;
       case ActivityType.Poop:
-        this._order = 40;
         this._name = "Caca";
         break;
       case ActivityType.Size:
-        this._order = 130;
         this._name = "Taille";
         break;
       case ActivityType.Sleep:
-        this._order = 70;
         this._name = "Sommeil";
         this._hasDuration = true;
         break;
       case ActivityType.SolidFood:
-        this._order = 120;
         this._name = "Nourriture solide";
         break;
+      case ActivityType.Regurgitation:
+        this._name = "Régurgitation";
+        break;
       case ActivityType.Temperature:
-        this._order = 160;
         this._name = "Température";
         break;
       case ActivityType.Teeth:
-        this._order = 200;
         this._name = "Dents";
         break;
       case ActivityType.Urine:
-        this._order = 60;
         this._name = "Pipi";
         break;
       case ActivityType.Vaccine:
-        this._order = 180;
         this._name = "Vaccin";
         break;
+      case ActivityType.Vomit:
+        this._name = "Vomi";
+        break;
       case ActivityType.Walk:
-        this._order = 110;
         this._name = "Marche";
         this._hasDuration = true;
         break;
       case ActivityType.Weight:
-        this._order = 140;
         this._name = "Poids";
         break;
       default:
-        this._order = 0;
         this._name = "_";
         break;
     }
@@ -153,20 +169,22 @@ export class ActivityModel {
 
   public toJSON(): any {
     return {
-      type: this._type,
-      order: this._order,
-      name: this._name,
-      hasDuration: this._hasDuration,
-      hasVolume: this._hasVolume,
+      type: this.type,
+      name: this.name,
+      hasDuration: this.hasDuration,
+      hasVolume: this.hasVolume,
+      hasSides: this.hasSides,
+      subTypes: this.subTypes,
     };
   }
 
   public static fromJSON(json: any): ActivityModel {
     const activity = new ActivityModel(json.type);
-    activity._order = json.order;
-    activity._name = json.name;
-    activity._hasDuration = json.hasDuration;
-    activity._hasVolume = json.hasVolume;
+    activity.name = json.name;
+    activity.hasDuration = json.hasDuration;
+    activity.hasVolume = json.hasVolume;
+    activity.hasSides = json.hasSides;
+    activity.subTypes = json.subTypes;
     return activity;
   }
 

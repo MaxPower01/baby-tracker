@@ -33,10 +33,6 @@ export default function Entries() {
 
   return (
     <Stack spacing={4}>
-      {/* {entries.map((entry) => (
-        <EntryCard key={entry.id} entry={entry} />
-      ))} */}
-
       {groupedEntries.years.map((yearEntries) => {
         return yearEntries.months.map((monthEntries) => {
           const anyEntriesInMonth = monthEntries.days.some(
@@ -68,9 +64,6 @@ export default function Entries() {
                 </Typography>
               )}
               {monthEntries.days.map((dayEntries) => {
-                // return dayEntries.entries.map((entry) => {
-                //   return <EntryCard key={entry.id} entry={entry} />;
-                // });
                 return (
                   <DateEntriesCard
                     key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}

@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./app/components/App";
 import LayoutProvider from "./common/components/LayoutProvider";
+import "./main.scss";
 import MenuProvider from "./modules/menu/components/MenuProvider";
 import StoreProvider from "./modules/store/components/StoreProvider";
 import ThemeProvider from "./modules/theme/components/ThemeProvider";
