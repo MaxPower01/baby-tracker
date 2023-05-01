@@ -1,10 +1,10 @@
 import { Button, SxProps, Typography } from "@mui/material";
 import { ActivityType } from "../../../lib/enums";
-import { Activity } from "../models/Activity";
+import { ActivityModel } from "../models/ActivityModel";
 import ActivityIcon from "./ActivityIcon";
 
 type Props = {
-  activity: Activity;
+  activity: ActivityModel;
   sx?: SxProps | undefined;
   showLabel?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;

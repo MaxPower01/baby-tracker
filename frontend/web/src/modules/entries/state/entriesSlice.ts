@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { LocalStorageKey, StoreReducerName } from "../../../lib/enums";
 import { getInitialState, setLocalState } from "../../../lib/utils";
 import { RootState } from "../../store/store";
-import { Entry } from "../models/Entry";
+import { EntryModel } from "../models/EntryModel";
 import EntriesState from "./EntriesState";
 
 const key = LocalStorageKey.EntriesState;
@@ -41,7 +41,7 @@ export const { setEntry, resetEntriesState } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
-    ?.map(({ id, entry }) => Entry.deserialize(entry))
+    ?.map(({ id, entry }) => EntryModel.deserialize(entry))
     .sort((a, b) => b.timestamp - a.timestamp);
 };
 

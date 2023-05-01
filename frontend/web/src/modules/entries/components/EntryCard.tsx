@@ -12,16 +12,17 @@ import { useNavigate } from "react-router-dom";
 import { PageName } from "../../../lib/enums";
 import { formatStopwatchTime, getPath } from "../../../lib/utils";
 import ActivityIcon from "../../activities/components/ActivityIcon";
-import { Entry } from "../models/Entry";
+import { EntryModel } from "../models/EntryModel";
 
 type Props = {
-  entry: Entry;
+  entry: EntryModel;
 };
 
 export default function EntryCard(props: Props) {
   const navigate = useNavigate();
 
   const { entry } = props;
+  if (!entry) return null;
   const { time, leftTime, rightTime, note, startDate, activity } = entry;
   const { hasSides } = activity;
 

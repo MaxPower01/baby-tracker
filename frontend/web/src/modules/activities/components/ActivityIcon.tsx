@@ -1,7 +1,7 @@
 import { Box, SxProps } from "@mui/material";
 import { ReactSVG } from "react-svg";
 import { ActivityType } from "../../../lib/enums";
-import { Activity } from "../models/Activity";
+import { ActivityModel } from "../models/ActivityModel";
 import classes from "./ActivityIcon.module.scss";
 
 function BathIcon() {
@@ -15,9 +15,7 @@ function BottleFeedingIcon() {
 }
 
 function BreastFeedingIcon() {
-  return (
-    <ReactSVG src="/breast-feeding.svg" className={classes.ActivityIcon} />
-  );
+  return <ReactSVG src="/breastfeeding.svg" className={classes.ActivityIcon} />;
 }
 
 function CryIcon() {
@@ -39,7 +37,7 @@ function HospitalVisitIcon() {
 }
 
 function MedicineIcon() {
-  return <ReactSVG src="/drugs.svg" className={classes.ActivityIcon} />;
+  return <ReactSVG src="/medicine.svg" className={classes.ActivityIcon} />;
 }
 
 function MilkExtractionIcon() {
@@ -95,7 +93,7 @@ function WeightIcon() {
 }
 
 type Props = {
-  activity: Activity;
+  activity: ActivityModel;
   sx?: SxProps | undefined;
 };
 

@@ -1,6 +1,18 @@
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { useMemo } from "react";
+import { getMonthName, groupEntries } from "../../../lib/utils";
+import useEntries from "../hooks/useEntries";
+import DateEntriesCard from "./DateEntriesCard";
+
 export default function Entries() {
   const { entries, isLoading } = useEntries();
-  console.log("entries", entries);
+
+  const groupedEntries = useMemo(() => {
+    if (isLoading || !entries) {
+      return null;
+    }
+    return groupEntries(entries);
+  }, [entries]);
 
   if (isLoading) {
     return (
@@ -15,18 +27,61 @@ export default function Entries() {
     );
   }
 
-  if (!entries.length) {
+  if (!entries || entries.length === 0 || !groupedEntries) {
     return <div>Aucune entrée</div>;
   }
 
   return (
-    <Stack spacing={2}>
-      {entries.map((entry) => (
+    <Stack spacing={4}>
+      {/* {entries.map((entry) => (
         <EntryCard key={entry.id} entry={entry} />
-      ))}
+      ))} */}
+
+      {groupedEntries.years.map((yearEntries) => {
+        return yearEntries.months.map((monthEntries) => {
+          const anyEntriesInMonth = monthEntries.days.some(
+            (dayEntries) => dayEntries.entries.length > 0
+          );
+          return (
+            <Stack
+              key={`${yearEntries.year}-${monthEntries.monthIndex}`}
+              spacing={2}
+            >
+              {monthEntries.days?.length > 0 && (
+                <Typography
+                  variant="body1"
+                  textAlign={"center"}
+                  fontWeight={"bold"}
+                >
+                  {getMonthName(monthEntries.monthIndex)} {yearEntries.year}
+                </Typography>
+              )}
+              {!anyEntriesInMonth && (
+                <Typography
+                  variant="body2"
+                  textAlign={"center"}
+                  sx={{
+                    opacity: 0.5,
+                  }}
+                >
+                  Aucune entrée
+                </Typography>
+              )}
+              {monthEntries.days.map((dayEntries) => {
+                // return dayEntries.entries.map((entry) => {
+                //   return <EntryCard key={entry.id} entry={entry} />;
+                // });
+                return (
+                  <DateEntriesCard
+                    key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
+                    entries={dayEntries.entries}
+                  />
+                );
+              })}
+            </Stack>
+          );
+        });
+      })}
     </Stack>
   );
 }
-import { Box, CircularProgress, Stack } from "@mui/material";
-import useEntries from "../hooks/useEntries";
-import EntryCard from "./EntryCard";

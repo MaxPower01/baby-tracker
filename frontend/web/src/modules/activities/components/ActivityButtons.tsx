@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 import { ActivityType, CSSBreakpoint } from "../../../lib/enums";
-import { Activity } from "../models/Activity";
+import { ActivityModel } from "../models/ActivityModel";
 import ActivityButton from "./ActivityButton";
 
 type Props = {
@@ -11,7 +11,7 @@ export default function ActivityButtons({ onClick }: Props) {
   const activities = Object.values(ActivityType)
     .map((value) => {
       const activityType = value as ActivityType;
-      return new Activity(activityType);
+      return new ActivityModel(activityType);
     })
     .sort((a, b) => a.order - b.order);
   return (

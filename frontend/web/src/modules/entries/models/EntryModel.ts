@@ -1,8 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
 import { v4 as uuidv4 } from "uuid";
-import { Activity } from "../../activities/models/Activity";
+import { ActivityModel } from "../../activities/models/ActivityModel";
 
-export class Entry {
+export class EntryModel {
   private _id: string;
   public get id(): string {
     return this._id;
@@ -11,11 +11,11 @@ export class Entry {
     this._id = v;
   }
 
-  private _activity: Activity;
-  public get activity(): Activity {
+  private _activity: ActivityModel;
+  public get activity(): ActivityModel {
     return this._activity;
   }
-  public set activity(v: Activity) {
+  public set activity(v: ActivityModel) {
     this._activity = v;
   }
 
@@ -65,7 +65,7 @@ export class Entry {
 
   public constructor(params: {
     id?: string;
-    activity: Activity;
+    activity: ActivityModel;
     startDate?: Dayjs | null;
     time?: number;
     leftTime?: number;
@@ -93,10 +93,10 @@ export class Entry {
     };
   }
 
-  public static fromJSON(json: any): Entry {
-    const entry = new Entry({
+  public static fromJSON(json: any): EntryModel {
+    const entry = new EntryModel({
       id: json.id,
-      activity: Activity.deserialize(json.activity),
+      activity: ActivityModel.deserialize(json.activity),
       startDate: dayjs(json.startDate),
       time: json.time,
       leftTime: json.leftTime,
@@ -110,7 +110,7 @@ export class Entry {
     return JSON.stringify(this.toJSON());
   }
 
-  public static deserialize(json: string): Entry {
-    return Entry.fromJSON(JSON.parse(json));
+  public static deserialize(json: string): EntryModel {
+    return EntryModel.fromJSON(JSON.parse(json));
   }
 }

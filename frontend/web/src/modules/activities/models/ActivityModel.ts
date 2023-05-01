@@ -1,6 +1,6 @@
 import { ActivityType } from "../../../lib/enums";
 
-export class Activity {
+export class ActivityModel {
   private _type: ActivityType;
   public get type(): ActivityType {
     return this._type;
@@ -161,8 +161,8 @@ export class Activity {
     };
   }
 
-  public static fromJSON(json: any): Activity {
-    const activity = new Activity(json.type);
+  public static fromJSON(json: any): ActivityModel {
+    const activity = new ActivityModel(json.type);
     activity._order = json.order;
     activity._name = json.name;
     activity._hasDuration = json.hasDuration;
@@ -174,7 +174,7 @@ export class Activity {
     return JSON.stringify(this.toJSON());
   }
 
-  public static deserialize(json: string): Activity {
+  public static deserialize(json: string): ActivityModel {
     return this.fromJSON(JSON.parse(json));
   }
 }

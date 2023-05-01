@@ -30,11 +30,11 @@ import ActivitiesDrawer from "../../activities/components/ActivitiesDrawer";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
-import { Entry } from "../models/Entry";
+import { EntryModel } from "../models/EntryModel";
 import { setEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
-  entry: Entry;
+  entry: EntryModel;
 };
 
 export default function EntryForm(props: EntryFormProps) {
@@ -86,7 +86,7 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(() => {
-    const entry = new Entry({
+    const entry = new EntryModel({
       id: props.entry?.id,
       activity,
       startDate,

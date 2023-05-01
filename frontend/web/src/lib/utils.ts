@@ -1,4 +1,76 @@
+import { EntryModel } from "../modules/entries/models/EntryModel";
 import { ActivityType, PageName } from "./enums";
+
+/* -------------------------------------------------------------------------- */
+/*                                   Entries                                  */
+/* -------------------------------------------------------------------------- */
+
+export function groupEntries(entries: EntryModel[]): {
+  years: Array<{
+    /**
+     * 4-digit year
+     * @example 2021
+     */
+    year: number;
+    months: Array<{
+      /**
+       * 0-indexed month
+       * @example 0 = January
+       */
+      monthIndex: number;
+      days: Array<{
+        /**
+         * 1-indexed day
+         * @example 1 = 1st
+         */
+        dayNumber: number;
+        entries: EntryModel[];
+      }>;
+    }>;
+  }>;
+} {
+  const result = {
+    years: [] as Array<any>,
+  };
+  if (!entries || entries.length === 0) return result;
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const mostRecentEntry = entries.reduce((a, b) =>
+    a.timestamp > b.timestamp ? a : b
+  );
+  const mostRecentDate = mostRecentEntry.startDate.toDate();
+  const mostRecentYear = mostRecentDate.getFullYear();
+  for (let i = currentYear; i >= mostRecentYear; i--) {
+    const yearEntries = {
+      year: i,
+      months: [] as Array<any>,
+    };
+    const month = i == currentYear ? currentMonth : 11;
+    for (let j = month; j >= 0; j--) {
+      const monthEntries = {
+        monthIndex: j,
+        days: [] as Array<any>,
+      };
+      const daysOfMonth = new Date(i, j + 1, 0).getDate();
+      for (let k = daysOfMonth; k >= 1; k--) {
+        const dayEntries = {
+          dayNumber: k,
+          entries: entries.filter(
+            (entry) =>
+              entry.startDate.toDate().getFullYear() === i &&
+              entry.startDate.toDate().getMonth() === j &&
+              entry.startDate.toDate().getDate() === k
+          ),
+        };
+        monthEntries.days.push(dayEntries);
+      }
+      yearEntries.months.push(monthEntries);
+    }
+    result.years.push(yearEntries);
+  }
+  return result;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                 Stopwatches                                */
@@ -36,6 +108,10 @@ export function formatDate(date: Date) {
 
 export function formatDateTime(dateTime: Date) {
   return dateTime.toLocaleString();
+}
+
+export function getMonthName(month: number) {
+  return new Date(0, month).toLocaleString("default", { month: "long" });
 }
 
 /* -------------------------------------------------------------------------- */

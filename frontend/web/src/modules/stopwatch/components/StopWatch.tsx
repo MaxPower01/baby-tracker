@@ -155,6 +155,9 @@ export default function Stopwatch(props: Props) {
           placeholder="00"
           value={minutes}
           onChange={handleInputChange}
+          sx={{
+            maxWidth: "8em",
+          }}
           InputProps={{
             endAdornment: <InputAdornment position="end">min</InputAdornment>,
             onFocus: (event) => {
@@ -179,6 +182,9 @@ export default function Stopwatch(props: Props) {
           placeholder="00"
           value={seconds}
           onChange={handleInputChange}
+          sx={{
+            maxWidth: "8em",
+          }}
           InputProps={{
             endAdornment: <InputAdornment position="end">sec</InputAdornment>,
             onFocus: (event) => {

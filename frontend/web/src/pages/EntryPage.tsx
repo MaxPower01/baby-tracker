@@ -4,9 +4,9 @@ import { useParams, useSearchParams } from "react-router-dom";
 import LoadingIndicator from "../common/components/LoadingIndicator";
 import { ActivityType } from "../lib/enums";
 import { isValidActivityType } from "../lib/utils";
-import { Activity } from "../modules/activities/models/Activity";
+import { ActivityModel } from "../modules/activities/models/ActivityModel";
 import EntryForm from "../modules/entries/components/EntryForm";
-import { Entry } from "../modules/entries/models/Entry";
+import { EntryModel } from "../modules/entries/models/EntryModel";
 import { selectEntry } from "../modules/entries/state/entriesSlice";
 import { RootState } from "../modules/store/store";
 
@@ -30,7 +30,7 @@ export default function EntryPage() {
       return existingEntry;
     }
     if (activityType) {
-      return new Entry({ activity: new Activity(activityType) });
+      return new EntryModel({ activity: new ActivityModel(activityType) });
     }
     return null;
   }, [activityType, existingEntry]);
