@@ -1,3 +1,4 @@
 export default interface EntriesState {
-  entries: string[];
+  // enties is a list of {id, entry}
+  entries: Array<{ id: string; entry: string }>;
 }

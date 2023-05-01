@@ -7,7 +7,7 @@ import {
   AppBar,
   Container,
   Fab,
-  IconButton as MuiIconButton,
+  IconButton,
   Stack,
   Toolbar,
   Typography,
@@ -26,10 +26,6 @@ const FloatingActionButton = styled(Fab)({
   left: 0,
   right: 0,
   margin: "0 auto",
-});
-
-const IconButton = styled(MuiIconButton)({
-  fontSize: "110%",
 });
 
 const InvisibleIconButton = styled(IconButton)({
@@ -67,16 +63,16 @@ export default function BottomBar(props: Props) {
   const items: Array<BottomBarItem> = [
     {
       id: "home",
-      label: "Accueil",
+      label: getPageTitle(getPath({ page: PageName.Home })),
       onClick: () => navigate(getPath({ page: PageName.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
       color: "default",
     },
     {
-      id: "stats",
-      label: "Stats",
-      onClick: () => navigate(getPath({ page: PageName.Stats })),
+      id: "graphics",
+      label: getPageTitle(getPath({ page: PageName.Graphics })),
+      onClick: () => navigate(getPath({ page: PageName.Graphics })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "default",
@@ -98,16 +94,16 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "calendar",
-      label: "Calendrier",
       onClick: () => navigate(getPath({ page: PageName.Calendar })),
+      label: getPageTitle(getPath({ page: PageName.Calendar })),
       IconWrapper: IconButton,
       Icon: CalendarTodayIcon,
       color: "default",
     },
     {
       id: "settings",
-      label: "Paramètres",
       onClick: () => navigate(getPath({ page: PageName.Settings })),
+      label: getPageTitle(getPath({ page: PageName.Settings })),
       IconWrapper: IconButton,
       Icon: MenuIcon,
       color: "default",
@@ -165,10 +161,16 @@ export default function BottomBar(props: Props) {
                     borderRadius: isFloatingActionButton ? undefined : 1,
                   }}
                 >
-                  {Icon && <Icon />}
+                  {Icon && (
+                    <Icon
+                      sx={{
+                        fontSize: isFloatingActionButton ? "2.5em" : undefined,
+                      }}
+                    />
+                  )}
                   {label && (
                     <Typography
-                      variant="h6"
+                      variant="body1"
                       textAlign="center"
                       sx={{ fontSize: "50%" }}
                     >

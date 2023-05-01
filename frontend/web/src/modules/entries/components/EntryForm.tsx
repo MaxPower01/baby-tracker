@@ -28,19 +28,20 @@ import {
 } from "../../../lib/utils";
 import ActivitiesDrawer from "../../activities/components/ActivitiesDrawer";
 import ActivityIcon from "../../activities/components/ActivityIcon";
-import { Activity } from "../../activities/models/Activity";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
 import { Entry } from "../models/Entry";
-import { addEntry } from "../state/entriesSlice";
+import { setEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
-  activity: Activity;
+  entry: Entry;
 };
 
 export default function EntryForm(props: EntryFormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const activity = props.entry?.activity;
 
   // Handle the activities drawer
 
@@ -48,16 +49,20 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the date and time
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
+  const initialStartDate = props.entry?.startDate ?? dayjs();
+  const [startDate, setStartDate] = useState<Dayjs | null>(initialStartDate);
 
   // Handle the stopwatches
 
-  const [leftStopwatchTime, setLeftStopWatchTime] = useState<number>(0);
-  const [rightStopwatchTime, setRightStopWatchTime] = useState<number>(0);
+  const initialLeftTime = props.entry?.leftTime ?? 0;
+  const [leftTime, setLeftTime] = useState<number>(initialLeftTime);
+
+  const initialRightTime = props.entry?.rightTime ?? 0;
+  const [rightTime, setRightTime] = useState<number>(initialRightTime);
 
   const time = useMemo(() => {
-    return leftStopwatchTime + rightStopwatchTime;
-  }, [leftStopwatchTime, rightStopwatchTime]);
+    return leftTime + rightTime;
+  }, [leftTime, rightTime]);
 
   const [leftStopWatchIsRunning, setLeftStopWatchIsRunning] =
     useState<boolean>(false);
@@ -70,27 +75,38 @@ export default function EntryForm(props: EntryFormProps) {
   );
 
   const stopWatchTimeLabel = useMemo(() => {
-    return formatStopwatchesTime([leftStopwatchTime, rightStopwatchTime]);
-  }, [leftStopwatchTime, rightStopwatchTime]);
+    return formatStopwatchesTime([leftTime, rightTime]);
+  }, [leftTime, rightTime]);
 
   // Handle the notes
 
-  const [note, setNote] = useState<string>("");
+  const initialNote = props.entry?.note ?? "";
+  const [note, setNote] = useState<string>(initialNote);
 
   // Handle the form submission
 
   const handleSubmit = useCallback(() => {
     const entry = new Entry({
-      activity: props.activity,
-      startDate: startDate ?? dayjs(),
+      id: props.entry?.id,
+      activity,
+      startDate,
       time,
-      leftTime: leftStopwatchTime,
-      rightTime: rightStopwatchTime,
+      leftTime,
+      rightTime,
       note,
     });
-    dispatch(addEntry(entry.serialize()));
+    dispatch(setEntry({ id: entry.id, entry: entry.serialize() }));
     navigate(getPagePath(PageName.Home));
-  }, [props.activity, startDate, time, note, dispatch, navigate]);
+  }, [
+    startDate,
+    time,
+    note,
+    dispatch,
+    navigate,
+    activity,
+    leftTime,
+    rightTime,
+  ]);
 
   return (
     <>
@@ -108,14 +124,14 @@ export default function EntryForm(props: EntryFormProps) {
           >
             <Box>
               <ActivityIcon
-                activity={props.activity}
+                activity={activity}
                 sx={{
                   fontSize: "150%",
                 }}
               />
               <Stack direction={"row"} alignItems={"center"}>
                 <Typography variant="h4" textAlign="center">
-                  {props.activity.name}
+                  {activity?.name}
                 </Typography>
                 {/* <ExpandMoreIcon /> */}
               </Stack>
@@ -154,7 +170,7 @@ export default function EntryForm(props: EntryFormProps) {
             />
           </LocalizationProvider>
         </Section>
-        {props.activity?.hasDuration && (
+        {activity?.hasDuration && (
           <Section dividerPosition="top">
             <SectionTitle title="Durée" />
             <Typography textAlign="center" variant="h4">
@@ -162,26 +178,29 @@ export default function EntryForm(props: EntryFormProps) {
             </Typography>
             <Stack
               direction={"row"}
+              spacing={8}
               sx={{
                 width: "100%",
               }}
             >
               <Stopwatch
-                time={leftStopwatchTime}
-                setTime={setLeftStopWatchTime}
+                time={leftTime}
+                setTime={setLeftTime}
                 isRunning={leftStopWatchIsRunning}
                 setIsRunning={setLeftStopWatchIsRunning}
-                isDisabled={rightStopWatchIsRunning}
-                label={props.activity.hasSides ? "Gauche" : undefined}
+                buttonIsDisabled={rightStopWatchIsRunning}
+                inputsAreDisabled={anyStopwatchIsRunning}
+                label={activity.hasSides ? "Gauche" : undefined}
                 sx={{ flex: 1 }}
               />
-              {props.activity.hasSides && (
+              {activity.hasSides && (
                 <Stopwatch
-                  time={rightStopwatchTime}
-                  setTime={setRightStopWatchTime}
+                  time={rightTime}
+                  setTime={setRightTime}
                   isRunning={rightStopWatchIsRunning}
                   setIsRunning={setRightStopWatchIsRunning}
-                  isDisabled={leftStopWatchIsRunning}
+                  buttonIsDisabled={leftStopWatchIsRunning}
+                  inputsAreDisabled={anyStopwatchIsRunning}
                   label="Droite"
                   sx={{ flex: 1 }}
                 />
@@ -214,7 +233,7 @@ export default function EntryForm(props: EntryFormProps) {
         }}
         color="transparent"
       >
-        <Container maxWidth={CSSBreakpoint.Medium}>
+        <Container maxWidth={CSSBreakpoint.Small}>
           <Toolbar disableGutters>
             <Stack
               flexGrow={1}

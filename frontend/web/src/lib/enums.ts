@@ -61,7 +61,7 @@ export enum ActivityType {
 
 export enum PageName {
   Home = "home",
-  Stats = "stats",
+  Graphics = "graphics",
   Calendar = "calendar",
   Settings = "settings",
   Entry = "entry",

@@ -4,11 +4,11 @@ import BottomBar from "../../common/components/BottomBar";
 import TopBar from "../../common/components/TopBar";
 import { CSSBreakpoint, PageName } from "../../lib/enums";
 import { getPath } from "../../lib/utils";
-import Calendar from "../../pages/Calendar";
-import Entry from "../../pages/Entry";
-import Home from "../../pages/Home";
-import Settings from "../../pages/Settings";
-import Stats from "../../pages/Stats";
+import CalendarPage from "../../pages/CalendarPage";
+import EntryPage from "../../pages/EntryPage";
+import GraphicsPage from "../../pages/GraphicsPage";
+import HomePage from "../../pages/HomePage";
+import SettingsPage from "../../pages/SettingsPage";
 import "./App.scss";
 
 export default function App() {
@@ -26,22 +26,28 @@ export default function App() {
       >
         {/* {userIsSignedIn ? <PrivateRoutes /> : <PublicRoutes />} */}
         <Routes>
-          <Route path="" element={<Home />} />
+          <Route path="" element={<HomePage />} />
           <Route path="*" element={<Navigate replace to="" />} />
-          <Route path={getPath({ page: PageName.Home })} element={<Home />} />
-          <Route path={getPath({ page: PageName.Stats })} element={<Stats />} />
+          <Route
+            path={getPath({ page: PageName.Home })}
+            element={<HomePage />}
+          />
+          <Route
+            path={getPath({ page: PageName.Graphics })}
+            element={<GraphicsPage />}
+          />
           <Route
             path={getPath({ page: PageName.Calendar })}
-            element={<Calendar />}
+            element={<CalendarPage />}
           />
           <Route
             path={getPath({ page: PageName.Settings })}
-            element={<Settings />}
+            element={<SettingsPage />}
           />
           <Route path={getPath({ page: PageName.Entry })}>
-            <Route path="" element={<Entry />} />
+            <Route path="" element={<EntryPage />} />
             <Route path="*" element={<Navigate replace to="" />} />
-            <Route path=":entryId" element={<Entry />} />
+            <Route path=":entryId" element={<EntryPage />} />
           </Route>
         </Routes>
       </Container>

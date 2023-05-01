@@ -15,8 +15,19 @@ const slice = createSlice({
   name: StoreReducerName.Entries,
   initialState: getInitialState(key, defaultState),
   reducers: {
-    addEntry: (state, action: PayloadAction<string>) => {
-      state.entries.push(action.payload);
+    setEntry: (state, action: PayloadAction<{ id: string; entry: string }>) => {
+      const index = state.entries.findIndex((e) => e.id === action.payload.id);
+      if (index === -1) {
+        state.entries.push({
+          id: action.payload.id,
+          entry: action.payload.entry,
+        });
+      } else {
+        state.entries[index] = {
+          id: action.payload.id,
+          entry: action.payload.entry,
+        };
+      }
       setLocalState(key, state);
     },
     resetEntriesState: (state) => {
@@ -26,12 +37,19 @@ const slice = createSlice({
   },
 });
 
-export const { addEntry, resetEntriesState } = slice.actions;
+export const { setEntry, resetEntriesState } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
-    ?.map((entry) => Entry.deserialize(entry))
+    ?.map(({ id, entry }) => Entry.deserialize(entry))
     .sort((a, b) => b.timestamp - a.timestamp);
+};
+
+export const selectEntry = (state: RootState, id: string) => {
+  if (!id) {
+    return undefined;
+  }
+  return selectEntries(state)?.find((entry) => entry.id === id);
 };
 
 export default slice.reducer;

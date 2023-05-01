@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
+import { v4 as uuidv4 } from "uuid";
 import { Activity } from "../../activities/models/Activity";
 
 export class Entry {
@@ -65,15 +66,15 @@ export class Entry {
   public constructor(params: {
     id?: string;
     activity: Activity;
-    startDate: Dayjs;
+    startDate?: Dayjs | null;
     time?: number;
     leftTime?: number;
     rightTime?: number;
     note?: string;
   }) {
-    this._id = params.id || Math.random().toString(36);
+    this._id = params.id || uuidv4();
     this._activity = params.activity;
-    this._startDate = params.startDate;
+    this._startDate = params.startDate || dayjs();
     this._time = params.time;
     this._leftTime = params.leftTime;
     this._rightTime = params.rightTime;

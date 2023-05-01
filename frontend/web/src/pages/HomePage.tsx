@@ -1,5 +1,5 @@
 import Entries from "../modules/entries/components/Entries";
 
-export default function Home() {
+export default function HomePage() {
   return <Entries />;
 }

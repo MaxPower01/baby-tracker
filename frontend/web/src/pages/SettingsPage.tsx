@@ -4,7 +4,7 @@ import { resetEntriesState } from "../modules/entries/state/entriesSlice";
 import useMenu from "../modules/menu/hooks/useMenu";
 import { useAppDispatch } from "../modules/store/hooks/useAppDispatch";
 
-export default function Settings() {
+export default function SettingsPage() {
   const { Menu, openMenu, closeMenu } = useMenu();
   const dispatch = useAppDispatch();
 

@@ -79,8 +79,8 @@ export function getPagePath(page: PageName) {
   switch (page) {
     case PageName.Home:
       return "/home";
-    case PageName.Stats:
-      return "/stats";
+    case PageName.Graphics:
+      return "/graphics";
     case PageName.Settings:
       return "/settings";
     case PageName.Calendar:
@@ -97,8 +97,8 @@ export function getPageTitle(pathname: string) {
   switch (pageName) {
     case PageName.Home:
       return "Accueil";
-    case PageName.Stats:
-      return "Statistiques";
+    case PageName.Graphics:
+      return "Graphiques";
     case PageName.Settings:
       return "Paramètres";
     case PageName.Calendar:
