@@ -99,11 +99,11 @@ export function formatTime(time: Date) {
   //   hour: "2-digit",
   //   minute: "2-digit",
   // });
-  return time.toLocaleTimeString();
+  return time.toLocaleTimeString("fr-CA");
 }
 
 export function formatDate(date: Date) {
-  return date.toLocaleDateString();
+  return date.toLocaleDateString("fr-CA");
 }
 
 export function formatDateTime(dateTime: Date) {

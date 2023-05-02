@@ -16,7 +16,7 @@ export default function DateEntriesCard(props: Props) {
   const { entries } = props;
   if (!entries || entries.length === 0) return null;
   return (
-    <Card elevation={12}>
+    <Card>
       {/* <CardHeader
         title={
           <Typography variant="subtitle1">

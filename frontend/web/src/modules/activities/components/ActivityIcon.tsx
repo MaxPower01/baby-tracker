@@ -8,27 +8,23 @@ function BathIcon() {
 }
 
 function BottleFeedingIcon() {
-  return <ReactSVG src="/feeding-bottle.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/bottle-feeding.svg" className="ActivityIcon" />;
 }
 
 function BreastFeedingIcon() {
-  return <ReactSVG src="/breastfeeding.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/breast-feeding.svg" className="ActivityIcon" />;
 }
 
 function CryIcon() {
-  return <ReactSVG src="/baby-cry.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/cry.svg" className="ActivityIcon" />;
 }
 
 function DiaperIcon() {
   return <ReactSVG src="/diaper.svg" className="ActivityIcon" />;
 }
 
-function HeadCircumferenceIcon() {
-  return <ReactSVG src="/measuring-tape.svg" className="ActivityIcon" />;
-}
-
 function HospitalVisitIcon() {
-  return <ReactSVG src="/hospital.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/hospital-visit.svg" className="ActivityIcon" />;
 }
 
 function MedicineIcon() {
@@ -36,11 +32,11 @@ function MedicineIcon() {
 }
 
 function MilkExtractionIcon() {
-  return <ReactSVG src="/breastfeeding-1.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/milk-extraction.svg" className="ActivityIcon" />;
 }
 
 function PlayIcon() {
-  return <ReactSVG src="/rattle.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/play.svg" className="ActivityIcon" />;
 }
 
 function PoopIcon() {
@@ -48,7 +44,7 @@ function PoopIcon() {
 }
 
 function SizeIcon() {
-  return <ReactSVG src="/ruler.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/size.svg" className="ActivityIcon" />;
 }
 
 function SleepIcon() {
@@ -56,23 +52,23 @@ function SleepIcon() {
 }
 
 function SolidFoodIcon() {
-  return <ReactSVG src="/baby-food.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/solid-food.svg" className="ActivityIcon" />;
 }
 
 function RegurgitationIcon() {
-  return <ReactSVG src="/regurgitate.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/regurgitation.svg" className="ActivityIcon" />;
 }
 
 function TemperatureIcon() {
-  return <ReactSVG src="/thermometer.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/temperature.svg" className="ActivityIcon" />;
 }
 
 function TeethIcon() {
-  return <ReactSVG src="/clean.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/teeth.svg" className="ActivityIcon" />;
 }
 
 function UrineIcon() {
-  return <ReactSVG src="/water-drops--yellow.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/urine.svg" className="ActivityIcon" />;
 }
 
 function VaccineIcon() {
@@ -84,11 +80,11 @@ function VomitIcon() {
 }
 
 function WalkIcon() {
-  return <ReactSVG src="/stroller.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/walk.svg" className="ActivityIcon" />;
 }
 
 function WeightIcon() {
-  return <ReactSVG src="/scale.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/weight.svg" className="ActivityIcon" />;
 }
 
 type Props = {
@@ -111,8 +107,6 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <CryIcon />;
           case ActivityType.Diaper:
             return <DiaperIcon />;
-          case ActivityType.HeadCircumference:
-            return <HeadCircumferenceIcon />;
           case ActivityType.HospitalVisit:
             return <HospitalVisitIcon />;
           case ActivityType.Medicine:

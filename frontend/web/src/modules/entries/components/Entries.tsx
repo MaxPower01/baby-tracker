@@ -86,7 +86,7 @@ export default function Entries() {
                   >
                     {dayEntries.entries[0].startDate
                       .toDate()
-                      .toLocaleDateString(undefined, {
+                      .toLocaleDateString("fr-CA", {
                         weekday: "long",
                         month: "long",
                         day: "numeric",

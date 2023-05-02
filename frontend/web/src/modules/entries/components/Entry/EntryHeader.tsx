@@ -24,6 +24,20 @@ export default function EntryHeader(props: Props) {
       }
     }
     return result;
+  }, [activity, hasSides, leftTime, rightTime, time]);
+  const subtitle = useMemo(() => {
+    let result = startDate.toDate().toLocaleTimeString("fr-CA", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    if (time != null) {
+      const endDate = startDate.clone().add(time, "seconds");
+      result += ` à ${endDate.toDate().toLocaleTimeString("fr-CA", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`;
+    }
+    return result;
   }, []);
   return (
     <Stack direction={"row"} spacing={2} alignItems={"center"}>
@@ -33,7 +47,7 @@ export default function EntryHeader(props: Props) {
             fontSize: "80%",
           }}
         >
-          <ActivityIcon activity={props.entry.activity} />
+          <ActivityIcon activity={activity} />
         </Box>
       )}
       <Stack>
@@ -44,10 +58,7 @@ export default function EntryHeader(props: Props) {
             opacity: 0.6,
           }}
         >
-          {props.entry.startDate.toDate().toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {subtitle}
         </Typography>
         <Typography variant="h6" fontWeight={"bold"} sx={{}}>
           {title}

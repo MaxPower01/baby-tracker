@@ -42,7 +42,6 @@ export enum ActivityType {
   BreastFeeding = 2,
   Cry = 3,
   Diaper = 4,
-  HeadCircumference = 5,
   HospitalVisit = 6,
   Medicine = 7,
   MilkExtraction = 8,

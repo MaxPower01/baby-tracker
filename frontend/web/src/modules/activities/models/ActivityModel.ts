@@ -18,27 +18,32 @@ export class ActivityModel {
   }
 
   private _orderedTypes: ActivityType[] = [
-    ActivityType.BottleFeeding,
     ActivityType.BreastFeeding,
-    ActivityType.MilkExtraction,
+    ActivityType.BottleFeeding,
+    ActivityType.Sleep,
+    //
     ActivityType.Diaper,
     ActivityType.Poop,
     ActivityType.Urine,
+    //
     ActivityType.Cry,
     ActivityType.Regurgitation,
     ActivityType.Vomit,
-    ActivityType.Play,
-    ActivityType.Sleep,
+    //
     ActivityType.Walk,
+    ActivityType.Play,
     ActivityType.Bath,
+    //
+    ActivityType.Weight,
+    ActivityType.Size,
+    ActivityType.Temperature,
+    //
+    ActivityType.MilkExtraction,
     ActivityType.SolidFood,
+    ActivityType.Teeth,
+    //
     ActivityType.Medicine,
     ActivityType.Vaccine,
-    ActivityType.Temperature,
-    ActivityType.Teeth,
-    ActivityType.HeadCircumference,
-    ActivityType.Size,
-    ActivityType.Weight,
     ActivityType.HospitalVisit,
   ];
 
@@ -107,9 +112,6 @@ export class ActivityModel {
       case ActivityType.Diaper:
         this._name = "Couche";
         this._subTypes = [ActivityType.Poop, ActivityType.Urine];
-        break;
-      case ActivityType.HeadCircumference:
-        this._name = "Circonférence de la tête";
         break;
       case ActivityType.HospitalVisit:
         this._name = "Visite à l'hôpital";

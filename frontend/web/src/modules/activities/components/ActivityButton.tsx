@@ -1,4 +1,4 @@
-import { Button, SxProps, Typography } from "@mui/material";
+import { Button, Stack, SxProps, Typography } from "@mui/material";
 import { ActivityType } from "../../../lib/enums";
 import { ActivityModel } from "../models/ActivityModel";
 import ActivityIcon from "./ActivityIcon";
@@ -31,12 +31,19 @@ export default function ActivityButton({
         ...sx,
       }}
     >
-      <ActivityIcon activity={activity} />
-      {showLabel && (
-        <Typography variant="button" textAlign="center">
-          {activity.name}
-        </Typography>
-      )}
+      <Stack spacing={1}>
+        <ActivityIcon activity={activity} />
+        {showLabel && (
+          <Typography
+            variant="button"
+            textAlign="center"
+            fontWeight={"bold"}
+            lineHeight={1.2}
+          >
+            {activity.name}
+          </Typography>
+        )}
+      </Stack>
     </Button>
   );
 }
