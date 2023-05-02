@@ -41,6 +41,7 @@ export default function TopBar(props: Props) {
 
   return (
     <AppBar
+      id="topbar"
       {...props}
       position="sticky"
       sx={{

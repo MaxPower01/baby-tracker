@@ -109,6 +109,36 @@ export default function Stopwatch(props: Props) {
           {props.label}
         </Typography>
       )}
+      <Button
+        onClick={handleClick}
+        disabled={props.buttonIsDisabled}
+        sx={{
+          borderRadius: "9999px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          paddingLeft: 2,
+          paddingRight: 2,
+          paddingTop: 1,
+          paddingBottom: 1,
+        }}
+        variant={props.isRunning ? "contained" : "outlined"}
+      >
+        {props.isRunning ? (
+          <PauseIcon
+            sx={{
+              fontSize: "4em",
+            }}
+          />
+        ) : (
+          <PlayArrowIcon
+            sx={{
+              fontSize: "4em",
+            }}
+          />
+        )}
+      </Button>
       <Stack
         direction={"row"}
         spacing={0}
@@ -170,39 +200,6 @@ export default function Stopwatch(props: Props) {
           disabled={props.inputsAreDisabled}
         />
       </Stack>
-      <Button
-        onClick={handleClick}
-        disabled={props.buttonIsDisabled}
-        sx={{
-          borderRadius: "9999px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          paddingLeft: 2,
-          paddingRight: 2,
-          paddingTop: 1,
-          paddingBottom: 1,
-        }}
-        variant={props.isRunning ? "contained" : "outlined"}
-      >
-        {/* <Typography textAlign="center" variant="h6">
-          {timeLabel}
-        </Typography> */}
-        {props.isRunning ? (
-          <PauseIcon
-            sx={{
-              fontSize: "4em",
-            }}
-          />
-        ) : (
-          <PlayArrowIcon
-            sx={{
-              fontSize: "4em",
-            }}
-          />
-        )}
-      </Button>
     </Stack>
   );
 }

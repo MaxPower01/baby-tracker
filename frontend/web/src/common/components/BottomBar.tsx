@@ -116,6 +116,7 @@ export default function BottomBar(props: Props) {
 
   return (
     <AppBar
+      id="bottombar"
       {...props}
       position="fixed"
       sx={{

@@ -39,5 +39,5 @@ export default function EntryPage() {
     return <LoadingIndicator />;
   }
 
-  return <EntryForm entry={entry} />;
+  return <EntryForm entry={entry} isEditing={existingEntry != null} />;
 }

@@ -1,13 +1,4 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageName } from "../../../lib/enums";
 import { getPath } from "../../../lib/utils";
@@ -26,7 +17,7 @@ export default function DateEntriesCard(props: Props) {
   if (!entries || entries.length === 0) return null;
   return (
     <Card elevation={12}>
-      <CardHeader
+      {/* <CardHeader
         title={
           <Typography variant="subtitle1">
             {entries[0].startDate.toDate().toLocaleDateString(undefined, {
@@ -46,7 +37,7 @@ export default function DateEntriesCard(props: Props) {
           marginLeft: 2,
           marginRight: 2,
         }}
-      />
+      /> */}
       {entries.map((entry, entryIndex) => {
         const nextEntryExists = entryIndex < entries.length - 1;
         return (
@@ -62,7 +53,14 @@ export default function DateEntriesCard(props: Props) {
             }}
           >
             <CardContent>
-              <Stack direction={"row"} spacing={2}>
+              <Stack
+                direction={"row"}
+                spacing={2}
+                sx={{
+                  paddingTop: 2,
+                  paddingBottom: 2,
+                }}
+              >
                 <Stack spacing={1} alignItems={"center"}>
                   <ActivityIcon
                     activity={entry.activity}
@@ -79,10 +77,10 @@ export default function DateEntriesCard(props: Props) {
                   {nextEntryExists && (
                     <Box
                       sx={{
-                        marginTop: "-0.5em !important",
-                        marginBottom: "-0.5em !important",
+                        marginTop: "-2em !important",
+                        marginBottom: "-2em !important",
                         height: "100%",
-                        transform: "translateY(1.1em)",
+                        transform: "translateY(2.5em)",
                       }}
                     >
                       <Box
@@ -96,7 +94,7 @@ export default function DateEntriesCard(props: Props) {
                     </Box>
                   )}
                 </Stack>
-                <Stack spacing={2}>
+                <Stack spacing={1}>
                   <EntryHeader entry={entry} hideIcon />
                   <EntryBody entry={entry} />
                 </Stack>

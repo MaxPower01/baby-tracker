@@ -93,30 +93,31 @@ export class EntryModel {
 
   public toJSON() {
     return {
-      id: this._id,
-      activity: this._activity.serialize(),
-      subActivities: this._subActivities?.map((a) => a.serialize()),
-      startDate: this._startDate.toISOString(),
-      time: this._time,
-      leftTime: this._leftTime,
-      rightTime: this._rightTime,
-      note: this._note,
+      id: this.id,
+      activity: this.activity.serialize(),
+      subActivities: this.subActivities?.map((a) => a.serialize()),
+      startDate: this.startDate.toISOString(),
+      time: this.time,
+      leftTime: this.leftTime,
+      rightTime: this.rightTime,
+      note: this.note,
     };
   }
 
   public static fromJSON(json: any): EntryModel {
     const entry = new EntryModel({
-      id: json.id,
       activity: ActivityModel.deserialize(json.activity),
-      subActivities: json.subActivities?.map((a: any) =>
-        ActivityModel.deserialize(a)
-      ),
-      startDate: dayjs(json.startDate),
-      time: json.time,
-      leftTime: json.leftTime,
-      rightTime: json.rightTime,
-      note: json.note,
     });
+    if (json.id != null) entry.id = json.id;
+    if (json.subActivities != null)
+      entry.subActivities = json.subActivities?.map((a: any) =>
+        ActivityModel.deserialize(a)
+      );
+    if (json.startDate != null) entry.startDate = dayjs(json.startDate);
+    if (json.time != null) entry.time = json.time;
+    if (json.leftTime != null) entry.leftTime = json.leftTime;
+    if (json.rightTime != null) entry.rightTime = json.rightTime;
+    if (json.note != null) entry.note = json.note;
     return entry;
   }
 

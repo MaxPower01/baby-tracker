@@ -30,6 +30,13 @@ const slice = createSlice({
       }
       setLocalState(key, state);
     },
+    removeEntry: (state, action: PayloadAction<{ id: string }>) => {
+      const index = state.entries.findIndex((e) => e.id === action.payload.id);
+      if (index !== -1) {
+        state.entries.splice(index, 1);
+      }
+      setLocalState(key, state);
+    },
     resetEntriesState: (state) => {
       Object.assign(state, defaultState);
       setLocalState(key, state);
@@ -37,7 +44,7 @@ const slice = createSlice({
   },
 });
 
-export const { setEntry, resetEntriesState } = slice.actions;
+export const { setEntry, resetEntriesState, removeEntry } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries

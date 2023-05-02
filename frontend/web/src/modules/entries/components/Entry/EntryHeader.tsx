@@ -37,14 +37,20 @@ export default function EntryHeader(props: Props) {
         </Box>
       )}
       <Stack>
-        <Typography variant="h6" fontWeight={"bold"}>
-          {title}
-        </Typography>
-        <Typography variant="subtitle1">
+        <Typography
+          variant="body2"
+          sx={{
+            lineHeight: 1,
+            opacity: 0.6,
+          }}
+        >
           {props.entry.startDate.toDate().toLocaleTimeString(undefined, {
             hour: "2-digit",
             minute: "2-digit",
           })}
+        </Typography>
+        <Typography variant="h6" fontWeight={"bold"} sx={{}}>
+          {title}
         </Typography>
       </Stack>
     </Stack>

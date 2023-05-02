@@ -1,7 +1,6 @@
 import {
   AppBar,
   Button,
-  Chip,
   Container,
   Divider,
   Grid,
@@ -21,40 +20,76 @@ import dayjs, { Dayjs } from "dayjs";
 import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CSSBreakpoint, PageName } from "../../../lib/enums";
+import { ActivityType, CSSBreakpoint, PageName } from "../../../lib/enums";
 import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
+import ActivityChip from "../../activities/components/ActivityChip";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { ActivityModel } from "../../activities/models/ActivityModel";
 import Stopwatch from "../../stopwatch/components/Stopwatch";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
 import { EntryModel } from "../models/EntryModel";
-import { setEntry } from "../state/entriesSlice";
+import { removeEntry, setEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
   entry: EntryModel;
+  isEditing?: boolean;
 };
 
 export default function EntryForm(props: EntryFormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const activity = props.entry?.activity;
-
-  // Handle the activities drawer
-
-  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
+  const activity = props.entry.activity;
 
   // Handle the date and time
 
-  const initialStartDate = props.entry?.startDate ?? dayjs();
+  const initialStartDate = props.entry.startDate ?? dayjs();
   const [startDate, setStartDate] = useState<Dayjs | null>(initialStartDate);
+
+  // Handle the sub-activities
+
+  const availableSubActivitiesTypes = useMemo(() => {
+    return activity.subTypes ?? [];
+  }, [activity]);
+
+  const initialSubActivities = props.entry.subActivities ?? [];
+
+  const [subActivitiesTypes, setSubActivitiesTypes] = useState<
+    Array<{
+      value: ActivityType;
+      isSelected: boolean;
+    }>
+  >(
+    availableSubActivitiesTypes.map((type) => {
+      return {
+        value: type,
+        isSelected: initialSubActivities.map((a) => a.type).includes(type),
+      };
+    })
+  );
+
+  const selectedSubActivies = useMemo(() => {
+    return subActivitiesTypes
+      .filter((a) => a.isSelected)
+      .map((a) => new ActivityModel(a.value));
+  }, [subActivitiesTypes]);
+
+  const handleSubActivityClick = useCallback(
+    (type: ActivityType) => {
+      const subActivity = subActivitiesTypes.find((a) => a.value === type);
+      if (!subActivity) return;
+      subActivity.isSelected = !subActivity.isSelected;
+      setSubActivitiesTypes([...subActivitiesTypes]);
+    },
+    [subActivitiesTypes]
+  );
 
   // Handle the stopwatches
 
-  const initialLeftTime = props.entry?.leftTime ?? 0;
+  const initialLeftTime = props.entry.leftTime ?? 0;
   const [leftTime, setLeftTime] = useState<number>(initialLeftTime);
 
-  const initialRightTime = props.entry?.rightTime ?? 0;
+  const initialRightTime = props.entry.rightTime ?? 0;
   const [rightTime, setRightTime] = useState<number>(initialRightTime);
 
   const time = useMemo(() => {
@@ -77,15 +112,16 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the notes
 
-  const initialNote = props.entry?.note ?? "";
+  const initialNote = props.entry.note ?? "";
   const [note, setNote] = useState<string>(initialNote);
 
   // Handle the form submission
 
   const handleSubmit = useCallback(() => {
     const entry = new EntryModel({
-      id: props.entry?.id,
+      id: props.entry.id,
       activity,
+      subActivities: selectedSubActivies,
       startDate,
       time,
       leftTime,
@@ -103,7 +139,16 @@ export default function EntryForm(props: EntryFormProps) {
     activity,
     leftTime,
     rightTime,
+    props.entry.id,
+    selectedSubActivies,
   ]);
+
+  // Handle the delete button
+
+  const handleDelete = useCallback(() => {
+    dispatch(removeEntry({ id: props.entry.id }));
+    navigate(getPagePath(PageName.Home));
+  }, [dispatch, navigate, props.entry.id]);
 
   return (
     <>
@@ -115,10 +160,6 @@ export default function EntryForm(props: EntryFormProps) {
         }}
       >
         <Section>
-          {/* <Button
-            onClick={() => setActivitiesDrawerIsOpen(true)}
-            color="inherit"
-          > */}
           <Stack justifyContent={"center"} alignItems={"center"}>
             <ActivityIcon
               activity={activity}
@@ -132,7 +173,6 @@ export default function EntryForm(props: EntryFormProps) {
               </Typography>
             </Stack>
           </Stack>
-          {/* </Button> */}
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             adapterLocale={localeFrCa}
@@ -164,35 +204,16 @@ export default function EntryForm(props: EntryFormProps) {
             />
           </LocalizationProvider>
 
-          {activity?.subTypes?.length && (
-            <Grid container spacing={2} justifyContent="center">
-              {activity.subTypes.map((subActivityType) => {
-                const subActivity = new ActivityModel(subActivityType);
+          {subActivitiesTypes && subActivitiesTypes.length > 0 && (
+            <Grid container gap={1} justifyContent="center">
+              {subActivitiesTypes.map((subActivityType) => {
+                const subActivity = new ActivityModel(subActivityType.value);
                 return (
-                  <Chip
+                  <ActivityChip
                     key={`${activity.type}-${subActivity.type}`}
-                    label={
-                      <Typography variant="body2">{activity.name}</Typography>
-                    }
-                    icon={
-                      <ActivityIcon
-                        activity={subActivity}
-                        sx={{
-                          marginRight: 0,
-                          marginLeft: 1,
-                          fontSize: "1.35em",
-                        }}
-                      />
-                    }
-                    onClick={(e) => {}}
-                    // color={
-                    //   selectedTagIds.includes(tag.id) ? "primary" : undefined
-                    // }
-                    // variant={
-                    //   selectedTagIds.includes(tag.id) ? "filled" : "outlined"
-                    // }
-                    // size="small"
-                    sx={{ margin: 0.5 }}
+                    activity={subActivity}
+                    isSelected={subActivityType.isSelected}
+                    onClick={handleSubActivityClick}
                   />
                 );
               })}
@@ -254,7 +275,6 @@ export default function EntryForm(props: EntryFormProps) {
       </Stack>
 
       <AppBar
-        {...props}
         position="fixed"
         sx={{
           top: "auto",
@@ -269,6 +289,7 @@ export default function EntryForm(props: EntryFormProps) {
               flexGrow={1}
               direction="row"
               sx={{ justifyContent: "space-between" }}
+              spacing={2}
             >
               <Button
                 variant="contained"
@@ -278,23 +299,21 @@ export default function EntryForm(props: EntryFormProps) {
               >
                 Enregistrer
               </Button>
+              {props.isEditing == true && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleDelete}
+                  disabled={anyStopwatchIsRunning}
+                  fullWidth
+                >
+                  Supprimer
+                </Button>
+              )}
             </Stack>
           </Toolbar>
         </Container>
       </AppBar>
-
-      {/* <ActivitiesDrawer
-        isOpen={activitiesDrawerIsOpen}
-        onClose={() => setActivitiesDrawerIsOpen(false)}
-        handleActivityClick={(type: ActivityType) =>
-          navigate(
-            getPath({
-              page: PageName.Entry,
-              params: { activity: type.toString() },
-            })
-          )
-        }
-      /> */}
     </>
   );
 }

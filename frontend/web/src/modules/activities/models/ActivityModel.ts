@@ -78,6 +78,10 @@ export class ActivityModel {
     this._hasSides = v;
   }
 
+  public get hasSubTypes(): boolean {
+    return this._subTypes.length > 0;
+  }
+
   public constructor(type: ActivityType) {
     this._type = type;
     switch (type) {
@@ -180,11 +184,11 @@ export class ActivityModel {
 
   public static fromJSON(json: any): ActivityModel {
     const activity = new ActivityModel(json.type);
-    activity.name = json.name;
-    activity.hasDuration = json.hasDuration;
-    activity.hasVolume = json.hasVolume;
-    activity.hasSides = json.hasSides;
-    activity.subTypes = json.subTypes;
+    if (json.name != null) activity.name = json.name;
+    if (json.hasDuration != null) activity.hasDuration = json.hasDuration;
+    if (json.hasVolume != null) activity.hasVolume = json.hasVolume;
+    if (json.hasSides != null) activity.hasSides = json.hasSides;
+    if (json.subTypes != null) activity.subTypes = json.subTypes;
     return activity;
   }
 
