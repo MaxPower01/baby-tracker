@@ -30,7 +30,7 @@ export default function EntryHeader(props: Props) {
       hour: "2-digit",
       minute: "2-digit",
     });
-    if (time != null) {
+    if (time != null && time > 0) {
       const endDate = startDate.clone().add(time, "seconds");
       result += ` à ${endDate.toDate().toLocaleTimeString("fr-CA", {
         hour: "2-digit",

@@ -2,6 +2,24 @@ import { EntryModel } from "../modules/entries/models/EntryModel";
 import { ActivityType, PageName } from "./enums";
 
 /* -------------------------------------------------------------------------- */
+/*                                 Exportation                                */
+/* -------------------------------------------------------------------------- */
+
+export function exportToJSONFile(data: any): void {
+  const fileName = `baby-tracker-data-${Date.now()}.json`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(
+    new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    })
+  );
+  a.setAttribute("download", fileName);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                   Entries                                  */
 /* -------------------------------------------------------------------------- */
 
@@ -154,15 +172,11 @@ export function getPath({
 export function getPagePath(page: PageName) {
   switch (page) {
     case PageName.Home:
-      return "/home";
     case PageName.Graphics:
-      return "/graphics";
-    case PageName.Settings:
-      return "/settings";
+    case PageName.Menu:
     case PageName.Calendar:
-      return "/calendar";
     case PageName.Entry:
-      return "/entry";
+      return `/${page}`;
     default:
       return "";
   }
@@ -175,8 +189,8 @@ export function getPageTitle(pathname: string) {
       return "Accueil";
     case PageName.Graphics:
       return "Graphiques";
-    case PageName.Settings:
-      return "Paramètres";
+    case PageName.Menu:
+      return "Menu";
     case PageName.Calendar:
       return "Calendrier";
     case PageName.Entry:

@@ -102,8 +102,8 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "settings",
-      onClick: () => navigate(getPath({ page: PageName.Settings })),
-      label: getPageTitle(getPath({ page: PageName.Settings })),
+      onClick: () => navigate(getPath({ page: PageName.Menu })),
+      label: getPageTitle(getPath({ page: PageName.Menu })),
       IconWrapper: IconButton,
       Icon: MenuIcon,
       color: "default",

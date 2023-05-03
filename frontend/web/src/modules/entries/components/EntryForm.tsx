@@ -17,9 +17,9 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import localeFrCa from "dayjs/locale/fr-ca";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import dayjsLocaleFrCa from "../../../lib/dayjs/dayjsLocaleFrCa";
 import { ActivityType, CSSBreakpoint, PageName } from "../../../lib/enums";
 import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
 import ActivityChip from "../../activities/components/ActivityChip";
@@ -175,7 +175,7 @@ export default function EntryForm(props: EntryFormProps) {
           </Stack>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
-            adapterLocale={localeFrCa}
+            adapterLocale={dayjsLocaleFrCa}
           >
             <MobileDateTimePicker
               value={startDate}

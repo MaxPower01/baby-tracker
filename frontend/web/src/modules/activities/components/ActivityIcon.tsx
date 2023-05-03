@@ -15,6 +15,10 @@ function BreastFeedingIcon() {
   return <ReactSVG src="/breast-feeding.svg" className="ActivityIcon" />;
 }
 
+function BurpIcon() {
+  return <ReactSVG src="/burp.svg" className="ActivityIcon" />;
+}
+
 function CryIcon() {
   return <ReactSVG src="/cry.svg" className="ActivityIcon" />;
 }
@@ -103,6 +107,8 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <BottleFeedingIcon />;
           case ActivityType.BreastFeeding:
             return <BreastFeedingIcon />;
+          case ActivityType.Burp:
+            return <BurpIcon />;
           case ActivityType.Cry:
             return <CryIcon />;
           case ActivityType.Diaper:

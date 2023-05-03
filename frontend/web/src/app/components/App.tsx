@@ -8,7 +8,7 @@ import CalendarPage from "../../pages/CalendarPage";
 import EntryPage from "../../pages/EntryPage";
 import GraphicsPage from "../../pages/GraphicsPage";
 import HomePage from "../../pages/HomePage";
-import SettingsPage from "../../pages/SettingsPage";
+import MorePage from "../../pages/MorePage";
 import "./App.scss";
 
 export default function App() {
@@ -41,8 +41,8 @@ export default function App() {
             element={<CalendarPage />}
           />
           <Route
-            path={getPath({ page: PageName.Settings })}
-            element={<SettingsPage />}
+            path={getPath({ page: PageName.Menu })}
+            element={<MorePage />}
           />
           <Route path={getPath({ page: PageName.Entry })}>
             <Route path="" element={<EntryPage />} />

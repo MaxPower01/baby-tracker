@@ -30,20 +30,22 @@ export class ActivityModel {
     ActivityType.Regurgitation,
     ActivityType.Vomit,
     //
+    ActivityType.Burp,
     ActivityType.Walk,
     ActivityType.Play,
-    ActivityType.Bath,
     //
+    ActivityType.Bath,
     ActivityType.Weight,
     ActivityType.Size,
-    ActivityType.Temperature,
     //
-    ActivityType.MilkExtraction,
+    ActivityType.Temperature,
     ActivityType.SolidFood,
-    ActivityType.Teeth,
+    ActivityType.MilkExtraction,
     //
     ActivityType.Medicine,
     ActivityType.Vaccine,
+    ActivityType.Teeth,
+    //
     ActivityType.HospitalVisit,
   ];
 
@@ -103,7 +105,14 @@ export class ActivityModel {
         this._name = "Allaitement";
         this._hasDuration = true;
         this._hasSides = true;
-        this._subTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
+        this._subTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+        ];
+        break;
+      case ActivityType.Burp:
+        this._name = "Rot";
         break;
       case ActivityType.Cry:
         this._name = "Pleurs";

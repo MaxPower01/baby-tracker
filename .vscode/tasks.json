@@ -11,10 +11,10 @@
 		},
 		{
 			"type": "npm",
-			"script": "host",
+			"script": "dev",
 			"path": "frontend/web",
 			"problemMatcher": [],
-			"label": "npm: host - frontend/web",
+			"label": "npm: dev - frontend/web",
 			"detail": "vite --host"
 		},
 		{

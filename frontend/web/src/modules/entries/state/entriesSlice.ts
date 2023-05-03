@@ -30,6 +30,30 @@ const slice = createSlice({
       }
       setLocalState(key, state);
     },
+    addEntries: (
+      state,
+      action: PayloadAction<{
+        entries: string[];
+        overwrite: boolean;
+      }>
+    ) => {
+      action.payload.entries.forEach((e) => {
+        const entry = EntryModel.deserialize(e);
+        const index = state.entries.findIndex((s) => s.id === entry.id);
+        if (index === -1) {
+          state.entries.push({
+            id: entry.id,
+            entry: e,
+          });
+        } else if (action.payload.overwrite) {
+          state.entries[index] = {
+            id: entry.id,
+            entry: e,
+          };
+        }
+      });
+      setLocalState(key, state);
+    },
     removeEntry: (state, action: PayloadAction<{ id: string }>) => {
       const index = state.entries.findIndex((e) => e.id === action.payload.id);
       if (index !== -1) {
@@ -44,7 +68,8 @@ const slice = createSlice({
   },
 });
 
-export const { setEntry, resetEntriesState, removeEntry } = slice.actions;
+export const { setEntry, resetEntriesState, removeEntry, addEntries } =
+  slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries

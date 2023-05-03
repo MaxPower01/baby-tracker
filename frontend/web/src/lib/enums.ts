@@ -58,12 +58,13 @@ export enum ActivityType {
   Weight = 19,
   Regurgitation = 20,
   Vomit = 21,
+  Burp = 22,
 }
 
 export enum PageName {
   Home = "home",
   Graphics = "graphics",
   Calendar = "calendar",
-  Settings = "settings",
+  Menu = "menu",
   Entry = "entry",
 }
