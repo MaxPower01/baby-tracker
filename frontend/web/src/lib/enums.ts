@@ -67,4 +67,5 @@ export enum PageName {
   Calendar = "calendar",
   Menu = "menu",
   Entry = "entry",
+  Authentication = "authentication",
 }

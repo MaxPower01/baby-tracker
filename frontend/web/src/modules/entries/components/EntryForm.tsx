@@ -21,7 +21,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjsLocaleFrCa from "../../../lib/dayjs/dayjsLocaleFrCa";
 import { ActivityType, CSSBreakpoint, PageName } from "../../../lib/enums";
-import { formatStopwatchesTime, getPagePath } from "../../../lib/utils";
+import { formatStopwatchesTime, getPath } from "../../../lib/utils";
 import ActivityChip from "../../activities/components/ActivityChip";
 import ActivityIcon from "../../activities/components/ActivityIcon";
 import { ActivityModel } from "../../activities/models/ActivityModel";
@@ -129,7 +129,7 @@ export default function EntryForm(props: EntryFormProps) {
       note,
     });
     dispatch(setEntry({ id: entry.id, entry: entry.serialize() }));
-    navigate(getPagePath(PageName.Home));
+    navigate(getPath({ page: PageName.Home }));
   }, [
     startDate,
     time,
@@ -147,7 +147,7 @@ export default function EntryForm(props: EntryFormProps) {
 
   const handleDelete = useCallback(() => {
     dispatch(removeEntry({ id: props.entry.id }));
-    navigate(getPagePath(PageName.Home));
+    navigate(getPath({ page: PageName.Home }));
   }, [dispatch, navigate, props.entry.id]);
 
   return (

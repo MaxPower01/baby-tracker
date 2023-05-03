@@ -1,8 +1,10 @@
-import { Alert, Button, Snackbar, Stack } from "@mui/material";
+import { Alert, Button, Snackbar, Stack, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { resetAppState } from "../app/state/appSlice";
 import LoadingIndicator from "../common/components/LoadingIndicator";
-import { exportToJSONFile } from "../lib/utils";
+import { PageName } from "../lib/enums";
+import { exportToJSONFile, getPath } from "../lib/utils";
 import useEntries from "../modules/entries/hooks/useEntries";
 import {
   addEntries,
@@ -10,10 +12,11 @@ import {
 } from "../modules/entries/state/entriesSlice";
 import { useAppDispatch } from "../modules/store/hooks/useAppDispatch";
 
-export default function MorePage() {
+export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();
   const dispatch = useAppDispatch();
   const { entries, isLoading: isLoadingEntries } = useEntries();
+  const navigate = useNavigate();
 
   const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
@@ -81,6 +84,17 @@ export default function MorePage() {
         <MenuItem onClick={closeMenu}>Item A</MenuItem>
         <MenuItem onClick={closeMenu}>Item B</MenuItem>
       </Menu> */}
+        <Stack>
+          <Typography variant="body1" textAlign={"center"}>
+            Connectez-vous pour sauvegarder vos données
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => navigate(getPath({ page: PageName.Authentication }))}
+          >
+            Se connecter
+          </Button>
+        </Stack>
 
         <input
           id="import-data"

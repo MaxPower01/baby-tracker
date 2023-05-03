@@ -41,6 +41,7 @@ type BottomBarItem = {
   Icon?: React.ElementType;
   color: "primary" | "inherit" | "secondary" | "default" | undefined;
   isFloatingActionButton?: boolean;
+  isCurrentPage?: boolean;
 };
 
 type Props = {
@@ -68,6 +69,11 @@ export default function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: HomeIcon,
       color: "default",
+      isCurrentPage: pageName === PageName.Home,
+      // sx: {
+      //   opacity: pageName === PageName.Home ? 1 : 0.6,
+      //   fontWeight: pageName === PageName.Home ? "bold" : undefined,
+      // },
     },
     {
       id: "graphics",
@@ -76,6 +82,11 @@ export default function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "default",
+      isCurrentPage: pageName === PageName.Graphics,
+      // sx: {
+      //   opacity: pageName === PageName.Graphics ? 1 : 0.6,
+      //   fontWeight: pageName === PageName.Graphics ? "bold" : undefined,
+      // },
     },
     {
       id: "new-entry-trasparent",
@@ -99,6 +110,11 @@ export default function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: CalendarTodayIcon,
       color: "default",
+      isCurrentPage: pageName === PageName.Calendar,
+      // sx: {
+      //   opacity: pageName === PageName.Calendar ? 1 : 0.6,
+      //   fontWeight: pageName === PageName.Calendar ? "bold" : undefined,
+      // },
     },
     {
       id: "settings",
@@ -107,6 +123,11 @@ export default function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: MenuIcon,
       color: "default",
+      isCurrentPage: pageName === PageName.Menu,
+      // sx: {
+      //   opacity: pageName === PageName.Menu ? 1 : 0.6,
+      //   fontWeight: pageName === PageName.Menu ? "bold" : undefined,
+      // },
     },
   ];
 
@@ -150,6 +171,7 @@ export default function BottomBar(props: Props) {
                 Icon,
                 label,
                 isFloatingActionButton,
+                isCurrentPage,
               }) => (
                 <IconWrapper
                   key={id}
@@ -160,6 +182,7 @@ export default function BottomBar(props: Props) {
                     flexDirection: "column",
                     flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
+                    opacity: isCurrentPage == false ? 0.6 : undefined,
                   }}
                 >
                   {Icon && (
@@ -173,7 +196,10 @@ export default function BottomBar(props: Props) {
                     <Typography
                       variant="body1"
                       textAlign="center"
-                      sx={{ fontSize: "50%" }}
+                      sx={{
+                        fontSize: "50%",
+                        fontWeight: isCurrentPage == true ? "bold" : undefined,
+                      }}
                     >
                       {label}
                     </Typography>

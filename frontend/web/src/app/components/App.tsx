@@ -4,11 +4,12 @@ import BottomBar from "../../common/components/BottomBar";
 import TopBar from "../../common/components/TopBar";
 import { CSSBreakpoint, PageName } from "../../lib/enums";
 import { getPath } from "../../lib/utils";
+import AuthenticationPage from "../../pages/AuthenticationPage";
 import CalendarPage from "../../pages/CalendarPage";
 import EntryPage from "../../pages/EntryPage";
 import GraphicsPage from "../../pages/GraphicsPage";
 import HomePage from "../../pages/HomePage";
-import MorePage from "../../pages/MorePage";
+import MenuPage from "../../pages/MenuPage";
 import "./App.scss";
 
 export default function App() {
@@ -42,7 +43,11 @@ export default function App() {
           />
           <Route
             path={getPath({ page: PageName.Menu })}
-            element={<MorePage />}
+            element={<MenuPage />}
+          />
+          <Route
+            path={getPath({ page: PageName.Authentication })}
+            element={<AuthenticationPage />}
           />
           <Route path={getPath({ page: PageName.Entry })}>
             <Route path="" element={<EntryPage />} />

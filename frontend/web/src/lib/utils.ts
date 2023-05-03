@@ -159,7 +159,10 @@ export function getPath({
   id?: string | number;
   params?: Record<string, string>;
 }) {
-  let path = getPagePath(page);
+  let path = "";
+  if (Object.values(PageName).includes(page)) {
+    path = `/${page}`;
+  }
   if (typeof id !== "undefined") {
     path += `/${id}`;
   }
@@ -167,19 +170,6 @@ export function getPath({
     path += `?${new URLSearchParams(params).toString()}`;
   }
   return path;
-}
-
-export function getPagePath(page: PageName) {
-  switch (page) {
-    case PageName.Home:
-    case PageName.Graphics:
-    case PageName.Menu:
-    case PageName.Calendar:
-    case PageName.Entry:
-      return `/${page}`;
-    default:
-      return "";
-  }
 }
 
 export function getPageTitle(pathname: string) {
@@ -199,6 +189,8 @@ export function getPageTitle(pathname: string) {
         return "Modifier une entrée";
       }
       return "Ajouter une entrée";
+    case PageName.Authentication:
+      return "Connexion";
     default:
       return "";
   }
