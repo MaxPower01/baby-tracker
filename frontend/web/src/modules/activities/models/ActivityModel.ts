@@ -100,6 +100,11 @@ export class ActivityModel {
         this._name = "Biberon";
         this._hasDuration = true;
         this._hasVolume = true;
+        this._subTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+        ];
         break;
       case ActivityType.BreastFeeding:
         this._name = "Allaitement";
