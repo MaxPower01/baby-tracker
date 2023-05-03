@@ -113,6 +113,7 @@ export class ActivityModel {
         break;
       case ActivityType.Burp:
         this._name = "Rot";
+        this._subTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.Cry:
         this._name = "Pleurs";
