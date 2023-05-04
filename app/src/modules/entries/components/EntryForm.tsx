@@ -236,7 +236,7 @@ export default function EntryForm(props: EntryFormProps) {
             </Typography>
             <Stack
               direction={"row"}
-              spacing={8}
+              spacing={4}
               sx={{
                 width: "100%",
               }}

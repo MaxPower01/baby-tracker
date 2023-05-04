@@ -33,8 +33,9 @@ export default function Stopwatch(props: Props) {
       const intervalId = setInterval(() => {
         const now = Date.now();
         const delta = now - (lastUpdateTime ?? now);
+        const newTime = time + delta;
         onChange({
-          time: time + delta,
+          time: newTime,
           isRunning,
           lastUpdateTime: now,
         });
@@ -43,8 +44,9 @@ export default function Stopwatch(props: Props) {
     }
   }, [isRunning, lastUpdateTime]);
 
-  const minutes = useMemo(() => Math.floor(time / 60000), [time]);
   const seconds = useMemo(() => Math.floor((time % 60000) / 1000), [time]);
+  const minutes = useMemo(() => Math.floor((time % 3600000) / 60000), [time]);
+  const hours = useMemo(() => Math.floor(time / 3600000), [time]);
 
   const handleStartStop = () => {
     onChange({
@@ -59,10 +61,13 @@ export default function Stopwatch(props: Props) {
     const name = event.target.name;
     let newSeconds = seconds;
     let newMinutes = minutes;
+    let newHours = hours;
     if (name === "seconds") {
       newSeconds = parseInt(value);
     } else if (name === "minutes") {
       newMinutes = parseInt(value);
+    } else if (name === "hours") {
+      newHours = parseInt(value);
     }
     if (isNaN(newSeconds)) {
       newSeconds = 0;
@@ -70,18 +75,27 @@ export default function Stopwatch(props: Props) {
     if (isNaN(newMinutes)) {
       newMinutes = 0;
     }
+    if (isNaN(newHours)) {
+      newHours = 0;
+    }
     if (newSeconds > 59) {
       newSeconds = 59;
     }
     if (newMinutes > 59) {
       newMinutes = 59;
     }
+    if (newHours > 99) {
+      newHours = 99;
+    }
     onChange({
-      time: newMinutes * 60000 + newSeconds * 1000,
+      time: newSeconds * 1000 + newMinutes * 60000 + newHours * 3600000,
       isRunning,
       lastUpdateTime: Date.now(),
     });
   };
+
+  const inputWidth = undefined;
+  const inputFontSize = "1.2em";
 
   return (
     <Stack
@@ -134,15 +148,51 @@ export default function Stopwatch(props: Props) {
         <TextField
           variant="standard"
           type="number"
+          name="hours"
+          placeholder="00"
+          value={hours}
+          onChange={handleInputChange}
+          sx={
+            {
+              // "& *:before": {
+              //   borderBottom: "none !important",
+              // },
+            }
+          }
+          InputProps={{
+            endAdornment: <InputAdornment position="end">h</InputAdornment>,
+            onFocus: (event) => {
+              event.target.select();
+            },
+            "aria-valuemin": 0,
+            "aria-colcount": 2,
+            sx: {
+              "& input": {
+                textAlign: "right",
+                fontSize: inputFontSize,
+                fontWeight: "bold",
+                width: inputWidth,
+              },
+            },
+          }}
+          disabled={props.inputsAreDisabled}
+        />
+        <TextField
+          variant="standard"
+          type="number"
           name="minutes"
           placeholder="00"
           value={minutes}
           onChange={handleInputChange}
-          sx={{
-            maxWidth: "8em",
-          }}
+          sx={
+            {
+              // "& *:before": {
+              //   borderBottom: "none !important",
+              // },
+            }
+          }
           InputProps={{
-            endAdornment: <InputAdornment position="end">min</InputAdornment>,
+            endAdornment: <InputAdornment position="end">m</InputAdornment>,
             onFocus: (event) => {
               event.target.select();
             },
@@ -152,7 +202,9 @@ export default function Stopwatch(props: Props) {
             sx: {
               "& input": {
                 textAlign: "right",
-                fontSize: "1.35em",
+                fontWeight: "bold",
+                fontSize: inputFontSize,
+                width: inputWidth,
               },
             },
           }}
@@ -165,11 +217,15 @@ export default function Stopwatch(props: Props) {
           placeholder="00"
           value={seconds}
           onChange={handleInputChange}
-          sx={{
-            maxWidth: "8em",
-          }}
+          sx={
+            {
+              // "& *:before": {
+              //   borderBottom: "none !important",
+              // },
+            }
+          }
           InputProps={{
-            endAdornment: <InputAdornment position="end">sec</InputAdornment>,
+            endAdornment: <InputAdornment position="end">s</InputAdornment>,
             onFocus: (event) => {
               event.target.select();
             },
@@ -179,7 +235,9 @@ export default function Stopwatch(props: Props) {
             sx: {
               "& input": {
                 textAlign: "right",
-                fontSize: "1.35em",
+                fontWeight: "bold",
+                fontSize: inputFontSize,
+                width: inputWidth,
               },
             },
           }}

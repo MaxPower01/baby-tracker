@@ -21,22 +21,30 @@ export default function EntryBody(props: Props) {
           entry.getTime({
             side: "left",
             upToDate: true,
-          })
+          }),
+          true
         )} (G)`;
         let rightLabel = `${formatStopwatchTime(
-          entry.getTime({ side: "right", upToDate: true })
+          entry.getTime({ side: "right", upToDate: true }),
+          true
         )} (D)`;
         if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
         if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
         result.push(leftLabel);
         result.push(rightLabel);
       } else {
-        let label = `${formatStopwatchTime(entry.getTime({ upToDate: true }))}`;
+        let label = `${formatStopwatchTime(
+          entry.getTime({ upToDate: true }),
+          true
+        )}`;
         if (entry.leftStopwatchIsRunning) label += " (en cours)";
         result.push(label);
       }
     } else {
-      let label = `${formatStopwatchTime(entry.getTime({ upToDate: true }))}`;
+      let label = `${formatStopwatchTime(
+        entry.getTime({ upToDate: true }),
+        true
+      )}`;
       if (entry.leftStopwatchIsRunning) label += " (en cours)";
       result.push(label);
     }

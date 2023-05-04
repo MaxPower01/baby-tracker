@@ -100,8 +100,8 @@ export function groupEntries(entries: EntryModel[]): {
  * @param time Milliseconds
  * @returns String of the format "mm:ss"
  */
-export function formatStopwatchTime(time: number) {
-  return formatStopwatchesTime([time]);
+export function formatStopwatchTime(time: number, showLetters = false) {
+  return formatStopwatchesTime([time], showLetters);
 }
 
 /**
@@ -109,14 +109,51 @@ export function formatStopwatchTime(time: number) {
  * @param time Array of milliseconds
  * @returns String of the format "mm:ss"
  */
-export function formatStopwatchesTime(time: number[]) {
-  const totalSeconds = Math.floor(time.reduce((a, b) => a + b, 0) / 1000);
-  if (totalSeconds === 0) return "00:00";
-  const seconds = totalSeconds % 60;
-  const secondsLabel = seconds.toString().padStart(2, "0");
-  const minutes = Math.floor(totalSeconds / 60);
-  const minutesLabel = minutes.toString().padStart(2, "0");
-  return `${minutesLabel}:${secondsLabel}`;
+export function formatStopwatchesTime(time: number[], showLetters = false) {
+  const totalTime = Math.floor(time.reduce((a, b) => a + b, 0));
+  if (totalTime === 0) return "00:00:00";
+  let seconds = Math.floor((totalTime % 60000) / 1000);
+  let minutes = Math.floor((totalTime % 3600000) / 60000);
+  let hours = Math.floor(totalTime / 3600000);
+  let result = "";
+  if (hours > 99) {
+    hours = 99;
+    minutes = 59;
+    seconds = 59;
+  }
+  if (hours > 0) {
+    if (showLetters) {
+      result += `${hours.toString()} h `;
+    } else {
+      result += `${hours.toString().padStart(2, "0")}`;
+    }
+  } else if (!showLetters) {
+    result += `00`;
+  }
+  if (minutes > 0) {
+    if (showLetters) {
+      result += `${minutes.toString()} m `;
+    } else {
+      result += `${minutes.toString().padStart(2, "0")}`;
+    }
+  } else if (!showLetters) {
+    result += `00`;
+  }
+  if (seconds > 0) {
+    if (showLetters) {
+      result += `${seconds.toString()} s`;
+    } else {
+      result += `${seconds.toString().padStart(2, "0")}`;
+    }
+  } else if (!showLetters) {
+    result += `00`;
+  }
+  if (!showLetters) {
+    result = result.replace(/^(..)(.+)/, "$1:$2");
+    result = result.replace(/(.+)(..)$/, "$1:$2");
+  }
+
+  return result;
 }
 
 /* -------------------------------------------------------------------------- */
