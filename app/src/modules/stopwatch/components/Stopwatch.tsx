@@ -54,6 +54,35 @@ export default function Stopwatch(props: Props) {
     });
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const name = event.target.name;
+    let newSeconds = seconds;
+    let newMinutes = minutes;
+    if (name === "seconds") {
+      newSeconds = parseInt(value);
+    } else if (name === "minutes") {
+      newMinutes = parseInt(value);
+    }
+    if (isNaN(newSeconds)) {
+      newSeconds = 0;
+    }
+    if (isNaN(newMinutes)) {
+      newMinutes = 0;
+    }
+    if (newSeconds > 59) {
+      newSeconds = 59;
+    }
+    if (newMinutes > 59) {
+      newMinutes = 59;
+    }
+    onChange({
+      time: newMinutes * 60000 + newSeconds * 1000,
+      isRunning,
+      lastUpdateTime: Date.now(),
+    });
+  };
+
   return (
     <Stack
       spacing={2}
@@ -108,7 +137,7 @@ export default function Stopwatch(props: Props) {
           name="minutes"
           placeholder="00"
           value={minutes}
-          // onChange={handleInputChange}
+          onChange={handleInputChange}
           sx={{
             maxWidth: "8em",
           }}
@@ -135,7 +164,7 @@ export default function Stopwatch(props: Props) {
           name="seconds"
           placeholder="00"
           value={seconds}
-          // onChange={handleInputChange}
+          onChange={handleInputChange}
           sx={{
             maxWidth: "8em",
           }}
