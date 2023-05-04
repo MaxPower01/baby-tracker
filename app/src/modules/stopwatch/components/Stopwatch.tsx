@@ -8,47 +8,50 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 type Props = {
   label?: string;
   sx?: SxProps | undefined;
+  time: number;
+  isRunning: boolean;
+  lastUpdateTime: number | null;
+  buttonIsDisabled?: boolean;
+  inputsAreDisabled?: boolean;
+  onChange: (params: {
+    time: number;
+    isRunning: boolean;
+    lastUpdateTime: number | null;
+  }) => void;
 };
 
 export default function Stopwatch(props: Props) {
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [timePaused, setTimePaused] = useState<number | null>(null);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-
-  const minutes = useMemo(() => Math.floor(elapsedTime / 60000), [elapsedTime]);
-  const seconds = useMemo(
-    () => Math.floor((elapsedTime % 60000) / 1000),
-    [elapsedTime]
-  );
+  const { time, isRunning, lastUpdateTime, onChange } = props;
 
   useEffect(() => {
-    let intervalId: NodeJS.Timer;
     if (isRunning) {
-      intervalId = setInterval(() => {
-        setElapsedTime(Date.now() - (startTime ?? 0));
-      }, 10);
+      const intervalId = setInterval(() => {
+        const now = Date.now();
+        const delta = now - (lastUpdateTime ?? now);
+        onChange({
+          time: time + delta,
+          isRunning,
+          lastUpdateTime: now,
+        });
+      }, 1000);
+      return () => clearInterval(intervalId);
     }
-    return () => clearInterval(intervalId);
-  }, [isRunning, startTime]);
+  }, [isRunning, lastUpdateTime]);
+
+  const minutes = useMemo(() => Math.floor(time / 60000), [time]);
+  const seconds = useMemo(() => Math.floor((time % 60000) / 1000), [time]);
 
   const handleStartStop = () => {
-    if (isRunning) {
-      setIsRunning(false);
-      setTimePaused(Date.now());
-    } else if (timePaused) {
-      setIsRunning(true);
-      setStartTime((startTime ?? 0) + (Date.now() - timePaused));
-      setTimePaused(null);
-    } else {
-      setIsRunning(true);
-      setStartTime(Date.now() - elapsedTime);
-    }
+    onChange({
+      time: time,
+      isRunning: !isRunning,
+      lastUpdateTime: Date.now(),
+    });
   };
 
   return (
@@ -65,7 +68,7 @@ export default function Stopwatch(props: Props) {
       )}
       <Button
         onClick={handleStartStop}
-        // disabled={props.buttonIsDisabled}
+        disabled={props.buttonIsDisabled}
         sx={{
           borderRadius: "9999px",
           display: "flex",
@@ -124,7 +127,7 @@ export default function Stopwatch(props: Props) {
               },
             },
           }}
-          // disabled={props.inputsAreDisabled}
+          disabled={props.inputsAreDisabled}
         />
         <TextField
           variant="standard"
@@ -151,7 +154,7 @@ export default function Stopwatch(props: Props) {
               },
             },
           }}
-          // disabled={props.inputsAreDisabled}
+          disabled={props.inputsAreDisabled}
         />
       </Stack>
     </Stack>

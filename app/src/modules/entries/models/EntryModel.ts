@@ -1,6 +1,6 @@
+import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import dayjs, { Dayjs } from "dayjs";
 import { v4 as uuidv4 } from "uuid";
-import { ActivityModel } from "../../activities/models/ActivityModel";
 
 export class EntryModel {
   private _id = uuidv4();
@@ -39,23 +39,24 @@ export class EntryModel {
     return this.startDate.unix();
   }
 
-  private _time: number | undefined;
-  public get time(): number | undefined {
+  private _time = 0;
+  public get time(): number {
     return this._time;
   }
-  public set time(v: number | undefined) {
+  public set time(v: number) {
     this._time = v;
   }
 
-  private _leftTime: number | undefined;
-  public get leftTime(): number | undefined {
+  private _leftTime = 0;
+  public get leftTime(): number {
     return this._leftTime;
   }
-  public set leftTime(v: number | undefined) {
+  public set leftTime(v: number) {
     this._leftTime = v;
+    this.time = this.leftTime + this.rightTime;
   }
 
-  private _leftStopwatchIsRunning: boolean = false;
+  private _leftStopwatchIsRunning = false;
   public get leftStopwatchIsRunning(): boolean {
     return this._leftStopwatchIsRunning;
   }
@@ -63,23 +64,29 @@ export class EntryModel {
     this._leftStopwatchIsRunning = v;
   }
 
-  private _leftStopwatchStartDate: Dayjs | undefined;
-  public get leftStopwatchStartDate(): Dayjs | undefined {
-    return this._leftStopwatchStartDate;
+  private _leftStopwatchLastUpdateTime: number | undefined;
+  public get leftStopwatchLastUpdateTime(): number | undefined {
+    return this._leftStopwatchLastUpdateTime;
   }
-  public set leftStopwatchStartDate(v: Dayjs | undefined) {
-    this._leftStopwatchStartDate = v;
+  public set leftStopwatchLastUpdateTime(v: number | undefined) {
+    this._leftStopwatchLastUpdateTime = v;
   }
 
-  private _rightTime: number | undefined;
-  public get rightTime(): number | undefined {
+  private _rightTime = 0;
+  public get rightTime(): number {
+    if (this.rightStopwatchIsRunning) {
+      const now = Date.now();
+      const delta = now - (this.rightStopwatchLastUpdateTime || now);
+      return this._rightTime + delta;
+    }
     return this._rightTime;
   }
-  public set rightTime(v: number | undefined) {
+  public set rightTime(v: number) {
     this._rightTime = v;
+    this.time = this.leftTime + this.rightTime;
   }
 
-  private _rightStopwatchIsRunning: boolean = false;
+  private _rightStopwatchIsRunning = false;
   public get rightStopwatchIsRunning(): boolean {
     return this._rightStopwatchIsRunning;
   }
@@ -87,12 +94,12 @@ export class EntryModel {
     this._rightStopwatchIsRunning = v;
   }
 
-  private _rightStopwatchStartDate: Dayjs | undefined;
-  public get rightStopwatchStartDate(): Dayjs | undefined {
-    return this._rightStopwatchStartDate;
+  private _rightStopwatchLastUpdateTime: number | undefined;
+  public get rightStopwatchLastUpdateTime(): number | undefined {
+    return this._rightStopwatchLastUpdateTime;
   }
-  public set rightStopwatchStartDate(v: Dayjs | undefined) {
-    this._rightStopwatchStartDate = v;
+  public set rightStopwatchLastUpdateTime(v: number | undefined) {
+    this._rightStopwatchLastUpdateTime = v;
   }
 
   private _note: string | undefined;
@@ -114,10 +121,10 @@ export class EntryModel {
       time: this.time,
       leftTime: this.leftTime,
       leftStopwatchIsRunning: this.leftStopwatchIsRunning,
-      leftStopwatchStartDate: this.leftStopwatchStartDate?.toISOString(),
+      leftStopwatchLastUpdateTime: this.leftStopwatchLastUpdateTime,
       rightTime: this.rightTime,
       rightStopwatchIsRunning: this.rightStopwatchIsRunning,
-      rightStopwatchStartDate: this.rightStopwatchStartDate?.toISOString(),
+      rightStopwatchLastUpdateTime: this.rightStopwatchLastUpdateTime,
       note: this.note?.trim() || undefined,
     };
   }
@@ -136,13 +143,13 @@ export class EntryModel {
     if (json.leftTime != null) entry.leftTime = json.leftTime;
     if (json.leftStopwatchIsRunning != null)
       entry.leftStopwatchIsRunning = json.leftStopwatchIsRunning;
-    if (json.leftStopwatchStartDate != null)
-      entry.leftStopwatchStartDate = dayjs(json.leftStopwatchStartDate);
+    if (json.leftStopwatchLastUpdateTime != null)
+      entry.leftStopwatchLastUpdateTime = json.leftStopwatchLastUpdateTime;
     if (json.rightTime != null) entry.rightTime = json.rightTime;
     if (json.rightStopwatchIsRunning != null)
       entry.rightStopwatchIsRunning = json.rightStopwatchIsRunning;
-    if (json.rightStopwatchStartDate != null)
-      entry.rightStopwatchStartDate = dayjs(json.rightStopwatchStartDate);
+    if (json.rightStopwatchLastUpdateTime != null)
+      entry.rightStopwatchLastUpdateTime = json.rightStopwatchLastUpdateTime;
     if (json.note != null) entry.note = json.note;
     return entry;
   }
@@ -157,5 +164,42 @@ export class EntryModel {
 
   public clone(): EntryModel {
     return EntryModel.deserialize(this.serialize());
+  }
+
+  /**
+   * Returns the time of the given side, optionally up to date (if the stopwatch is running)
+   * @param side The side to get the time of
+   * @param upToDate Whether to return the time up to date (if the stopwatch is running)
+   * @returns The time of the given side
+   */
+  public getTime({
+    side,
+    upToDate,
+  }: {
+    side?: "left" | "right";
+    upToDate: boolean;
+  }): number {
+    if (!side) {
+      return (
+        this.getTime({ side: "left", upToDate }) +
+        this.getTime({ side: "right", upToDate })
+      );
+    }
+    if (side === "left") {
+      if (upToDate && this.leftStopwatchIsRunning) {
+        const now = Date.now();
+        const delta = now - (this.leftStopwatchLastUpdateTime || now);
+        return this.leftTime + delta;
+      }
+      return this.leftTime;
+    } else if (side === "right") {
+      if (upToDate && this.rightStopwatchIsRunning) {
+        const now = Date.now();
+        const delta = now - (this.rightStopwatchLastUpdateTime || now);
+        return this.rightTime + delta;
+      }
+      return this.rightTime;
+    }
+    return 0;
   }
 }

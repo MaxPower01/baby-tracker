@@ -1,3 +1,13 @@
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
+import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
+import { formatStopwatchesTime, getPath } from "@/lib/utils";
+import ActivityChip from "@/modules/activities/components/ActivityChip";
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
+import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
   AppBar,
   Button,
@@ -19,16 +29,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CSSBreakpoint from "../../../common/enums/CSSBreakpoint";
-import PageName from "../../../common/enums/PageName";
-import dayjsLocaleFrCa from "../../../lib/dayjs/dayjsLocaleFrCa";
-import { formatStopwatchesTime, getPath } from "../../../lib/utils";
-import ActivityChip from "../../activities/components/ActivityChip";
-import ActivityIcon from "../../activities/components/ActivityIcon";
-import { ActivityModel } from "../../activities/models/ActivityModel";
-import Stopwatch from "../../stopwatch/components/Stopwatch";
-import { useAppDispatch } from "../../store/hooks/useAppDispatch";
-import { EntryModel } from "../models/EntryModel";
 import { removeEntry, updateEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
@@ -42,6 +42,13 @@ export default function EntryForm(props: EntryFormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const save = useCallback(
+    (entry: EntryModel) => {
+      dispatch(updateEntry({ id: entry.id, entry: entry.serialize() }));
+    },
+    [dispatch, entry]
+  );
+
   // Handle the date and time
 
   const handleStartDateChange = (newStartDate: Dayjs | null) => {
@@ -49,6 +56,7 @@ export default function EntryForm(props: EntryFormProps) {
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
       newEntry.startDate = newStartDate;
+      save(newEntry);
       return newEntry;
     });
   };
@@ -70,50 +78,63 @@ export default function EntryForm(props: EntryFormProps) {
 
   const toggleSubActivity = (subActivity: ActivityModel) => {
     setEntry((prevEntry) => {
-      console.log(prevEntry.subActivities);
       const newEntry = prevEntry.clone();
       newEntry.subActivities = prevEntry.subActivities?.includes(subActivity)
         ? entry.subActivities?.filter((a) => a !== subActivity)
         : [...(entry.subActivities ?? []), subActivity];
-      console.log(newEntry.subActivities);
       return newEntry;
     });
   };
 
   // Handle the stopwatches
 
-  const initialLeftTime = entry.leftTime ?? 0;
-  const [leftTime, setLeftTime] = useState<number>(initialLeftTime);
-
-  const initialRightTime = entry.rightTime ?? 0;
-  const [rightTime, setRightTime] = useState<number>(initialRightTime);
-
-  const time = useMemo(() => {
-    return leftTime + rightTime;
-  }, [leftTime, rightTime]);
-
-  const [leftStopWatchIsRunning, setLeftStopWatchIsRunning] =
-    useState<boolean>(false);
-  const [rightStopWatchIsRunning, setRightStopWatchIsRunning] =
-    useState<boolean>(false);
-
   const anyStopwatchIsRunning = useMemo(() => {
-    return leftStopWatchIsRunning || rightStopWatchIsRunning;
-  }, [leftStopWatchIsRunning, rightStopWatchIsRunning]);
+    return entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+  }, [entry]);
 
   const stopWatchTimeLabel = useMemo(() => {
-    return formatStopwatchesTime([leftTime, rightTime]);
-  }, [leftTime, rightTime]);
+    return formatStopwatchesTime([entry.leftTime, entry.rightTime]);
+  }, [entry]);
+
+  const handleStopwatchChange = (params: {
+    side: string;
+    time: number;
+    isRunning: boolean;
+    lastUpdateTime: number | null;
+  }) => {
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      if (params.side === "left") {
+        newEntry.leftTime = params.time;
+        newEntry.leftStopwatchIsRunning = params.isRunning;
+        newEntry.leftStopwatchLastUpdateTime =
+          params.lastUpdateTime ?? undefined;
+      } else {
+        newEntry.rightTime = params.time;
+        newEntry.rightStopwatchIsRunning = params.isRunning;
+        newEntry.rightStopwatchLastUpdateTime =
+          params.lastUpdateTime ?? undefined;
+      }
+      save(newEntry);
+      return newEntry;
+    });
+  };
 
   // Handle the notes
 
-  const initialNote = entry.note ?? "";
-  const [note, setNote] = useState<string>(initialNote);
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      newEntry.note = event.target.value;
+      save(newEntry);
+      return newEntry;
+    });
+  };
 
   // Handle the form submission
 
   const handleSubmit = useCallback(() => {
-    dispatch(updateEntry({ id: entry.id, entry: entry.serialize() }));
+    save(entry);
     navigate(getPath({ page: PageName.Home }));
   }, [entry]);
 
@@ -165,8 +186,17 @@ export default function EntryForm(props: EntryFormProps) {
                     "& input": {
                       textAlign: "center",
                       width: "auto",
+                      cursor: "pointer",
+                      paddingTop: 1,
+                      paddingBottom: 1,
+                      borderColor: "transparent",
+                      fontWeight: "bold",
                     },
+                    // "& *:before": {
+                    //   borderBottom: "none !important",
+                    // },
                   },
+                  variant: "outlined",
                 },
               }}
               ampm={false}
@@ -213,9 +243,34 @@ export default function EntryForm(props: EntryFormProps) {
               <Stopwatch
                 label={entry.activity.hasSides ? "Gauche" : undefined}
                 sx={{ flex: 1 }}
+                time={entry.leftTime}
+                isRunning={entry.leftStopwatchIsRunning}
+                lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
+                buttonIsDisabled={entry.rightStopwatchIsRunning}
+                inputsAreDisabled={anyStopwatchIsRunning}
+                onChange={(params) =>
+                  handleStopwatchChange({
+                    ...params,
+                    side: "left",
+                  })
+                }
               />
               {entry.activity.hasSides && (
-                <Stopwatch label="Droite" sx={{ flex: 1 }} />
+                <Stopwatch
+                  label="Droite"
+                  sx={{ flex: 1 }}
+                  time={entry.rightTime}
+                  isRunning={entry.rightStopwatchIsRunning}
+                  lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
+                  buttonIsDisabled={entry.leftStopwatchIsRunning}
+                  inputsAreDisabled={anyStopwatchIsRunning}
+                  onChange={(params) =>
+                    handleStopwatchChange({
+                      ...params,
+                      side: "right",
+                    })
+                  }
+                />
               )}
             </Stack>
           </Section>
@@ -227,11 +282,12 @@ export default function EntryForm(props: EntryFormProps) {
             label=""
             name="note"
             type="text"
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
+            value={entry.note}
+            onChange={handleNoteChange}
             fullWidth
             multiline
             minRows={5}
+            disabled={anyStopwatchIsRunning}
           />
         </Section>
       </Stack>
@@ -256,7 +312,7 @@ export default function EntryForm(props: EntryFormProps) {
               <Button
                 variant="contained"
                 onClick={handleSubmit}
-                disabled={anyStopwatchIsRunning}
+                // disabled={anyStopwatchIsRunning}
                 fullWidth
               >
                 Enregistrer

@@ -1,7 +1,7 @@
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 import { Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
-import ActivityIcon from "../../../activities/components/ActivityIcon";
-import { EntryModel } from "../../models/EntryModel";
 
 type Props = {
   entry: EntryModel;
@@ -12,11 +12,10 @@ export default function EntryHeader(props: Props) {
   const { entry } = props;
   if (!entry) return null;
   const { time, leftTime, rightTime, note, startDate, activity } = entry;
-  const { hasSides } = activity;
   if (!props.entry) return null;
   const title = useMemo(() => {
-    let result = `${activity.name}`;
-    if (time && hasSides) {
+    let result = activity?.name ?? "";
+    if (time && activity?.hasSides) {
       if (leftTime && !rightTime) {
         result += ` (G)`;
       } else if (!leftTime && rightTime) {
@@ -24,30 +23,23 @@ export default function EntryHeader(props: Props) {
       }
     }
     return result;
-  }, [activity, hasSides, leftTime, rightTime, time]);
+  }, [activity, leftTime, rightTime, time]);
   const subtitle = useMemo(() => {
     let result = startDate.toDate().toLocaleTimeString("fr-CA", {
       hour: "2-digit",
       minute: "2-digit",
     });
-    if (time != null && time > 0) {
-      const endDate = startDate.clone().add(time, "seconds");
-      result += ` à ${endDate.toDate().toLocaleTimeString("fr-CA", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    }
     return result;
-  }, []);
+  }, [startDate, time]);
   return (
     <Stack direction={"row"} spacing={2} alignItems={"center"}>
-      {!props.hideIcon && (
+      {!props.hideIcon && entry.activity != null && (
         <Box
           sx={{
             fontSize: "80%",
           }}
         >
-          <ActivityIcon activity={activity} />
+          <ActivityIcon activity={entry.activity} />
         </Box>
       )}
       <Stack>

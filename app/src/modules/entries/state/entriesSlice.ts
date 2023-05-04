@@ -1,8 +1,8 @@
+import LocalStorageKey from "@/common/enums/LocalStorageKey";
+import { getInitialState, setLocalState } from "@/lib/utils";
+import StoreReducerName from "@/modules/store/enums/StoreReducerName";
+import { RootState } from "@/modules/store/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import LocalStorageKey from "../../../common/enums/LocalStorageKey";
-import { getInitialState, setLocalState } from "../../../lib/utils";
-import StoreReducerName from "../../store/enums/StoreReducerName";
-import { RootState } from "../../store/store";
 import { EntryModel } from "../models/EntryModel";
 import EntriesState from "./EntriesState";
 

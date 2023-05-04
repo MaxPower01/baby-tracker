@@ -1,7 +1,7 @@
+import LocalStorageKey from "@/common/enums/LocalStorageKey";
+import { getInitialState, setLocalState } from "@/lib/utils";
+import StoreReducerName from "@/modules/store/enums/StoreReducerName";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import LocalStorageKey from "../../common/enums/LocalStorageKey";
-import { getInitialState, setLocalState } from "../../lib/utils";
-import StoreReducerName from "../../modules/store/enums/StoreReducerName";
 import AppState from "./AppState";
 
 const key = LocalStorageKey.AppState;

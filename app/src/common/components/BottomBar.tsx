@@ -1,3 +1,6 @@
+import { getPageName, getPageTitle, getPath } from "@/lib/utils";
+import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -15,9 +18,6 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getPageName, getPageTitle, getPath } from "../../lib/utils";
-import ActivitiesDrawer from "../../modules/activities/components/ActivitiesDrawer";
-import ActivityType from "../../modules/activities/enums/ActivityType";
 import CSSBreakpoint from "../enums/CSSBreakpoint";
 import PageName from "../enums/PageName";
 

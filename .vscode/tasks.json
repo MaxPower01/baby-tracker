@@ -4,35 +4,34 @@
 		{
 			"type": "npm",
 			"script": "dev",
-			"path": "frontend/web",
+			"path": "app",
 			"problemMatcher": [],
-			"label": "npm: dev - frontend/web",
+			"label": "npm: dev - app",
 			"detail": "vite"
 		},
 		{
 			"type": "npm",
 			"script": "dev",
-			"path": "frontend/web",
+			"path": "app",
 			"problemMatcher": [],
-			"label": "npm: dev - frontend/web",
+			"label": "npm: dev - app",
 			"detail": "vite --host"
 		},
 		{
 			"type": "npm",
 			"script": "build",
-			"path": "frontend/web",
+			"path": "app",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build - frontend/web",
+			"label": "npm: build - app",
 			"detail": "tsc && vite build"
 		},
 		{
 			"type": "npm",
 			"script": "install",
-			"path": "frontend/web",
-			"group": "clean",
+			"path": "app",
 			"problemMatcher": [],
-			"label": "npm: install - frontend/web",
+			"label": "npm: install - app",
 			"detail": "install dependencies from package"
 		}
 	]

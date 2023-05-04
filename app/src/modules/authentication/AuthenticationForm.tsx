@@ -1,7 +1,7 @@
+import { auth, googleAuthProvider } from "@/firebase";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Stack, Typography } from "@mui/material";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, googleAuthProvider } from "../../firebase";
 
 export default function AuthenticationForm() {
   const handleGoogleSignIn = () => {

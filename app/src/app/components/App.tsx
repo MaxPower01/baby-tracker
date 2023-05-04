@@ -1,16 +1,16 @@
+import BottomBar from "@/common/components/BottomBar";
+import TopBar from "@/common/components/TopBar";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
+import { getPath } from "@/lib/utils";
+import AuthenticationPage from "@/pages/AuthenticationPage";
+import CalendarPage from "@/pages/CalendarPage";
+import EntryPage from "@/pages/EntryPage";
+import GraphicsPage from "@/pages/GraphicsPage";
+import HomePage from "@/pages/HomePage";
+import MenuPage from "@/pages/MenuPage";
 import { Container } from "@mui/material";
 import { Navigate, Route, Routes } from "react-router-dom";
-import BottomBar from "../../common/components/BottomBar";
-import TopBar from "../../common/components/TopBar";
-import CSSBreakpoint from "../../common/enums/CSSBreakpoint";
-import PageName from "../../common/enums/PageName";
-import { getPath } from "../../lib/utils";
-import AuthenticationPage from "../../pages/AuthenticationPage";
-import CalendarPage from "../../pages/CalendarPage";
-import EntryPage from "../../pages/EntryPage";
-import GraphicsPage from "../../pages/GraphicsPage";
-import HomePage from "../../pages/HomePage";
-import MenuPage from "../../pages/MenuPage";
 import "./App.scss";
 
 export default function App() {

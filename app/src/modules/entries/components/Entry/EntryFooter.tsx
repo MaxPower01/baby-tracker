@@ -1,4 +1,4 @@
-import { EntryModel } from "../../models/EntryModel";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 
 type Props = {
   entry: EntryModel;

@@ -1,3 +1,4 @@
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
@@ -8,7 +9,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import CSSBreakpoint from "../../../common/enums/CSSBreakpoint";
 import ActivityType from "../enums/ActivityType";
 import ActivityButtons from "./ActivityButtons";
 

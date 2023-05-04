@@ -1,5 +1,6 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // import DeleteIcon from "@mui/icons-material/Delete";
+import { getPageName, getPageTitle } from "@/lib/utils";
 import {
   AppBar,
   Box,
@@ -10,7 +11,6 @@ import {
 } from "@mui/material";
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getPageName, getPageTitle } from "../../lib/utils";
 import CSSBreakpoint from "../enums/CSSBreakpoint";
 import PageName from "../enums/PageName";
 

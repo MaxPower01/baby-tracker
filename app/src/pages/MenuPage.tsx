@@ -1,3 +1,9 @@
+import useEntries from "@/modules/entries/hooks/useEntries";
+import {
+  addEntries,
+  resetEntriesState,
+} from "@/modules/entries/state/entriesSlice";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Alert,
@@ -13,12 +19,6 @@ import { resetAppState } from "../app/state/appSlice";
 import LoadingIndicator from "../common/components/LoadingIndicator";
 import PageName from "../common/enums/PageName";
 import { exportToJSONFile, getPath } from "../lib/utils";
-import useEntries from "../modules/entries/hooks/useEntries";
-import {
-  addEntries,
-  resetEntriesState,
-} from "../modules/entries/state/entriesSlice";
-import { useAppDispatch } from "../modules/store/hooks/useAppDispatch";
 
 export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();
@@ -83,7 +83,7 @@ export default function MenuPage() {
 
   return (
     <>
-      <Stack spacing={4} justifyContent="center" alignItems="center">
+      <Stack spacing={4} alignItems="center">
         {/* <Button onClick={openMenu} variant="contained">
         Exemple de menu
       </Button>
@@ -110,37 +110,38 @@ export default function MenuPage() {
             Se connecter
           </Button>
         </Stack>
-        <Stack spacing={1}></Stack>
 
-        <input
-          id="import-data"
-          aria-label="Importer des données"
-          type="file"
-          onChange={handleImport}
-          style={{ display: "none" }}
-        />
+        <Stack spacing={2} alignItems="center">
+          <input
+            id="import-data"
+            aria-label="Importer des données"
+            type="file"
+            onChange={handleImport}
+            style={{ display: "none" }}
+          />
 
-        <Button
-          onClick={() => {
-            const input = document.getElementById(
-              "import-data"
-            ) as HTMLInputElement;
-            input.click();
-          }}
-          variant="contained"
-          color="primary"
-        >
-          Importer des données
-        </Button>
+          <Button
+            onClick={() => {
+              const input = document.getElementById(
+                "import-data"
+              ) as HTMLInputElement;
+              input.click();
+            }}
+            variant="contained"
+            color="primary"
+          >
+            Importer des données
+          </Button>
 
-        <Button
-          onClick={handleExport}
-          variant="contained"
-          color="primary"
-          disabled={isLoadingEntries}
-        >
-          {isLoadingEntries ? <LoadingIndicator /> : "Exporter les données"}
-        </Button>
+          <Button
+            onClick={handleExport}
+            variant="contained"
+            color="primary"
+            disabled={isLoadingEntries}
+          >
+            {isLoadingEntries ? <LoadingIndicator /> : "Exporter les données"}
+          </Button>
+        </Stack>
 
         <Button onClick={handleReset} variant="contained" color="error">
           Réinitialiser l'application

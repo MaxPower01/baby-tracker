@@ -1,4 +1,4 @@
-import { EntryModel } from "../../models/EntryModel";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 import EntryBody from "./EntryBody";
 import EntryFooter from "./EntryFooter";
 import EntryHeader from "./EntryHeader";

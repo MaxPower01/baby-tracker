@@ -1,6 +1,6 @@
+import AuthenticationForm from "@/modules/authentication/AuthenticationForm";
 import { Stack } from "@mui/material";
 import { useState } from "react";
-import AuthenticationForm from "../modules/authentication/AuthenticationForm";
 
 export default function AuthenticationPage() {
   const [isSignUp, setIsSignUp] = useState(false);

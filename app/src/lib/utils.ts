@@ -1,6 +1,6 @@
-import PageName from "../common/enums/PageName";
-import ActivityType from "../modules/activities/enums/ActivityType";
-import { EntryModel } from "../modules/entries/models/EntryModel";
+import PageName from "@/common/enums/PageName";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Exportation                                */
@@ -95,12 +95,22 @@ export function groupEntries(entries: EntryModel[]): {
 /*                                 Stopwatches                                */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Formats a millisecond into a string of the format "mm:ss"
+ * @param time Milliseconds
+ * @returns String of the format "mm:ss"
+ */
 export function formatStopwatchTime(time: number) {
   return formatStopwatchesTime([time]);
 }
 
+/**
+ * Formats an array of milliseconds into a string of the format "mm:ss"
+ * @param time Array of milliseconds
+ * @returns String of the format "mm:ss"
+ */
 export function formatStopwatchesTime(time: number[]) {
-  const totalSeconds = time.reduce((a, b) => a + b, 0);
+  const totalSeconds = Math.floor(time.reduce((a, b) => a + b, 0) / 1000);
   if (totalSeconds === 0) return "00:00";
   const seconds = totalSeconds % 60;
   const secondsLabel = seconds.toString().padStart(2, "0");

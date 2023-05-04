@@ -1,8 +1,8 @@
+import PageName from "@/common/enums/PageName";
+import { getPath } from "@/lib/utils";
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import { Box, Card, CardActionArea, CardContent, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PageName from "../../../common/enums/PageName";
-import { getPath } from "../../../lib/utils";
-import ActivityIcon from "../../activities/components/ActivityIcon";
 import { EntryModel } from "../models/EntryModel";
 import EntryBody from "./Entry/EntryBody";
 import EntryHeader from "./Entry/EntryHeader";
@@ -40,6 +40,8 @@ export default function DateEntriesCard(props: Props) {
       /> */}
       {entries.map((entry, entryIndex) => {
         const nextEntryExists = entryIndex < entries.length - 1;
+        const entryHasStopwatchRunning =
+          entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
         return (
           <CardActionArea
             key={entry.id}
@@ -50,6 +52,11 @@ export default function DateEntriesCard(props: Props) {
                   id: entry.id,
                 })
               );
+            }}
+            sx={{
+              backgroundColor: entryHasStopwatchRunning ? "action.hover" : "",
+              border: entryHasStopwatchRunning ? "1px solid" : "",
+              borderColor: entryHasStopwatchRunning ? "action.selected" : "",
             }}
           >
             <CardContent>
@@ -62,18 +69,20 @@ export default function DateEntriesCard(props: Props) {
                 }}
               >
                 <Stack spacing={1} alignItems={"center"}>
-                  <ActivityIcon
-                    activity={entry.activity}
-                    sx={{
-                      fontSize: "3em",
-                      transform:
-                        entry.activity.hasSides &&
-                        entry.leftTime &&
-                        !entry.rightTime
-                          ? "scaleX(-1)"
-                          : "scaleX(1)",
-                    }}
-                  />
+                  {entry.activity != null && (
+                    <ActivityIcon
+                      activity={entry.activity}
+                      sx={{
+                        fontSize: "3em",
+                        transform:
+                          entry.activity.hasSides &&
+                          entry.leftTime &&
+                          !entry.rightTime
+                            ? "scaleX(-1)"
+                            : "scaleX(1)",
+                      }}
+                    />
+                  )}
                   {nextEntryExists && (
                     <Box
                       sx={{

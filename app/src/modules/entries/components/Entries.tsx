@@ -1,3 +1,4 @@
+import { groupEntries } from "@/lib/utils";
 import {
   Box,
   CircularProgress,
@@ -6,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { groupEntries } from "../../../lib/utils";
 import useEntries from "../hooks/useEntries";
 import DateEntriesCard from "./DateEntriesCard";
 

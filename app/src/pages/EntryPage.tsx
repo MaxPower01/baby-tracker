@@ -1,13 +1,13 @@
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import EntryForm from "@/modules/entries/components/EntryForm";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
+import { selectEntry } from "@/modules/entries/state/entriesSlice";
+import { RootState } from "@/modules/store/store";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 import { isValidActivityType } from "../lib/utils";
-import ActivityType from "../modules/activities/enums/ActivityType";
-import { ActivityModel } from "../modules/activities/models/ActivityModel";
-import EntryForm from "../modules/entries/components/EntryForm";
-import { EntryModel } from "../modules/entries/models/EntryModel";
-import { selectEntry } from "../modules/entries/state/entriesSlice";
-import { RootState } from "../modules/store/store";
 
 export default function EntryPage() {
   const { entryId } = useParams();
