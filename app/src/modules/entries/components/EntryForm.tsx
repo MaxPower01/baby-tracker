@@ -63,28 +63,27 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the sub-activities
 
-  const availableSubActivities = useMemo(() => {
-    return (
-      entry.activity?.subTypes?.map((type) => new ActivityModel(type)) ?? []
-    );
-  }, [entry]);
-
-  const subActivitiesList = useMemo(() => {
-    return availableSubActivities.map((a) => ({
-      value: a,
-      isSelected: entry.subActivities?.includes(a) ?? false,
-    }));
-  }, [availableSubActivities, entry.subActivities]);
-
   const toggleSubActivity = (subActivity: ActivityModel) => {
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
-      newEntry.subActivities = prevEntry.subActivities?.includes(subActivity)
-        ? entry.subActivities?.filter((a) => a !== subActivity)
-        : [...(entry.subActivities ?? []), subActivity];
+      if (
+        newEntry.subActivities.map((a) => a.type).includes(subActivity.type)
+      ) {
+        newEntry.subActivities = newEntry.subActivities.filter(
+          (a) => a.type !== subActivity.type
+        );
+      } else {
+        newEntry.subActivities.push(subActivity);
+      }
+      console.log(newEntry.subActivities);
+      save(newEntry);
       return newEntry;
     });
   };
+
+  const subActivities = useMemo(() => {
+    return entry.subActivities;
+  }, [entry]);
 
   // Handle the stopwatches
 
@@ -219,7 +218,9 @@ export default function EntryForm(props: EntryFormProps) {
                   <ActivityChip
                     key={`${entry.activity.type}-${subActivityType}`}
                     activity={subActivity}
-                    isSelected={entry.subActivities?.includes(subActivity)}
+                    isSelected={subActivities
+                      .map((a) => a.type)
+                      .includes(subActivity.type)}
                     onClick={() => toggleSubActivity(subActivity)}
                   />
                 );
