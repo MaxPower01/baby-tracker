@@ -28,7 +28,7 @@ export default function ActivityButtons({ onClick }: Props) {
             key={activity.type}
             activity={activity}
             showLabel
-            sx={{ paddingTop: 2, paddingBottom: 2 }}
+            sx={{ paddingTop: 2, paddingBottom: 2, fontSize: "0.8em" }}
             onClick={() => {
               if (onClick) {
                 onClick(activity.type);

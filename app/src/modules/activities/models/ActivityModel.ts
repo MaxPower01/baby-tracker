@@ -20,25 +20,25 @@ export class ActivityModel {
   private _orderedTypes: ActivityType[] = [
     ActivityType.BreastFeeding,
     ActivityType.BottleFeeding,
-    ActivityType.MilkExtraction,
+    ActivityType.Burp,
     //
     ActivityType.Diaper,
     ActivityType.Poop,
-    ActivityType.Sleep,
-    //
-    ActivityType.Burp,
-    ActivityType.Regurgitation,
-    ActivityType.Cry,
-    //
     ActivityType.Urine,
-    ActivityType.Vomit,
+    //
+    ActivityType.Sleep,
     ActivityType.Play,
-    //
     ActivityType.Walk,
-    ActivityType.Bath,
-    ActivityType.Weight,
     //
+    ActivityType.Cry,
+    ActivityType.Regurgitation,
+    ActivityType.Vomit,
+    //
+    ActivityType.MilkExtraction,
+    ActivityType.Weight,
     ActivityType.Size,
+    //
+    ActivityType.Bath,
     ActivityType.Temperature,
     ActivityType.SolidFood,
     //
