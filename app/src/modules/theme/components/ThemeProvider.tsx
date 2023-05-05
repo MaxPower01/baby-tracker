@@ -6,6 +6,25 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import React, { useEffect } from "react";
 import ColorModeContext from "./ColorModeContext";
 
+declare module "@mui/material/styles" {
+  interface Theme {
+    customPalette: {
+      background: {
+        avatar: string;
+      };
+    };
+  }
+
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    customPalette?: {
+      background?: {
+        avatar?: string;
+      };
+    };
+  }
+}
+
 type ThemeProviderProps = {
   children: React.ReactNode;
 };
@@ -40,6 +59,11 @@ export default function ThemeProvider(props: ThemeProviderProps) {
       createTheme({
         palette: {
           mode,
+        },
+        customPalette: {
+          background: {
+            avatar: mode === "dark" ? "hsl(0 0% 20% / 1)" : "hsl(0 0% 80% / 1)",
+          },
         },
         shape: {
           borderRadius: 8,

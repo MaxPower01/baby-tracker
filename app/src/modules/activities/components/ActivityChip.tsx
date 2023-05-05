@@ -8,6 +8,7 @@ type Props = {
   onClick?: (type: ActivityType) => void;
   isSelected?: boolean;
   size?: "small" | "medium";
+  variant?: "outlined" | "filled";
 };
 
 export default function ActivityChip({
@@ -15,6 +16,7 @@ export default function ActivityChip({
   onClick,
   isSelected,
   size,
+  variant,
 }: Props) {
   return (
     <Chip
@@ -38,6 +40,7 @@ export default function ActivityChip({
       }}
       color={isSelected ? "primary" : undefined}
       size={size}
+      variant={variant}
     />
   );
 }

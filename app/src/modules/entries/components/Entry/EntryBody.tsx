@@ -6,10 +6,11 @@ import { Grid, Stack, SxProps, Typography } from "@mui/material";
 import { useMemo } from "react";
 type Props = {
   entry: EntryModel;
+  sx?: SxProps | undefined;
 };
 
 export default function EntryBody(props: Props) {
-  const { entry } = props;
+  const { entry, sx } = props;
   if (!entry) return null;
   const { time, leftTime, rightTime, note, subActivities } = entry;
   const timeLabels: string[] = useMemo(() => {
@@ -63,7 +64,12 @@ export default function EntryBody(props: Props) {
   };
 
   return (
-    <Stack spacing={1}>
+    <Stack
+      spacing={1}
+      sx={{
+        ...sx,
+      }}
+    >
       {subActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
           {subActivities.map((subActivity) => {
@@ -73,6 +79,7 @@ export default function EntryBody(props: Props) {
                 key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
                 activity={subActivity}
                 size={"small"}
+                variant="outlined"
               />
             );
           })}

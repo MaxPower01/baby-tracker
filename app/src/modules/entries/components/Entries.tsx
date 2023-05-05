@@ -76,7 +76,7 @@ export default function Entries() {
                     paddingTop: 1,
                     paddingBottom: 1,
                     backgroundColor: "background.paper",
-                    zIndex: 1,
+                    zIndex: 2,
                   }}
                 >
                   <Typography
