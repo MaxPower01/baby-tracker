@@ -1,7 +1,9 @@
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+// import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import {
   Button,
+  // IconButton,
   InputAdornment,
   Stack,
   SxProps,
@@ -57,8 +59,7 @@ export default function Stopwatch(props: Props) {
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const name = event.target.name;
+    const { value, name } = event.target;
     let newSeconds = seconds;
     let newMinutes = minutes;
     let newHours = hours;
@@ -105,7 +106,7 @@ export default function Stopwatch(props: Props) {
       alignItems={"center"}
     >
       {props.label && (
-        <Typography textAlign="center" variant="h6">
+        <Typography textAlign="center" variant="body1">
           {props.label}
         </Typography>
       )}
@@ -244,6 +245,23 @@ export default function Stopwatch(props: Props) {
           disabled={props.inputsAreDisabled}
         />
       </Stack>
+      {/* <IconButton
+        onClick={() => {
+          onChange({
+            time: 0,
+            isRunning: false,
+            lastUpdateTime: Date.now(),
+          });
+        }}
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+        color="primary"
+      >
+        <RestartAltIcon sx={{}} />
+      </IconButton> */}
     </Stack>
   );
 }

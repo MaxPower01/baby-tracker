@@ -8,6 +8,7 @@ import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import VolumeInput from "@/modules/volume/components/VolumeInput";
 import {
   AppBar,
   Button,
@@ -85,6 +86,28 @@ export default function EntryForm(props: EntryFormProps) {
     return entry.subActivities;
   }, [entry]);
 
+  // Handle the volume
+
+  const handleVolumeChange = (params: { side: string; newVolume: number }) => {
+    if (params.newVolume < 0) return;
+    if (isNaN(params.newVolume)) return;
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      if (params.side === "left") {
+        newEntry.leftVolume = params.newVolume;
+      } else if (params.side === "right") {
+        newEntry.rightVolume = params.newVolume;
+      }
+      save(newEntry);
+      return newEntry;
+    });
+  };
+
+  const volumeLabel = useMemo(() => {
+    const volume = entry.leftVolume + entry.rightVolume;
+    return `${volume} ml`;
+  }, [entry]);
+
   // Handle the stopwatches
 
   const anyStopwatchIsRunning = useMemo(() => {
@@ -92,7 +115,7 @@ export default function EntryForm(props: EntryFormProps) {
   }, [entry]);
 
   const stopWatchTimeLabel = useMemo(() => {
-    return formatStopwatchesTime([entry.leftTime, entry.rightTime]);
+    return formatStopwatchesTime([entry.leftTime, entry.rightTime], true);
   }, [entry]);
 
   const handleStopwatchChange = (params: {
@@ -228,7 +251,42 @@ export default function EntryForm(props: EntryFormProps) {
             </Grid>
           )}
         </Section>
-        {entry.activity != null && entry.activity.hasDuration && (
+        {entry.activity?.hasVolume == true && (
+          <Section dividerPosition="top">
+            <SectionTitle title="Quantité" />
+            <Typography textAlign="center" variant="h4">
+              {volumeLabel}
+            </Typography>
+            <Stack
+              direction={"row"}
+              justifyContent={"space-around"}
+              spacing={4}
+              sx={{
+                width: "100%",
+              }}
+            >
+              <VolumeInput
+                volume={entry.leftVolume}
+                onChange={({ volume }) =>
+                  handleVolumeChange({ side: "left", newVolume: volume })
+                }
+                label={entry.activity?.hasSides ? "Gauche" : undefined}
+                inputsAreDisabled={anyStopwatchIsRunning}
+              />
+              {entry.activity?.hasSides && (
+                <VolumeInput
+                  volume={entry.rightVolume}
+                  onChange={({ volume }) =>
+                    handleVolumeChange({ side: "right", newVolume: volume })
+                  }
+                  label="Droite"
+                  inputsAreDisabled={anyStopwatchIsRunning}
+                />
+              )}
+            </Stack>
+          </Section>
+        )}
+        {entry.activity?.hasDuration == true && (
           <Section dividerPosition="top">
             <SectionTitle title="Durée" />
             <Typography textAlign="center" variant="h4">
@@ -242,7 +300,7 @@ export default function EntryForm(props: EntryFormProps) {
               }}
             >
               <Stopwatch
-                label={entry.activity.hasSides ? "Gauche" : undefined}
+                label={entry.activity?.hasSides ? "Gauche" : undefined}
                 sx={{ flex: 1 }}
                 time={entry.leftTime}
                 isRunning={entry.leftStopwatchIsRunning}
@@ -256,7 +314,7 @@ export default function EntryForm(props: EntryFormProps) {
                   })
                 }
               />
-              {entry.activity.hasSides && (
+              {entry.activity?.hasSides && (
                 <Stopwatch
                   label="Droite"
                   sx={{ flex: 1 }}

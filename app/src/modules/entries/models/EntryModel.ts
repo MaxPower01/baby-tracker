@@ -110,6 +110,32 @@ export class EntryModel {
     this._note = v;
   }
 
+  private _volume = 0;
+  public get volume(): number {
+    return this._volume;
+  }
+  public set volume(v: number) {
+    this._volume = v;
+  }
+
+  private _leftVolume = 0;
+  public get leftVolume(): number {
+    return this._leftVolume;
+  }
+  public set leftVolume(v: number) {
+    this._leftVolume = v;
+    this.volume = this.leftVolume + this.rightVolume;
+  }
+
+  private _rightVolume = 0;
+  public get rightVolume(): number {
+    return this._rightVolume;
+  }
+  public set rightVolume(v: number) {
+    this._rightVolume = v;
+    this.volume = this.leftVolume + this.rightVolume;
+  }
+
   public constructor() {}
 
   public toJSON() {
@@ -126,6 +152,9 @@ export class EntryModel {
       rightStopwatchIsRunning: this.rightStopwatchIsRunning,
       rightStopwatchLastUpdateTime: this.rightStopwatchLastUpdateTime,
       note: this.note?.trim() || undefined,
+      volume: this.volume,
+      leftVolume: this.leftVolume,
+      rightVolume: this.rightVolume,
     };
   }
 
@@ -151,6 +180,9 @@ export class EntryModel {
     if (json.rightStopwatchLastUpdateTime != null)
       entry.rightStopwatchLastUpdateTime = json.rightStopwatchLastUpdateTime;
     if (json.note != null) entry.note = json.note;
+    if (json.volume != null) entry.volume = json.volume;
+    if (json.leftVolume != null) entry.leftVolume = json.leftVolume;
+    if (json.rightVolume != null) entry.rightVolume = json.rightVolume;
     return entry;
   }
 
