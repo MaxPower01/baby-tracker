@@ -74,11 +74,6 @@ export class EntryModel {
 
   private _rightTime = 0;
   public get rightTime(): number {
-    if (this.rightStopwatchIsRunning) {
-      const now = Date.now();
-      const delta = now - (this.rightStopwatchLastUpdateTime || now);
-      return this._rightTime + delta;
-    }
     return this._rightTime;
   }
   public set rightTime(v: number) {
@@ -94,12 +89,45 @@ export class EntryModel {
     this._rightStopwatchIsRunning = v;
   }
 
+  public get anyStopwatchIsRunning(): boolean {
+    return this.leftStopwatchIsRunning || this.rightStopwatchIsRunning;
+  }
+
   private _rightStopwatchLastUpdateTime: number | undefined;
   public get rightStopwatchLastUpdateTime(): number | undefined {
     return this._rightStopwatchLastUpdateTime;
   }
   public set rightStopwatchLastUpdateTime(v: number | undefined) {
     this._rightStopwatchLastUpdateTime = v;
+  }
+
+  public get lastStopwatchUpdateTime(): number | undefined {
+    if (this.leftStopwatchLastUpdateTime == null) {
+      return this.rightStopwatchLastUpdateTime;
+    }
+    if (this.rightStopwatchLastUpdateTime == null) {
+      return this.leftStopwatchLastUpdateTime;
+    }
+    return Math.max(
+      this.leftStopwatchLastUpdateTime,
+      this.rightStopwatchLastUpdateTime
+    );
+  }
+
+  public get endDate(): Dayjs | null {
+    let endDate = null;
+    if (this.time) {
+      if (this.lastStopwatchUpdateTime != null) {
+        const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
+        const timeDate = this.startDate.add(this.time, "millisecond");
+        if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
+          return lastStopwatchUpdateTimeDate;
+        }
+        return timeDate;
+      }
+      return this.startDate.add(this.time, "millisecond");
+    }
+    return null;
   }
 
   private _note: string | undefined;

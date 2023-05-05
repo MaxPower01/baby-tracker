@@ -6,6 +6,7 @@ import { useMemo } from "react";
 type Props = {
   entry: EntryModel;
   hideIcon?: boolean;
+  textColor?: string;
 };
 
 export default function EntryHeader(props: Props) {
@@ -51,6 +52,28 @@ export default function EntryHeader(props: Props) {
       hour: "2-digit",
       minute: "2-digit",
     });
+    if (entry.endDate) {
+      if (entry.anyStopwatchIsRunning) {
+        result += " – en cours";
+      } else {
+        const isDifferentDay =
+          entry.startDate.toDate().getDate() !==
+          entry.endDate.toDate().getDate();
+        const isDifferentMonth =
+          entry.startDate.toDate().getMonth() !==
+          entry.endDate.toDate().getMonth();
+        const isDifferentYear =
+          entry.startDate.toDate().getFullYear() !==
+          entry.endDate.toDate().getFullYear();
+        result += ` – ${entry.endDate.toDate().toLocaleTimeString("fr-CA", {
+          minute: "2-digit",
+          hour: "2-digit",
+          day: isDifferentDay || isDifferentMonth ? "numeric" : undefined,
+          month: isDifferentDay || isDifferentMonth ? "long" : undefined,
+          year: isDifferentYear ? "numeric" : undefined,
+        })}`;
+      }
+    }
     return result;
   }, [startDate, time]);
   return (
@@ -70,11 +93,18 @@ export default function EntryHeader(props: Props) {
           sx={{
             lineHeight: 1,
             opacity: 0.6,
+            color: props.textColor,
           }}
         >
           {subtitle}
         </Typography>
-        <Typography variant="h6" fontWeight={"bold"} sx={{}}>
+        <Typography
+          variant="h6"
+          fontWeight={"bold"}
+          sx={{
+            color: props.textColor,
+          }}
+        >
           {title}
         </Typography>
       </Stack>

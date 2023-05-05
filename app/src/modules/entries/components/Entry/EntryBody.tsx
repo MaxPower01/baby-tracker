@@ -3,16 +3,18 @@ import ActivityChip from "@/modules/activities/components/ActivityChip";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import { Box, Grid, Stack, SxProps, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 type Props = {
   entry: EntryModel;
   sx?: SxProps | undefined;
+  textColor?: string;
 };
 
 export default function EntryBody(props: Props) {
-  const { entry, sx } = props;
+  const [entry, setEntry] = useState<EntryModel>(props.entry);
   if (!entry) return null;
+  const theme = useTheme();
   const {
     time,
     leftTime,
@@ -39,8 +41,8 @@ export default function EntryBody(props: Props) {
           entry.getTime({ side: "right", upToDate: true }),
           true
         )} (D)`;
-        if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
-        if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
+        // if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
+        // if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
         result.push(leftLabel);
         result.push(rightLabel);
       } else {
@@ -48,7 +50,7 @@ export default function EntryBody(props: Props) {
           entry.getTime({ upToDate: true }),
           true
         )}`;
-        if (entry.leftStopwatchIsRunning) label += " (en cours)";
+        // if (entry.leftStopwatchIsRunning) label += " (en cours)";
         result.push(label);
       }
     } else {
@@ -56,7 +58,7 @@ export default function EntryBody(props: Props) {
         entry.getTime({ upToDate: true }),
         true
       )}`;
-      if (entry.leftStopwatchIsRunning) label += " (en cours)";
+      // if (entry.leftStopwatchIsRunning) label += " (en cours)";
       result.push(label);
     }
     return result;
@@ -96,13 +98,30 @@ export default function EntryBody(props: Props) {
   const textStyle: SxProps = {
     fontStyle: "italic",
     opacity: 0.8,
+    color: props.textColor,
   };
 
+  const [renderCount, setRenderCount] = useState(0);
+
+  useEffect(() => {
+    const anyStopwatchIsRunning =
+      entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+    if (anyStopwatchIsRunning) {
+      const intervalId = setInterval(() => {
+        setEntry((prevEntry) => {
+          return prevEntry.clone();
+        });
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, []);
+
+  if (renderCount < 0) return null;
   return (
     <Stack
       spacing={1}
       sx={{
-        ...sx,
+        ...props.sx,
       }}
     >
       {subActivities.length > 0 && (
@@ -115,6 +134,9 @@ export default function EntryBody(props: Props) {
                 activity={subActivity}
                 size={"small"}
                 variant="outlined"
+                isSelected={
+                  props.textColor === theme.palette.primary.main ? true : false
+                }
               />
             );
           })}
@@ -126,6 +148,7 @@ export default function EntryBody(props: Props) {
             <WaterDropIcon
               sx={{
                 fontSize: "2em",
+                color: props.textColor,
               }}
             />
             <Box>
@@ -135,6 +158,7 @@ export default function EntryBody(props: Props) {
                   variant="body1"
                   sx={{
                     display: "inline",
+                    color: props.textColor,
                   }}
                 >
                   {labelIndex > 0 && " • "}
@@ -151,6 +175,7 @@ export default function EntryBody(props: Props) {
             <AccessTimeIcon
               sx={{
                 fontSize: "2em",
+                color: props.textColor,
               }}
             />
             <Box>
@@ -160,6 +185,7 @@ export default function EntryBody(props: Props) {
                   variant="body1"
                   sx={{
                     display: "inline",
+                    color: props.textColor,
                   }}
                 >
                   {labelIndex > 0 && " • "}

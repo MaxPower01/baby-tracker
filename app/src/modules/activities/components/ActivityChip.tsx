@@ -9,6 +9,7 @@ type Props = {
   isSelected?: boolean;
   size?: "small" | "medium";
   variant?: "outlined" | "filled";
+  textColor?: string;
 };
 
 export default function ActivityChip({
@@ -17,6 +18,7 @@ export default function ActivityChip({
   isSelected,
   size,
   variant,
+  textColor,
 }: Props) {
   return (
     <Chip
@@ -27,8 +29,9 @@ export default function ActivityChip({
           activity={activity}
           sx={{
             marginRight: size === "small" ? -0.5 : -1,
-            marginLeft: 1,
+            marginLeft: 0.5,
             fontSize: "1.35em",
+            color: textColor,
           }}
         />
       }

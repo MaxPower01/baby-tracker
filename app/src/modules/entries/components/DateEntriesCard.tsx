@@ -61,11 +61,7 @@ export default function DateEntriesCard(props: Props) {
                 })
               );
             }}
-            sx={{
-              backgroundColor: entryHasStopwatchRunning ? "action.hover" : "",
-              border: entryHasStopwatchRunning ? "1px solid" : "",
-              borderColor: entryHasStopwatchRunning ? "action.selected" : "",
-            }}
+            sx={{}}
           >
             <CardContent
               sx={{
@@ -108,10 +104,15 @@ export default function DateEntriesCard(props: Props) {
                       height: "4.5em",
                       borderRadius: "50%",
                       border: "2px solid",
-                      borderColor: "divider",
                       backgroundColor: theme.customPalette.background.avatar,
                       flexShrink: 0,
                       zIndex: 1,
+                      borderColor: entryHasStopwatchRunning
+                        ? theme.palette.primary.main
+                        : theme.palette.divider,
+                      boxShadow: entryHasStopwatchRunning
+                        ? `0 0 5px 0px ${theme.palette.primary.main}`
+                        : "",
                     }}
                   >
                     {entry.activity != null && (
@@ -129,7 +130,15 @@ export default function DateEntriesCard(props: Props) {
                       />
                     )}
                   </Box>
-                  <EntryHeader entry={entry} hideIcon />
+                  <EntryHeader
+                    entry={entry}
+                    hideIcon
+                    textColor={
+                      entryHasStopwatchRunning
+                        ? theme.palette.primary.main
+                        : undefined
+                    }
+                  />
                 </Stack>
 
                 <Stack
@@ -154,6 +163,11 @@ export default function DateEntriesCard(props: Props) {
                     sx={{
                       paddingTop: 1,
                     }}
+                    textColor={
+                      entryHasStopwatchRunning
+                        ? theme.palette.primary.main
+                        : undefined
+                    }
                   />
                 </Stack>
               </Stack>
