@@ -33,6 +33,14 @@
 			"problemMatcher": [],
 			"label": "npm: install - app",
 			"detail": "install dependencies from package"
+		},
+		{
+			"type": "npm",
+			"script": "preview",
+			"path": "app",
+			"problemMatcher": [],
+			"label": "npm: preview - app",
+			"detail": "vite preview"
 		}
 	]
 }

@@ -27,3 +27,11 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 export const googleAuthProvider = new GoogleAuthProvider();
+
+// if (process.env.NODE_ENV === "development") {
+//   // Do something in development mode
+// } else if (process.env.NODE_ENV === "production") {
+//   // Do something in production mode
+// } else {
+//   // Unknown environment
+// }
