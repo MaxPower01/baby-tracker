@@ -11,15 +11,37 @@ type Props = {
 export default function EntryHeader(props: Props) {
   const { entry } = props;
   if (!entry) return null;
-  const { time, leftTime, rightTime, note, startDate, activity } = entry;
+  const {
+    time,
+    leftTime,
+    rightTime,
+    note,
+    startDate,
+    activity,
+    volume,
+    leftVolume,
+    rightVolume,
+  } = entry;
   if (!props.entry) return null;
   const title = useMemo(() => {
     let result = activity?.name ?? "";
-    if (time && activity?.hasSides) {
-      if (leftTime && !rightTime) {
-        result += ` (G)`;
-      } else if (!leftTime && rightTime) {
-        result += ` (D)`;
+    if (activity?.hasSides) {
+      if (time || volume) {
+        const bothVolumes = leftVolume && rightVolume;
+        const onlyLeftVolume = !bothVolumes && leftVolume;
+        const onlyRightVolume = !bothVolumes && rightVolume;
+        const bothTimes = leftTime && rightTime;
+        const onlyLeftTime = !bothTimes && leftTime;
+        const onlyRightTime = !bothTimes && rightTime;
+        const shouldRenderLeftSideSuffix =
+          !bothVolumes && !bothTimes && (onlyLeftTime || onlyLeftVolume);
+        const shouldRenderRightSideSuffix =
+          !bothVolumes && !bothTimes && (onlyRightTime || onlyRightVolume);
+        if (shouldRenderLeftSideSuffix) {
+          result += ` (G)`;
+        } else if (shouldRenderRightSideSuffix) {
+          result += ` (D)`;
+        }
       }
     }
     return result;
