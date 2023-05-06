@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "deploy": "firebase deploy",
-    "emulate": "firebase emulators:start"
+    "emulate": "firebase emulators:start",
+    "build": "cd app && npm run build",
+    "dev": "cd app && npm run dev"
   },
   "dependencies": {
     "concurrently": "^8.0.1"

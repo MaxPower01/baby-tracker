@@ -14,6 +14,21 @@
 			"problemMatcher": [],
 			"label": "npm: deploy",
 			"detail": "firebase deploy"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build",
+			"detail": "cd app && npm run build"
+		},
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": [],
+			"label": "npm: dev",
+			"detail": "cd app && npm run dev"
 		}
 	]
 }

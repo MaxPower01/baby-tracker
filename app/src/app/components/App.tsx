@@ -14,7 +14,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
 
 export default function App() {
-  alert(process.env.NODE_ENV);
   return (
     <>
       <TopBar component={"header"} />
