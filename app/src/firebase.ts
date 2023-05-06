@@ -8,6 +8,9 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+// const authDomain = window.location.hostname === "localhost" ? "localhost" : "baby-tracker-461b4.firebaseapp.com";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBn0IB6Pgovrox-kNXH0IbjtfdPrcSjAn8",
   authDomain: "baby-tracker-461b4.firebaseapp.com",

@@ -3,44 +3,17 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "dev",
-			"path": "app",
+			"script": "emulate",
 			"problemMatcher": [],
-			"label": "npm: dev - app",
-			"detail": "vite"
+			"label": "npm: emulate",
+			"detail": "firebase emulators:start"
 		},
 		{
 			"type": "npm",
-			"script": "dev",
-			"path": "app",
+			"script": "deploy",
 			"problemMatcher": [],
-			"label": "npm: dev - app",
-			"detail": "vite --host"
-		},
-		{
-			"type": "npm",
-			"script": "build",
-			"path": "app",
-			"group": "build",
-			"problemMatcher": [],
-			"label": "npm: build - app",
-			"detail": "tsc && vite build"
-		},
-		{
-			"type": "npm",
-			"script": "install",
-			"path": "app",
-			"problemMatcher": [],
-			"label": "npm: install - app",
-			"detail": "install dependencies from package"
-		},
-		{
-			"type": "npm",
-			"script": "preview",
-			"path": "app",
-			"problemMatcher": [],
-			"label": "npm: preview - app",
-			"detail": "vite preview"
+			"label": "npm: deploy",
+			"detail": "firebase deploy"
 		}
 	]
 }
