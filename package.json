@@ -6,7 +6,7 @@
     "deploy": "firebase deploy",
     "emulate": "firebase emulators:start",
     "build": "cd app && npm run build",
-    "dev": "cd app && npm run dev"
+    "dev": "concurrently \"cd app && npm run dev\" \"npm run emulate\""
   },
   "dependencies": {
     "concurrently": "^8.0.1"

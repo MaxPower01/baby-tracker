@@ -1,30 +1,44 @@
-import { auth, googleAuthProvider } from "@/firebase";
+import { auth, db, googleAuthProvider } from "@/firebase";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Stack, Typography } from "@mui/material";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function AuthenticationForm() {
-  const handleGoogleSignIn = () => {
-    signInWithPopup(auth, googleAuthProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
+  const handleGoogleSignIn = async () => {
+    let user: User | undefined;
+    // let isNewUser: boolean | undefined;
+    try {
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
+      // const additionalUserInfo = getAdditionalUserInfo(result);
+      // isNewUser = additionalUserInfo?.isNewUser;
+      user = result.user;
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error(errorCode, errorMessage, email, credential);
+    }
+    if (!user) return;
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        emailVerified: user.emailVerified,
+        phoneNumber: user.phoneNumber,
+        providerId: user.providerId,
+        creationTime: user.metadata.creationTime,
+        lastSignInTime: user.metadata.lastSignInTime,
       });
+    } catch (error: any) {
+      console.error(error);
+    }
   };
   return (
     <Stack spacing={2}>

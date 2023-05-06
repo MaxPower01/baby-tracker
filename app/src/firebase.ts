@@ -52,12 +52,4 @@ if (process.env.NODE_ENV === "development") {
 
 const googleAuthProvider = new GoogleAuthProvider();
 
-// if (process.env.NODE_ENV === "development") {
-//   // Do something in development mode
-// } else if (process.env.NODE_ENV === "production") {
-//   // Do something in production mode
-// } else {
-//   // Unknown environment
-// }
-
 export { db, auth, googleAuthProvider };
