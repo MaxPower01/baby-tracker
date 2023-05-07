@@ -1,5 +1,6 @@
 import LocalStorageKey from "@/common/enums/LocalStorageKey";
 import { getInitialState, setLocalState } from "@/lib/utils";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import StoreReducerName from "@/modules/store/enums/StoreReducerName";
 import { RootState } from "@/modules/store/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
@@ -98,6 +99,21 @@ export const selectEntry = (state: RootState, id: string) => {
 
 export const selectEditingEntryId = (state: RootState) => {
   return state.entriesReducer.editingEntryId;
+};
+
+export const selectLastFeedingEntry = (state: RootState) => {
+  const feedingActivitiesTypes = [
+    ActivityType.BottleFeeding,
+    ActivityType.BreastFeeding,
+  ];
+  const entries = selectEntries(state);
+  if (!entries) {
+    return undefined;
+  }
+  return entries.find(
+    (entry) =>
+      entry.activity && feedingActivitiesTypes.includes(entry.activity.type)
+  );
 };
 
 export default slice.reducer;

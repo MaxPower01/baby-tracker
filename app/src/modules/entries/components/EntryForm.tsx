@@ -94,7 +94,6 @@ export default function EntryForm(props: EntryFormProps) {
       } else {
         newEntry.subActivities.push(subActivity);
       }
-      console.log(newEntry.subActivities);
       save(newEntry);
       return newEntry;
     });
@@ -316,7 +315,8 @@ export default function EntryForm(props: EntryFormProps) {
               isRunning={entry.leftStopwatchIsRunning}
               lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
               buttonIsDisabled={entry.rightStopwatchIsRunning}
-              inputsAreDisabled={anyStopwatchIsRunning}
+              // inputsAreDisabled={anyStopwatchIsRunning}
+              inputsAreReadOnly={anyStopwatchIsRunning}
               onChange={(params) =>
                 handleStopwatchChange({
                   ...params,
@@ -332,7 +332,8 @@ export default function EntryForm(props: EntryFormProps) {
                 isRunning={entry.rightStopwatchIsRunning}
                 lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
                 buttonIsDisabled={entry.leftStopwatchIsRunning}
-                inputsAreDisabled={anyStopwatchIsRunning}
+                // inputsAreDisabled={anyStopwatchIsRunning}
+                inputsAreReadOnly={anyStopwatchIsRunning}
                 onChange={(params) =>
                   handleStopwatchChange({
                     ...params,
@@ -374,10 +375,19 @@ export default function EntryForm(props: EntryFormProps) {
             <Stack
               flexGrow={1}
               direction="row"
-              sx={{ justifyContent: "space-between" }}
+              sx={{
+                justifyContent: "space-between",
+                paddingTop: 2,
+                paddingBottom: 2,
+              }}
               spacing={2}
             >
-              <Button variant="contained" onClick={handleSubmit} fullWidth>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                fullWidth
+                size="large"
+              >
                 Enregistrer
               </Button>
             </Stack>

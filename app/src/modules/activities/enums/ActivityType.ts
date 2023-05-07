@@ -21,5 +21,6 @@ enum ActivityType {
   Vomit = 21,
   Burp = 22,
   Bath = 23,
+  NasalHygiene = 24,
 }
 export default ActivityType;

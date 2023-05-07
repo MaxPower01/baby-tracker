@@ -39,13 +39,14 @@ export class ActivityModel {
     ActivityType.Size,
     //
     ActivityType.Bath,
+    ActivityType.NasalHygiene,
     ActivityType.Temperature,
-    ActivityType.SolidFood,
     //
+    ActivityType.SolidFood,
     ActivityType.Medicine,
     ActivityType.Vaccine,
-    ActivityType.Teeth,
     //
+    ActivityType.Teeth,
     ActivityType.HospitalVisit,
   ];
 
@@ -139,6 +140,9 @@ export class ActivityModel {
         this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
+        break;
+      case ActivityType.NasalHygiene:
+        this._name = "Hygiène nasale";
         break;
       case ActivityType.Play:
         this._name = "Jeu";

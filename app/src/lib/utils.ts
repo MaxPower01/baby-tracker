@@ -24,7 +24,12 @@ export function exportToJSONFile(data: any): void {
 /*                                   Entries                                  */
 /* -------------------------------------------------------------------------- */
 
-export function groupEntries(entries: EntryModel[]): {
+/**
+ * Groups entries by date
+ * @param entries The entries to group
+ * @returns The entries grouped by date
+ */
+export function groupEntriesByDate(entries: EntryModel[]): {
   years: Array<{
     /**
      * 4-digit year
@@ -88,6 +93,55 @@ export function groupEntries(entries: EntryModel[]): {
     }
     result.years.push(yearEntries);
   }
+  return result;
+}
+
+/**
+ * Groups entries that are close in time
+ * @param entries The entries to group
+ * @param timeUnit The unit of time to group by
+ * @param timeStep The amount of time to group by
+ * @returns The entries grouped by time
+ */
+export function groupEntriesByTime(params: {
+  entries: EntryModel[];
+  timeUnit: "hour" | "minute";
+  timeStep: number;
+}) {
+  const { entries, timeUnit, timeStep } = params;
+  const result = [] as Array<{
+    date: Date;
+    entries: EntryModel[];
+  }>;
+  if (!entries || entries.length === 0) return result;
+  // Loop through entries and, for each entry, check if it's close enough to the previous entry to be grouped
+  let currentGroup = {
+    date: entries[0].startDate.toDate(),
+    entries: [] as EntryModel[],
+  };
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    const entryDate = entry.startDate.toDate();
+    const previousEntryDate = currentGroup.date;
+    const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
+    const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);
+    const timeDifferenceInHours = Math.floor(timeDifference / 3600000);
+    if (
+      (timeUnit === "minute" && timeDifferenceInMinutes <= timeStep) ||
+      (timeUnit === "hour" && timeDifferenceInHours <= timeStep)
+    ) {
+      currentGroup.entries.push(entry);
+    }
+    // If the entry is too far from the previous entry, start a new group
+    else {
+      result.push(currentGroup);
+      currentGroup = {
+        date: entryDate,
+        entries: [entry],
+      };
+    }
+  }
+  result.push(currentGroup);
   return result;
 }
 

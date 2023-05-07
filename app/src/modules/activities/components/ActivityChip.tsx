@@ -25,7 +25,11 @@ export default function ActivityChip({
   return (
     <Chip
       key={`${activity.type}-${activity.type}`}
-      label={<Typography variant="body2">{activity.name}</Typography>}
+      label={
+        <Typography variant="body2" fontWeight={"bold"}>
+          {activity.name}
+        </Typography>
+      }
       icon={
         <ActivityIcon
           activity={activity}

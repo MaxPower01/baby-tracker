@@ -21,6 +21,7 @@ type Props = {
   lastUpdateTime: number | null;
   buttonIsDisabled?: boolean;
   inputsAreDisabled?: boolean;
+  inputsAreReadOnly?: boolean;
   onChange: (params: {
     time: number;
     isRunning: boolean;
@@ -29,7 +30,8 @@ type Props = {
 };
 
 export default function Stopwatch(props: Props) {
-  const { time, isRunning, lastUpdateTime, onChange } = props;
+  const { time, isRunning, lastUpdateTime, onChange, inputsAreReadOnly } =
+    props;
 
   const theme = useTheme();
 
@@ -98,6 +100,15 @@ export default function Stopwatch(props: Props) {
     });
   };
 
+  const textfieldStyle: SxProps = {
+    "& *:before": {
+      border: "none !important",
+    },
+    "& *:after": {
+      border: "none !important",
+    },
+  };
+
   const inputStyle: SxProps = {
     "& input": {
       textAlign: "right",
@@ -141,18 +152,26 @@ export default function Stopwatch(props: Props) {
             placeholder="00"
             value={hours}
             onChange={handleInputChange}
+            sx={{
+              ...textfieldStyle,
+            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">h</InputAdornment>,
               onFocus: (event) => {
-                event.target.select();
+                if (inputsAreReadOnly) {
+                  event.target.blur();
+                } else {
+                  event.target.select();
+                }
               },
+              readOnly: inputsAreReadOnly,
               "aria-valuemin": 0,
               "aria-colcount": 2,
               sx: {
                 ...inputStyle,
               },
             }}
-            disabled={props.inputsAreDisabled}
+            // disabled={props.inputsAreDisabled}
           />
           <TextField
             variant="standard"
@@ -160,12 +179,20 @@ export default function Stopwatch(props: Props) {
             name="minutes"
             placeholder="00"
             value={minutes}
+            sx={{
+              ...textfieldStyle,
+            }}
             onChange={handleInputChange}
             InputProps={{
               endAdornment: <InputAdornment position="end">m</InputAdornment>,
               onFocus: (event) => {
-                event.target.select();
+                if (inputsAreReadOnly) {
+                  event.target.blur();
+                } else {
+                  event.target.select();
+                }
               },
+              readOnly: inputsAreReadOnly,
               "aria-valuemin": 0,
               "aria-valuemax": 59,
               "aria-colcount": 2,
@@ -173,20 +200,28 @@ export default function Stopwatch(props: Props) {
                 ...inputStyle,
               },
             }}
-            disabled={props.inputsAreDisabled}
+            // disabled={props.inputsAreDisabled}
           />
           <TextField
             variant="standard"
             type="number"
             name="seconds"
             placeholder="00"
+            sx={{
+              ...textfieldStyle,
+            }}
             value={seconds}
             onChange={handleInputChange}
             InputProps={{
               endAdornment: <InputAdornment position="end">s</InputAdornment>,
               onFocus: (event) => {
-                event.target.select();
+                if (inputsAreReadOnly) {
+                  event.target.blur();
+                } else {
+                  event.target.select();
+                }
               },
+              readOnly: inputsAreReadOnly,
               "aria-valuemin": 0,
               "aria-valuemax": 59,
               "aria-colcount": 2,
@@ -194,7 +229,7 @@ export default function Stopwatch(props: Props) {
                 ...inputStyle,
               },
             }}
-            disabled={props.inputsAreDisabled}
+            // disabled={props.inputsAreDisabled}
           />
         </Stack>
         <Button

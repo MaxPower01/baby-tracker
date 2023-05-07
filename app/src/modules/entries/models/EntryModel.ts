@@ -114,8 +114,7 @@ export class EntryModel {
     );
   }
 
-  public get endDate(): Dayjs | null {
-    let endDate = null;
+  public get endDate(): Dayjs {
     if (this.time) {
       if (this.lastStopwatchUpdateTime != null) {
         const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
@@ -127,7 +126,7 @@ export class EntryModel {
       }
       return this.startDate.add(this.time, "millisecond");
     }
-    return null;
+    return this.startDate;
   }
 
   private _note: string | undefined;

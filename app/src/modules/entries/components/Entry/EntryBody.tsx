@@ -25,22 +25,23 @@ export default function EntryBody(props: Props) {
     leftVolume,
     rightVolume,
   } = entry;
+  const iconFontSize = "1.5em";
   const timeLabels: string[] = useMemo(() => {
     let result: string[] = [];
     if (!time) return result;
     if (entry?.activity?.hasSides) {
       if (leftTime && rightTime) {
-        let leftLabel = `${formatStopwatchTime(
+        let leftLabel = `(G) ${formatStopwatchTime(
           entry.getTime({
             side: "left",
             upToDate: true,
           }),
           true
-        )} (G)`;
-        let rightLabel = `${formatStopwatchTime(
+        )}`;
+        let rightLabel = `(D) ${formatStopwatchTime(
           entry.getTime({ side: "right", upToDate: true }),
           true
-        )} (D)`;
+        )}`;
         // if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
         // if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
         result.push(leftLabel);
@@ -101,12 +102,14 @@ export default function EntryBody(props: Props) {
     color: props.textColor,
   };
 
-  const [renderCount, setRenderCount] = useState(0);
+  const handlePauseButtonClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+  };
 
   useEffect(() => {
-    const anyStopwatchIsRunning =
-      entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
-    if (anyStopwatchIsRunning) {
+    if (entry.anyStopwatchIsRunning) {
       const intervalId = setInterval(() => {
         setEntry((prevEntry) => {
           return prevEntry.clone();
@@ -116,7 +119,6 @@ export default function EntryBody(props: Props) {
     }
   }, []);
 
-  if (renderCount < 0) return null;
   return (
     <Stack
       spacing={1}
@@ -141,59 +143,57 @@ export default function EntryBody(props: Props) {
         </Grid>
       )}
       {volumeLabels?.length > 0 && (
-        <>
-          <Stack spacing={1} direction={"row"} alignItems={"center"}>
-            <WaterDropIcon
-              sx={{
-                fontSize: "2em",
-                color: props.textColor,
-              }}
-            />
-            <Box>
-              {volumeLabels.map((label, labelIndex) => (
-                <Typography
-                  key={labelIndex}
-                  variant="body1"
-                  sx={{
-                    display: "inline",
-                    color: props.textColor,
-                  }}
-                >
-                  {labelIndex > 0 && " • "}
-                  {label}
-                </Typography>
-              ))}
-            </Box>
-          </Stack>
-        </>
+        <Stack spacing={1} direction={"row"} alignItems={"center"}>
+          <WaterDropIcon
+            sx={{
+              fontSize: iconFontSize,
+              color: props.textColor,
+            }}
+          />
+          <Box>
+            {volumeLabels.map((label, labelIndex) => (
+              <Typography
+                key={labelIndex}
+                variant="body1"
+                sx={{
+                  display: "inline",
+                  color: props.textColor,
+                }}
+              >
+                {labelIndex > 0 && " • "}
+                {label}
+              </Typography>
+            ))}
+          </Box>
+        </Stack>
       )}
-      {timeLabels?.length > 0 && (
-        <>
-          <Stack spacing={1} direction={"row"} alignItems={"center"}>
+      {timeLabels?.length > 0 &&
+        timeLabels.map((label, labelIndex) => (
+          <Stack
+            key={labelIndex}
+            spacing={1}
+            direction={"row"}
+            alignItems={"center"}
+          >
             <AccessTimeIcon
               sx={{
-                fontSize: "2em",
+                fontSize: iconFontSize,
                 color: props.textColor,
               }}
             />
             <Box>
-              {timeLabels.map((label, labelIndex) => (
-                <Typography
-                  key={labelIndex}
-                  variant="body1"
-                  sx={{
-                    display: "inline",
-                    color: props.textColor,
-                  }}
-                >
-                  {labelIndex > 0 && " • "}
-                  {label}
-                </Typography>
-              ))}
+              <Typography
+                variant="body1"
+                sx={{
+                  display: "inline",
+                  color: props.textColor,
+                }}
+              >
+                {label}
+              </Typography>
             </Box>
           </Stack>
-        </>
-      )}
+        ))}
 
       {note && (
         <Typography variant="body1" sx={textStyle}>

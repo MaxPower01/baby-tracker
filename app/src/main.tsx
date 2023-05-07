@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./app/components/App";
 import LayoutProvider from "./common/components/LayoutProvider";
 import "./main.scss";
-import MenuProvider from "./modules/menu/components/MenuProvider";
 import StoreProvider from "./modules/store/components/StoreProvider";
 import ThemeProvider from "./modules/theme/components/ThemeProvider";
 
@@ -16,9 +15,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <CssBaseline />
         <BrowserRouter>
           <LayoutProvider>
-            <MenuProvider>
-              <App />
-            </MenuProvider>
+            <App />
           </LayoutProvider>
         </BrowserRouter>
       </ThemeProvider>
