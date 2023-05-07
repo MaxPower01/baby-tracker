@@ -127,7 +127,13 @@ export default function Entries() {
                           })}
                         </Typography>
                       </Box>
-                      <Stack spacing={1}>
+                      <Stack
+                        spacing={1}
+                        sx={{
+                          paddingTop: 1,
+                          paddingBottom: 1,
+                        }}
+                      >
                         <Typography
                           variant="h6"
                           sx={{
