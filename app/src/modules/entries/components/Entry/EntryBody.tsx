@@ -102,12 +102,6 @@ export default function EntryBody(props: Props) {
     color: props.textColor,
   };
 
-  const handlePauseButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-  };
-
   useEffect(() => {
     if (entry.anyStopwatchIsRunning) {
       const intervalId = setInterval(() => {

@@ -63,9 +63,6 @@ export default function Entries() {
     <Stack spacing={4}>
       {entriesByDate.years.map((yearEntries) => {
         return yearEntries.months.map((monthEntries) => {
-          const anyEntriesInMonth = monthEntries.days.some(
-            (dayEntries) => dayEntries.entries.length > 0
-          );
           return monthEntries.days.map((dayEntries) => {
             if (dayEntries.entries.length === 0) {
               return null;
@@ -145,6 +142,7 @@ export default function Entries() {
                         </Typography>
                         <Typography
                           variant="subtitle1"
+                          textAlign={"left"}
                           sx={{
                             opacity: 0.5,
                             lineHeight: 1,
