@@ -50,7 +50,16 @@ export default function EntryForm(props: EntryFormProps) {
 
   useEffect(() => {
     dispatch(setEditingEntryId(entry.id));
-  }, [entry]);
+    if (entry.anyStopwatchIsRunning) {
+      // If any stopwatch is running, we need to update the entry's time
+      // so that it is up to date on the first render.
+      setEntry((prevEntry) => {
+        const newEntry = prevEntry.clone();
+        newEntry.updateTime();
+        return newEntry;
+      });
+    }
+  }, []);
 
   const save = useCallback(
     (entry: EntryModel) => {
