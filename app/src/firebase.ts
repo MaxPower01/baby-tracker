@@ -1,13 +1,25 @@
 // Import the functions you need from the SDKs you need
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+  GoogleAuthProvider,
+  connectAuthEmulator,
+  getAuth,
+} from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+// const authDomain =
+//   window.location.hostname === "localhost"
+//     ? "localhost"
+//     : "baby-tracker-461b4.firebaseapp.com";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBn0IB6Pgovrox-kNXH0IbjtfdPrcSjAn8",
   authDomain: "baby-tracker-461b4.firebaseapp.com",
@@ -20,10 +32,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 const analytics = getAnalytics(app);
 
-export const db = getFirestore(app);
+const db = getFirestore(app);
 
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
-export const googleAuthProvider = new GoogleAuthProvider();
+const storage = getStorage(app);
+
+const functions = getFunctions(app);
+
+if (process.env.NODE_ENV === "development") {
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectStorageEmulator(storage, "localhost", 9199);
+  connectFunctionsEmulator(functions, "localhost", 5001);
+}
+
+const googleAuthProvider = new GoogleAuthProvider();
+
+export { db, auth, googleAuthProvider };

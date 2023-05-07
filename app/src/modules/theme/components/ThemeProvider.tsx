@@ -66,7 +66,7 @@ export default function ThemeProvider(props: ThemeProviderProps) {
           },
         },
         shape: {
-          borderRadius: 8,
+          borderRadius: 16,
         },
       }),
     [mode]

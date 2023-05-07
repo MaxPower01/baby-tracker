@@ -133,10 +133,8 @@ export default function EntryBody(props: Props) {
                 key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
                 activity={subActivity}
                 size={"small"}
-                variant="outlined"
-                isSelected={
-                  props.textColor === theme.palette.primary.main ? true : false
-                }
+                isSelected={true}
+                isSelectable={false}
               />
             );
           })}

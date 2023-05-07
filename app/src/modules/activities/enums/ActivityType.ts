@@ -1,5 +1,4 @@
 enum ActivityType {
-  Bath = 0,
   BottleFeeding = 1,
   BreastFeeding = 2,
   Cry = 3,
@@ -21,5 +20,6 @@ enum ActivityType {
   Regurgitation = 20,
   Vomit = 21,
   Burp = 22,
+  Bath = 23,
 }
 export default ActivityType;

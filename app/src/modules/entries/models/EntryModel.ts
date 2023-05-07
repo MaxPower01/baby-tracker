@@ -262,4 +262,26 @@ export class EntryModel {
     }
     return 0;
   }
+
+  public updateTime() {
+    const {
+      anyStopwatchIsRunning,
+      leftStopwatchIsRunning,
+      rightStopwatchIsRunning,
+      leftTime,
+      rightTime,
+      lastStopwatchUpdateTime,
+    } = this;
+    if (!anyStopwatchIsRunning) return;
+    const now = Date.now();
+    const delta = now - (lastStopwatchUpdateTime ?? now);
+    const time = leftStopwatchIsRunning ? leftTime : rightTime;
+    if (leftStopwatchIsRunning) {
+      this.leftTime = time + delta;
+      this.leftStopwatchLastUpdateTime = now;
+    } else if (rightStopwatchIsRunning) {
+      this.rightTime = time + delta;
+      this.rightStopwatchLastUpdateTime = now;
+    }
+  }
 }

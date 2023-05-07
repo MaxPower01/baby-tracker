@@ -3,36 +3,32 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "dev",
-			"path": "app",
+			"script": "emulate",
 			"problemMatcher": [],
-			"label": "npm: dev - app",
-			"detail": "vite"
+			"detail": "Starts the Firebase Local Emulator Suite.",
+			"label": "emulate"
 		},
 		{
 			"type": "npm",
-			"script": "dev",
-			"path": "app",
+			"script": "deploy",
 			"problemMatcher": [],
-			"label": "npm: dev - app",
-			"detail": "vite --host"
+			"detail": "Builds the app and deploys it to Firebase, including hosting, functions, and rules.",
+			"label": "deploy"
 		},
 		{
 			"type": "npm",
 			"script": "build",
-			"path": "app",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build - app",
-			"detail": "tsc && vite build"
+			"detail": "Builds the app for production to the `dist` folder.",
+			"label": "build"
 		},
 		{
 			"type": "npm",
-			"script": "install",
-			"path": "app",
+			"script": "dev",
 			"problemMatcher": [],
-			"label": "npm: install - app",
-			"detail": "install dependencies from package"
+			"detail": "Starts the app in development mode (Firebase Emulator Suite, hot-code reloading, error reporting, etc.).",
+			"label": "dev"
 		}
 	]
 }

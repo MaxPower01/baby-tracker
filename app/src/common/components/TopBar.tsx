@@ -1,6 +1,11 @@
+import { getPageName, getPageTitle, getPath } from "@/lib/utils";
+import {
+  removeEntry,
+  selectEditingEntryId,
+} from "@/modules/entries/state/entriesSlice";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-// import DeleteIcon from "@mui/icons-material/Delete";
-import { getPageName, getPageTitle } from "@/lib/utils";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AppBar,
   Box,
@@ -9,7 +14,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import CSSBreakpoint from "../enums/CSSBreakpoint";
 import PageName from "../enums/PageName";
@@ -20,6 +26,9 @@ type Props = {
 
 export default function TopBar(props: Props) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const editingEntryId = useSelector(selectEditingEntryId);
 
   const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
@@ -33,12 +42,24 @@ export default function TopBar(props: Props) {
     return pageName === PageName.Entry;
   }, [pageName]);
 
+  const shouldRenderDeleteEntryButton = useMemo(() => {
+    return editingEntryId != null && pageName === PageName.Entry;
+  }, [pageName]);
+
   const handleBackButtonClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    e.preventDefault();
     navigate(-1);
   };
+
+  const handleDeleteEntryButtonClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (!editingEntryId) return;
+      dispatch(removeEntry(editingEntryId));
+      navigate(getPath({ page: PageName.Home }));
+    },
+    [editingEntryId]
+  );
 
   return (
     <AppBar
@@ -63,11 +84,11 @@ export default function TopBar(props: Props) {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* {shouldRenderDeleteButton && (
-            <IconButton onClick={() => {}}>
+          {shouldRenderDeleteEntryButton && (
+            <IconButton onClick={handleDeleteEntryButtonClick}>
               <DeleteIcon />
             </IconButton>
-          )} */}
+          )}
         </Toolbar>
       </Container>
     </AppBar>

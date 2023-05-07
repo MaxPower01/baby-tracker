@@ -6,6 +6,10 @@ import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
+import {
+  setEditingEntryId,
+  updateEntry,
+} from "@/modules/entries/state/entriesSlice";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
@@ -21,6 +25,7 @@ import {
   TextField,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   LocalizationProvider,
@@ -28,9 +33,8 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { removeEntry, updateEntry } from "../state/entriesSlice";
 
 type EntryFormProps = {
   entry: EntryModel;
@@ -42,6 +46,20 @@ export default function EntryForm(props: EntryFormProps) {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+
+  useEffect(() => {
+    dispatch(setEditingEntryId(entry.id));
+    if (entry.anyStopwatchIsRunning) {
+      // If any stopwatch is running, we need to update the entry's time
+      // so that it is up to date on the first render.
+      setEntry((prevEntry) => {
+        const newEntry = prevEntry.clone();
+        newEntry.updateTime();
+        return newEntry;
+      });
+    }
+  }, []);
 
   const save = useCallback(
     (entry: EntryModel) => {
@@ -160,13 +178,6 @@ export default function EntryForm(props: EntryFormProps) {
     navigate(getPath({ page: PageName.Home }));
   }, [entry]);
 
-  // Handle the delete button
-
-  const handleDelete = useCallback(() => {
-    dispatch(removeEntry({ id: entry.id }));
-    navigate(getPath({ page: PageName.Home }));
-  }, [dispatch, navigate, entry.id]);
-
   return (
     <>
       <Stack
@@ -209,16 +220,19 @@ export default function EntryForm(props: EntryFormProps) {
                       textAlign: "center",
                       width: "auto",
                       cursor: "pointer",
-                      paddingTop: 1,
-                      paddingBottom: 1,
-                      borderColor: "transparent",
+                      // paddingTop: 0,
+                      // paddingBottom: 0,
+                      // borderColor: "transparent",
                       fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                      // borderColor: theme.palette.primary.main,
+                      fontSize: "1.35em",
                     },
-                    // "& *:before": {
-                    //   borderBottom: "none !important",
-                    // },
+                    "& *:before": {
+                      border: "none !important",
+                    },
                   },
-                  variant: "outlined",
+                  variant: "standard",
                 },
               }}
               ampm={false}
@@ -231,7 +245,6 @@ export default function EntryForm(props: EntryFormProps) {
               }}
             />
           </LocalizationProvider>
-
           {(entry.activity?.subTypes?.length ?? 0) > 0 && (
             <Grid container gap={1} justifyContent="center">
               {entry.activity?.subTypes.map((subActivityType) => {
@@ -245,12 +258,15 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(subActivity.type)}
                     onClick={() => toggleSubActivity(subActivity)}
+                    isSelectable={true}
+                    isDisabled={anyStopwatchIsRunning}
                   />
                 );
               })}
             </Grid>
           )}
         </Section>
+
         {entry.activity?.hasVolume == true && (
           <Section dividerPosition="top">
             <SectionTitle title="Quantité" />
@@ -368,25 +384,9 @@ export default function EntryForm(props: EntryFormProps) {
               sx={{ justifyContent: "space-between" }}
               spacing={2}
             >
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                // disabled={anyStopwatchIsRunning}
-                fullWidth
-              >
+              <Button variant="contained" onClick={handleSubmit} fullWidth>
                 Enregistrer
               </Button>
-              {props.isEditing == true && (
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={handleDelete}
-                  disabled={anyStopwatchIsRunning}
-                  fullWidth
-                >
-                  Supprimer
-                </Button>
-              )}
             </Stack>
           </Toolbar>
         </Container>
