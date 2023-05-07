@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "deploy": "firebase deploy",
+    "deploy": "npm run build && firebase deploy",
     "emulate": "firebase emulators:start",
     "build": "cd app && npm run build",
     "dev": "concurrently \"cd app && npm run dev\" \"npm run emulate\""

@@ -10,7 +10,7 @@ export default function AuthenticationForm() {
     // let isNewUser: boolean | undefined;
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential?.accessToken;
       // const additionalUserInfo = getAdditionalUserInfo(result);
       // isNewUser = additionalUserInfo?.isNewUser;

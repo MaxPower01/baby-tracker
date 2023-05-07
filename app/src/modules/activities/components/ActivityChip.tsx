@@ -8,8 +8,9 @@ type Props = {
   onClick?: (type: ActivityType) => void;
   isSelected?: boolean;
   size?: "small" | "medium";
-  variant?: "outlined" | "filled";
   textColor?: string;
+  isSelectable: boolean;
+  isDisabled?: boolean;
 };
 
 export default function ActivityChip({
@@ -17,8 +18,9 @@ export default function ActivityChip({
   onClick,
   isSelected,
   size,
-  variant,
   textColor,
+  isSelectable,
+  isDisabled,
 }: Props) {
   return (
     <Chip
@@ -35,15 +37,16 @@ export default function ActivityChip({
           }}
         />
       }
+      disabled={isDisabled}
       onClick={(e) => {
         e.preventDefault();
         if (onClick) {
           onClick(activity.type);
         }
       }}
-      color={isSelected ? "primary" : undefined}
+      color={isSelectable ? "primary" : undefined}
       size={size}
-      variant={variant}
+      variant={isSelected ? "filled" : "outlined"}
     />
   );
 }

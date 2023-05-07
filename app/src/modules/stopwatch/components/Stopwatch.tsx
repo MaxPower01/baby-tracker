@@ -52,7 +52,7 @@ export default function Stopwatch(props: Props) {
 
   const handleStartStop = () => {
     onChange({
-      time: time,
+      time: !isRunning && time == 0 ? 1000 : time,
       isRunning: !isRunning,
       lastUpdateTime: Date.now(),
     });

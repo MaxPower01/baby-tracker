@@ -58,8 +58,8 @@ const slice = createSlice({
       });
       setLocalState(key, state);
     },
-    removeEntry: (state, action: PayloadAction<{ id: string }>) => {
-      const index = state.entries.findIndex((e) => e.id === action.payload.id);
+    removeEntry: (state, action: PayloadAction<string>) => {
+      const index = state.entries.findIndex((e) => e.id === action.payload);
       if (index !== -1) {
         state.entries.splice(index, 1);
       }
@@ -69,11 +69,19 @@ const slice = createSlice({
       Object.assign(state, defaultState);
       setLocalState(key, state);
     },
+    setEditingEntryId: (state, action: PayloadAction<string>) => {
+      state.editingEntryId = action.payload;
+    },
   },
 });
 
-export const { updateEntry, resetEntriesState, removeEntry, addEntries } =
-  slice.actions;
+export const {
+  updateEntry,
+  resetEntriesState,
+  removeEntry,
+  addEntries,
+  setEditingEntryId,
+} = slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
@@ -86,6 +94,10 @@ export const selectEntry = (state: RootState, id: string) => {
     return undefined;
   }
   return selectEntries(state)?.find((entry) => entry.id === id);
+};
+
+export const selectEditingEntryId = (state: RootState) => {
+  return state.entriesReducer.editingEntryId;
 };
 
 export default slice.reducer;
