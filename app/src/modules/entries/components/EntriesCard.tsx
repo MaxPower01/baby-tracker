@@ -101,15 +101,23 @@ export default function EntriesCard(props: Props) {
                     <Box
                       sx={{
                         position: "absolute",
-                        top: "5.25em",
+                        top: "4.75em",
                         left: "calc(2.25em - 2px)",
-                        borderLeft: "4px solid",
-                        borderColor: "divider",
-                        borderRadius: "9999px",
                         height: "100%",
                         opacity: 0.5,
+                        paddingTop: 1,
+                        paddingBottom: 1,
                       }}
-                    />
+                    >
+                      <Box
+                        sx={{
+                          borderLeft: "4px solid",
+                          borderColor: "divider",
+                          borderRadius: "9999px",
+                          height: "100%",
+                        }}
+                      ></Box>
+                    </Box>
                   )}
                   <Stack
                     direction={"row"}
