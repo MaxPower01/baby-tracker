@@ -9,6 +9,7 @@ import {
   SxProps,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useMemo } from "react";
 
@@ -29,6 +30,8 @@ type Props = {
 
 export default function Stopwatch(props: Props) {
   const { time, isRunning, lastUpdateTime, onChange } = props;
+
+  const theme = useTheme();
 
   useEffect(() => {
     if (isRunning) {
@@ -95,156 +98,137 @@ export default function Stopwatch(props: Props) {
     });
   };
 
-  const inputWidth = undefined;
-  const inputFontSize = "1.2em";
+  const inputStyle: SxProps = {
+    "& input": {
+      textAlign: "right",
+      fontSize: "1.5em",
+      fontWeight: "bold",
+      // width: "2em",
+      maxWidth: "3em",
+      color: theme.palette.primary.main,
+    },
+  };
+
+  const playPauseButtonFontSize = "2.5em";
 
   return (
-    <Stack
-      spacing={2}
-      sx={props.sx}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
+    <Stack spacing={2} sx={props.sx}>
       {props.label && (
-        <Typography textAlign="center" variant="body1">
+        <Typography textAlign="left" variant="body1">
           {props.label}
         </Typography>
       )}
-      <Button
-        onClick={handleStartStop}
-        disabled={props.buttonIsDisabled}
-        sx={{
-          borderRadius: "9999px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          paddingLeft: 2,
-          paddingRight: 2,
-          paddingTop: 1,
-          paddingBottom: 1,
-        }}
-        variant={isRunning ? "contained" : "outlined"}
-      >
-        {isRunning ? (
-          <PauseIcon
-            sx={{
-              fontSize: "4em",
-            }}
-          />
-        ) : (
-          <PlayArrowIcon
-            sx={{
-              fontSize: "4em",
-            }}
-          />
-        )}
-      </Button>
+
       <Stack
         direction={"row"}
-        spacing={0}
-        justifyContent={"center"}
         alignItems={"center"}
+        justifyContent={"space-between"}
+        spacing={2}
+        sx={{
+          width: "100%",
+        }}
       >
-        <TextField
-          variant="standard"
-          type="number"
-          name="hours"
-          placeholder="00"
-          value={hours}
-          onChange={handleInputChange}
-          sx={
-            {
-              // "& *:before": {
-              //   borderBottom: "none !important",
-              // },
-            }
-          }
-          InputProps={{
-            endAdornment: <InputAdornment position="end">h</InputAdornment>,
-            onFocus: (event) => {
-              event.target.select();
-            },
-            "aria-valuemin": 0,
-            "aria-colcount": 2,
-            sx: {
-              "& input": {
-                textAlign: "right",
-                fontSize: inputFontSize,
-                fontWeight: "bold",
-                width: inputWidth,
+        <Stack
+          direction={"row"}
+          spacing={0}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <TextField
+            variant="standard"
+            type="number"
+            name="hours"
+            placeholder="00"
+            value={hours}
+            onChange={handleInputChange}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">h</InputAdornment>,
+              onFocus: (event) => {
+                event.target.select();
               },
-            },
-          }}
-          disabled={props.inputsAreDisabled}
-        />
-        <TextField
-          variant="standard"
-          type="number"
-          name="minutes"
-          placeholder="00"
-          value={minutes}
-          onChange={handleInputChange}
-          sx={
-            {
-              // "& *:before": {
-              //   borderBottom: "none !important",
-              // },
-            }
-          }
-          InputProps={{
-            endAdornment: <InputAdornment position="end">m</InputAdornment>,
-            onFocus: (event) => {
-              event.target.select();
-            },
-            "aria-valuemin": 0,
-            "aria-valuemax": 59,
-            "aria-colcount": 2,
-            sx: {
-              "& input": {
-                textAlign: "right",
-                fontWeight: "bold",
-                fontSize: inputFontSize,
-                width: inputWidth,
+              "aria-valuemin": 0,
+              "aria-colcount": 2,
+              sx: {
+                ...inputStyle,
               },
-            },
-          }}
-          disabled={props.inputsAreDisabled}
-        />
-        <TextField
-          variant="standard"
-          type="number"
-          name="seconds"
-          placeholder="00"
-          value={seconds}
-          onChange={handleInputChange}
-          sx={
-            {
-              // "& *:before": {
-              //   borderBottom: "none !important",
-              // },
-            }
-          }
-          InputProps={{
-            endAdornment: <InputAdornment position="end">s</InputAdornment>,
-            onFocus: (event) => {
-              event.target.select();
-            },
-            "aria-valuemin": 0,
-            "aria-valuemax": 59,
-            "aria-colcount": 2,
-            sx: {
-              "& input": {
-                textAlign: "right",
-                fontWeight: "bold",
-                fontSize: inputFontSize,
-                width: inputWidth,
+            }}
+            disabled={props.inputsAreDisabled}
+          />
+          <TextField
+            variant="standard"
+            type="number"
+            name="minutes"
+            placeholder="00"
+            value={minutes}
+            onChange={handleInputChange}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">m</InputAdornment>,
+              onFocus: (event) => {
+                event.target.select();
               },
-            },
+              "aria-valuemin": 0,
+              "aria-valuemax": 59,
+              "aria-colcount": 2,
+              sx: {
+                ...inputStyle,
+              },
+            }}
+            disabled={props.inputsAreDisabled}
+          />
+          <TextField
+            variant="standard"
+            type="number"
+            name="seconds"
+            placeholder="00"
+            value={seconds}
+            onChange={handleInputChange}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">s</InputAdornment>,
+              onFocus: (event) => {
+                event.target.select();
+              },
+              "aria-valuemin": 0,
+              "aria-valuemax": 59,
+              "aria-colcount": 2,
+              sx: {
+                ...inputStyle,
+              },
+            }}
+            disabled={props.inputsAreDisabled}
+          />
+        </Stack>
+        <Button
+          onClick={handleStartStop}
+          disabled={props.buttonIsDisabled}
+          sx={{
+            borderRadius: "9999px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            // paddingLeft: 2,
+            // paddingRight: 2,
+            // paddingTop: 1,
+            // paddingBottom: 1,
           }}
-          disabled={props.inputsAreDisabled}
-        />
+          variant={isRunning ? "contained" : "outlined"}
+        >
+          {isRunning ? (
+            <PauseIcon
+              sx={{
+                fontSize: playPauseButtonFontSize,
+              }}
+            />
+          ) : (
+            <PlayArrowIcon
+              sx={{
+                fontSize: playPauseButtonFontSize,
+              }}
+            />
+          )}
+        </Button>
       </Stack>
+
       {/* <IconButton
         onClick={() => {
           onChange({
