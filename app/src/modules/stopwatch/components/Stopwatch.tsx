@@ -107,6 +107,7 @@ export default function Stopwatch(props: Props) {
     "& *:after": {
       border: "none !important",
     },
+    // transform: "translateX(-0.5em)",
   };
 
   const inputStyle: SxProps = {
@@ -120,18 +121,17 @@ export default function Stopwatch(props: Props) {
     },
   };
 
-  const playPauseButtonFontSize = "2.5em";
+  const playPauseButtonFontSize = "3em";
 
   return (
     <Stack spacing={2} sx={props.sx}>
       {props.label && (
-        <Typography textAlign="left" variant="body1">
+        <Typography textAlign="center" variant="body1">
           {props.label}
         </Typography>
       )}
-
       <Stack
-        direction={"row"}
+        // direction={"row"}
         alignItems={"center"}
         justifyContent={"space-between"}
         spacing={2}
@@ -139,6 +139,36 @@ export default function Stopwatch(props: Props) {
           width: "100%",
         }}
       >
+        <Button
+          onClick={handleStartStop}
+          disabled={props.buttonIsDisabled}
+          sx={{
+            borderRadius: "9999px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            paddingLeft: 2,
+            paddingRight: 2,
+            paddingTop: 1,
+            paddingBottom: 1,
+          }}
+          variant={isRunning ? "contained" : "outlined"}
+        >
+          {isRunning ? (
+            <PauseIcon
+              sx={{
+                fontSize: playPauseButtonFontSize,
+              }}
+            />
+          ) : (
+            <PlayArrowIcon
+              sx={{
+                fontSize: playPauseButtonFontSize,
+              }}
+            />
+          )}
+        </Button>
         <Stack
           direction={"row"}
           spacing={0}
@@ -232,55 +262,7 @@ export default function Stopwatch(props: Props) {
             // disabled={props.inputsAreDisabled}
           />
         </Stack>
-        <Button
-          onClick={handleStartStop}
-          disabled={props.buttonIsDisabled}
-          sx={{
-            borderRadius: "9999px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            // paddingLeft: 2,
-            // paddingRight: 2,
-            // paddingTop: 1,
-            // paddingBottom: 1,
-          }}
-          variant={isRunning ? "contained" : "outlined"}
-        >
-          {isRunning ? (
-            <PauseIcon
-              sx={{
-                fontSize: playPauseButtonFontSize,
-              }}
-            />
-          ) : (
-            <PlayArrowIcon
-              sx={{
-                fontSize: playPauseButtonFontSize,
-              }}
-            />
-          )}
-        </Button>
       </Stack>
-
-      {/* <IconButton
-        onClick={() => {
-          onChange({
-            time: 0,
-            isRunning: false,
-            lastUpdateTime: Date.now(),
-          });
-        }}
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-        color="primary"
-      >
-        <RestartAltIcon sx={{}} />
-      </IconButton> */}
     </Stack>
   );
 }

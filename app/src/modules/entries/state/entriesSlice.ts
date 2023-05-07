@@ -11,6 +11,7 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
+  editingEntryId: undefined,
 };
 
 const slice = createSlice({
@@ -101,18 +102,16 @@ export const selectEditingEntryId = (state: RootState) => {
   return state.entriesReducer.editingEntryId;
 };
 
-export const selectLastFeedingEntry = (state: RootState) => {
-  const feedingActivitiesTypes = [
-    ActivityType.BottleFeeding,
-    ActivityType.BreastFeeding,
-  ];
+export const selectLastEntry = (
+  state: RootState,
+  activityType: ActivityType
+) => {
   const entries = selectEntries(state);
   if (!entries) {
     return undefined;
   }
   return entries.find(
-    (entry) =>
-      entry.activity && feedingActivitiesTypes.includes(entry.activity.type)
+    (entry) => entry.activity && entry.activity.type === activityType
   );
 };
 

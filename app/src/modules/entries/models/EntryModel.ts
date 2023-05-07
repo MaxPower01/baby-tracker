@@ -283,4 +283,14 @@ export class EntryModel {
       this.rightStopwatchLastUpdateTime = now;
     }
   }
+
+  public startLeftStopwatch() {
+    this.leftStopwatchIsRunning = true;
+    this.leftStopwatchLastUpdateTime = Date.now();
+  }
+
+  public startRightStopwatch() {
+    this.rightStopwatchIsRunning = true;
+    this.rightStopwatchLastUpdateTime = Date.now();
+  }
 }

@@ -110,25 +110,24 @@ export function groupEntriesByTime(params: {
 }) {
   const { entries, timeUnit, timeStep } = params;
   const result = [] as Array<{
-    date: Date;
     entries: EntryModel[];
   }>;
   if (!entries || entries.length === 0) return result;
-  // Loop through entries and, for each entry, check if it's close enough to the previous entry to be grouped
+  // Sort entries by timestamp, from most recent to least recent
+  const sortedEntries = entries.sort((a, b) => b.timestamp - a.timestamp);
+  let lastDate = sortedEntries[0].startDate.toDate();
   let currentGroup = {
-    date: entries[0].startDate.toDate(),
     entries: [] as EntryModel[],
   };
-  for (let i = 0; i < entries.length; i++) {
+  for (let i = 0; i < sortedEntries.length; i++) {
     const entry = entries[i];
     const entryDate = entry.startDate.toDate();
-    const previousEntryDate = currentGroup.date;
+    const previousEntryDate = lastDate;
     const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
     const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);
-    const timeDifferenceInHours = Math.floor(timeDifference / 3600000);
     if (
       (timeUnit === "minute" && timeDifferenceInMinutes <= timeStep) ||
-      (timeUnit === "hour" && timeDifferenceInHours <= timeStep)
+      (timeUnit === "hour" && timeDifferenceInMinutes <= timeStep * 60)
     ) {
       currentGroup.entries.push(entry);
     }
@@ -136,12 +135,13 @@ export function groupEntriesByTime(params: {
     else {
       result.push(currentGroup);
       currentGroup = {
-        date: entryDate,
         entries: [entry],
       };
     }
+    lastDate = entryDate;
   }
   result.push(currentGroup);
+  // For each group, verify that
   return result;
 }
 
@@ -150,20 +150,28 @@ export function groupEntriesByTime(params: {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Formats a millisecond into a string of the format "mm:ss"
+ * Formats a millisecond into a string of the format "hh:mm:ss" or "<hour> s <minute> m <second> s"
  * @param time Milliseconds
  * @returns String of the format "mm:ss"
  */
-export function formatStopwatchTime(time: number, showLetters = false) {
-  return formatStopwatchesTime([time], showLetters);
+export function formatStopwatchTime(
+  time: number,
+  showLetters = false,
+  showSeconds = true
+) {
+  return formatStopwatchesTime([time], showLetters, showSeconds);
 }
 
 /**
- * Formats an array of milliseconds into a string of the format "mm:ss"
+ * Formats an array of milliseconds into a string of the format "hh:mm:ss" or "<hour> s <minute> m <second> s"
  * @param time Array of milliseconds
  * @returns String of the format "mm:ss"
  */
-export function formatStopwatchesTime(time: number[], showLetters = false) {
+export function formatStopwatchesTime(
+  time: number[],
+  showLetters = false,
+  showSeconds = true
+) {
   const totalTime = Math.floor(time.reduce((a, b) => a + b, 0));
   if (totalTime === 0) {
     if (showLetters) {
@@ -176,6 +184,24 @@ export function formatStopwatchesTime(time: number[], showLetters = false) {
   let hours = Math.floor(totalTime / 3600000);
   let result = "";
   if (hours > 99) {
+    if (showLetters) {
+      const _days = Math.floor(hours / 24);
+      if (_days > 99) {
+        return `99+ j`;
+      }
+      const _hours = hours % 24;
+      result += `${_days.toString()} j`;
+      if (_hours > 0) {
+        result += ` ${_hours.toString()} h`;
+      }
+      if (minutes > 0) {
+        result += ` ${minutes.toString()} m`;
+      }
+      if (seconds > 0 && showSeconds) {
+        result += ` ${seconds.toString()} s`;
+      }
+      return result;
+    }
     hours = 99;
     minutes = 59;
     seconds = 59;
@@ -198,7 +224,7 @@ export function formatStopwatchesTime(time: number[], showLetters = false) {
   } else if (!showLetters) {
     result += `00`;
   }
-  if (seconds > 0) {
+  if (seconds > 0 && showSeconds) {
     if (showLetters) {
       result += `${seconds.toString()} s`;
     } else {

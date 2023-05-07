@@ -169,7 +169,9 @@ export default function Entries() {
                 <Stack spacing={4}>
                   {entriesByTime.map((timeEntries) => {
                     return (
-                      <MenuProvider key={`${timeEntries.date.toISOString()}`}>
+                      <MenuProvider
+                        key={`${timeEntries.entries[0].startDate.toISOString()}`}
+                      >
                         <EntriesCard entries={timeEntries.entries} />
                       </MenuProvider>
                     );

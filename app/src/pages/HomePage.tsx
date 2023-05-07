@@ -1,14 +1,15 @@
-import LastFeedingWarning from "@/modules/activities/components/LastFeedingWarning";
 import Entries from "@/modules/entries/components/Entries";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
-import { Stack } from "@mui/material";
+import MenuProvider from "@/modules/menu/components/MenuProvider";
+import { Divider, Stack } from "@mui/material";
 
 export default function HomePage() {
   return (
     <Stack spacing={4}>
-      <NewEntryWidget />
-      <LastFeedingWarning />
-
+      <MenuProvider>
+        <NewEntryWidget />
+      </MenuProvider>
+      <Divider />
       <Entries />
     </Stack>
   );

@@ -39,6 +39,7 @@ import { useNavigate } from "react-router-dom";
 type EntryFormProps = {
   entry: EntryModel;
   isEditing?: boolean;
+  shouldStartTimer?: "left" | "right";
 };
 
 export default function EntryForm(props: EntryFormProps) {
@@ -158,6 +159,26 @@ export default function EntryForm(props: EntryFormProps) {
       return newEntry;
     });
   };
+
+  useEffect(() => {
+    if (props.shouldStartTimer != null) {
+      if (props.shouldStartTimer === "left") {
+        handleStopwatchChange({
+          side: "left",
+          time: 0,
+          isRunning: true,
+          lastUpdateTime: Date.now(),
+        });
+      } else if (props.shouldStartTimer === "right") {
+        handleStopwatchChange({
+          side: "right",
+          time: 0,
+          isRunning: true,
+          lastUpdateTime: Date.now(),
+        });
+      }
+    }
+  }, []);
 
   // Handle the notes
 
@@ -307,41 +328,42 @@ export default function EntryForm(props: EntryFormProps) {
             <Typography textAlign="center" variant="h4">
               {stopWatchTimeLabel}
             </Typography>
-
-            <Stopwatch
-              label={entry.activity?.hasSides ? "Gauche" : undefined}
-              sx={{ flex: 1, width: "100%" }}
-              time={entry.leftTime}
-              isRunning={entry.leftStopwatchIsRunning}
-              lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
-              buttonIsDisabled={entry.rightStopwatchIsRunning}
-              // inputsAreDisabled={anyStopwatchIsRunning}
-              inputsAreReadOnly={anyStopwatchIsRunning}
-              onChange={(params) =>
-                handleStopwatchChange({
-                  ...params,
-                  side: "left",
-                })
-              }
-            />
-            {entry.activity?.hasSides && (
+            <Stack direction={"row"} spacing={4}>
               <Stopwatch
-                label="Droite"
+                label={entry.activity?.hasSides ? "Gauche" : undefined}
                 sx={{ flex: 1, width: "100%" }}
-                time={entry.rightTime}
-                isRunning={entry.rightStopwatchIsRunning}
-                lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
-                buttonIsDisabled={entry.leftStopwatchIsRunning}
+                time={entry.leftTime}
+                isRunning={entry.leftStopwatchIsRunning}
+                lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
+                buttonIsDisabled={entry.rightStopwatchIsRunning}
                 // inputsAreDisabled={anyStopwatchIsRunning}
                 inputsAreReadOnly={anyStopwatchIsRunning}
                 onChange={(params) =>
                   handleStopwatchChange({
                     ...params,
-                    side: "right",
+                    side: "left",
                   })
                 }
               />
-            )}
+              {entry.activity?.hasSides && (
+                <Stopwatch
+                  label="Droite"
+                  sx={{ flex: 1, width: "100%" }}
+                  time={entry.rightTime}
+                  isRunning={entry.rightStopwatchIsRunning}
+                  lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
+                  buttonIsDisabled={entry.leftStopwatchIsRunning}
+                  // inputsAreDisabled={anyStopwatchIsRunning}
+                  inputsAreReadOnly={anyStopwatchIsRunning}
+                  onChange={(params) =>
+                    handleStopwatchChange({
+                      ...params,
+                      side: "right",
+                    })
+                  }
+                />
+              )}
+            </Stack>
           </Section>
         )}
 

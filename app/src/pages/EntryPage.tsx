@@ -13,6 +13,7 @@ export default function EntryPage() {
   const { entryId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const activityParam = searchParams.get("activity");
+  const shouldStartTimerParam = searchParams.get("shouldStartTimer");
   const existingEntry = useSelector((state: RootState) =>
     selectEntry(state, entryId ?? "")
   );
@@ -39,5 +40,11 @@ export default function EntryPage() {
   //   return <LoadingIndicator />;
   // }
 
-  return <EntryForm entry={entry} isEditing={existingEntry != null} />;
+  return (
+    <EntryForm
+      entry={entry}
+      isEditing={existingEntry != null}
+      shouldStartTimer={shouldStartTimerParam as any}
+    />
+  );
 }
