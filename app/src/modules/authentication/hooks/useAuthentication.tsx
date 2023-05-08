@@ -1,12 +1,8 @@
 import { auth, db } from "@/firebase";
-import { User, onAuthStateChanged } from "firebase/auth";
+import CustomUser from "@/modules/authentication/models/CustomUser";
+import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-
-interface CustomUser extends User {
-  selectedChild: string;
-  children: string[];
-}
 
 const useAuthentication = () => {
   const [customUser, setCustomUser] = useState<CustomUser | null>(null);

@@ -71,6 +71,7 @@ export default function EntriesCard(props: Props) {
           const nextEntryExists = entryIndex < entries.length - 1;
           const entryHasStopwatchRunning =
             entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+          if (entry.id == null) return null;
           return (
             <CardActionArea
               key={entry.id}
@@ -78,7 +79,7 @@ export default function EntriesCard(props: Props) {
                 navigate(
                   getPath({
                     page: PageName.Entry,
-                    id: entry.id,
+                    id: entry.id ?? "",
                   })
                 );
               }}

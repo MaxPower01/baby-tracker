@@ -33,7 +33,6 @@ export default function MenuPage() {
   const navigate = useNavigate();
   const { user } = useAuthentication();
   const localEntries = useSelector(selectEntries);
-  console.log("localEntries", localEntries);
 
   const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);

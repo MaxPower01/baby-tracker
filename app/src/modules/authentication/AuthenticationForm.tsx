@@ -10,13 +10,22 @@ import {
   getAdditionalUserInfo,
   signInWithPopup,
 } from "firebase/auth";
-import { DocumentData, WithFieldValue, doc, setDoc } from "firebase/firestore";
+import {
+  DocumentData,
+  WithFieldValue,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import useEntries from "../entries/hooks/useEntries";
+import CustomUser from "./models/CustomUser";
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 
 export default function AuthenticationForm() {
   const navigate = useNavigate();
+  const { getEntries } = useEntries();
   const handleGoogleSignIn = async () => {
     let user: User | undefined;
     let isNewUser: boolean | undefined;
@@ -53,6 +62,13 @@ export default function AuthenticationForm() {
         data.children = [];
       }
       await setDoc(userRef, data, { merge: true });
+      getDoc(userRef)
+        .then((docSnap) => {
+          getEntries(docSnap.data() as CustomUser).then(() => {});
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       navigate(
         getPath({
           page: PageName.Home,
