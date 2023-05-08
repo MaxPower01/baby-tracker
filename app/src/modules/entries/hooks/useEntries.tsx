@@ -1,7 +1,7 @@
 import { db } from "@/firebase";
 import CustomUser from "@/modules/authentication/models/CustomUser";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, endAt, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { EntryModel } from "../models/EntryModel";
@@ -27,10 +27,12 @@ const useEntries = () => {
       if (user == null) {
         return reject("User is null");
       }
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       const q = query(
         collection(db, `children/${user.selectedChild}/entries`),
         orderBy("startDate", "desc"),
-        limit(100)
+        endAt(sevenDaysAgo)
       );
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
