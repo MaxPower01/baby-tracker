@@ -15,7 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -51,16 +51,23 @@ export default function NewEntryWidget() {
     selectLastEntry(state, vomitActivity.type)
   );
   const [forceUpdate, setForceUpdate] = useState(1);
-  const lastFeedingLabel = useMemo(() => {
+  const lastBreastfeedingLabel = useMemo(() => {
     if (lastBreastfeedingEntry == null) return null;
     if (lastBreastfeedingEntry.anyStopwatchIsRunning) {
       return "En cours";
     }
-
     const now = new Date();
-    let result = "Il y a";
+    const time =
+      lastBreastfeedingEntry.time > 0
+        ? formatStopwatchTime(
+            lastBreastfeedingEntry.time,
+            true,
+            lastBreastfeedingEntry.time < 1000 * 60
+          )
+        : null;
+    let result = time == null ? "Il y a" : `${time} il y a `;
     const diff =
-      now.getTime() - lastBreastfeedingEntry.startDate.toDate().getTime();
+      now.getTime() - lastBreastfeedingEntry.endDate.toDate().getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     if (
       lastBreastfeedingEntry.leftTime > 0 &&
@@ -77,35 +84,51 @@ export default function NewEntryWidget() {
   }, [lastBreastfeedingEntry, forceUpdate]);
   const lastBottleFeedingLabel = useMemo(() => {
     if (lastBottleFeedingEntry == null) return null;
+    const time =
+      lastBottleFeedingEntry.time > 0
+        ? formatStopwatchTime(
+            lastBottleFeedingEntry.time,
+            true,
+            lastBottleFeedingEntry.time < 1000 * 60
+          )
+        : null;
+    let result = time == null ? "Il y a" : `${time} il y a `;
     const now = new Date();
-    let result = "Il y a";
     const diff =
-      now.getTime() - lastBottleFeedingEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+      now.getTime() - lastBottleFeedingEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastBottleFeedingEntry, forceUpdate]);
   const lastDiaperLabel = useMemo(() => {
     if (lastDiaperEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastDiaperEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+    const diff = now.getTime() - lastDiaperEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastDiaperEntry, forceUpdate]);
   const lastSleepLabel = useMemo(() => {
     if (lastSleepEntry == null) return null;
+    const time =
+      lastSleepEntry.time > 0
+        ? formatStopwatchTime(
+            lastSleepEntry.time,
+            true,
+            lastSleepEntry.time < 1000 * 60
+          )
+        : null;
+    let result = time == null ? "Il y a" : `${time} il y a `;
     const now = new Date();
-    let result = "Il y a";
-    const diff = now.getTime() - lastSleepEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+    const diff = now.getTime() - lastSleepEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastSleepEntry, forceUpdate]);
   const lastBurpLabel = useMemo(() => {
     if (lastBurpEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastBurpEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+    const diff = now.getTime() - lastBurpEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastBurpEntry, forceUpdate]);
   const lastRegurgitationLabel = useMemo(() => {
@@ -113,16 +136,16 @@ export default function NewEntryWidget() {
     const now = new Date();
     let result = "Il y a";
     const diff =
-      now.getTime() - lastRegurgitationEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+      now.getTime() - lastRegurgitationEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastRegurgitationEntry, forceUpdate]);
   const lastVomitLabel = useMemo(() => {
     if (lastVomitEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastVomitEntry.startDate.toDate().getTime();
-    result += ` ${formatStopwatchTime(diff, true, false)}`;
+    const diff = now.getTime() - lastVomitEntry.endDate.toDate().getTime();
+    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastVomitEntry, forceUpdate]);
 
@@ -147,6 +170,13 @@ export default function NewEntryWidget() {
     textAlign: "center",
     fontStyle: "italic",
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setForceUpdate((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const textVariant = "body2";
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -208,14 +238,14 @@ export default function NewEntryWidget() {
           }}
           onClick={openMenu}
         />
-        {lastFeedingLabel != null && (
+        {lastBreastfeedingLabel != null && (
           <Typography
             variant={textVariant}
             sx={{
               ...textStyle,
             }}
           >
-            {lastFeedingLabel}
+            {lastBreastfeedingLabel}
           </Typography>
         )}
         <Menu>

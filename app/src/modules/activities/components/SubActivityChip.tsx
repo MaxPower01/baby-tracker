@@ -1,11 +1,10 @@
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
+import SubActivityType from "@/modules/activities/enums/SubActivityType";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import { Chip, Typography } from "@mui/material";
-
 type Props = {
-  activity: ActivityModel;
-  onClick?: (type: ActivityType) => void;
+  subActivity: SubActivityModel;
+  onClick?: (type: SubActivityType) => void;
   isSelected?: boolean;
   size?: "small" | "medium";
   textColor?: string;
@@ -13,8 +12,8 @@ type Props = {
   isDisabled?: boolean;
 };
 
-export default function ActivityChip({
-  activity,
+export default function SubActivityChip({
+  subActivity,
   onClick,
   isSelected,
   size,
@@ -24,15 +23,15 @@ export default function ActivityChip({
 }: Props) {
   return (
     <Chip
-      key={`${activity.type}-${activity.type}`}
+      key={`${subActivity.type}-${subActivity.type}`}
       label={
         <Typography variant="body2" fontWeight={"bold"}>
-          {activity.name}
+          {subActivity.name}
         </Typography>
       }
       icon={
-        <ActivityIcon
-          activity={activity}
+        <SubActivityIcon
+          subActivity={subActivity}
           sx={{
             marginRight: size === "small" ? -0.5 : -1,
             marginLeft: 0.5,
@@ -45,7 +44,7 @@ export default function ActivityChip({
       onClick={(e) => {
         e.preventDefault();
         if (onClick) {
-          onClick(activity.type);
+          onClick(subActivity.type);
         }
       }}
       color={isSelectable ? "primary" : undefined}

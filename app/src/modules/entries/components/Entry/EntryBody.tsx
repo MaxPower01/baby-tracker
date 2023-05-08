@@ -1,5 +1,6 @@
 import { formatStopwatchTime } from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
+import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
@@ -20,6 +21,7 @@ export default function EntryBody(props: Props) {
     leftTime,
     rightTime,
     note,
+    linkedActivities,
     subActivities,
     volume,
     leftVolume,
@@ -89,10 +91,11 @@ export default function EntryBody(props: Props) {
     return (
       timeLabels.length > 0 ||
       note ||
+      linkedActivities.length > 0 ||
       subActivities.length > 0 ||
       volumeLabels.length > 0
     );
-  }, [timeLabels, note, subActivities, volumeLabels]);
+  }, [timeLabels, note, linkedActivities, volumeLabels]);
 
   if (!shouldRenderCardContent) return null;
 
@@ -120,14 +123,30 @@ export default function EntryBody(props: Props) {
         ...props.sx,
       }}
     >
+      {linkedActivities.length > 0 && (
+        <Grid justifyContent="flex-start" gap={1} container>
+          {linkedActivities.map((linkedActivity) => {
+            if (entry.activity == null) return null;
+            return (
+              <ActivityChip
+                key={`${entry.id}-${entry.activity.type}-${linkedActivity.type}`}
+                activity={linkedActivity}
+                size={"small"}
+                isSelected={true}
+                isSelectable={false}
+              />
+            );
+          })}
+        </Grid>
+      )}
       {subActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
           {subActivities.map((subActivity) => {
             if (entry.activity == null) return null;
             return (
-              <ActivityChip
+              <SubActivityChip
                 key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
-                activity={subActivity}
+                subActivity={subActivity}
                 size={"small"}
                 isSelected={true}
                 isSelectable={false}

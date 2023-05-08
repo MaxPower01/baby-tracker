@@ -1,4 +1,5 @@
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs, { Dayjs } from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,11 +20,19 @@ export class EntryModel {
     this._activity = v;
   }
 
-  private _subActivities: ActivityModel[] = [];
-  public get subActivities(): ActivityModel[] {
+  private _linkedActivities: ActivityModel[] = [];
+  public get linkedActivities(): ActivityModel[] {
+    return this._linkedActivities;
+  }
+  public set linkedActivities(v: ActivityModel[]) {
+    this._linkedActivities = v;
+  }
+
+  private _subActivities: SubActivityModel[] = [];
+  public get subActivities(): SubActivityModel[] {
     return this._subActivities;
   }
-  public set subActivities(v: ActivityModel[]) {
+  public set subActivities(v: SubActivityModel[]) {
     this._subActivities = v;
   }
 
@@ -169,6 +178,7 @@ export class EntryModel {
     return {
       id: this.id,
       activity: this.activity?.serialize(),
+      linkedActivities: this.linkedActivities?.map((a) => a.serialize()),
       subActivities: this.subActivities?.map((a) => a.serialize()),
       startDate: this.startDate.toISOString(),
       time: this.time,
@@ -190,9 +200,13 @@ export class EntryModel {
     if (json.id != null) entry.id = json.id;
     if (json.activity != null)
       entry.activity = ActivityModel.deserialize(json.activity);
+    if (json.linkedActivities != null)
+      entry.linkedActivities = json.linkedActivities?.map((a: any) =>
+        ActivityModel.deserialize(a)
+      );
     if (json.subActivities != null)
       entry.subActivities = json.subActivities?.map((a: any) =>
-        ActivityModel.deserialize(a)
+        SubActivityModel.deserialize(a)
       );
     if (json.startDate != null) entry.startDate = dayjs(json.startDate);
     if (json.time != null) entry.time = json.time;

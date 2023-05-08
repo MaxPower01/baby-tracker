@@ -4,7 +4,9 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { formatStopwatchesTime, getPath } from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import {
   setEditingEntryId,
@@ -83,7 +85,27 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the sub-activities
 
-  const toggleSubActivity = (subActivity: ActivityModel) => {
+  const toggleLinkedActivity = (subActivity: ActivityModel) => {
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      if (
+        newEntry.linkedActivities.map((a) => a.type).includes(subActivity.type)
+      ) {
+        newEntry.linkedActivities = newEntry.linkedActivities.filter(
+          (a) => a.type !== subActivity.type
+        );
+      } else {
+        newEntry.linkedActivities.push(subActivity);
+      }
+      newEntry.linkedActivities = newEntry.linkedActivities.filter(
+        (a, index, self) => self.findIndex((b) => b.type === a.type) === index
+      );
+      save(newEntry);
+      return newEntry;
+    });
+  };
+
+  const toggleSubActivity = (subActivity: SubActivityModel) => {
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
       if (
@@ -95,13 +117,40 @@ export default function EntryForm(props: EntryFormProps) {
       } else {
         newEntry.subActivities.push(subActivity);
       }
+      newEntry.subActivities = newEntry.subActivities.filter(
+        (a, index, self) => self.findIndex((b) => b.type === a.type) === index
+      );
       save(newEntry);
       return newEntry;
     });
   };
 
+  const linkedActivities = useMemo(() => {
+    return entry.linkedActivities;
+  }, [entry]);
+
   const subActivities = useMemo(() => {
     return entry.subActivities;
+  }, [entry]);
+
+  const subActivitiesTypes = useMemo(() => {
+    let result = entry.linkedActivities
+      .map((a) => {
+        return a.subTypes.map((subType) => {
+          return subType;
+        });
+      })
+      .flat();
+    if (entry.activity != null) {
+      result = result.concat(
+        entry.activity.subTypes.map((subType) => {
+          return subType;
+        })
+      );
+    }
+    return result.filter((subType, index, self) => {
+      return self.findIndex((s) => s === subType) === index;
+    });
   }, [entry]);
 
   // Handle the volume
@@ -265,15 +314,35 @@ export default function EntryForm(props: EntryFormProps) {
               }}
             />
           </LocalizationProvider>
-          {(entry.activity?.subTypes?.length ?? 0) > 0 && (
+          {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
             <Grid container gap={1} justifyContent="center">
-              {entry.activity?.subTypes.map((subActivityType) => {
+              {entry.activity?.linkedTypes.map((activityType) => {
                 if (entry.activity == null) return null;
-                const subActivity = new ActivityModel(subActivityType);
+                const activity = new ActivityModel(activityType);
                 return (
                   <ActivityChip
+                    key={`${entry.activity.type}-${activityType}`}
+                    activity={activity}
+                    isSelected={linkedActivities
+                      .map((a) => a.type)
+                      .includes(activity.type)}
+                    onClick={() => toggleLinkedActivity(activity)}
+                    isSelectable={true}
+                    isDisabled={anyStopwatchIsRunning}
+                  />
+                );
+              })}
+            </Grid>
+          )}
+          {(subActivitiesTypes?.length ?? 0) > 0 && (
+            <Grid container gap={1} justifyContent="center">
+              {subActivitiesTypes.map((subActivityType) => {
+                if (entry.activity == null) return null;
+                const subActivity = new SubActivityModel(subActivityType);
+                return (
+                  <SubActivityChip
                     key={`${entry.activity.type}-${subActivityType}`}
-                    activity={subActivity}
+                    subActivity={subActivity}
                     isSelected={subActivities
                       .map((a) => a.type)
                       .includes(subActivity.type)}

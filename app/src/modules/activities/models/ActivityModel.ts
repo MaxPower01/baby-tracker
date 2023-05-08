@@ -1,4 +1,5 @@
 import ActivityType from "../enums/ActivityType";
+import SubActivityType from "../enums/SubActivityType";
 
 export class ActivityModel {
   private _type: ActivityType;
@@ -9,15 +10,23 @@ export class ActivityModel {
     this._type = v;
   }
 
-  private _subTypes: ActivityType[] = [];
-  public get subTypes(): ActivityType[] {
+  private _linkedTypes: ActivityType[] = [];
+  public get linkedTypes(): ActivityType[] {
+    return this._linkedTypes;
+  }
+  public set linkedTypes(v: ActivityType[]) {
+    this._linkedTypes = v;
+  }
+
+  private _subTypes: SubActivityType[] = [];
+  public get subTypes(): SubActivityType[] {
     return this._subTypes;
   }
-  public set subTypes(v: ActivityType[]) {
+  public set subTypes(v: SubActivityType[]) {
     this._subTypes = v;
   }
 
-  private _orderedTypes: ActivityType[] = [
+  private _typesOrder: ActivityType[] = [
     ActivityType.BreastFeeding,
     ActivityType.BottleFeeding,
     ActivityType.Burp,
@@ -51,7 +60,7 @@ export class ActivityModel {
   ];
 
   public get order(): number {
-    return this._orderedTypes.indexOf(this._type);
+    return this._typesOrder.indexOf(this._type);
   }
 
   private _name: string;
@@ -87,7 +96,7 @@ export class ActivityModel {
   }
 
   public get hasSubTypes(): boolean {
-    return this._subTypes.length > 0;
+    return this._linkedTypes.length > 0;
   }
 
   public constructor(type: ActivityType) {
@@ -96,12 +105,20 @@ export class ActivityModel {
       case ActivityType.Bath:
         this._name = "Bain";
         this._hasDuration = true;
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
         break;
       case ActivityType.BottleFeeding:
         this._name = "Biberon";
         this._hasDuration = true;
         this._hasVolume = true;
-        this._subTypes = [
+        this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
           ActivityType.Burp,
@@ -111,7 +128,7 @@ export class ActivityModel {
         this._name = "Allaitement";
         this._hasDuration = true;
         this._hasSides = true;
-        this._subTypes = [
+        this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
           ActivityType.Burp,
@@ -119,7 +136,7 @@ export class ActivityModel {
         break;
       case ActivityType.Burp:
         this._name = "Rot";
-        this._subTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
+        this._linkedTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.Cry:
         this._name = "Pleurs";
@@ -127,7 +144,14 @@ export class ActivityModel {
         break;
       case ActivityType.Diaper:
         this._name = "Couche";
-        this._subTypes = [ActivityType.Poop, ActivityType.Urine];
+        this._linkedTypes = [
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Burp,
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+        ];
+        this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.HospitalVisit:
         this._name = "Visite à l'hôpital";
@@ -143,6 +167,12 @@ export class ActivityModel {
         break;
       case ActivityType.NasalHygiene:
         this._name = "Hygiène nasale";
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+        ];
         break;
       case ActivityType.Play:
         this._name = "Jeu";
@@ -150,6 +180,7 @@ export class ActivityModel {
         break;
       case ActivityType.Poop:
         this._name = "Caca";
+        this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Size:
         this._name = "Taille";
@@ -182,6 +213,16 @@ export class ActivityModel {
       case ActivityType.Walk:
         this._name = "Marche";
         this._hasDuration = true;
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
         break;
       case ActivityType.Weight:
         this._name = "Poids";
@@ -199,7 +240,7 @@ export class ActivityModel {
       hasDuration: this.hasDuration,
       hasVolume: this.hasVolume,
       hasSides: this.hasSides,
-      subTypes: this.subTypes,
+      linkedTypes: this.linkedTypes,
     };
   }
 
@@ -209,7 +250,7 @@ export class ActivityModel {
     if (json.hasDuration != null) activity.hasDuration = json.hasDuration;
     if (json.hasVolume != null) activity.hasVolume = json.hasVolume;
     if (json.hasSides != null) activity.hasSides = json.hasSides;
-    if (json.subTypes != null) activity.subTypes = json.subTypes;
+    if (json.linkedTypes != null) activity.linkedTypes = json.linkedTypes;
     return activity;
   }
 

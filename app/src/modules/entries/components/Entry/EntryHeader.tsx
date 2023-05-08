@@ -52,6 +52,9 @@ export default function EntryHeader(props: Props) {
       hour: "2-digit",
       minute: "2-digit",
     });
+    if (entry.startDate == entry.endDate) {
+      return result;
+    }
     if (entry.endDate) {
       if (entry.anyStopwatchIsRunning) {
         result += " – en cours";
