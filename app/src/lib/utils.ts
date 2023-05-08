@@ -63,7 +63,7 @@ export function groupEntriesByDate(entries: EntryModel[]): {
   const mostRecentEntry = entries.reduce((a, b) =>
     a.timestamp > b.timestamp ? a : b
   );
-  const mostRecentDate = mostRecentEntry.startDate.toDate();
+  const mostRecentDate = mostRecentEntry.startDate;
   const mostRecentYear = mostRecentDate.getFullYear();
   for (let i = currentYear; i >= mostRecentYear; i--) {
     const yearEntries = {
@@ -82,9 +82,9 @@ export function groupEntriesByDate(entries: EntryModel[]): {
           dayNumber: k,
           entries: entries.filter(
             (entry) =>
-              entry.startDate.toDate().getFullYear() === i &&
-              entry.startDate.toDate().getMonth() === j &&
-              entry.startDate.toDate().getDate() === k
+              entry.startDate.getFullYear() === i &&
+              entry.startDate.getMonth() === j &&
+              entry.startDate.getDate() === k
           ),
         };
         monthEntries.days.push(dayEntries);
@@ -115,13 +115,13 @@ export function groupEntriesByTime(params: {
   if (!entries || entries.length === 0) return result;
   // Sort entries by timestamp, from most recent to least recent
   const sortedEntries = entries.sort((a, b) => b.timestamp - a.timestamp);
-  let lastDate = sortedEntries[0].startDate.toDate();
+  let lastDate = sortedEntries[0].startDate;
   let currentGroup = {
     entries: [] as EntryModel[],
   };
   for (let i = 0; i < sortedEntries.length; i++) {
     const entry = entries[i];
-    const entryDate = entry.startDate.toDate();
+    const entryDate = entry.startDate;
     const previousEntryDate = lastDate;
     const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
     const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);
@@ -324,6 +324,8 @@ export function getPageTitle(pathname: string) {
       return "Ajouter une entrée";
     case PageName.Authentication:
       return "Connexion";
+    case PageName.Children:
+      return "Enfants";
     default:
       return "";
   }

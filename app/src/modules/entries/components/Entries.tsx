@@ -68,7 +68,7 @@ export default function Entries() {
               return null;
             }
             const firstEntry = dayEntries.entries[0];
-            const startDate = firstEntry.startDate.toDate();
+            const startDate = firstEntry.startDate;
             const entriesByTime = groupEntriesByTime({
               entries: dayEntries.entries,
               timeUnit: "hour",

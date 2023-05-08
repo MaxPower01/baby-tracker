@@ -1,22 +1,20 @@
 import BottomBar from "@/common/components/BottomBar";
+import PrivateRoutes from "@/common/components/PrivateRoutes";
+import PublicRoutes from "@/common/components/PublicRoutes";
 import TopBar from "@/common/components/TopBar";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
-import { getPath } from "@/lib/utils";
-import AuthenticationPage from "@/pages/AuthenticationPage";
-import CalendarPage from "@/pages/CalendarPage";
-import EntryPage from "@/pages/EntryPage";
-import GraphicsPage from "@/pages/GraphicsPage";
-import HomePage from "@/pages/HomePage";
-import MenuPage from "@/pages/MenuPage";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { Container } from "@mui/material";
-import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
 
 export default function App() {
+  const { user } = useAuthentication();
+
   return (
     <>
-      <TopBar component={"header"} />
+      {user != null && user.selectedChild != "" && (
+        <TopBar component={"header"} />
+      )}
 
       <Container
         component={"main"}
@@ -26,39 +24,12 @@ export default function App() {
           paddingBottom: 8,
         }}
       >
-        {/* {userIsSignedIn ? <PrivateRoutes /> : <PublicRoutes />} */}
-        <Routes>
-          <Route path="" element={<HomePage />} />
-          <Route path="*" element={<Navigate replace to="" />} />
-          <Route
-            path={getPath({ page: PageName.Home })}
-            element={<HomePage />}
-          />
-          <Route
-            path={getPath({ page: PageName.Graphics })}
-            element={<GraphicsPage />}
-          />
-          <Route
-            path={getPath({ page: PageName.Calendar })}
-            element={<CalendarPage />}
-          />
-          <Route
-            path={getPath({ page: PageName.Menu })}
-            element={<MenuPage />}
-          />
-          <Route
-            path={getPath({ page: PageName.Authentication })}
-            element={<AuthenticationPage />}
-          />
-          <Route path={getPath({ page: PageName.Entry })}>
-            <Route path="" element={<EntryPage />} />
-            <Route path="*" element={<Navigate replace to="" />} />
-            <Route path=":entryId" element={<EntryPage />} />
-          </Route>
-        </Routes>
+        {user == null ? <PublicRoutes /> : <PrivateRoutes />}
       </Container>
 
-      <BottomBar component={"footer"} />
+      {user != null && user.selectedChild != "" && (
+        <BottomBar component={"footer"} />
+      )}
     </>
   );
 }

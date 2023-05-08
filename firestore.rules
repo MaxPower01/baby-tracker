@@ -8,5 +8,10 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
     }
+    match /children/{childId}/{document=**} {
+      // Allow the user to create a children document
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null;
+    }
   }
 }

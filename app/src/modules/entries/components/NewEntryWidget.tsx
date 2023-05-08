@@ -66,8 +66,7 @@ export default function NewEntryWidget() {
           )
         : null;
     let result = time == null ? "Il y a" : `${time} il y a `;
-    const diff =
-      now.getTime() - lastBreastfeedingEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastBreastfeedingEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     if (
       lastBreastfeedingEntry.leftTime > 0 &&
@@ -94,8 +93,7 @@ export default function NewEntryWidget() {
         : null;
     let result = time == null ? "Il y a" : `${time} il y a `;
     const now = new Date();
-    const diff =
-      now.getTime() - lastBottleFeedingEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastBottleFeedingEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastBottleFeedingEntry, forceUpdate]);
@@ -103,7 +101,7 @@ export default function NewEntryWidget() {
     if (lastDiaperEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastDiaperEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastDiaperEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastDiaperEntry, forceUpdate]);
@@ -119,7 +117,7 @@ export default function NewEntryWidget() {
         : null;
     let result = time == null ? "Il y a" : `${time} il y a `;
     const now = new Date();
-    const diff = now.getTime() - lastSleepEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastSleepEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastSleepEntry, forceUpdate]);
@@ -127,7 +125,7 @@ export default function NewEntryWidget() {
     if (lastBurpEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastBurpEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastBurpEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastBurpEntry, forceUpdate]);
@@ -135,8 +133,7 @@ export default function NewEntryWidget() {
     if (lastRegurgitationEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff =
-      now.getTime() - lastRegurgitationEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastRegurgitationEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastRegurgitationEntry, forceUpdate]);
@@ -144,7 +141,7 @@ export default function NewEntryWidget() {
     if (lastVomitEntry == null) return null;
     const now = new Date();
     let result = "Il y a";
-    const diff = now.getTime() - lastVomitEntry.endDate.toDate().getTime();
+    const diff = now.getTime() - lastVomitEntry.endDate.getTime();
     result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return result;
   }, [lastVomitEntry, forceUpdate]);

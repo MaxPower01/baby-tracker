@@ -46,12 +46,12 @@ const slice = createSlice({
       action.payload.entries.forEach((e) => {
         const entry = EntryModel.deserialize(e);
         const index = state.entries.findIndex((s) => s.id === entry.id);
-        if (index === -1) {
+        if (index === -1 && entry.id != null) {
           state.entries.push({
             id: entry.id,
             entry: e,
           });
-        } else if (action.payload.overwrite) {
+        } else if (action.payload.overwrite && entry.id != null) {
           state.entries[index] = {
             id: entry.id,
             entry: e,

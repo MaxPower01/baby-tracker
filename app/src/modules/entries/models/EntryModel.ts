@@ -1,22 +1,21 @@
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
-import dayjs, { Dayjs } from "dayjs";
-import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 
 export class EntryModel {
-  private _id = uuidv4();
-  public get id(): string {
+  private _id: string | null = null;
+  public get id(): string | null {
     return this._id;
   }
-  public set id(v: string) {
+  public set id(v: string | null) {
     this._id = v;
   }
 
-  private _activity: ActivityModel | undefined;
-  public get activity(): ActivityModel | undefined {
+  private _activity: ActivityModel | null = null;
+  public get activity(): ActivityModel | null {
     return this._activity;
   }
-  public set activity(v: ActivityModel | undefined) {
+  public set activity(v: ActivityModel | null) {
     this._activity = v;
   }
 
@@ -36,16 +35,16 @@ export class EntryModel {
     this._subActivities = v;
   }
 
-  private _startDate = dayjs();
-  public get startDate(): Dayjs {
+  private _startDate = new Date();
+  public get startDate(): Date {
     return this._startDate;
   }
-  public set startDate(v: Dayjs) {
+  public set startDate(v: Date) {
     this._startDate = v;
   }
 
   public get timestamp(): number {
-    return this.startDate.unix();
+    return this.startDate.getTime();
   }
 
   private _time = 0;
@@ -73,11 +72,11 @@ export class EntryModel {
     this._leftStopwatchIsRunning = v;
   }
 
-  private _leftStopwatchLastUpdateTime: number | undefined;
-  public get leftStopwatchLastUpdateTime(): number | undefined {
+  private _leftStopwatchLastUpdateTime: number | null = null;
+  public get leftStopwatchLastUpdateTime(): number | null {
     return this._leftStopwatchLastUpdateTime;
   }
-  public set leftStopwatchLastUpdateTime(v: number | undefined) {
+  public set leftStopwatchLastUpdateTime(v: number | null) {
     this._leftStopwatchLastUpdateTime = v;
   }
 
@@ -102,15 +101,15 @@ export class EntryModel {
     return this.leftStopwatchIsRunning || this.rightStopwatchIsRunning;
   }
 
-  private _rightStopwatchLastUpdateTime: number | undefined;
-  public get rightStopwatchLastUpdateTime(): number | undefined {
+  private _rightStopwatchLastUpdateTime: number | null = null;
+  public get rightStopwatchLastUpdateTime(): number | null {
     return this._rightStopwatchLastUpdateTime;
   }
-  public set rightStopwatchLastUpdateTime(v: number | undefined) {
+  public set rightStopwatchLastUpdateTime(v: number | null) {
     this._rightStopwatchLastUpdateTime = v;
   }
 
-  public get lastStopwatchUpdateTime(): number | undefined {
+  public get lastStopwatchUpdateTime(): number | null {
     if (this.leftStopwatchLastUpdateTime == null) {
       return this.rightStopwatchLastUpdateTime;
     }
@@ -123,26 +122,28 @@ export class EntryModel {
     );
   }
 
-  public get endDate(): Dayjs {
+  public get endDate(): Date {
     if (this.time) {
       if (this.lastStopwatchUpdateTime != null) {
         const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
-        const timeDate = this.startDate.add(this.time, "millisecond");
+        // const timeDate = this.startDate.add(this.time, "millisecond");
+        const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
         if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
-          return lastStopwatchUpdateTimeDate;
+          return lastStopwatchUpdateTimeDate.toDate();
         }
-        return timeDate;
+        return timeDate.toDate();
       }
-      return this.startDate.add(this.time, "millisecond");
+      // return this.startDate.add(this.time, "millisecond");
+      return dayjs(this.startDate).add(this.time, "millisecond").toDate();
     }
     return this.startDate;
   }
 
-  private _note: string | undefined;
-  public get note(): string | undefined {
+  private _note = "";
+  public get note(): string {
     return this._note;
   }
-  public set note(v: string | undefined) {
+  public set note(v: string) {
     this._note = v;
   }
 
@@ -188,7 +189,7 @@ export class EntryModel {
       rightTime: this.rightTime,
       rightStopwatchIsRunning: this.rightStopwatchIsRunning,
       rightStopwatchLastUpdateTime: this.rightStopwatchLastUpdateTime,
-      note: this.note?.trim() || undefined,
+      note: this.note?.trim() || null,
       volume: this.volume,
       leftVolume: this.leftVolume,
       rightVolume: this.rightVolume,
@@ -208,7 +209,7 @@ export class EntryModel {
       entry.subActivities = json.subActivities?.map((a: any) =>
         SubActivityModel.deserialize(a)
       );
-    if (json.startDate != null) entry.startDate = dayjs(json.startDate);
+    if (json.startDate != null) entry.startDate = new Date(json.startDate);
     if (json.time != null) entry.time = json.time;
     if (json.leftTime != null) entry.leftTime = json.leftTime;
     if (json.leftStopwatchIsRunning != null)

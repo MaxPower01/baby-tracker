@@ -1,22 +1,31 @@
 // import { auth, db, googleAuthProvider } from "@/firebase";
+import PageName from "@/common/enums/PageName";
 import { auth, db, googleAuthProvider } from "@/firebase";
+import { getPath } from "@/lib/utils";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Stack, Typography } from "@mui/material";
-import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  GoogleAuthProvider,
+  User,
+  getAdditionalUserInfo,
+  signInWithPopup,
+} from "firebase/auth";
+import { DocumentData, WithFieldValue, doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 
 export default function AuthenticationForm() {
+  const navigate = useNavigate();
   const handleGoogleSignIn = async () => {
     let user: User | undefined;
-    // let isNewUser: boolean | undefined;
+    let isNewUser: boolean | undefined;
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
       // const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential?.accessToken;
-      // const additionalUserInfo = getAdditionalUserInfo(result);
-      // isNewUser = additionalUserInfo?.isNewUser;
+      const additionalUserInfo = getAdditionalUserInfo(result);
+      isNewUser = additionalUserInfo?.isNewUser;
       user = result.user;
     } catch (error: any) {
       const errorCode = error.code;
@@ -28,7 +37,7 @@ export default function AuthenticationForm() {
     if (!user) return;
     try {
       const userRef = doc(db, "users", user.uid);
-      await setDoc(userRef, {
+      const data: WithFieldValue<DocumentData> = {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
@@ -38,7 +47,17 @@ export default function AuthenticationForm() {
         providerId: user.providerId,
         creationTime: user.metadata.creationTime,
         lastSignInTime: user.metadata.lastSignInTime,
-      });
+      };
+      if (isNewUser) {
+        data.selectedChild = "";
+        data.children = [];
+      }
+      await setDoc(userRef, data, { merge: true });
+      navigate(
+        getPath({
+          page: PageName.Home,
+        })
+      );
     } catch (error: any) {
       console.error(error);
     }

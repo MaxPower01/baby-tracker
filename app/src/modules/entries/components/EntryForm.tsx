@@ -1,5 +1,8 @@
+import Section from "@/common/components/Section";
+import SectionTitle from "@/common/components/SectionTitle";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageName from "@/common/enums/PageName";
+import { db } from "@/firebase";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { formatStopwatchesTime, getPath } from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
@@ -7,6 +10,7 @@ import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import {
   setEditingEntryId,
@@ -19,11 +23,8 @@ import {
   AppBar,
   Button,
   Container,
-  Divider,
   Grid,
-  Paper,
   Stack,
-  SxProps,
   TextField,
   Toolbar,
   Typography,
@@ -34,7 +35,8 @@ import {
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -51,8 +53,9 @@ export default function EntryForm(props: EntryFormProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
+  const { user } = useAuthentication();
+
   useEffect(() => {
-    dispatch(setEditingEntryId(entry.id));
     if (entry.anyStopwatchIsRunning) {
       // If any stopwatch is running, we need to update the entry's time
       // so that it is up to date on the first render.
@@ -64,12 +67,16 @@ export default function EntryForm(props: EntryFormProps) {
     }
   }, []);
 
-  const save = useCallback(
-    (entry: EntryModel) => {
-      dispatch(updateEntry({ id: entry.id, entry: entry.serialize() }));
-    },
-    [dispatch, entry]
-  );
+  useEffect(() => {
+    if (entry.id) dispatch(setEditingEntryId(entry.id));
+  }, [entry]);
+
+  // const save = useCallback(
+  //   (entry: EntryModel) => {
+  //     dispatch(updateEntry({ id: entry.id, entry: entry.serialize() }));
+  //   },
+  //   [dispatch, entry]
+  // );
 
   // Handle the date and time
 
@@ -77,8 +84,8 @@ export default function EntryForm(props: EntryFormProps) {
     if (newStartDate == null) return;
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
-      newEntry.startDate = newStartDate;
-      save(newEntry);
+      newEntry.startDate = newStartDate.toDate();
+      // save(newEntry);
       return newEntry;
     });
   };
@@ -100,7 +107,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.linkedActivities = newEntry.linkedActivities.filter(
         (a, index, self) => self.findIndex((b) => b.type === a.type) === index
       );
-      save(newEntry);
+      // save(newEntry);
       return newEntry;
     });
   };
@@ -120,7 +127,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.subActivities = newEntry.subActivities.filter(
         (a, index, self) => self.findIndex((b) => b.type === a.type) === index
       );
-      save(newEntry);
+      // save(newEntry);
       return newEntry;
     });
   };
@@ -165,7 +172,7 @@ export default function EntryForm(props: EntryFormProps) {
       } else if (params.side === "right") {
         newEntry.rightVolume = params.newVolume;
       }
-      save(newEntry);
+      // save(newEntry);
       return newEntry;
     });
   };
@@ -196,15 +203,13 @@ export default function EntryForm(props: EntryFormProps) {
       if (params.side === "left") {
         newEntry.leftTime = params.time;
         newEntry.leftStopwatchIsRunning = params.isRunning;
-        newEntry.leftStopwatchLastUpdateTime =
-          params.lastUpdateTime ?? undefined;
+        newEntry.leftStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
       } else {
         newEntry.rightTime = params.time;
         newEntry.rightStopwatchIsRunning = params.isRunning;
-        newEntry.rightStopwatchLastUpdateTime =
-          params.lastUpdateTime ?? undefined;
+        newEntry.rightStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
       }
-      save(newEntry);
+      // save(newEntry);
       return newEntry;
     });
   };
@@ -235,17 +240,43 @@ export default function EntryForm(props: EntryFormProps) {
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
       newEntry.note = event.target.value;
-      save(newEntry);
+      // save(newEntry);
       return newEntry;
     });
   };
 
   // Handle the form submission
 
-  const handleSubmit = useCallback(() => {
-    save(entry);
+  const handleSubmit = useCallback(async () => {
+    if (user == null) return;
+    const { id, ...rest } = entry.toJSON();
+    if (id == null) {
+      const docRef = await addDoc(
+        collection(db, `children/${user.selectedChild}/entries`),
+        {
+          ...rest,
+        }
+      );
+      entry.id = docRef.id;
+      dispatch(
+        updateEntry({
+          entry: entry.serialize(),
+          id: docRef.id,
+        })
+      );
+    } else {
+      await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
+        ...rest,
+      });
+      dispatch(
+        updateEntry({
+          entry: entry.serialize(),
+          id,
+        })
+      );
+    }
     navigate(getPath({ page: PageName.Home }));
-  }, [entry]);
+  }, [entry, user]);
 
   return (
     <>
@@ -277,7 +308,7 @@ export default function EntryForm(props: EntryFormProps) {
             adapterLocale={dayjsLocaleFrCa}
           >
             <MobileDateTimePicker
-              value={entry.startDate}
+              value={dayjs(entry.startDate)}
               onChange={handleStartDateChange}
               disabled={anyStopwatchIsRunning}
               disableFuture={true}
@@ -486,44 +517,5 @@ export default function EntryForm(props: EntryFormProps) {
         </Container>
       </AppBar>
     </>
-  );
-}
-
-function Section(props: {
-  children: React.ReactNode;
-  dividerPosition?: "top" | "bottom";
-  sx?: SxProps;
-}) {
-  return (
-    <>
-      {props.dividerPosition === "top" && <Divider sx={{ width: "100%" }} />}
-
-      <Paper
-        elevation={0}
-        component={"section"}
-        sx={{ width: "100%", paddingTop: 2, paddingBottom: 2, ...props.sx }}
-      >
-        <Stack component={"section"} alignItems="center" spacing={2}>
-          {props.children}
-        </Stack>
-      </Paper>
-
-      {props.dividerPosition === "bottom" && <Divider sx={{ width: "100%" }} />}
-    </>
-  );
-}
-
-function SectionTitle(props: { title: string }) {
-  return (
-    <Typography
-      variant="h5"
-      textAlign="left"
-      sx={{
-        fontWeight: "bold",
-        width: "100%",
-      }}
-    >
-      {props.title}
-    </Typography>
   );
 }

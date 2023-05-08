@@ -48,7 +48,7 @@ export default function EntryHeader(props: Props) {
     return result;
   }, [activity, leftTime, rightTime, time]);
   const subtitle = useMemo(() => {
-    let result = startDate.toDate().toLocaleTimeString("fr-CA", {
+    let result = startDate.toLocaleTimeString("fr-CA", {
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -60,15 +60,12 @@ export default function EntryHeader(props: Props) {
         result += " – en cours";
       } else {
         const isDifferentDay =
-          entry.startDate.toDate().getDate() !==
-          entry.endDate.toDate().getDate();
+          entry.startDate.getDate() !== entry.endDate.getDate();
         const isDifferentMonth =
-          entry.startDate.toDate().getMonth() !==
-          entry.endDate.toDate().getMonth();
+          entry.startDate.getMonth() !== entry.endDate.getMonth();
         const isDifferentYear =
-          entry.startDate.toDate().getFullYear() !==
-          entry.endDate.toDate().getFullYear();
-        result += ` – ${entry.endDate.toDate().toLocaleTimeString("fr-CA", {
+          entry.startDate.getFullYear() !== entry.endDate.getFullYear();
+        result += ` – ${entry.endDate.toLocaleTimeString("fr-CA", {
           minute: "2-digit",
           hour: "2-digit",
           day: isDifferentDay || isDifferentMonth ? "numeric" : undefined,

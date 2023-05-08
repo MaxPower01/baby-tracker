@@ -1,19 +1,25 @@
+import { auth, db } from "@/firebase";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import {
   addEntries,
   resetEntriesState,
+  selectEntries,
 } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Alert,
+  Avatar,
   Button,
   Slide,
   Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
+import { doc, writeBatch } from "firebase/firestore";
 import { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetAppState } from "../app/state/appSlice";
 import LoadingIndicator from "../common/components/LoadingIndicator";
@@ -25,6 +31,9 @@ export default function MenuPage() {
   const dispatch = useAppDispatch();
   const { entries, isLoading: isLoadingEntries } = useEntries();
   const navigate = useNavigate();
+  const { user } = useAuthentication();
+  const localEntries = useSelector(selectEntries);
+  console.log("localEntries", localEntries);
 
   const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
@@ -54,6 +63,24 @@ export default function MenuPage() {
     exportToJSONFile(data);
   }, [entries, isLoadingEntries]);
 
+  const handleSaveLocalDataToCloud = useCallback(() => {
+    if (!user || !localEntries?.length) {
+      return;
+    }
+    const batch = writeBatch(db);
+    for (let i = 0; i < localEntries.length; i++) {
+      const entry = localEntries[i];
+      if (entry.id != null) {
+        const entryRef = doc(
+          db,
+          `children/${user.selectedChild}/entries/${entry.id}`
+        );
+        batch.set(entryRef, entry.toJSON());
+      }
+    }
+    batch.commit().then(() => {});
+  }, [user]);
+
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -81,6 +108,12 @@ export default function MenuPage() {
     event.target.value = "";
   };
 
+  const handleSignOutButtonClick = () => {
+    auth.signOut().then(() => {
+      navigate(getPath({ page: PageName.Home }));
+    });
+  };
+
   return (
     <>
       <Stack spacing={4} alignItems="center">
@@ -93,22 +126,46 @@ export default function MenuPage() {
         <MenuItem onClick={closeMenu}>Item B</MenuItem>
       </Menu> */}
         <Stack spacing={2} alignItems="center">
-          <Stack spacing={1} alignItems="center">
-            <AccountCircleIcon
-              sx={{
-                fontSize: "6em",
-              }}
-            />
-            <Typography variant="body1" textAlign={"center"}>
-              Connectez-vous pour sauvegarder vos données
-            </Typography>
-          </Stack>
-          <Button
-            variant="contained"
-            onClick={() => navigate(getPath({ page: PageName.Authentication }))}
-          >
-            Se connecter
-          </Button>
+          {user == null ? (
+            <>
+              <Stack spacing={1} alignItems="center">
+                <AccountCircleIcon
+                  sx={{
+                    fontSize: "6em",
+                  }}
+                />
+                <Typography variant="body1" textAlign={"center"}>
+                  Connectez-vous pour sauvegarder vos données
+                </Typography>
+              </Stack>
+              <Button
+                variant="contained"
+                onClick={() =>
+                  navigate(getPath({ page: PageName.Authentication }))
+                }
+              >
+                Se connecter
+              </Button>
+            </>
+          ) : (
+            <>
+              <Avatar>
+                {user.displayName
+                  ?.split(" ")
+                  .map((name) => name[0].toUpperCase())}
+              </Avatar>
+              <Typography variant="h5" textAlign={"center"}>
+                {user.displayName}
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={(e) => handleSignOutButtonClick()}
+                fullWidth
+              >
+                Se déconnecter
+              </Button>
+            </>
+          )}
         </Stack>
 
         <Stack spacing={2} alignItems="center">
@@ -135,16 +192,24 @@ export default function MenuPage() {
 
           <Button
             onClick={handleExport}
-            variant="contained"
+            variant={isLoadingEntries ? "text" : "contained"}
             color="primary"
             disabled={isLoadingEntries}
           >
             {isLoadingEntries ? <LoadingIndicator /> : "Exporter les données"}
           </Button>
+
+          <Button
+            onClick={handleSaveLocalDataToCloud}
+            variant="contained"
+            color="primary"
+          >
+            Sauvegarder les données locales en ligne
+          </Button>
         </Stack>
 
         <Button onClick={handleReset} variant="contained" color="error">
-          Réinitialiser l'application
+          Supprimer les données locales
         </Button>
       </Stack>
 
