@@ -1,2 +1,1 @@
-# baby-tracker
- 
+# baby-journal
