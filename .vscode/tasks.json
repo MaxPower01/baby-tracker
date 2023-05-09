@@ -32,7 +32,7 @@
 		},
 		{
 			"type": "npm",
-			"script": "install",
+			"script": "setup",
 			"problemMatcher": [],
 			"detail": "Installs dependencies.",
 			"label": "install"
