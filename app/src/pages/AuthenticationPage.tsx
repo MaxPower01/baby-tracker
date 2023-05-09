@@ -1,4 +1,4 @@
-import AuthenticationForm from "@/modules/authentication/AuthenticationForm";
+import AuthenticationForm from "@/modules/authentication/components/AuthenticationForm";
 import { Stack } from "@mui/material";
 import { useState } from "react";
 

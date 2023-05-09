@@ -29,6 +29,13 @@
 			"problemMatcher": [],
 			"detail": "Starts the app in development mode (Firebase Emulator Suite, hot-code reloading, error reporting, etc.).",
 			"label": "dev"
+		},
+		{
+			"type": "npm",
+			"script": "setup",
+			"problemMatcher": [],
+			"detail": "Installs dependencies.",
+			"label": "install"
 		}
 	]
 }
