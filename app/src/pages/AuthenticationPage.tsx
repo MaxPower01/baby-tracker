@@ -1,10 +1,7 @@
 import AuthenticationForm from "@/modules/authentication/components/AuthenticationForm";
 import { Stack } from "@mui/material";
-import { useState } from "react";
 
 export default function AuthenticationPage() {
-  const [isSignUp, setIsSignUp] = useState(false);
-
   return (
     <Stack spacing={2} justifyContent={"center"} alignItems={"center"}>
       <AuthenticationForm />
