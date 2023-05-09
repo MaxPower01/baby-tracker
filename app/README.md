@@ -1,6 +1,6 @@
-# baby-journal
+# baby-tracker
 
-Baby Journal is a simple baby journaling app that allows you to track your baby's feedings, diaper changes, and sleep. It also allows you to track your baby's weight and height.
+This app is a simple baby tracker that allows you to track your baby's feedings, diaper changes, and sleep. It also allows you to track your baby's weight and height.
 
 ## Project setup
 

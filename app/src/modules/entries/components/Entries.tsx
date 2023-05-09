@@ -119,7 +119,7 @@ export default function Entries() {
                       >
                         <Typography
                           variant="h5"
-                          textAlign={"left"}
+                          textAlign={"center"}
                           fontWeight={"bold"}
                         >
                           {startDate.toLocaleDateString("fr-CA", {

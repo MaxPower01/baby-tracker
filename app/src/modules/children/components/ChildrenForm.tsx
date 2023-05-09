@@ -44,12 +44,7 @@ export default function ChildrenForm() {
   };
 
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        width: "100%",
-      }}
-    >
+    <Stack spacing={2}>
       <TextField
         label="Nom de l'enfant"
         name="name"
@@ -65,7 +60,7 @@ export default function ChildrenForm() {
         disabled={name.trim().length === 0}
         onClick={(e) => handleSubmit()}
       >
-        Continuer
+        Ajouter un enfant
       </Button>
     </Stack>
   );
