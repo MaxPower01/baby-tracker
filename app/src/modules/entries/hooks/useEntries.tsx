@@ -27,6 +27,9 @@ const useEntries = () => {
       if (user == null) {
         return reject("User is null");
       }
+      if (user.selectedChild == null || user.selectedChild === "") {
+        return reject("No selected child");
+      }
       const q = query(
         collection(db, `children/${user.selectedChild}/entries`),
         orderBy("startDate", "desc"),
