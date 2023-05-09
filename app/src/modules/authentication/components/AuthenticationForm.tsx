@@ -1,4 +1,3 @@
-// import { auth, db, googleAuthProvider } from "@/firebase";
 import PageName from "@/common/enums/PageName";
 import { auth, db, googleAuthProvider } from "@/firebase";
 import { getPath } from "@/lib/utils";
