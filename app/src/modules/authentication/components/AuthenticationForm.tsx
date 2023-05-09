@@ -18,8 +18,8 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import useEntries from "../entries/hooks/useEntries";
-import CustomUser from "./models/CustomUser";
+import useEntries from "../../entries/hooks/useEntries";
+import CustomUser from "../models/CustomUser";
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 

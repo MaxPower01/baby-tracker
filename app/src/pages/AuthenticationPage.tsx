@@ -1,5 +1,5 @@
 import { resources } from "@/lib/utils";
-import AuthenticationForm from "@/modules/authentication/AuthenticationForm";
+import AuthenticationForm from "@/modules/authentication/components/AuthenticationForm";
 import { Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
