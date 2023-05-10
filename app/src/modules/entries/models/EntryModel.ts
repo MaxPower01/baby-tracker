@@ -1,6 +1,7 @@
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs from "dayjs";
+import { DocumentData } from "firebase/firestore";
 
 export class EntryModel {
   private _id: string | null = null;
@@ -172,6 +173,7 @@ export class EntryModel {
    * @returns A JSON representation of the object
    */
   public toJSON(params?: { keepDates?: boolean }) {
+    console.log(this.startDate);
     return {
       id: this.id,
       activity: this.activity?.serialize(),
@@ -211,6 +213,7 @@ export class EntryModel {
         SubActivityModel.deserialize(a)
       );
     if (json.startDate != null) entry.startDate = new Date(json.startDate);
+    if (json.endDate != null) entry.endDate = new Date(json.endDate);
     if (json.time != null) entry.time = json.time;
     if (json.leftTime != null) entry.leftTime = json.leftTime;
     if (json.leftStopwatchIsRunning != null)
@@ -226,6 +229,15 @@ export class EntryModel {
     if (json.volume != null) entry.volume = json.volume;
     if (json.leftVolume != null) entry.leftVolume = json.leftVolume;
     if (json.rightVolume != null) entry.rightVolume = json.rightVolume;
+    return entry;
+  }
+
+  public static fromFirestore(data: DocumentData): EntryModel {
+    const json = data;
+    const { startDate, endDate, ...rest } = json;
+    const entry = EntryModel.fromJSON(rest);
+    entry.startDate = startDate?.toDate();
+    entry.endDate = endDate?.toDate();
     return entry;
   }
 

@@ -41,7 +41,7 @@ const useEntries = () => {
       }
       const entries: EntryModel[] = [];
       querySnapshot.forEach((doc) => {
-        const entry = EntryModel.fromJSON(doc.data());
+        const entry = EntryModel.fromFirestore(doc.data());
         entry.id = doc.id;
         entries.push(entry);
       });
