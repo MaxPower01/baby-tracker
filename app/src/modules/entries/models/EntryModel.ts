@@ -43,6 +43,14 @@ export class EntryModel {
     this._startDate = v;
   }
 
+  private _endDate = new Date();
+  public get endDate(): Date {
+    return this._endDate;
+  }
+  public set endDate(v: Date) {
+    this._endDate = v;
+  }
+
   public get timestamp(): number {
     return this.startDate.getTime();
   }
@@ -122,23 +130,6 @@ export class EntryModel {
     );
   }
 
-  public get endDate(): Date {
-    if (this.time) {
-      if (this.lastStopwatchUpdateTime != null) {
-        const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
-        // const timeDate = this.startDate.add(this.time, "millisecond");
-        const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
-        if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
-          return lastStopwatchUpdateTimeDate.toDate();
-        }
-        return timeDate.toDate();
-      }
-      // return this.startDate.add(this.time, "millisecond");
-      return dayjs(this.startDate).add(this.time, "millisecond").toDate();
-    }
-    return this.startDate;
-  }
-
   private _note = "";
   public get note(): string {
     return this._note;
@@ -175,13 +166,23 @@ export class EntryModel {
 
   public constructor() {}
 
-  public toJSON() {
+  /**
+   * Returns a JSON representation of the object
+   * @param params.keepDates If true, dates will be kept as Date objects, otherwise they will be converted to ISO strings
+   * @returns A JSON representation of the object
+   */
+  public toJSON(params?: { keepDates?: boolean }) {
     return {
       id: this.id,
       activity: this.activity?.serialize(),
       linkedActivities: this.linkedActivities?.map((a) => a.serialize()),
       subActivities: this.subActivities?.map((a) => a.serialize()),
-      startDate: this.startDate.toISOString(),
+      startDate:
+        params?.keepDates == true
+          ? this.startDate
+          : this.startDate.toISOString(),
+      endDate:
+        params?.keepDates == true ? this.endDate : this.endDate.toISOString(),
       time: this.time,
       leftTime: this.leftTime,
       leftStopwatchIsRunning: this.leftStopwatchIsRunning,
@@ -307,5 +308,44 @@ export class EntryModel {
   public startRightStopwatch() {
     this.rightStopwatchIsRunning = true;
     this.rightStopwatchLastUpdateTime = Date.now();
+  }
+
+  // public get endDate(): Date {
+  //   if (this.time) {
+  //     if (this.lastStopwatchUpdateTime != null) {
+  //       const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
+  //       // const timeDate = this.startDate.add(this.time, "millisecond");
+  //       const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
+  //       if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
+  //         return lastStopwatchUpdateTimeDate.toDate();
+  //       }
+  //       return timeDate.toDate();
+  //     }
+  //     // return this.startDate.add(this.time, "millisecond");
+  //     return dayjs(this.startDate).add(this.time, "millisecond").toDate();
+  //   }
+  //   return this.startDate;
+  // }
+
+  public setEndDate() {
+    if (this.time) {
+      if (this.lastStopwatchUpdateTime != null) {
+        const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
+        // const timeDate = this.startDate.add(this.time, "millisecond");
+        const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
+        if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
+          this.endDate = lastStopwatchUpdateTimeDate.toDate();
+        } else {
+          this.endDate = timeDate.toDate();
+        }
+      } else {
+        // this.endDate = this.startDate.add(this.time, "millisecond");
+        this.endDate = dayjs(this.startDate)
+          .add(this.time, "millisecond")
+          .toDate();
+      }
+    } else {
+      this.endDate = this.startDate;
+    }
   }
 }

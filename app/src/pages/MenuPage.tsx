@@ -82,7 +82,8 @@ export default function MenuPage() {
           db,
           `children/${user.selectedChild}/entries/${entry.id}`
         );
-        batch.set(entryRef, entry.toJSON());
+        entry.setEndDate();
+        batch.set(entryRef, entry.toJSON({ keepDates: true }));
       }
     }
     batch.commit().then(() => {});

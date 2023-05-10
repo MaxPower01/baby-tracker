@@ -77,7 +77,7 @@ export default function Entries() {
             return (
               <Stack
                 key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
-                spacing={4}
+                spacing={2}
               >
                 <Box
                   sx={{
@@ -136,6 +136,7 @@ export default function Entries() {
                       >
                         <Typography
                           variant="h6"
+                          textAlign={"left"}
                           sx={{
                             lineHeight: 1,
                           }}
@@ -166,7 +167,13 @@ export default function Entries() {
                   </Button>
                 </Box>
 
-                <Stack spacing={4}>
+                <Stack
+                  spacing={4}
+                  sx={{
+                    paddingTop: 1,
+                    paddingBottom: 1,
+                  }}
+                >
                   {entriesByTime.map((timeEntries) => {
                     return (
                       <MenuProvider
