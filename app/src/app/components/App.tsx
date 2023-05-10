@@ -9,7 +9,6 @@ import "./App.scss";
 
 export default function App() {
   const { user } = useAuthentication();
-  console.log("user", user);
 
   return (
     <>

@@ -44,19 +44,21 @@ export class ActivityModel {
     ActivityType.Vomit,
     //
     ActivityType.MilkExtraction,
+    ActivityType.CarRide,
+    ActivityType.Hiccups,
+    //
+    ActivityType.Bath,
     ActivityType.Weight,
     ActivityType.Size,
     //
-    ActivityType.Bath,
     ActivityType.NasalHygiene,
     ActivityType.Temperature,
+    ActivityType.Teeth,
     //
     ActivityType.SolidFood,
     ActivityType.Medicine,
     ActivityType.Vaccine,
     //
-    ActivityType.Hiccups,
-    ActivityType.Teeth,
     ActivityType.HospitalVisit,
   ];
 
@@ -138,6 +140,22 @@ export class ActivityModel {
       case ActivityType.Burp:
         this._name = "Rot";
         this._linkedTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
+        break;
+      case ActivityType.CarRide:
+        this._name = "Trajet en voiture";
+        this._hasDuration = true;
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
         break;
       case ActivityType.Cry:
         this._name = "Pleurs";

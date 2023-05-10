@@ -1,5 +1,4 @@
 import { auth, db, googleAuthProvider } from "@/firebase";
-import CustomUser from "@/modules/authentication/models/CustomUser";
 import {
   User,
   getAdditionalUserInfo,
@@ -23,28 +22,31 @@ export default function AuthenticationProvider(
 ) {
   // Store the user in a state variable
 
-  const [customUser, setCustomUser] = useState<CustomUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [selectedChild, setSelectedChild] = useState<string>("");
 
   // Listen for changes in authentication state
   // and update the user state accordingly
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log("onAuthStateChanged", user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         const userRef = doc(db, "users", user.uid);
         getDoc(userRef)
           .then((docSnap) => {
-            setCustomUser(docSnap.data() as CustomUser);
+            setUser(docSnap.data() as User);
+            setSelectedChild(docSnap.data()?.selectedChild ?? "");
           })
           .catch((error) => {
             console.error(error);
-            setCustomUser(null);
+            setUser(null);
           });
       } else {
         // User is signed out
-        setCustomUser(null);
+        setUser(null);
       }
     });
     return () => unsubscribe();
@@ -86,6 +88,7 @@ export default function AuthenticationProvider(
         if (isNewUser) {
           data.selectedChild = "";
           data.children = [];
+          setSelectedChild("");
         }
         await setDoc(userRef, data, { merge: true });
       } catch (error: any) {
@@ -109,11 +112,13 @@ export default function AuthenticationProvider(
 
   const context: AuthenticationContextValue = useMemo(() => {
     return {
-      user: customUser,
+      user,
+      selectedChild,
+      setSelectedChild,
       googleSignInWithPopup,
       signOut,
     };
-  }, [customUser]);
+  }, [user, selectedChild]);
 
   return (
     <AuthenticationContext.Provider

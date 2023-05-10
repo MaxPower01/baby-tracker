@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ChildrenForm() {
-  const { user } = useAuthentication();
+  const { user, setSelectedChild } = useAuthentication();
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +34,7 @@ export default function ChildrenForm() {
         selectedChild: docRef.id,
         children: arrayUnion(docRef.id),
       }).then(() => {
+        setSelectedChild(docRef.id);
         navigate(
           getPath({
             page: PageName.Home,

@@ -3,6 +3,7 @@ import {
   groupEntriesByTime,
   upperCaseFirst,
 } from "@/lib/utils";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import {
   Box,
@@ -13,11 +14,15 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import useEntries from "../hooks/useEntries";
 import EntriesCard from "./EntriesCard";
 
-export default function Entries() {
-  const { entries, isLoading } = useEntries();
+type Props = {
+  entries: EntryModel[];
+  isLoadingEntries: boolean;
+};
+
+export default function RecentEntries(props: Props) {
+  const { entries, isLoadingEntries } = props;
   const theme = useTheme();
 
   const [topbarHeight, setTopbarHeight] = useState<number | null>(null);
@@ -36,13 +41,13 @@ export default function Entries() {
   }, []);
 
   const entriesByDate = useMemo(() => {
-    if (isLoading || !entries) {
+    if (isLoadingEntries || !entries) {
       return null;
     }
     return groupEntriesByDate(entries);
   }, [entries]);
 
-  if (isLoading) {
+  if (isLoadingEntries) {
     return (
       <Box
         sx={{

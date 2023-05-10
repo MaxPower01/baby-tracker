@@ -173,7 +173,6 @@ export class EntryModel {
    * @returns A JSON representation of the object
    */
   public toJSON(params?: { keepDates?: boolean }) {
-    console.log(this.startDate);
     return {
       id: this.id,
       activity: this.activity?.serialize(),
@@ -236,8 +235,8 @@ export class EntryModel {
     const json = data;
     const { startDate, endDate, ...rest } = json;
     const entry = EntryModel.fromJSON(rest);
-    entry.startDate = startDate?.toDate();
-    entry.endDate = endDate?.toDate();
+    if (startDate != null) entry.startDate = startDate?.toDate();
+    if (endDate != null) entry.endDate = endDate?.toDate();
     return entry;
   }
 

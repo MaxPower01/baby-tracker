@@ -3,7 +3,7 @@ import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -106,13 +106,13 @@ export default function BottomBar(props: Props) {
       isFloatingActionButton: true,
     },
     {
-      id: "calendar",
-      onClick: () => navigate(getPath({ page: PageName.Calendar })),
-      label: getPageTitle(getPath({ page: PageName.Calendar })),
+      id: "entries",
+      onClick: () => navigate(getPath({ page: PageName.Entries })),
+      label: getPageTitle(getPath({ page: PageName.Entries })),
       IconWrapper: IconButton,
-      Icon: CalendarTodayIcon,
+      Icon: DynamicFeedIcon,
       color: "default",
-      isCurrentPage: pageName === PageName.Calendar,
+      isCurrentPage: pageName === PageName.Entries,
       // sx: {
       //   opacity: pageName === PageName.Calendar ? 1 : 0.6,
       //   fontWeight: pageName === PageName.Calendar ? "bold" : undefined,

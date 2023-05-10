@@ -2,8 +2,8 @@ import PageName from "@/common/enums/PageName";
 import { getPath } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import AuthenticationPage from "@/pages/AuthenticationPage";
-import CalendarPage from "@/pages/CalendarPage";
 import ChildrenPage from "@/pages/ChildrenPage";
+import EntriesPage from "@/pages/EntriesPage";
 import EntryPage from "@/pages/EntryPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
@@ -28,8 +28,8 @@ export default function PrivateRoutes() {
           element={<GraphicsPage />}
         />
         <Route
-          path={getPath({ page: PageName.Calendar })}
-          element={<CalendarPage />}
+          path={getPath({ page: PageName.Entries })}
+          element={<EntriesPage />}
         />
         <Route path={getPath({ page: PageName.Menu })} element={<MenuPage />} />
         <Route

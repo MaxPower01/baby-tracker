@@ -1,9 +1,10 @@
-import CustomUser from "@/modules/authentication/models/CustomUser";
 import { User } from "firebase/auth";
 import React, { createContext } from "react";
 
 export interface AuthenticationContextValue {
-  user: CustomUser | null;
+  user: User | null;
+  selectedChild: string;
+  setSelectedChild: React.Dispatch<React.SetStateAction<string>>;
   googleSignInWithPopup: () => Promise<{
     user: User | undefined;
     isNewUser: boolean | undefined;

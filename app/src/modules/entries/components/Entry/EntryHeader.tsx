@@ -48,34 +48,32 @@ export default function EntryHeader(props: Props) {
     return result;
   }, [activity, leftTime, rightTime, time]);
   const subtitle = useMemo(() => {
-    let result = startDate.toLocaleTimeString("fr-CA", {
+    let result = entry.startDate.toLocaleTimeString("fr-CA", {
       hour: "2-digit",
       minute: "2-digit",
     });
-    if (entry.startDate == entry.endDate) {
+    if (entry.startDate.getTime() == entry.endDate.getTime()) {
       return result;
     }
-    if (entry.endDate) {
-      if (entry.anyStopwatchIsRunning) {
-        result += " – en cours";
-      } else {
-        const isDifferentDay =
-          entry.startDate.getDate() !== entry.endDate.getDate();
-        const isDifferentMonth =
-          entry.startDate.getMonth() !== entry.endDate.getMonth();
-        const isDifferentYear =
-          entry.startDate.getFullYear() !== entry.endDate.getFullYear();
-        result += ` – ${entry.endDate.toLocaleTimeString("fr-CA", {
-          minute: "2-digit",
-          hour: "2-digit",
-          day: isDifferentDay || isDifferentMonth ? "numeric" : undefined,
-          month: isDifferentDay || isDifferentMonth ? "long" : undefined,
-          year: isDifferentYear ? "numeric" : undefined,
-        })}`;
-      }
+    if (entry.anyStopwatchIsRunning) {
+      result += " – en cours";
+    } else {
+      const isDifferentDay =
+        entry.startDate.getDate() !== entry.endDate.getDate();
+      const isDifferentMonth =
+        entry.startDate.getMonth() !== entry.endDate.getMonth();
+      const isDifferentYear =
+        entry.startDate.getFullYear() !== entry.endDate.getFullYear();
+      result += ` – ${entry.endDate.toLocaleTimeString("fr-CA", {
+        minute: "2-digit",
+        hour: "2-digit",
+        day: isDifferentDay || isDifferentMonth ? "numeric" : undefined,
+        month: isDifferentDay || isDifferentMonth ? "long" : undefined,
+        year: isDifferentYear ? "numeric" : undefined,
+      })}`;
     }
     return result;
-  }, [startDate, time]);
+  }, [entry]);
   return (
     <Stack direction={"row"} spacing={2} alignItems={"center"}>
       {!props.hideIcon && entry.activity != null && (

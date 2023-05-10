@@ -314,8 +314,8 @@ export function getPageTitle(pathname: string) {
       return "Graphiques";
     case PageName.Menu:
       return "Menu";
-    case PageName.Calendar:
-      return "Calendrier";
+    case PageName.Entries:
+      return "Entrées";
     case PageName.Entry:
       const entryId = pathname.substring(1).split("/")[1];
       if (entryId) {

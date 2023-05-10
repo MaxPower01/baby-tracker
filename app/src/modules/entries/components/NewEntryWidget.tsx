@@ -3,10 +3,9 @@ import { formatStopwatchTime, getPath } from "@/lib/utils";
 import ActivityButton from "@/modules/activities/components/ActivityButton";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import { ActivityModel } from "@/modules/activities/models/ActivityModel";
-import { selectLastEntry } from "@/modules/entries/state/entriesSlice";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import { RootState } from "@/modules/store/store";
 import {
   Box,
   MenuItem,
@@ -16,10 +15,28 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-export default function NewEntryWidget() {
+type Props = {
+  lastBreastfeedingEntry: EntryModel | null;
+  lastBottleFeedingEntry: EntryModel | null;
+  lastDiaperEntry: EntryModel | null;
+  lastSleepEntry: EntryModel | null;
+  lastBurpEntry: EntryModel | null;
+  lastRegurgitationEntry: EntryModel | null;
+  lastVomitEntry: EntryModel | null;
+};
+
+export default function NewEntryWidget(props: Props) {
+  const {
+    lastBreastfeedingEntry,
+    lastBottleFeedingEntry,
+    lastDiaperEntry,
+    lastSleepEntry,
+    lastBurpEntry,
+    lastRegurgitationEntry,
+    lastVomitEntry,
+  } = props;
   const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
   const bottleFeedingActivity = new ActivityModel(ActivityType.BottleFeeding);
   const diaperActivity = new ActivityModel(ActivityType.Diaper);
@@ -29,27 +46,27 @@ export default function NewEntryWidget() {
   const vomitActivity = new ActivityModel(ActivityType.Vomit);
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
-  const lastBreastfeedingEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, breastFeedingActivity.type)
-  );
-  const lastBottleFeedingEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, bottleFeedingActivity.type)
-  );
-  const lastDiaperEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, diaperActivity.type)
-  );
-  const lastSleepEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, sleepActivity.type)
-  );
-  const lastBurpEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, burpActivity.type)
-  );
-  const lastRegurgitationEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, regurgitationActivity.type)
-  );
-  const lastVomitEntry = useSelector((state: RootState) =>
-    selectLastEntry(state, vomitActivity.type)
-  );
+  // const lastBreastfeedingEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, breastFeedingActivity.type)
+  // );
+  // const lastBottleFeedingEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, bottleFeedingActivity.type)
+  // );
+  // const lastDiaperEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, diaperActivity.type)
+  // );
+  // const lastSleepEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, sleepActivity.type)
+  // );
+  // const lastBurpEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, burpActivity.type)
+  // );
+  // const lastRegurgitationEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, regurgitationActivity.type)
+  // );
+  // const lastVomitEntry = useSelector((state: RootState) =>
+  //   selectLastEntry(state, vomitActivity.type)
+  // );
   const [forceUpdate, setForceUpdate] = useState(1);
   const lastBreastfeedingLabel = useMemo(() => {
     if (lastBreastfeedingEntry == null) return null;
@@ -167,12 +184,6 @@ export default function NewEntryWidget() {
     textAlign: "center",
     fontStyle: "italic",
   };
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setForceUpdate((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const textVariant = "body2";
   const dispatch = useAppDispatch();
@@ -202,6 +213,12 @@ export default function NewEntryWidget() {
       })
     );
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setForceUpdate((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <Stack
       spacing={2}

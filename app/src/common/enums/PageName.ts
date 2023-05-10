@@ -1,7 +1,7 @@
 enum PageName {
   Home = "home",
   Graphics = "graphics",
-  Calendar = "calendar",
+  Entries = "entries",
   Menu = "menu",
   Entry = "entry",
   Authentication = "authentication",

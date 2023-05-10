@@ -1,8 +1,5 @@
 import { getPageName, getPageTitle, getPath } from "@/lib/utils";
-import {
-  removeEntry,
-  selectEditingEntryId,
-} from "@/modules/entries/state/entriesSlice";
+import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -55,7 +52,8 @@ export default function TopBar(props: Props) {
   const handleDeleteEntryButtonClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (!editingEntryId) return;
-      dispatch(removeEntry(editingEntryId));
+      // TODO: Implement
+      // dispatch(removeEntry(editingEntryId));
       navigate(getPath({ page: PageName.Home }));
     },
     [editingEntryId]

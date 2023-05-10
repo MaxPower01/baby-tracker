@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EntryModel } from "../models/EntryModel";
-import { removeEntry } from "../state/entriesSlice";
 import EntryBody from "./Entry/EntryBody";
 import EntryHeader from "./Entry/EntryHeader";
 
@@ -40,7 +39,8 @@ export default function EntriesCard(props: Props) {
   ) => {
     closeMenu(e);
     if (!menuEntryId) return;
-    dispatch(removeEntry(menuEntryId));
+    // TODO: Implement
+    // dispatch(removeEntry(menuEntryId));
   };
 
   return (

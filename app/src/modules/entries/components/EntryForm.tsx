@@ -12,10 +12,7 @@ import { ActivityModel } from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
-import {
-  setEditingEntryId,
-  updateEntry,
-} from "@/modules/entries/state/entriesSlice";
+import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
@@ -48,12 +45,14 @@ type EntryFormProps = {
 
 export default function EntryForm(props: EntryFormProps) {
   const [entry, setEntry] = useState<EntryModel>(props.entry);
+  const [endDateWasEditedManually, setEndDateWasEditedManually] =
+    useState(false);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  const { user } = useAuthentication();
+  const { user, selectedChild } = useAuthentication();
 
   useEffect(() => {
     if (entry.anyStopwatchIsRunning) {
@@ -88,6 +87,17 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
+  };
+
+  const handleEndDateChange = (newEndDate: Dayjs | null) => {
+    if (newEndDate == null) return;
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      newEntry.endDate = newEndDate.toDate();
+      // save(newEntry);
+      return newEntry;
+    });
+    setEndDateWasEditedManually(true);
   };
 
   // Handle the sub-activities
@@ -192,27 +202,56 @@ export default function EntryForm(props: EntryFormProps) {
     return formatStopwatchesTime([entry.leftTime, entry.rightTime], true);
   }, [entry]);
 
-  const handleStopwatchChange = (params: {
-    side: string;
-    time: number;
-    isRunning: boolean;
-    lastUpdateTime: number | null;
-  }) => {
-    setEntry((prevEntry) => {
-      const newEntry = prevEntry.clone();
-      if (params.side === "left") {
-        newEntry.leftTime = params.time;
-        newEntry.leftStopwatchIsRunning = params.isRunning;
-        newEntry.leftStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
-      } else {
-        newEntry.rightTime = params.time;
-        newEntry.rightStopwatchIsRunning = params.isRunning;
-        newEntry.rightStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
-      }
-      // save(newEntry);
-      return newEntry;
-    });
-  };
+  // const handleStopwatchChange = (params: {
+  //   side: string;
+  //   time: number;
+  //   isRunning: boolean;
+  //   lastUpdateTime: number | null;
+  // }) => {
+  //   setEntry((prevEntry) => {
+  //     const newEntry = prevEntry.clone();
+  //     if (params.side === "left") {
+  //       newEntry.leftTime = params.time;
+  //       newEntry.leftStopwatchIsRunning = params.isRunning;
+  //       newEntry.leftStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
+  //     } else {
+  //       newEntry.rightTime = params.time;
+  //       newEntry.rightStopwatchIsRunning = params.isRunning;
+  //       newEntry.rightStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
+  //     }
+  //     newEntry.setEndDate();
+  //     // save(newEntry);
+  //     return newEntry;
+  //   });
+  // };
+
+  const handleStopwatchChange = useCallback(
+    (params: {
+      side: string;
+      time: number;
+      isRunning: boolean;
+      lastUpdateTime: number | null;
+    }) => {
+      setEntry((prevEntry) => {
+        const newEntry = prevEntry.clone();
+        if (params.side === "left") {
+          newEntry.leftTime = params.time;
+          newEntry.leftStopwatchIsRunning = params.isRunning;
+          newEntry.leftStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
+        } else {
+          newEntry.rightTime = params.time;
+          newEntry.rightStopwatchIsRunning = params.isRunning;
+          newEntry.rightStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
+        }
+        if (!endDateWasEditedManually) {
+          newEntry.setEndDate();
+        }
+        // save(newEntry);
+        return newEntry;
+      });
+    },
+    [endDateWasEditedManually]
+  );
 
   useEffect(() => {
     if (props.shouldStartTimer != null) {
@@ -248,32 +287,33 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    if (user == null) return;
-    const { id, ...rest } = entry.toJSON();
+    if (selectedChild == null) return;
+    if (!endDateWasEditedManually) entry.setEndDate();
+    const { id, ...rest } = entry.toJSON({ keepDates: true });
     if (id == null) {
       const docRef = await addDoc(
-        collection(db, `children/${user.selectedChild}/entries`),
+        collection(db, `children/${selectedChild}/entries`),
         {
           ...rest,
         }
       );
       entry.id = docRef.id;
-      dispatch(
-        updateEntry({
-          entry: entry.serialize(),
-          id: docRef.id,
-        })
-      );
+      // dispatch(
+      //   updateEntry({
+      //     entry: entry.serialize(),
+      //     id: docRef.id,
+      //   })
+      // );
     } else {
-      await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
+      await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
         ...rest,
       });
-      dispatch(
-        updateEntry({
-          entry: entry.serialize(),
-          id,
-        })
-      );
+      // dispatch(
+      //   updateEntry({
+      //     entry: entry.serialize(),
+      //     id,
+      //   })
+      // );
     }
     navigate(getPath({ page: PageName.Home }));
   }, [entry, user]);
@@ -312,7 +352,49 @@ export default function EntryForm(props: EntryFormProps) {
               onChange={handleStartDateChange}
               disabled={anyStopwatchIsRunning}
               disableFuture={true}
-              label=""
+              label="Date de début"
+              slotProps={{
+                textField: {
+                  sx: {
+                    "& input": {
+                      textAlign: "center",
+                      width: "auto",
+                      cursor: "pointer",
+                      // paddingTop: 0,
+                      // paddingBottom: 0,
+                      // borderColor: "transparent",
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main,
+                      // borderColor: theme.palette.primary.main,
+                      fontSize: "1.35em",
+                    },
+                    "& *:before": {
+                      border: "none !important",
+                    },
+                  },
+                  variant: "standard",
+                },
+              }}
+              ampm={false}
+              localeText={{
+                toolbarTitle: "",
+                okButtonLabel: "OK",
+                cancelButtonLabel: "Annuler",
+                nextMonth: "Mois suivant",
+                previousMonth: "Mois précédent",
+              }}
+            />
+          </LocalizationProvider>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale={dayjsLocaleFrCa}
+          >
+            <MobileDateTimePicker
+              value={dayjs(entry.endDate)}
+              onChange={handleEndDateChange}
+              disabled={anyStopwatchIsRunning}
+              disableFuture={true}
+              label="Date de fin"
               slotProps={{
                 textField: {
                   sx: {

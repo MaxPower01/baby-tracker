@@ -1,3 +1,3 @@
-export default function GraphicsPage() {
+export default function EntriesPage() {
   return <div>Bientôt disponible</div>;
 }
