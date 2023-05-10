@@ -1,6 +1,7 @@
 import { auth, db } from "@/firebase";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
+import { EntryModel } from "@/modules/entries/models/EntryModel";
 import {
   addEntries,
   resetEntriesState,
@@ -17,14 +18,22 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { doc, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  writeBatch,
+} from "firebase/firestore";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetAppState } from "../app/state/appSlice";
 import LoadingIndicator from "../common/components/LoadingIndicator";
 import PageName from "../common/enums/PageName";
-import { exportToJSONFile, getPath } from "../lib/utils";
+import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "../lib/utils";
 
 export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();
@@ -78,6 +87,32 @@ export default function MenuPage() {
       }
     }
     batch.commit().then(() => {});
+  }, [user]);
+
+  const handleDownloadAllEntries = useCallback(async () => {
+    if (!user || isNullOrWhiteSpace(user.selectedChild)) {
+      return;
+    }
+    const q = query(
+      collection(db, `children/${user.selectedChild}/entries`),
+      orderBy("startDate", "desc"),
+      limit(10)
+    );
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      console.log("No matching documents.");
+      return;
+    }
+    const entries: EntryModel[] = [];
+    querySnapshot.forEach((doc) => {
+      const entry = EntryModel.fromJSON(doc.data());
+      entry.id = doc.id;
+      entries.push(entry);
+    });
+    const data = {
+      entries: entries.map((entry) => entry.serialize()),
+    };
+    exportToJSONFile(data);
   }, [user]);
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,6 +239,14 @@ export default function MenuPage() {
             color="primary"
           >
             Sauvegarder les données locales en ligne
+          </Button>
+
+          <Button
+            onClick={handleDownloadAllEntries}
+            variant="contained"
+            color="primary"
+          >
+            Télécharger toutes les donées depuis le cloud
           </Button>
         </Stack>
 
