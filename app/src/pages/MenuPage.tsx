@@ -22,7 +22,6 @@ import {
   collection,
   doc,
   getDocs,
-  limit,
   orderBy,
   query,
   writeBatch,
@@ -95,8 +94,7 @@ export default function MenuPage() {
     }
     const q = query(
       collection(db, `children/${user.selectedChild}/entries`),
-      orderBy("startDate", "desc"),
-      limit(10)
+      orderBy("startDate", "desc")
     );
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
