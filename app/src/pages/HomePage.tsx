@@ -1,9 +1,11 @@
 import LoadingIndicator from "@/common/components/LoadingIndicator";
+import Section from "@/common/components/Section";
+import SectionTitle from "@/common/components/SectionTitle";
 import useChildren from "@/modules/children/hooks/useChildren";
 import Entries from "@/modules/entries/components/Entries";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 export default function HomePage() {
   const { child } = useChildren();
@@ -13,15 +15,20 @@ export default function HomePage() {
   }
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={2}>
       <Typography variant={"h4"} textAlign={"center"}>
         {child.name}
       </Typography>
-      <MenuProvider>
-        <NewEntryWidget />
-      </MenuProvider>
-      <Divider />
-      <Entries />
+      <Section>
+        <SectionTitle title="Ajouter une entrée" />
+        <MenuProvider>
+          <NewEntryWidget />
+        </MenuProvider>
+      </Section>
+      <Section dividerPosition="top">
+        <SectionTitle title="Activité récente" />
+        <Entries />
+      </Section>
     </Stack>
   );
 }

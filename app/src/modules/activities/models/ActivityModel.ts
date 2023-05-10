@@ -55,6 +55,7 @@ export class ActivityModel {
     ActivityType.Medicine,
     ActivityType.Vaccine,
     //
+    ActivityType.Hiccups,
     ActivityType.Teeth,
     ActivityType.HospitalVisit,
   ];
@@ -152,6 +153,10 @@ export class ActivityModel {
           ActivityType.Vomit,
         ];
         this._subTypes = [SubActivityType.Meconium];
+        break;
+      case ActivityType.Hiccups:
+        this._name = "Hoquet";
+        this._hasDuration = true;
         break;
       case ActivityType.HospitalVisit:
         this._name = "Visite à l'hôpital";

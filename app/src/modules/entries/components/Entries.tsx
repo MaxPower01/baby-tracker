@@ -60,7 +60,12 @@ export default function Entries() {
   }
 
   return (
-    <Stack spacing={4}>
+    <Stack
+      spacing={4}
+      sx={{
+        width: "100%",
+      }}
+    >
       {entriesByDate.years.map((yearEntries) => {
         return yearEntries.months.map((monthEntries) => {
           return monthEntries.days.map((dayEntries) => {
@@ -77,7 +82,7 @@ export default function Entries() {
             return (
               <Stack
                 key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
-                spacing={2}
+                spacing={1}
               >
                 <Box
                   sx={{

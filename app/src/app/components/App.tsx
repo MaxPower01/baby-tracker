@@ -9,12 +9,11 @@ import "./App.scss";
 
 export default function App() {
   const { user } = useAuthentication();
+  console.log("user", user);
 
   return (
     <>
-      {user != null && user.selectedChild != "" && (
-        <TopBar component={"header"} />
-      )}
+      {user != null && <TopBar component={"header"} />}
 
       <Container
         component={"main"}
@@ -27,9 +26,7 @@ export default function App() {
         {user == null ? <PublicRoutes /> : <PrivateRoutes />}
       </Container>
 
-      {user != null && user.selectedChild != "" && (
-        <BottomBar component={"footer"} />
-      )}
+      {user != null && <BottomBar component={"footer"} />}
     </>
   );
 }

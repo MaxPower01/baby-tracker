@@ -5,20 +5,23 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./app/components/App";
 import LayoutProvider from "./common/components/LayoutProvider";
 import "./main.scss";
+import AuthenticationProvider from "./modules/authentication/components/AuthenticationProvider";
 import StoreProvider from "./modules/store/components/StoreProvider";
 import ThemeProvider from "./modules/theme/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <StoreProvider>
-      <ThemeProvider>
-        <CssBaseline />
-        <BrowserRouter>
-          <LayoutProvider>
-            <App />
-          </LayoutProvider>
-        </BrowserRouter>
-      </ThemeProvider>
+      <AuthenticationProvider>
+        <ThemeProvider>
+          <CssBaseline />
+          <BrowserRouter>
+            <LayoutProvider>
+              <App />
+            </LayoutProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </AuthenticationProvider>
     </StoreProvider>
   </React.StrictMode>
 );

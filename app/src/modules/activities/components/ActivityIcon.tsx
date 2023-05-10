@@ -27,6 +27,10 @@ function DiaperIcon() {
   return <ReactSVG src="/diaper.svg" className="ActivityIcon" />;
 }
 
+function HiccupsIcon() {
+  return <ReactSVG src="/burp.svg" className="ActivityIcon" />;
+}
+
 function HospitalVisitIcon() {
   return <ReactSVG src="/hospital-visit.svg" className="ActivityIcon" />;
 }
@@ -117,6 +121,8 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <CryIcon />;
           case ActivityType.Diaper:
             return <DiaperIcon />;
+          case ActivityType.Hiccups:
+            return <HiccupsIcon />;
           case ActivityType.HospitalVisit:
             return <HospitalVisitIcon />;
           case ActivityType.Medicine:
