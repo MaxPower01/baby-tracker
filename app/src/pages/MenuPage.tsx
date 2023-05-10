@@ -39,7 +39,7 @@ export default function MenuPage() {
   const dispatch = useAppDispatch();
   const { entries, isLoading: isLoadingEntries } = useEntries();
   const navigate = useNavigate();
-  const { user } = useAuthentication();
+  const { user, selectedChild } = useAuthentication();
   const localEntries = useSelector(selectEntries);
 
   const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
@@ -71,7 +71,7 @@ export default function MenuPage() {
   }, [entries, isLoadingEntries]);
 
   const handleSaveLocalDataToCloud = useCallback(() => {
-    if (!user || !localEntries?.length) {
+    if (!user || !localEntries?.length || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
     const batch = writeBatch(db);
@@ -80,7 +80,7 @@ export default function MenuPage() {
       if (entry.id != null) {
         const entryRef = doc(
           db,
-          `children/${user.selectedChild}/entries/${entry.id}`
+          `children/${selectedChild}/entries/${entry.id}`
         );
         entry.setEndDate();
         batch.set(entryRef, entry.toJSON({ keepDates: true }));
@@ -90,11 +90,11 @@ export default function MenuPage() {
   }, [user]);
 
   const handleDownloadAllEntries = useCallback(async () => {
-    if (!user || isNullOrWhiteSpace(user.selectedChild)) {
+    if (!user || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
     const q = query(
-      collection(db, `children/${user.selectedChild}/entries`),
+      collection(db, `children/${selectedChild}/entries`),
       orderBy("startDate", "desc")
     );
     const querySnapshot = await getDocs(q);
@@ -112,7 +112,7 @@ export default function MenuPage() {
       entries: entries.map((entry) => entry.serialize()),
     };
     exportToJSONFile(data);
-  }, [user]);
+  }, [user, selectedChild]);
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
