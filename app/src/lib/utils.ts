@@ -312,8 +312,6 @@ export function getPageTitle(pathname: string) {
       return "Accueil";
     case PageName.Graphics:
       return "Graphiques";
-    case PageName.Menu:
-      return "Menu";
     case PageName.Entries:
       return "Entrées";
     case PageName.Entry:

@@ -120,12 +120,12 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "settings",
-      onClick: () => navigate(getPath({ page: PageName.Menu })),
-      label: getPageTitle(getPath({ page: PageName.Menu })),
+      onClick: () => {},
+      label: "Menu",
       IconWrapper: IconButton,
       Icon: MenuIcon,
       color: "default",
-      isCurrentPage: pageName === PageName.Menu,
+      isCurrentPage: false,
       // sx: {
       //   opacity: pageName === PageName.Menu ? 1 : 0.6,
       //   fontWeight: pageName === PageName.Menu ? "bold" : undefined,

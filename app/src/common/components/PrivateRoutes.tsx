@@ -7,7 +7,6 @@ import EntriesPage from "@/pages/EntriesPage";
 import EntryPage from "@/pages/EntryPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
-import MenuPage from "@/pages/MenuPage";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 export default function PrivateRoutes() {
@@ -31,7 +30,6 @@ export default function PrivateRoutes() {
           path={getPath({ page: PageName.Entries })}
           element={<EntriesPage />}
         />
-        <Route path={getPath({ page: PageName.Menu })} element={<MenuPage />} />
         <Route
           path={getPath({ page: PageName.Authentication })}
           element={<AuthenticationPage />}

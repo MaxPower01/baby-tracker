@@ -4,6 +4,7 @@ import PublicRoutes from "@/common/components/PublicRoutes";
 import TopBar from "@/common/components/TopBar";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Container } from "@mui/material";
 import "./App.scss";
 
@@ -25,7 +26,11 @@ export default function App() {
         {user == null ? <PublicRoutes /> : <PrivateRoutes />}
       </Container>
 
-      {user != null && <BottomBar component={"footer"} />}
+      {user != null && (
+        <MenuProvider>
+          <BottomBar component={"footer"} />
+        </MenuProvider>
+      )}
     </>
   );
 }

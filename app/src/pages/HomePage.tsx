@@ -11,7 +11,7 @@ import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Stack, Typography } from "@mui/material";
 
 export default function HomePage() {
-  const { child } = useChildren();
+  const { selectedChild: child } = useChildren();
   const { entries, isLoading } = useEntries();
 
   if (child == null) {

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const useChildren = () => {
   const { user } = useAuthentication();
-  const [child, setChild] = useState<{
+  const [selectedChild, setSelectedChild] = useState<{
     id: string;
     name: string;
     parents: string[];
@@ -16,7 +16,7 @@ const useChildren = () => {
     getDocs(collectionRef).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         if (doc.data().parents.includes(user.uid)) {
-          setChild({
+          setSelectedChild({
             id: doc.id,
             name: doc.data().name,
             parents: doc.data().parents,
@@ -25,6 +25,6 @@ const useChildren = () => {
       });
     });
   }, [user]);
-  return { child };
+  return { selectedChild };
 };
 export default useChildren;

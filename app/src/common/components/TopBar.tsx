@@ -1,4 +1,5 @@
 import { getPageName, getPageTitle, getPath } from "@/lib/utils";
+import useChildren from "@/modules/children/hooks/useChildren";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -24,16 +25,21 @@ type Props = {
 export default function TopBar(props: Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { selectedChild } = useChildren();
 
   const editingEntryId = useSelector(selectEditingEntryId);
 
   const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
-    return {
+    const result = {
       pageName: getPageName(pathname),
       pageTitle: getPageTitle(pathname),
     };
-  }, [location.pathname]);
+    if (selectedChild != null) {
+      result.pageTitle = `${selectedChild.name} - ${result.pageTitle}`;
+    }
+    return result;
+  }, [selectedChild, pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
     return pageName === PageName.Entry;
