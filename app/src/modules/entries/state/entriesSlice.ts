@@ -2,7 +2,7 @@ import LocalStorageKey from "@/common/enums/LocalStorageKey";
 import { getInitialState, setLocalState } from "@/lib/utils";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import EntriesState from "@/modules/entries/state/EntriesState";
+import EntriesState from "@/modules/entries/types/EntriesState";
 import StoreReducerName from "@/modules/store/enums/StoreReducerName";
 import { RootState } from "@/modules/store/store";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
