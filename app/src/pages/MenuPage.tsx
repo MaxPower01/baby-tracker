@@ -9,15 +9,7 @@ import {
 } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import {
-  Alert,
-  Avatar,
-  Button,
-  Slide,
-  Snackbar,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, Stack, Typography } from "@mui/material";
 import {
   collection,
   doc,
@@ -30,7 +22,6 @@ import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetAppState } from "../app/state/appSlice";
-import LoadingIndicator from "../common/components/LoadingIndicator";
 import PageName from "../common/enums/PageName";
 import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "../lib/utils";
 
@@ -201,7 +192,7 @@ export default function MenuPage() {
           )}
         </Stack>
 
-        <Stack spacing={2} alignItems="center">
+        {/* <Stack spacing={2} alignItems="center">
           <input
             id="import-data"
             aria-label="Importer des données"
@@ -247,14 +238,14 @@ export default function MenuPage() {
           >
             Télécharger toutes les donées depuis le cloud
           </Button>
-        </Stack>
+        </Stack> */}
 
-        <Button onClick={handleReset} variant="contained" color="error">
+        {/* <Button onClick={handleReset} variant="contained" color="error">
           Supprimer les données locales
-        </Button>
+        </Button> */}
       </Stack>
 
-      <Snackbar
+      {/* <Snackbar
         open={successSnackbarOpen}
         autoHideDuration={3000}
         onClose={handleClose}
@@ -271,7 +262,7 @@ export default function MenuPage() {
         >
           {successSnackbarMessage}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 }
