@@ -1,5 +1,6 @@
 import { auth, db, googleAuthProvider } from "@/firebase";
 import AuthenticationContext from "@/modules/authentication/components/AuthenticationContext";
+import AuthenticationContextValue from "@/modules/authentication/types/AuthenticationContextValue";
 import CustomUser from "@/modules/authentication/types/CustomUser";
 import {
   User,
@@ -15,7 +16,6 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
-import AuthenticationContextValue from "../types/AuthenticationContextValue";
 
 export default function AuthenticationProvider(
   props: React.PropsWithChildren<{}>
@@ -154,8 +154,7 @@ export default function AuthenticationProvider(
   return (
     <AuthenticationContext.Provider
       value={context as AuthenticationContextValue}
-    >
-      {props.children}
-    </AuthenticationContext.Provider>
+      {...props}
+    />
   );
 }

@@ -81,8 +81,8 @@ export default function RecentEntries(props: Props) {
             const startDate = firstEntry.startDate;
             const entriesByTime = groupEntriesByTime({
               entries: dayEntries.entries,
-              timeUnit: "hour",
-              timeStep: 1,
+              timeUnit: "minute",
+              timeStep: 30,
             });
             return (
               <Stack

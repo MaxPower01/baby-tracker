@@ -16,8 +16,7 @@ export default function MenuProvider(props: React.PropsWithChildren<{}>) {
           setAnchorEl(el);
         },
       }}
-    >
-      {props.children}
-    </MenuContext.Provider>
+      {...props}
+    />
   );
 }

@@ -1,5 +1,5 @@
+import AuthenticationContextValue from "@/modules/authentication/types/AuthenticationContextValue";
 import React, { createContext } from "react";
-import AuthenticationContextValue from "../types/AuthenticationContextValue";
 
 export default createContext(
   null
