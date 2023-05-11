@@ -1,4 +1,5 @@
 import { auth, db, googleAuthProvider } from "@/firebase";
+import CustomUser from "@/modules/authentication/models/CustomUser";
 import {
   User,
   getAdditionalUserInfo,
@@ -22,28 +23,56 @@ export default function AuthenticationProvider(
 ) {
   // Store the user in a state variable
 
-  const [user, setUser] = useState<User | null>(null);
-  const [selectedChild, setSelectedChild] = useState<string>("");
+  const [user, setUser] = useState<CustomUser | null>(null);
+  const [children, setChildren] = useState<
+    {
+      id: string;
+      name: string;
+      isSelected: boolean;
+    }[]
+  >([]);
+
+  const fetchUserDoc = (user: User) => {
+    console.log("Fetching user doc...");
+    const userRef = doc(db, "users", user.uid);
+    getDoc(userRef)
+      .then((docSnap) => {
+        setUser(docSnap.data() as CustomUser);
+        if (docSnap.data()?.children) {
+          const newChildren: {
+            id: string;
+            name: string;
+            isSelected: boolean;
+          }[] = [];
+          console.log("Fetching children docs...");
+          console.log(docSnap.data()?.children);
+          docSnap.data()?.children.forEach(async (childId: string) => {
+            const childRef = doc(db, "children", childId);
+            const childDocSnap = await getDoc(childRef);
+            newChildren.push({
+              id: childDocSnap.id,
+              name: childDocSnap.data()?.name ?? "",
+              isSelected: childDocSnap.id === docSnap.data()?.selectedChild,
+            });
+          });
+          setChildren(newChildren);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setUser(null);
+      });
+  };
 
   // Listen for changes in authentication state
   // and update the user state accordingly
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log("onAuthStateChanged", user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        const userRef = doc(db, "users", user.uid);
-        getDoc(userRef)
-          .then((docSnap) => {
-            setUser(docSnap.data() as User);
-            setSelectedChild(docSnap.data()?.selectedChild ?? "");
-          })
-          .catch((error) => {
-            console.error(error);
-            setUser(null);
-          });
+        await fetchUserDoc(user);
       } else {
         // User is signed out
         setUser(null);
@@ -57,6 +86,7 @@ export default function AuthenticationProvider(
       user: User | undefined;
       isNewUser: boolean | undefined;
     }>(async (resolve, reject) => {
+      console.log("Signing in with Google...");
       let user: User | undefined;
       let isNewUser: boolean | undefined;
       try {
@@ -88,9 +118,11 @@ export default function AuthenticationProvider(
         if (isNewUser) {
           data.selectedChild = "";
           data.children = [];
-          setSelectedChild("");
         }
         await setDoc(userRef, data, { merge: true });
+        if (!isNewUser) {
+          await fetchUserDoc(user);
+        }
       } catch (error: any) {
         return reject(error);
       }
@@ -113,12 +145,12 @@ export default function AuthenticationProvider(
   const context: AuthenticationContextValue = useMemo(() => {
     return {
       user,
-      selectedChild,
-      setSelectedChild,
+      children,
+      setChildren,
       googleSignInWithPopup,
       signOut,
     };
-  }, [user, selectedChild]);
+  }, [user, children]);
 
   return (
     <AuthenticationContext.Provider

@@ -100,7 +100,7 @@ export default function EntryBody(props: Props) {
   if (!shouldRenderCardContent) return null;
 
   const textStyle: SxProps = {
-    fontStyle: "italic",
+    // fontStyle: "italic",
     opacity: 0.8,
     color: props.textColor,
   };

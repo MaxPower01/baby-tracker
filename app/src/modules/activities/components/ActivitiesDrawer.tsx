@@ -1,4 +1,6 @@
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import ActivityButtons from "@/modules/activities/components/ActivityButtons";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
@@ -9,8 +11,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ActivityType from "../enums/ActivityType";
-import ActivityButtons from "./ActivityButtons";
 
 export default function ActivitiesDrawer(props: {
   isOpen: boolean;

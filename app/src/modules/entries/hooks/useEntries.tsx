@@ -1,4 +1,5 @@
 import { db } from "@/firebase";
+import { isNullOrWhiteSpace } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import { addEntries } from "@/modules/entries/state/entriesSlice";
@@ -14,19 +15,19 @@ import {
 import { useCallback, useEffect, useState } from "react";
 
 const useEntries = () => {
-  const { user, selectedChild } = useAuthentication();
+  const { user } = useAuthentication();
   const [entries, setEntries] = useState<EntryModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
   const getEntries = useCallback(async () => {
-    if (selectedChild == "") {
+    if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
       setEntries([]);
       setIsLoading(false);
       return;
     }
     const q = query(
-      collection(db, `children/${selectedChild}/entries`),
+      collection(db, `children/${user.selectedChild}/entries`),
       orderBy("startDate", "desc"),
       limit(50)
     );
@@ -63,15 +64,15 @@ const useEntries = () => {
       return newEntries;
     });
     setIsLoading(false);
-  }, [user, selectedChild]);
+  }, [user]);
 
   useEffect(() => {
     getEntries();
-    if (selectedChild == "") {
+    if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
       return;
     }
     const q = query(
-      collection(db, `children/${selectedChild}/entries`),
+      collection(db, `children/${user.selectedChild}/entries`),
       orderBy("startDate", "desc"),
       limit(50)
     );
@@ -129,7 +130,7 @@ const useEntries = () => {
       }
     });
     return () => unsubscribe();
-  }, [getEntries, selectedChild]);
+  }, [getEntries, user]);
 
   return { entries, isLoading, getEntries };
 };

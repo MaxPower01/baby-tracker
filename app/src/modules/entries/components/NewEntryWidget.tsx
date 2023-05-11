@@ -100,6 +100,9 @@ export default function NewEntryWidget(props: Props) {
   }, [lastBreastfeedingEntry, forceUpdate]);
   const lastBottleFeedingLabel = useMemo(() => {
     if (lastBottleFeedingEntry == null) return null;
+    if (lastBottleFeedingEntry.anyStopwatchIsRunning) {
+      return "En cours";
+    }
     const time =
       lastBottleFeedingEntry.time > 0
         ? formatStopwatchTime(
@@ -124,6 +127,9 @@ export default function NewEntryWidget(props: Props) {
   }, [lastDiaperEntry, forceUpdate]);
   const lastSleepLabel = useMemo(() => {
     if (lastSleepEntry == null) return null;
+    if (lastSleepEntry.anyStopwatchIsRunning) {
+      return "En cours";
+    }
     const time =
       lastSleepEntry.time > 0
         ? formatStopwatchTime(
@@ -227,7 +233,7 @@ export default function NewEntryWidget(props: Props) {
       alignItems={"flex-start"}
       sx={{
         "& .ActivityIcon": {
-          fontSize: "3em",
+          fontSize: "4em",
         },
         width: "100%",
         // This should be a horizontal scroller

@@ -3,11 +3,12 @@ import { Typography } from "@mui/material";
 export default function SectionTitle(props: { title: string }) {
   return (
     <Typography
-      variant="h5"
+      variant="h6"
       textAlign="left"
       sx={{
-        fontWeight: "bold",
         width: "100%",
+        opacity: 0.6,
+        fontStyle: "italic",
       }}
     >
       {props.title}

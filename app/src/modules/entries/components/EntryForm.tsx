@@ -4,7 +4,11 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageName from "@/common/enums/PageName";
 import { db } from "@/firebase";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import { formatStopwatchesTime, getPath } from "@/lib/utils";
+import {
+  formatStopwatchesTime,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
@@ -52,7 +56,7 @@ export default function EntryForm(props: EntryFormProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  const { user, selectedChild } = useAuthentication();
+  const { user, children } = useAuthentication();
 
   useEffect(() => {
     if (entry.anyStopwatchIsRunning) {
@@ -287,12 +291,12 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    if (selectedChild == null) return;
+    if (user == null || isNullOrWhiteSpace(user.selectedChild)) return;
     if (!endDateWasEditedManually) entry.setEndDate();
     const { id, ...rest } = entry.toJSON({ keepDates: true });
     if (id == null) {
       const docRef = await addDoc(
-        collection(db, `children/${selectedChild}/entries`),
+        collection(db, `children/${user.selectedChild}/entries`),
         {
           ...rest,
         }
@@ -305,7 +309,7 @@ export default function EntryForm(props: EntryFormProps) {
       //   })
       // );
     } else {
-      await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
+      await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
         ...rest,
       });
       // dispatch(
@@ -343,90 +347,90 @@ export default function EntryForm(props: EntryFormProps) {
               </Stack>
             </Stack>
           )}
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale={dayjsLocaleFrCa}
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            sx={{
+              width: "100%",
+            }}
           >
-            <MobileDateTimePicker
-              value={dayjs(entry.startDate)}
-              onChange={handleStartDateChange}
-              disabled={anyStopwatchIsRunning}
-              disableFuture={true}
-              label="Date de début"
-              slotProps={{
-                textField: {
-                  sx: {
-                    "& input": {
-                      textAlign: "center",
-                      width: "auto",
-                      cursor: "pointer",
-                      // paddingTop: 0,
-                      // paddingBottom: 0,
-                      // borderColor: "transparent",
-                      fontWeight: "bold",
-                      color: theme.palette.primary.main,
-                      // borderColor: theme.palette.primary.main,
-                      fontSize: "1.35em",
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={dayjsLocaleFrCa}
+            >
+              <MobileDateTimePicker
+                value={dayjs(entry.startDate)}
+                onChange={handleStartDateChange}
+                disabled={anyStopwatchIsRunning}
+                disableFuture={true}
+                label="Date de début"
+                sx={{
+                  flex: 1,
+                }}
+                slotProps={{
+                  textField: {
+                    sx: {
+                      "& input": {
+                        width: "100%",
+                        cursor: "pointer",
+                        textAlign: "center",
+                      },
+                      "& *:before": {
+                        border: "none !important",
+                      },
                     },
-                    "& *:before": {
-                      border: "none !important",
-                    },
+                    variant: "standard",
                   },
-                  variant: "standard",
-                },
-              }}
-              ampm={false}
-              localeText={{
-                toolbarTitle: "",
-                okButtonLabel: "OK",
-                cancelButtonLabel: "Annuler",
-                nextMonth: "Mois suivant",
-                previousMonth: "Mois précédent",
-              }}
-            />
-          </LocalizationProvider>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale={dayjsLocaleFrCa}
-          >
-            <MobileDateTimePicker
-              value={dayjs(entry.endDate)}
-              onChange={handleEndDateChange}
-              disabled={anyStopwatchIsRunning}
-              disableFuture={true}
-              label="Date de fin"
-              slotProps={{
-                textField: {
-                  sx: {
-                    "& input": {
-                      textAlign: "center",
-                      width: "auto",
-                      cursor: "pointer",
-                      // paddingTop: 0,
-                      // paddingBottom: 0,
-                      // borderColor: "transparent",
-                      fontWeight: "bold",
-                      color: theme.palette.primary.main,
-                      // borderColor: theme.palette.primary.main,
-                      fontSize: "1.35em",
+                }}
+                ampm={false}
+                localeText={{
+                  toolbarTitle: "",
+                  okButtonLabel: "OK",
+                  cancelButtonLabel: "Annuler",
+                  nextMonth: "Mois suivant",
+                  previousMonth: "Mois précédent",
+                }}
+              />
+            </LocalizationProvider>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={dayjsLocaleFrCa}
+            >
+              <MobileDateTimePicker
+                value={dayjs(entry.endDate)}
+                onChange={handleEndDateChange}
+                disabled={anyStopwatchIsRunning}
+                disableFuture={true}
+                label="Date de fin"
+                sx={{
+                  flex: 1,
+                }}
+                slotProps={{
+                  textField: {
+                    sx: {
+                      "& input": {
+                        width: "100%",
+                        cursor: "pointer",
+                        textAlign: "center",
+                      },
+                      "& *:before": {
+                        border: "none !important",
+                      },
                     },
-                    "& *:before": {
-                      border: "none !important",
-                    },
+                    variant: "standard",
                   },
-                  variant: "standard",
-                },
-              }}
-              ampm={false}
-              localeText={{
-                toolbarTitle: "",
-                okButtonLabel: "OK",
-                cancelButtonLabel: "Annuler",
-                nextMonth: "Mois suivant",
-                previousMonth: "Mois précédent",
-              }}
-            />
-          </LocalizationProvider>
+                }}
+                ampm={false}
+                localeText={{
+                  toolbarTitle: "",
+                  okButtonLabel: "OK",
+                  cancelButtonLabel: "Annuler",
+                  nextMonth: "Mois suivant",
+                  previousMonth: "Mois précédent",
+                }}
+              />
+            </LocalizationProvider>
+          </Stack>
           {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
             <Grid container gap={1} justifyContent="center">
               {entry.activity?.linkedTypes.map((activityType) => {

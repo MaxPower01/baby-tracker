@@ -119,8 +119,8 @@ export default function RecentEntries(props: Props) {
                       <Box
                         sx={{
                           background: theme.customPalette.background.avatar,
-                          minWidth: "3em",
-                          minHeight: "3em",
+                          minWidth: "3.5em",
+                          minHeight: "3.5em",
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
@@ -128,9 +128,11 @@ export default function RecentEntries(props: Props) {
                         }}
                       >
                         <Typography
-                          variant="h5"
                           textAlign={"center"}
                           fontWeight={"bold"}
+                          sx={{
+                            fontSize: "2em",
+                          }}
                         >
                           {startDate.toLocaleDateString("fr-CA", {
                             day: "numeric",

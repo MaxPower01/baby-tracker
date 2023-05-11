@@ -48,7 +48,7 @@ export default function ActivityChip({
           onClick(activity.type);
         }
       }}
-      color={isSelectable ? "primary" : undefined}
+      // color={isSelectable ? "primary" : undefined}
       size={size}
       variant={isSelected ? "filled" : "outlined"}
     />

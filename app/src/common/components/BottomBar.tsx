@@ -20,6 +20,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CSSBreakpoint from "../enums/CSSBreakpoint";
 import PageName from "../enums/PageName";
+import MenuDrawer from "./MenuDrawer";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -62,6 +63,7 @@ export default function BottomBar(props: Props) {
   }, [location.pathname]);
 
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
+  const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
 
   const items: Array<BottomBarItem> = [
     {
@@ -119,8 +121,8 @@ export default function BottomBar(props: Props) {
       // },
     },
     {
-      id: "settings",
-      onClick: () => {},
+      id: "menu",
+      onClick: () => setMenuDrawerIsOpen(true),
       label: "Menu",
       IconWrapper: IconButton,
       Icon: MenuIcon,
@@ -222,6 +224,11 @@ export default function BottomBar(props: Props) {
                 })
               )
             }
+          />
+
+          <MenuDrawer
+            isOpen={menuDrawerIsOpen}
+            onClose={() => setMenuDrawerIsOpen(false)}
           />
         </Toolbar>
       </Container>

@@ -27,10 +27,11 @@ import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "../lib/utils";
 
 export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();
-  const dispatch = useAppDispatch();
   const { entries, isLoading: isLoadingEntries } = useEntries();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, selectedChild } = useAuthentication();
+  const { user } = useAuthentication();
+  const selectedChild = user?.selectedChild ?? "";
   const localEntries = useSelector(selectEntries);
 
   const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");

@@ -1,28 +1,61 @@
 import LoadingIndicator from "@/common/components/LoadingIndicator";
 import Section from "@/common/components/Section";
 import SectionTitle from "@/common/components/SectionTitle";
+import { isNullOrWhiteSpace } from "@/lib/utils";
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import useChildren from "@/modules/children/hooks/useChildren";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import RecentEntries from "@/modules/entries/components/RecentEntries";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { EntryModel } from "@/modules/entries/models/EntryModel";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Stack, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 export default function HomePage() {
-  const { selectedChild: child } = useChildren();
+  const { user, children } = useAuthentication();
   const { entries, isLoading } = useEntries();
+  const selectedChild = useMemo(() => {
+    if (user == null) {
+      return null;
+    }
+    if (isNullOrWhiteSpace(user.selectedChild)) {
+      return null;
+    }
+    return children.find((child) => child.id == user.selectedChild);
+  }, [user, children]);
 
-  if (child == null) {
+  if (user?.selectedChild == null) {
     return <LoadingIndicator />;
   }
 
   return (
     <Stack spacing={2}>
-      <Typography variant={"h4"} textAlign={"center"}>
-        {child.name}
-      </Typography>
+      {(children?.length ?? 0) > 0 && (
+        <Stack>
+          {children.map((child) => {
+            if (child.isSelected == false) {
+              return null;
+            }
+            return (
+              <Stack key={child.id}>
+                <Typography variant={"h4"} textAlign={"center"}>
+                  {child.name}
+                </Typography>
+                <Typography
+                  variant={"body2"}
+                  textAlign={"center"}
+                  sx={{
+                    opacity: 0.5,
+                  }}
+                >
+                  {child.id}
+                </Typography>
+              </Stack>
+            );
+          })}
+        </Stack>
+      )}
       <Section>
         <SectionTitle title="Ajouter une entrée" />
         <MenuProvider>
