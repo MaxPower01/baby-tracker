@@ -186,9 +186,10 @@ export default function NewEntryWidget(props: Props) {
     width: "100%",
   };
   const textStyle: SxProps = {
-    opacity: 0.6,
+    // opacity: 0.8,
     textAlign: "center",
     fontStyle: "italic",
+    marginTop: 1,
   };
 
   const textVariant = "body2";

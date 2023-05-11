@@ -21,10 +21,14 @@ import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
 import {
+  Alert,
+  AlertColor,
   AppBar,
   Button,
   Container,
   Grid,
+  Slide,
+  Snackbar,
   Stack,
   TextField,
   Toolbar,
@@ -51,6 +55,22 @@ export default function EntryForm(props: EntryFormProps) {
   const [entry, setEntry] = useState<EntryModel>(props.entry);
   const [endDateWasEditedManually, setEndDateWasEditedManually] =
     useState(false);
+
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    AlertColor | undefined
+  >(undefined);
+  const [snackbarIsOpened, setSnackbarIsOpened] = useState(false);
+
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarIsOpened(false);
+  };
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -291,35 +311,36 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    if (user == null || isNullOrWhiteSpace(user.selectedChild)) return;
-    if (!endDateWasEditedManually) entry.setEndDate();
-    const { id, ...rest } = entry.toJSON({ keepDates: true });
-    if (id == null) {
-      const docRef = await addDoc(
-        collection(db, `children/${user.selectedChild}/entries`),
-        {
+    try {
+      if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
+        setSnackbarIsOpened(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Aucun enfant sélectionné");
+        return;
+      }
+      if (!endDateWasEditedManually) entry.setEndDate();
+      const { id, ...rest } = entry.toJSON({ keepDates: true });
+      if (id == null) {
+        const docRef = await addDoc(
+          collection(db, `children/${user.selectedChild}/entries`),
+          {
+            ...rest,
+          }
+        );
+        entry.id = docRef.id;
+      } else {
+        await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
           ...rest,
-        }
-      );
-      entry.id = docRef.id;
-      // dispatch(
-      //   updateEntry({
-      //     entry: entry.serialize(),
-      //     id: docRef.id,
-      //   })
-      // );
-    } else {
-      await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
-        ...rest,
-      });
-      // dispatch(
-      //   updateEntry({
-      //     entry: entry.serialize(),
-      //     id,
-      //   })
-      // );
+        });
+      }
+      setSnackbarIsOpened(true);
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Entrée enregistrée");
+    } catch (error) {
+      setSnackbarIsOpened(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
     }
-    navigate(getPath({ page: PageName.Home }));
   }, [entry, user]);
 
   return (
@@ -582,9 +603,7 @@ export default function EntryForm(props: EntryFormProps) {
           <Toolbar disableGutters>
             <Stack
               flexGrow={1}
-              direction="row"
               sx={{
-                justifyContent: "space-between",
                 paddingTop: 2,
                 paddingBottom: 2,
               }}
@@ -598,10 +617,37 @@ export default function EntryForm(props: EntryFormProps) {
               >
                 Enregistrer
               </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                onClick={() => navigate(getPath({ page: PageName.Home }))}
+              >
+                Retour à l'accueil
+              </Button>
             </Stack>
           </Toolbar>
         </Container>
       </AppBar>
+
+      <Snackbar
+        open={snackbarIsOpened}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        TransitionProps={{ dir: "up" }}
+        TransitionComponent={Slide}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+          elevation={6}
+          variant="filled"
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

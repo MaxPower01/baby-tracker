@@ -1,19 +1,9 @@
-import {
-  groupEntriesByDate,
-  groupEntriesByTime,
-  upperCaseFirst,
-} from "@/lib/utils";
+import DateHeader from "@/common/components/DateHeader";
+import { groupEntriesByDate, groupEntriesByTime } from "@/lib/utils";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, CircularProgress, Stack, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
@@ -89,95 +79,15 @@ export default function RecentEntries(props: Props) {
                 key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
                 spacing={1}
               >
-                <Box
+                <DateHeader
                   sx={{
                     position: topbarHeight != null ? "sticky" : undefined,
                     top: topbarHeight != null ? topbarHeight : undefined,
                     zIndex: 2,
                     backgroundColor: theme.palette.background.paper,
                   }}
-                >
-                  <Button
-                    sx={{
-                      padding: 1,
-                      borderRadius: 0,
-                      textTransform: "none",
-                      color: theme.palette.text.primary,
-                    }}
-                    fullWidth
-                    variant="text"
-                  >
-                    <Stack
-                      direction={"row"}
-                      justifyContent={"flex-start"}
-                      alignItems={"center"}
-                      spacing={2}
-                      sx={{
-                        width: "100%",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          background: theme.customPalette.background.avatar,
-                          minWidth: "3.5em",
-                          minHeight: "3.5em",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Typography
-                          textAlign={"center"}
-                          fontWeight={"bold"}
-                          sx={{
-                            fontSize: "2em",
-                          }}
-                        >
-                          {startDate.toLocaleDateString("fr-CA", {
-                            day: "numeric",
-                          })}
-                        </Typography>
-                      </Box>
-                      <Stack
-                        spacing={1}
-                        sx={{
-                          paddingTop: 1,
-                          paddingBottom: 1,
-                        }}
-                      >
-                        <Typography
-                          variant="h6"
-                          textAlign={"left"}
-                          sx={{
-                            lineHeight: 1,
-                          }}
-                        >
-                          {upperCaseFirst(
-                            startDate.toLocaleDateString("fr-CA", {
-                              weekday: "long",
-                            })
-                          )}
-                        </Typography>
-                        <Typography
-                          variant="subtitle1"
-                          textAlign={"left"}
-                          sx={{
-                            opacity: 0.5,
-                            lineHeight: 1,
-                          }}
-                        >
-                          {upperCaseFirst(
-                            startDate.toLocaleDateString("fr-CA", {
-                              month: "long",
-                              year: "numeric",
-                            })
-                          )}
-                        </Typography>
-                      </Stack>
-                    </Stack>
-                  </Button>
-                </Box>
+                  startDate={startDate}
+                />
 
                 <Stack
                   spacing={4}

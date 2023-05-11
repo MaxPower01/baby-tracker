@@ -6,7 +6,6 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import {
-  addEntries,
   resetEntriesState,
   selectEntries,
 } from "@/modules/entries/state/entriesSlice";
@@ -21,7 +20,7 @@ import {
   query,
   writeBatch,
 } from "firebase/firestore";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -33,19 +32,6 @@ export default function MenuPage() {
   const { user } = useAuthentication();
   const selectedChild = user?.selectedChild ?? "";
   const localEntries = useSelector(selectEntries);
-
-  const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
-  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setSuccessSnackbarOpen(false);
-  };
 
   const handleReset = () => {
     dispatch(resetEntriesState());
@@ -106,32 +92,32 @@ export default function MenuPage() {
     exportToJSONFile(data);
   }, [user, selectedChild]);
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const data = event.target?.result;
-      if (typeof data === "string") {
-        const parsedData = JSON.parse(data);
-        const entries = parsedData.entries;
-        if (entries) {
-          dispatch(
-            addEntries({
-              entries: entries,
-              overwrite: true,
-            })
-          );
-          setSuccessSnackbarMessage("Données importées avec succès");
-          setSuccessSnackbarOpen(true);
-        }
-      }
-    };
-    reader.readAsText(file);
-    event.target.value = "";
-  };
+  // const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (!file) {
+  //     return;
+  //   }
+  //   const reader = new FileReader();
+  //   reader.onload = (event) => {
+  //     const data = event.target?.result;
+  //     if (typeof data === "string") {
+  //       const parsedData = JSON.parse(data);
+  //       const entries = parsedData.entries;
+  //       if (entries) {
+  //         dispatch(
+  //           addEntries({
+  //             entries: entries,
+  //             overwrite: true,
+  //           })
+  //         );
+  //         setSuccessSnackbarMessage("Données importées avec succès");
+  //         setSuccessSnackbarOpen(true);
+  //       }
+  //     }
+  //   };
+  //   reader.readAsText(file);
+  //   event.target.value = "";
+  // };
 
   const handleSignOutButtonClick = () => {
     auth.signOut().then(() => {
@@ -245,25 +231,6 @@ export default function MenuPage() {
           Supprimer les données locales
         </Button> */}
       </Stack>
-
-      {/* <Snackbar
-        open={successSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        TransitionProps={{ dir: "up" }}
-        TransitionComponent={Slide}
-      >
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          sx={{ width: "100%" }}
-          elevation={6}
-          variant="filled"
-        >
-          {successSnackbarMessage}
-        </Alert>
-      </Snackbar> */}
     </>
   );
 }

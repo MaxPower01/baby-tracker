@@ -7,9 +7,11 @@ import { addEntries } from "@/modules/entries/state/entriesSlice";
 import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
+  QueryConstraint,
   Timestamp,
   collection,
   getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
@@ -23,61 +25,96 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
-  const getEntries = useCallback(async () => {
-    if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
-      setEntries([]);
-      setIsLoading(false);
-      return;
+  const getQuery = (params?: {
+    startAt?: Date;
+    endAt?: Date;
+    queryLimit?: number;
+  }) => {
+    const {
+      startAt: startDate,
+      endAt: endDate,
+      queryLimit: limitCount,
+    } = params ?? {
+      startAt: null,
+      endAt: null,
+      queryLimit: null,
+    };
+    const queryConstraints: QueryConstraint[] = [];
+    if (endDate != null) {
+      queryConstraints.push(
+        where("startDate", ">=", Timestamp.fromDate(endDate))
+      );
     }
-    const endAtTimestamp = Timestamp.fromDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1
-      )
-    );
-    const q = query(
-      collection(db, `children/${user.selectedChild}/entries`),
-      where("startDate", ">=", endAtTimestamp),
-      orderBy("startDate", "desc")
-    );
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      setEntries([]);
-      setIsLoading(false);
-      return;
+    if (startDate != null) {
+      queryConstraints.push(
+        where("startDate", "<=", Timestamp.fromDate(startDate))
+      );
     }
-    const entries: EntryModel[] = [];
-    querySnapshot.forEach((doc) => {
-      const entry = EntryModel.fromFirestore(doc.data());
-      entry.id = doc.id;
-      entries.push(entry);
-    });
-    // Entries are added to the store so that they can be used other pages
-    // without having to fetch them again
-    dispatch(
-      addEntries({
-        entries: entries.map((entry) => entry.serialize()),
-        overwrite: true,
-      })
-    );
-    setEntries((prevEntries) => {
-      if (prevEntries.length === 0) {
-        return entries;
+    if (limitCount != null) {
+      queryConstraints.push(limit(limitCount));
+    } else if (startDate == null && endDate == null) {
+      queryConstraints.push(limit(10));
+    }
+  };
+
+  const getEntries = useCallback(
+    async (params?: { startDate?: Date; endDate?: Date }) => {
+      if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
+        setEntries([]);
+        setIsLoading(false);
+        return;
       }
-      const newEntries = [...entries];
-      prevEntries.forEach((prevEntry) => {
-        if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
-          newEntries.push(prevEntry);
-        }
+      const endAtTimestamp = Timestamp.fromDate(
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate() - 1
+        )
+      );
+      const q = query(
+        collection(db, `children/${user.selectedChild}/entries`),
+        where("startDate", ">=", endAtTimestamp),
+        orderBy("startDate", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        setEntries([]);
+        setIsLoading(false);
+        return;
+      }
+      const entries: EntryModel[] = [];
+      querySnapshot.forEach((doc) => {
+        const entry = EntryModel.fromFirestore(doc.data());
+        entry.id = doc.id;
+        entries.push(entry);
       });
-      return newEntries;
-    });
-    setIsLoading(false);
-  }, [user]);
+      // Entries are added to the store so that they can be used other pages
+      // without having to fetch them again
+      dispatch(
+        addEntries({
+          entries: entries.map((entry) => entry.serialize()),
+          overwrite: true,
+        })
+      );
+      setEntries((prevEntries) => {
+        if (prevEntries.length === 0) {
+          return entries;
+        }
+        const newEntries = [...entries];
+        prevEntries.forEach((prevEntry) => {
+          if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
+            newEntries.push(prevEntry);
+          }
+        });
+        return newEntries;
+      });
+      setIsLoading(false);
+    },
+    [user]
+  );
 
   useEffect(() => {
-    getEntries();
+    getEntries({});
     if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
       return;
     }

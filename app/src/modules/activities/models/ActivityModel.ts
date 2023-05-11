@@ -160,6 +160,14 @@ export default class ActivityModel {
       case ActivityType.Cry:
         this._name = "Pleurs";
         this._hasDuration = true;
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Hiccups,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
         break;
       case ActivityType.Diaper:
         this._name = "Couche";
@@ -175,6 +183,14 @@ export default class ActivityModel {
       case ActivityType.Hiccups:
         this._name = "Hoquet";
         this._hasDuration = true;
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
         break;
       case ActivityType.HospitalVisit:
         this._name = "Visite à l'hôpital";
@@ -245,6 +261,8 @@ export default class ActivityModel {
           ActivityType.Diaper,
           ActivityType.Poop,
           ActivityType.Urine,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
         ];
         break;
       case ActivityType.Weight:
