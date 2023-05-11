@@ -1,3 +1,5 @@
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
 import { getPageName, getPageTitle, getPath } from "@/lib/utils";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -13,8 +15,6 @@ import {
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import CSSBreakpoint from "../enums/CSSBreakpoint";
-import PageName from "../enums/PageName";
 
 type Props = {
   component: React.ElementType<any> | undefined;

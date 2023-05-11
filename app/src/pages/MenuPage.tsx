@@ -1,7 +1,10 @@
+import { resetAppState } from "@/app/state/appSlice";
+import PageName from "@/common/enums/PageName";
 import { auth, db } from "@/firebase";
+import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import {
   addEntries,
   resetEntriesState,
@@ -21,9 +24,6 @@ import {
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetAppState } from "../app/state/appSlice";
-import PageName from "../common/enums/PageName";
-import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "../lib/utils";
 
 export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();

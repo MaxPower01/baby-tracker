@@ -1,3 +1,6 @@
+import MenuDrawer from "@/common/components/MenuDrawer";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
 import { getPageName, getPageTitle, getPath } from "@/lib/utils";
 import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
 import ActivityType from "@/modules/activities/enums/ActivityType";
@@ -18,9 +21,6 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import CSSBreakpoint from "../enums/CSSBreakpoint";
-import PageName from "../enums/PageName";
-import MenuDrawer from "./MenuDrawer";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",

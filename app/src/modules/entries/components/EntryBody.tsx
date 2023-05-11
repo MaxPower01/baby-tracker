@@ -1,7 +1,7 @@
 import { formatStopwatchTime } from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";

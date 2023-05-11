@@ -1,9 +1,9 @@
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import  ActivityModel  from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs from "dayjs";
 import { DocumentData } from "firebase/firestore";
 
-export class EntryModel {
+export default class EntryModel {
   private _id: string | null = null;
   public get id(): string | null {
     return this._id;

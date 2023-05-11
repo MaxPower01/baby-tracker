@@ -1,7 +1,7 @@
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Button, Stack, SxProps, Typography, useTheme } from "@mui/material";
-import ActivityType from "../enums/ActivityType";
-import { ActivityModel } from "../models/ActivityModel";
-import ActivityIcon from "./ActivityIcon";
 
 type Props = {
   activity: ActivityModel;

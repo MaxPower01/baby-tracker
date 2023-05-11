@@ -7,7 +7,7 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import RecentEntries from "@/modules/entries/components/RecentEntries";
 import useEntries from "@/modules/entries/hooks/useEntries";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Stack, Typography } from "@mui/material";
 import { useMemo } from "react";

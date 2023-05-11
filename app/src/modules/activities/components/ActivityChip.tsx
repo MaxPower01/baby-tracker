@@ -1,6 +1,6 @@
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Chip, Typography } from "@mui/material";
 
 type Props = {

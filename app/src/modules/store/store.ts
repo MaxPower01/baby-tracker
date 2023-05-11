@@ -1,7 +1,7 @@
 import appReducer from "@/app/state/appSlice";
+import entriesReducer from "@/modules/entries/state/entriesSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import logger from "redux-logger";
-import entriesReducer from "../entries/state/entriesSlice";
 
 const reducer = {
   appReducer,

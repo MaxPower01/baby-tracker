@@ -1,7 +1,7 @@
-import ActivityType from "../enums/ActivityType";
-import SubActivityType from "../enums/SubActivityType";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import SubActivityType from "@/modules/activities/enums/SubActivityType";
 
-export class ActivityModel {
+export default class ActivityModel {
   private _type: ActivityType;
   public get type(): ActivityType {
     return this._type;

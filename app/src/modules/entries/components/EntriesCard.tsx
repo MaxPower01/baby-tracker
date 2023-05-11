@@ -1,6 +1,9 @@
 import PageName from "@/common/enums/PageName";
 import { getPath } from "@/lib/utils";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import EntryBody from "@/modules/entries/components/EntryBody";
+import EntryHeader from "@/modules/entries/components/EntryHeader";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -17,9 +20,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EntryModel } from "../models/EntryModel";
-import EntryBody from "./Entry/EntryBody";
-import EntryHeader from "./Entry/EntryHeader";
 
 type Props = {
   entries: EntryModel[];

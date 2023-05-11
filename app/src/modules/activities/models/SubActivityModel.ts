@@ -1,5 +1,4 @@
-import SubActivityType from "../enums/SubActivityType";
-
+import SubActivityType from "@/modules/activities/enums/SubActivityType";
 export class SubActivityModel {
   private _type: SubActivityType;
   public get type(): SubActivityType {

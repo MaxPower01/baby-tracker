@@ -1,4 +1,5 @@
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
 import { getPath } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -15,7 +16,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PageName from "../enums/PageName";
 
 export default function MenuDrawer(props: {
   isOpen: boolean;

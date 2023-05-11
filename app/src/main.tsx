@@ -1,13 +1,12 @@
+import App from "@/app/components/App";
+import AuthenticationProvider from "@/modules/authentication/components/AuthenticationProvider";
+import StoreProvider from "@/modules/store/components/StoreProvider";
+import ThemeProvider from "@/modules/theme/components/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./app/components/App";
-import LayoutProvider from "./common/components/LayoutProvider";
 import "./main.scss";
-import AuthenticationProvider from "./modules/authentication/components/AuthenticationProvider";
-import StoreProvider from "./modules/store/components/StoreProvider";
-import ThemeProvider from "./modules/theme/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -16,9 +15,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <ThemeProvider>
           <CssBaseline />
           <BrowserRouter>
-            <LayoutProvider>
-              <App />
-            </LayoutProvider>
+            <App />
           </BrowserRouter>
         </ThemeProvider>
       </AuthenticationProvider>

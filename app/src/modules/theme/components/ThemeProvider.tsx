@@ -1,10 +1,10 @@
+import ColorModeContext from "@/modules/theme/components/ColorModeContext";
 import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
 } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import React, { useEffect } from "react";
-import ColorModeContext from "./ColorModeContext";
 
 declare module "@mui/material/styles" {
   interface Theme {

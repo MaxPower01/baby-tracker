@@ -1,7 +1,7 @@
-import { EntryModel } from "@/modules/entries/models/EntryModel";
-import EntryBody from "./EntryBody";
-import EntryFooter from "./EntryFooter";
-import EntryHeader from "./EntryHeader";
+import EntryBody from "@/modules/entries/components/EntryBody";
+import EntryFooter from "@/modules/entries/components/EntryFooter";
+import EntryHeader from "@/modules/entries/components/EntryHeader";
+import EntryModel from "@/modules/entries/models/EntryModel";
 
 type Props = {
   entry: EntryModel;

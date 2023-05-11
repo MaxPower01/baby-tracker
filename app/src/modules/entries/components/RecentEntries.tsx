@@ -3,7 +3,8 @@ import {
   groupEntriesByTime,
   upperCaseFirst,
 } from "@/lib/utils";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntriesCard from "@/modules/entries/components/EntriesCard";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import {
   Box,
@@ -14,7 +15,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import EntriesCard from "./EntriesCard";
 
 type Props = {
   entries: EntryModel[];

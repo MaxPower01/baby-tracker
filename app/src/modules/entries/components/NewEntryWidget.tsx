@@ -2,8 +2,8 @@ import PageName from "@/common/enums/PageName";
 import { formatStopwatchTime, getPath } from "@/lib/utils";
 import ActivityButton from "@/modules/activities/components/ActivityButton";
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {

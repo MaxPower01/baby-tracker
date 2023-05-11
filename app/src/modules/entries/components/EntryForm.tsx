@@ -12,10 +12,10 @@ import {
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";

@@ -1,7 +1,7 @@
+import MenuContext from "@/modules/menu/components/MenuContext";
 import { Menu as MuiMenu } from "@mui/material";
 import { MenuProps } from "@mui/material/Menu";
 import React from "react";
-import MenuContext from "../components/MenuContext";
 
 // Wrapping the Menu component in a hook allows us to use the context.
 // The goal is to bind some props to the context instead of the props of the component.

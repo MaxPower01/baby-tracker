@@ -1,5 +1,5 @@
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import { ActivityModel } from "@/modules/activities/models/ActivityModel";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Box, SxProps } from "@mui/material";
 import { ReactSVG } from "react-svg";
 

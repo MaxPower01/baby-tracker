@@ -1,5 +1,5 @@
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import { Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 

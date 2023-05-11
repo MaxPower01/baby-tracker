@@ -1,7 +1,7 @@
+import ActivityButton from "@/modules/activities/components/ActivityButton";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Box } from "@mui/material";
-import ActivityType from "../enums/ActivityType";
-import { ActivityModel } from "../models/ActivityModel";
-import ActivityButton from "./ActivityButton";
 
 type Props = {
   onClick?: (type: ActivityType) => void;

@@ -1,7 +1,7 @@
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import { EntryModel } from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import { addEntries } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {

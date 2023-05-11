@@ -1,10 +1,10 @@
 import PageName from "@/common/enums/PageName";
 import { getPath } from "@/lib/utils";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import useEntries from "../../entries/hooks/useEntries";
-import useAuthentication from "../hooks/useAuthentication";
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 
