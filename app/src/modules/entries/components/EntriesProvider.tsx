@@ -7,12 +7,11 @@ import { addEntries } from "@/modules/entries/state/entriesSlice";
 import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
-  QueryConstraint,
   Timestamp,
   collection,
   getDocs,
-  limit,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -21,98 +20,68 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user, children } = useAuthentication();
   const [entries, setEntries] = useState<EntryModel[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
-  const [lastFetchParams, setLastFetchParams] = useState<{
-    startAt?: Date;
-    endAt?: Date;
-    max?: number;
-  } | null>(null);
 
-  // TODO: After each fetch, the oldest entry's document ID should be stored in a state variable
-  // so that the next fetch can start at that document ID. This will allow for infinite scrolling
-  // and will prevent duplicate entries from being fetched.
-
-  const getQuery = (params: {
-    selectedChild: string;
-    startAt?: Date;
-    endAt?: Date;
-    max?: number;
-  }) => {
-    const { startAt, endAt, max, selectedChild } = params;
-    const collectionRef = collection(db, `children/${selectedChild}/entries`);
-    const constraints: QueryConstraint[] = [];
-    if (endAt != null) {
-      constraints.push(where("startDate", ">=", Timestamp.fromDate(endAt)));
-    }
-    if (startAt != null) {
-      constraints.push(where("startDate", "<=", Timestamp.fromDate(startAt)));
-    }
-    if (max != null) {
-      constraints.push(limit(max));
-    } else if (startAt == null && endAt == null) {
-      constraints.push(limit(10));
-    }
-    return query(collectionRef, ...constraints);
-  };
-
-  const getEntries = useCallback(
-    async (params?: { startAt?: Date; endAt?: Date; max?: number }) => {
-      console.log("Fetching entries...");
-      setLastFetchParams(params ?? null);
-      setIsLoading(true);
-      const selectedChild =
-        children.find((child) => child.isSelected)?.id ??
-        user?.selectedChild ??
-        "";
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
-        setEntries([]);
-        setIsLoading(false);
-        return;
-      }
-      const querySnapshot = await getDocs(
-        getQuery({
-          selectedChild,
-          ...params,
-        })
-      );
-      if (querySnapshot.empty) {
-        setEntries([]);
-        setIsLoading(false);
-        return;
-      }
-      const entries: EntryModel[] = [];
-      querySnapshot.forEach((doc) => {
-        const entry = EntryModel.fromFirestore(doc.data());
-        entry.id = doc.id;
-        entries.push(entry);
-      });
-      // Entries are added to the store so that they can be used other pages
-      // without having to fetch them again
-      dispatch(
-        addEntries({
-          entries: entries.map((entry) => entry.serialize()),
-          overwrite: true,
-        })
-      );
-      setEntries((prevEntries) => {
-        if (prevEntries.length === 0) {
-          return entries;
-        }
-        const newEntries = [...entries];
-        prevEntries.forEach((prevEntry) => {
-          if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
-            newEntries.push(prevEntry);
-          }
-        });
-        return newEntries;
-      });
+  const getEntries = useCallback(async () => {
+    const selectedChild =
+      children.find((child) => child.isSelected)?.id ??
+      user?.selectedChild ??
+      "";
+    if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      setEntries([]);
       setIsLoading(false);
-    },
-    [user, children]
-  );
+      return;
+    }
+    const endAtTimestamp = Timestamp.fromDate(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() - 1
+      )
+    );
+    const q = query(
+      collection(db, `children/${selectedChild}/entries`),
+      where("startDate", ">=", endAtTimestamp),
+      orderBy("startDate", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      setEntries([]);
+      setIsLoading(false);
+      return;
+    }
+    const entries: EntryModel[] = [];
+    querySnapshot.forEach((doc) => {
+      const entry = EntryModel.fromFirestore(doc.data());
+      entry.id = doc.id;
+      entries.push(entry);
+    });
+    // Entries are added to the store so that they can be used other pages
+    // without having to fetch them again
+    dispatch(
+      addEntries({
+        entries: entries.map((entry) => entry.serialize()),
+        overwrite: true,
+      })
+    );
+    setEntries((prevEntries) => {
+      if (prevEntries.length === 0) {
+        return entries;
+      }
+      const newEntries = [...entries];
+      prevEntries.forEach((prevEntry) => {
+        if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
+          newEntries.push(prevEntry);
+        }
+      });
+      return newEntries;
+    });
+    setIsLoading(false);
+  }, [user]);
 
   useEffect(() => {
+    getEntries();
     const selectedChild =
       children.find((child) => child.isSelected)?.id ??
       user?.selectedChild ??
@@ -120,19 +89,18 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
     if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
-    // Fetch entries of the last 24 hours by default
-    const now = new Date();
-    const yesterday = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() - 1
+    const endAtTimestamp = Timestamp.fromDate(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() - 1
+      )
     );
-    getEntries({
-      endAt: yesterday,
-    });
-    const q = getQuery({
-      selectedChild,
-    });
+    const q = query(
+      collection(db, `children/${selectedChild}/entries`),
+      where("startDate", ">=", endAtTimestamp),
+      orderBy("startDate", "desc")
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const addedEntries: EntryModel[] = [];
       const modifiedEntries: EntryModel[] = [];
@@ -163,11 +131,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
             );
           });
           addedEntries.forEach((addedEntry) => {
-            if (!newEntries.length) {
-              newEntries.push(addedEntry);
-            } else if (
-              !newEntries.some((entry) => entry.id === addedEntry.id)
-            ) {
+            if (!newEntries.some((entry) => entry.id === addedEntry.id)) {
               newEntries.push(addedEntry);
             }
           });
@@ -190,7 +154,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       }
     });
     return () => unsubscribe();
-  }, [getEntries, user, children]);
+  }, [getEntries, user]);
 
   const context: EntriesContextValue = useMemo(
     () => ({
@@ -198,7 +162,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       isLoading,
       getEntries,
     }),
-    [entries, isLoading, getEntries, user]
+    [entries, isLoading, getEntries]
   );
 
   return <EntriesContext.Provider value={context} {...props} />;
