@@ -29,6 +29,10 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
     max?: number;
   } | null>(null);
 
+  // TODO: After each fetch, the oldest entry's document ID should be stored in a state variable
+  // so that the next fetch can start at that document ID. This will allow for infinite scrolling
+  // and will prevent duplicate entries from being fetched.
+
   const getQuery = (params: {
     selectedChild: string;
     startAt?: Date;
