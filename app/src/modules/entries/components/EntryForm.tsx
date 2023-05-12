@@ -311,7 +311,10 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    const selectedChild = children.find((c) => c.isSelected)?.id;
+    const selectedChild =
+      children.find((child) => child.isSelected)?.id ??
+      user?.selectedChild ??
+      "";
     try {
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         console.log(user);

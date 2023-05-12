@@ -44,8 +44,8 @@ export default function DateHeader(props: Props) {
           <Box
             sx={{
               background: theme.customPalette.background.avatar,
-              minWidth: "3.5em",
-              minHeight: "3.5em",
+              minWidth: "3em",
+              minHeight: "3em",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -59,10 +59,10 @@ export default function DateHeader(props: Props) {
             </Typography>
           </Box>
           <Stack
-            spacing={1}
+            spacing={0.5}
             sx={{
-              paddingTop: 1,
-              paddingBottom: 1,
+              paddingTop: 0.5,
+              paddingBottom: 0.5,
             }}
           >
             <Typography

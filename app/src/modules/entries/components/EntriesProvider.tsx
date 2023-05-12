@@ -23,6 +23,11 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const [entries, setEntries] = useState<EntryModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const [lastFetchParams, setLastFetchParams] = useState<{
+    startAt?: Date;
+    endAt?: Date;
+    max?: number;
+  } | null>(null);
 
   const getQuery = (params: {
     selectedChild: string;
@@ -49,9 +54,13 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const getEntries = useCallback(
     async (params?: { startAt?: Date; endAt?: Date; max?: number }) => {
+      console.log("Fetching entries...");
+      setLastFetchParams(params ?? null);
       setIsLoading(true);
       const selectedChild =
-        children.find((child) => child.isSelected)?.id ?? "";
+        children.find((child) => child.isSelected)?.id ??
+        user?.selectedChild ??
+        "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         setEntries([]);
         setIsLoading(false);
@@ -96,11 +105,14 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       });
       setIsLoading(false);
     },
-    [user]
+    [user, children]
   );
 
   useEffect(() => {
-    const selectedChild = children.find((child) => child.isSelected)?.id ?? "";
+    const selectedChild =
+      children.find((child) => child.isSelected)?.id ??
+      user?.selectedChild ??
+      "";
     if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
@@ -116,7 +128,6 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
     });
     const q = getQuery({
       selectedChild,
-      endAt: yesterday,
     });
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const addedEntries: EntryModel[] = [];
@@ -127,7 +138,6 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           const entry = EntryModel.fromFirestore(change.doc.data());
           entry.id = change.doc.id;
           if (change.type === "added") {
-            console.log("Added entry", entry);
             addedEntries.push(entry);
           } else if (change.type === "modified") {
             addedEntries.push(entry);

@@ -36,7 +36,6 @@ export default function AuthenticationProvider(
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef)
       .then((docSnap) => {
-        setUser(docSnap.data() as CustomUser);
         if (docSnap.data()?.children) {
           const newChildren: {
             id: string;
@@ -55,6 +54,7 @@ export default function AuthenticationProvider(
             });
           });
           setChildren(newChildren);
+          setUser(docSnap.data() as CustomUser);
         }
       })
       .catch((error) => {
