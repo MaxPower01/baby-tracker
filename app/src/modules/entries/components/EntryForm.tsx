@@ -311,8 +311,10 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
+    const selectedChild = children.find((c) => c.isSelected)?.id;
     try {
-      if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+        console.log(user);
         setSnackbarIsOpened(true);
         setSnackbarSeverity("error");
         setSnackbarMessage("Aucun enfant sélectionné");
@@ -322,14 +324,14 @@ export default function EntryForm(props: EntryFormProps) {
       const { id, ...rest } = entry.toJSON({ keepDates: true });
       if (id == null) {
         const docRef = await addDoc(
-          collection(db, `children/${user.selectedChild}/entries`),
+          collection(db, `children/${selectedChild}/entries`),
           {
             ...rest,
           }
         );
         entry.id = docRef.id;
       } else {
-        await setDoc(doc(db, `children/${user.selectedChild}/entries/${id}`), {
+        await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
           ...rest,
         });
       }
@@ -341,7 +343,7 @@ export default function EntryForm(props: EntryFormProps) {
       setSnackbarSeverity("error");
       setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
     }
-  }, [entry, user]);
+  }, [entry, user, children]);
 
   return (
     <>

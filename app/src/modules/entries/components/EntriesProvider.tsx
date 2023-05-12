@@ -13,70 +13,56 @@ import {
   getDocs,
   limit,
   onSnapshot,
-  orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
-  const { user } = useAuthentication();
+  const { user, children } = useAuthentication();
   const [entries, setEntries] = useState<EntryModel[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const getQuery = (params?: {
+  const getQuery = (params: {
+    selectedChild: string;
     startAt?: Date;
     endAt?: Date;
-    queryLimit?: number;
+    max?: number;
   }) => {
-    const {
-      startAt: startDate,
-      endAt: endDate,
-      queryLimit: limitCount,
-    } = params ?? {
-      startAt: null,
-      endAt: null,
-      queryLimit: null,
-    };
-    const queryConstraints: QueryConstraint[] = [];
-    if (endDate != null) {
-      queryConstraints.push(
-        where("startDate", ">=", Timestamp.fromDate(endDate))
-      );
+    const { startAt, endAt, max, selectedChild } = params;
+    const collectionRef = collection(db, `children/${selectedChild}/entries`);
+    const constraints: QueryConstraint[] = [];
+    if (endAt != null) {
+      constraints.push(where("startDate", ">=", Timestamp.fromDate(endAt)));
     }
-    if (startDate != null) {
-      queryConstraints.push(
-        where("startDate", "<=", Timestamp.fromDate(startDate))
-      );
+    if (startAt != null) {
+      constraints.push(where("startDate", "<=", Timestamp.fromDate(startAt)));
     }
-    if (limitCount != null) {
-      queryConstraints.push(limit(limitCount));
-    } else if (startDate == null && endDate == null) {
-      queryConstraints.push(limit(10));
+    if (max != null) {
+      constraints.push(limit(max));
+    } else if (startAt == null && endAt == null) {
+      constraints.push(limit(10));
     }
+    return query(collectionRef, ...constraints);
   };
 
   const getEntries = useCallback(
-    async (params?: { startDate?: Date; endDate?: Date }) => {
-      if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
+    async (params?: { startAt?: Date; endAt?: Date; max?: number }) => {
+      setIsLoading(true);
+      const selectedChild =
+        children.find((child) => child.isSelected)?.id ?? "";
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
         setEntries([]);
         setIsLoading(false);
         return;
       }
-      const endAtTimestamp = Timestamp.fromDate(
-        new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate() - 1
-        )
+      const querySnapshot = await getDocs(
+        getQuery({
+          selectedChild,
+          ...params,
+        })
       );
-      const q = query(
-        collection(db, `children/${user.selectedChild}/entries`),
-        where("startDate", ">=", endAtTimestamp),
-        orderBy("startDate", "desc")
-      );
-      const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         setEntries([]);
         setIsLoading(false);
@@ -114,22 +100,24 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   );
 
   useEffect(() => {
-    getEntries({});
-    if (user == null || isNullOrWhiteSpace(user.selectedChild)) {
+    const selectedChild = children.find((child) => child.isSelected)?.id ?? "";
+    if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
-    const endAtTimestamp = Timestamp.fromDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1
-      )
+    // Fetch entries of the last 24 hours by default
+    const now = new Date();
+    const yesterday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 1
     );
-    const q = query(
-      collection(db, `children/${user.selectedChild}/entries`),
-      where("startDate", ">=", endAtTimestamp),
-      orderBy("startDate", "desc")
-    );
+    getEntries({
+      endAt: yesterday,
+    });
+    const q = getQuery({
+      selectedChild,
+      endAt: yesterday,
+    });
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const addedEntries: EntryModel[] = [];
       const modifiedEntries: EntryModel[] = [];
@@ -139,6 +127,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           const entry = EntryModel.fromFirestore(change.doc.data());
           entry.id = change.doc.id;
           if (change.type === "added") {
+            console.log("Added entry", entry);
             addedEntries.push(entry);
           } else if (change.type === "modified") {
             addedEntries.push(entry);
@@ -160,7 +149,11 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
             );
           });
           addedEntries.forEach((addedEntry) => {
-            if (!newEntries.some((entry) => entry.id === addedEntry.id)) {
+            if (!newEntries.length) {
+              newEntries.push(addedEntry);
+            } else if (
+              !newEntries.some((entry) => entry.id === addedEntry.id)
+            ) {
               newEntries.push(addedEntry);
             }
           });
@@ -183,7 +176,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       }
     });
     return () => unsubscribe();
-  }, [getEntries, user]);
+  }, [getEntries, user, children]);
 
   const context: EntriesContextValue = useMemo(
     () => ({
@@ -191,7 +184,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       isLoading,
       getEntries,
     }),
-    [entries, isLoading, getEntries]
+    [entries, isLoading, getEntries, user]
   );
 
   return <EntriesContext.Provider value={context} {...props} />;
