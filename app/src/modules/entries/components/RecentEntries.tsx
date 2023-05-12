@@ -1,18 +1,19 @@
 import DateHeader from "@/common/components/DateHeader";
 import { groupEntriesByDate, groupEntriesByTime } from "@/lib/utils";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
-import EntryModel from "@/modules/entries/models/EntryModel";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Box, CircularProgress, Stack, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
-  entries: EntryModel[];
-  isLoadingEntries: boolean;
+  // entries: EntryModel[];
+  // isLoadingEntries: boolean;
 };
 
 export default function RecentEntries(props: Props) {
-  const { entries, isLoadingEntries } = props;
+  // const { entries, isLoadingEntries } = props;
+  const { entries, isLoading } = useEntries();
   const theme = useTheme();
 
   const [topbarHeight, setTopbarHeight] = useState<number | null>(null);
@@ -31,13 +32,13 @@ export default function RecentEntries(props: Props) {
   }, []);
 
   const entriesByDate = useMemo(() => {
-    if (isLoadingEntries || !entries) {
+    if (isLoading || !entries) {
       return null;
     }
     return groupEntriesByDate(entries);
   }, [entries]);
 
-  if (isLoadingEntries) {
+  if (isLoading) {
     return (
       <Box
         sx={{

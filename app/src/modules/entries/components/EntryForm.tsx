@@ -15,6 +15,7 @@ import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
@@ -52,7 +53,12 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
-  const [entry, setEntry] = useState<EntryModel>(props.entry);
+  const { entries, setEntries } = useEntries();
+  const [entry, setEntry] = useState<EntryModel>(
+    props.isEditing
+      ? entries.find((e) => e.id === props.entry.id) ?? props.entry
+      : props.entry
+  );
   const [endDateWasEditedManually, setEndDateWasEditedManually] =
     useState(false);
 
@@ -337,6 +343,14 @@ export default function EntryForm(props: EntryFormProps) {
         await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
           ...rest,
         });
+        // setEntries((prevEntries) => {
+        //   const newEntries = prevEntries.slice();
+        //   const index = newEntries.findIndex((e) => e.id === entry.id);
+        //   if (index !== -1) {
+        //     newEntries[index] = entry;
+        //   }
+        //   return newEntries;
+        // });
       }
       setSnackbarIsOpened(true);
       setSnackbarSeverity("success");

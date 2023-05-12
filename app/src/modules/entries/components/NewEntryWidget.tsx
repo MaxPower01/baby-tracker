@@ -3,6 +3,7 @@ import { formatStopwatchTime, getPath } from "@/lib/utils";
 import ActivityButton from "@/modules/activities/components/ActivityButton";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
@@ -18,25 +19,124 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  lastBreastfeedingEntry: EntryModel | null;
-  lastBottleFeedingEntry: EntryModel | null;
-  lastDiaperEntry: EntryModel | null;
-  lastSleepEntry: EntryModel | null;
-  lastBurpEntry: EntryModel | null;
-  lastRegurgitationEntry: EntryModel | null;
-  lastVomitEntry: EntryModel | null;
+  // lastBreastfeedingEntry: EntryModel | null;
+  // lastBottleFeedingEntry: EntryModel | null;
+  // lastDiaperEntry: EntryModel | null;
+  // lastSleepEntry: EntryModel | null;
+  // lastBurpEntry: EntryModel | null;
+  // lastRegurgitationEntry: EntryModel | null;
+  // lastVomitEntry: EntryModel | null;
 };
 
+/*
+  lastBottleFeedingEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.BottleFeeding
+              ) ?? null
+            }
+            lastBreastfeedingEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.BreastFeeding
+              ) ?? null
+            }
+            lastBurpEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.Burp
+              ) ?? null
+            }
+            lastDiaperEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.Diaper
+              ) ?? null
+            }
+            lastSleepEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.Sleep
+              ) ?? null
+            }
+            lastRegurgitationEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.Regurgitation
+              ) ?? null
+            }
+            lastVomitEntry={
+              entries?.find(
+                (entry: EntryModel) =>
+                  entry?.activity?.type == ActivityType.Vomit
+              ) ?? null
+            }
+*/
+
 export default function NewEntryWidget(props: Props) {
-  const {
-    lastBreastfeedingEntry,
-    lastBottleFeedingEntry,
-    lastDiaperEntry,
-    lastSleepEntry,
-    lastBurpEntry,
-    lastRegurgitationEntry,
-    lastVomitEntry,
-  } = props;
+  const { entries } = useEntries();
+  // const {
+  //   lastBreastfeedingEntry,
+  //   lastBottleFeedingEntry,
+  //   lastDiaperEntry,
+  //   lastSleepEntry,
+  //   lastBurpEntry,
+  //   lastRegurgitationEntry,
+  //   lastVomitEntry,
+  // } = props;
+  const lastBreastfeedingEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) =>
+          entry?.activity?.type == ActivityType.BreastFeeding
+      ) ?? null
+    );
+  }, [entries]);
+  const lastBottleFeedingEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) =>
+          entry?.activity?.type == ActivityType.BottleFeeding
+      ) ?? null
+    );
+  }, [entries]);
+  const lastDiaperEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) => entry?.activity?.type == ActivityType.Diaper
+      ) ?? null
+    );
+  }, [entries]);
+  const lastSleepEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) => entry?.activity?.type == ActivityType.Sleep
+      ) ?? null
+    );
+  }, [entries]);
+  const lastBurpEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) => entry?.activity?.type == ActivityType.Burp
+      ) ?? null
+    );
+  }, [entries]);
+  const lastRegurgitationEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) =>
+          entry?.activity?.type == ActivityType.Regurgitation
+      ) ?? null
+    );
+  }, [entries]);
+  const lastVomitEntry = useMemo(() => {
+    return (
+      entries?.find(
+        (entry: EntryModel) => entry?.activity?.type == ActivityType.Vomit
+      ) ?? null
+    );
+  }, [entries]);
+
   const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
   const bottleFeedingActivity = new ActivityModel(ActivityType.BottleFeeding);
   const diaperActivity = new ActivityModel(ActivityType.Diaper);

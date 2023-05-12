@@ -114,7 +114,7 @@ export default function EntryBody(props: Props) {
       }, 1000);
       return () => clearInterval(intervalId);
     }
-  }, []);
+  }, [entry]);
 
   return (
     <Stack

@@ -69,7 +69,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       if (prevEntries.length === 0) {
         return entries;
       }
-      const newEntries = [...entries];
+      const newEntries = [...prevEntries];
       prevEntries.forEach((prevEntry) => {
         if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
           newEntries.push(prevEntry);
@@ -112,7 +112,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           if (change.type === "added") {
             addedEntries.push(entry);
           } else if (change.type === "modified") {
-            addedEntries.push(entry);
+            modifiedEntries.push(entry);
           } else if (change.type === "removed") {
             removedEntries.push(entry);
           }
@@ -149,7 +149,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
               overwrite: true,
             })
           );
-          return newEntries;
+          return [...newEntries];
         });
       }
     });
@@ -159,10 +159,11 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const context: EntriesContextValue = useMemo(
     () => ({
       entries,
+      setEntries,
       isLoading,
       getEntries,
     }),
-    [entries, isLoading, getEntries]
+    [entries, setEntries, isLoading, getEntries]
   );
 
   return <EntriesContext.Provider value={context} {...props} />;
