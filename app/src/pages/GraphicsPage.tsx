@@ -108,6 +108,9 @@ export default function GraphicsPage() {
   for (let i = 0; i < 48; i++) {
     const date = new Date(yesterday);
     date.setHours(i);
+    const firstDate = new Date(date);
+    firstDate.setMinutes(0);
+    dates.push(firstDate);
     dates.push(date);
   }
 
