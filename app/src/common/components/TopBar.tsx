@@ -3,7 +3,7 @@ import PageName from "@/common/enums/PageName";
 import { getPageName, getPageTitle, getPath } from "@/lib/utils";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DeleteIcon from "@mui/icons-material/Delete";
+// import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AppBar,
   Box,
@@ -78,11 +78,11 @@ export default function TopBar(props: Props) {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {shouldRenderDeleteEntryButton && (
+          {/* {shouldRenderDeleteEntryButton && (
             <IconButton onClick={handleDeleteEntryButtonClick}>
               <DeleteIcon />
             </IconButton>
-          )}
+          )} */}
         </Toolbar>
       </Container>
     </AppBar>

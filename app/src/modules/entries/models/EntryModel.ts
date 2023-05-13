@@ -1,4 +1,4 @@
-import  ActivityModel  from "@/modules/activities/models/ActivityModel";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs from "dayjs";
 import { DocumentData } from "firebase/firestore";
@@ -165,6 +165,38 @@ export default class EntryModel {
     this.volume = this.leftVolume + this.rightVolume;
   }
 
+  private _createdBy: { id: string; name: string } | null = null;
+  public get createdBy(): { id: string; name: string } | null {
+    return this._createdBy;
+  }
+  public set createdBy(v: { id: string; name: string } | null) {
+    this._createdBy = v;
+  }
+
+  private _createdDate: Date | null = null;
+  public get createdDate(): Date | null {
+    return this._createdDate;
+  }
+  public set createdDate(v: Date | null) {
+    this._createdDate = v;
+  }
+
+  private _editedBy: { id: string; name: string } | null = null;
+  public get editedBy(): { id: string; name: string } | null {
+    return this._editedBy;
+  }
+  public set editedBy(v: { id: string; name: string } | null) {
+    this._editedBy = v;
+  }
+
+  private _editedDate: Date | null = null;
+  public get editedDate(): Date | null {
+    return this._editedDate;
+  }
+  public set editedDate(v: Date | null) {
+    this._editedDate = v;
+  }
+
   public constructor() {}
 
   /**
@@ -195,6 +227,16 @@ export default class EntryModel {
       volume: this.volume,
       leftVolume: this.leftVolume,
       rightVolume: this.rightVolume,
+      createdBy: this.createdBy,
+      createdDate:
+        params?.keepDates == true
+          ? this.createdDate
+          : this.createdDate?.toISOString(),
+      editedBy: this.editedBy,
+      editedDate:
+        params?.keepDates == true
+          ? this.editedDate
+          : this.editedDate?.toISOString(),
     };
   }
 
@@ -228,15 +270,22 @@ export default class EntryModel {
     if (json.volume != null) entry.volume = json.volume;
     if (json.leftVolume != null) entry.leftVolume = json.leftVolume;
     if (json.rightVolume != null) entry.rightVolume = json.rightVolume;
+    if (json.createdBy != null) entry.createdBy = json.createdBy;
+    if (json.createdDate != null)
+      entry.createdDate = new Date(json.createdDate);
+    if (json.editedBy != null) entry.editedBy = json.editedBy;
+    if (json.editedDate != null) entry.editedDate = new Date(json.editedDate);
     return entry;
   }
 
   public static fromFirestore(data: DocumentData): EntryModel {
     const json = data;
-    const { startDate, endDate, ...rest } = json;
+    const { startDate, endDate, createdDate, editedDate, ...rest } = json;
     const entry = EntryModel.fromJSON(rest);
     if (startDate != null) entry.startDate = startDate?.toDate();
     if (endDate != null) entry.endDate = endDate?.toDate();
+    if (createdDate != null) entry.createdDate = createdDate?.toDate();
+    if (editedDate != null) entry.editedDate = editedDate?.toDate();
     return entry;
   }
 

@@ -3,22 +3,30 @@ import { getPath } from "@/lib/utils";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import EntryBody from "@/modules/entries/components/EntryBody";
 import EntryHeader from "@/modules/entries/components/EntryHeader";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   MenuItem,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -33,15 +41,24 @@ export default function EntriesCard(props: Props) {
   const { Menu, openMenu, closeMenu } = useMenu();
   const dispatch = useAppDispatch();
   const [menuEntryId, setMenuEntryId] = useState<string | null>(null);
+  const [dialogOpened, setDialogOpened] = useState(false);
+  const handleDialogClose = () => setDialogOpened(false);
+  const { deleteEntry } = useEntries();
 
   const handleDeleteButtonClick = (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     closeMenu(e);
     if (!menuEntryId) return;
-    // TODO: Implement
-    // dispatch(removeEntry(menuEntryId));
+    setDialogOpened(true);
   };
+
+  const handleDeleteEntry = useCallback(() => {
+    if (!menuEntryId) return;
+    deleteEntry(menuEntryId).then(() => {
+      handleDialogClose();
+    });
+  }, [menuEntryId]);
 
   return (
     <>
@@ -135,7 +152,8 @@ export default function EntriesCard(props: Props) {
                         height: "4.5em",
                         borderRadius: "50%",
                         border: "2px solid",
-                        backgroundColor: theme.customPalette.background.avatar,
+                        // backgroundColor: theme.customPalette.background.avatar,
+                        backgroundColor: theme.palette.divider,
                         flexShrink: 0,
                         zIndex: 1,
                         borderColor: entryHasStopwatchRunning
@@ -238,8 +256,27 @@ export default function EntriesCard(props: Props) {
           </Stack>
         </MenuItem>
       </Menu>
+      <Dialog
+        open={dialogOpened}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Voulez-vous vraiment supprimer cette entrée ?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Cette action est irréversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteEntry}>Supprimer</Button>
+          <Button onClick={handleDialogClose} autoFocus>
+            Annuler
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
-
-import DeleteIcon from "@mui/icons-material/Delete";

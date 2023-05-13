@@ -2,7 +2,6 @@ import Section from "@/common/components/Section";
 import SectionTitle from "@/common/components/SectionTitle";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageName from "@/common/enums/PageName";
-import { db } from "@/firebase";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import {
   formatStopwatchesTime,
@@ -42,7 +41,6 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -54,7 +52,7 @@ type EntryFormProps = {
 
 export default function EntryForm(props: EntryFormProps) {
   const { entryId } = useParams();
-  const { entries } = useEntries();
+  const { entries, saveEntry } = useEntries();
   const [entry, setEntry] = useState<EntryModel>(
     entryId == null
       ? props.entry
@@ -331,28 +329,21 @@ export default function EntryForm(props: EntryFormProps) {
         return;
       }
       if (!endDateWasEditedManually) entry.setEndDate();
-      const { id, ...rest } = entry.toJSON({ keepDates: true });
-      if (id == null) {
-        const docRef = await addDoc(
-          collection(db, `children/${selectedChild}/entries`),
-          {
-            ...rest,
-          }
-        );
-        entry.id = docRef.id;
-      } else {
-        await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
-          ...rest,
-        });
-        // setEntries((prevEntries) => {
-        //   const newEntries = prevEntries.slice();
-        //   const index = newEntries.findIndex((e) => e.id === entry.id);
-        //   if (index !== -1) {
-        //     newEntries[index] = entry;
-        //   }
-        //   return newEntries;
-        // });
-      }
+      await saveEntry(entry);
+      // const { id, ...rest } = entry.toJSON({ keepDates: true });
+      // if (id == null) {
+      //   const docRef = await addDoc(
+      //     collection(db, `children/${selectedChild}/entries`),
+      //     {
+      //       ...rest,
+      //     }
+      //   );
+      //   entry.id = docRef.id;
+      // } else {
+      //   await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
+      //     ...rest,
+      //   });
+      // }
       setSnackbarIsOpened(true);
       setSnackbarSeverity("success");
       setSnackbarMessage("Entrée enregistrée");

@@ -8,11 +8,15 @@ import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
   Timestamp,
+  addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -78,7 +82,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       return newEntries;
     });
     setIsLoading(false);
-  }, [user]);
+  }, [user, children]);
 
   useEffect(() => {
     getEntries();
@@ -150,14 +154,67 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
     return () => unsubscribe();
   }, [getEntries, user]);
 
+  const deleteEntry = useCallback(
+    async (entryId: string) => {
+      const selectedChild =
+        children.find((child) => child.isSelected)?.id ??
+        user?.selectedChild ??
+        "";
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+        return;
+      }
+      await deleteDoc(doc(db, `children/${selectedChild}/entries`, entryId));
+    },
+    [user, children]
+  );
+
+  const saveEntry = useCallback(
+    async (entry: EntryModel) => {
+      const selectedChild =
+        children.find((child) => child.isSelected)?.id ??
+        user?.selectedChild ??
+        "";
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+        return;
+      }
+      const { id, ...rest } = entry.toJSON({ keepDates: true });
+      if (id == null) {
+        const docRef = await addDoc(
+          collection(db, `children/${selectedChild}/entries`),
+          {
+            ...rest,
+            createdDate: Timestamp.fromDate(new Date()),
+            createdBy: {
+              id: user.uid,
+              name: user.displayName ?? "",
+            },
+          }
+        );
+        entry.id = docRef.id;
+      } else {
+        await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
+          ...rest,
+          editedDate: Timestamp.fromDate(new Date()),
+          editedBy: {
+            id: user.uid,
+            name: user.displayName ?? "",
+          },
+        });
+      }
+    },
+    [user, children]
+  );
+
   const context: EntriesContextValue = useMemo(
     () => ({
       entries,
       setEntries,
       isLoading,
       getEntries,
+      deleteEntry,
+      saveEntry,
     }),
-    [entries, setEntries, isLoading, getEntries]
+    [entries, setEntries, isLoading, getEntries, deleteEntry, saveEntry]
   );
 
   return <EntriesContext.Provider value={context} {...props} />;

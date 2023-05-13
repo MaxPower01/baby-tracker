@@ -20,7 +20,7 @@ export default function App() {
         maxWidth={CSSBreakpoint.Small}
         sx={{
           paddingTop: 2,
-          paddingBottom: 8,
+          paddingBottom: 20,
         }}
       >
         {user == null ? <PublicRoutes /> : <PrivateRoutes />}

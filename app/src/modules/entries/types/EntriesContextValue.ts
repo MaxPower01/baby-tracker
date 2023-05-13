@@ -5,4 +5,6 @@ export default interface EntriesContextValue {
   setEntries: React.Dispatch<React.SetStateAction<EntryModel[]>>;
   isLoading: boolean;
   getEntries: () => Promise<void>;
+  deleteEntry: (entryId: string) => Promise<void>;
+  saveEntry: (entry: EntryModel) => Promise<void>;
 }

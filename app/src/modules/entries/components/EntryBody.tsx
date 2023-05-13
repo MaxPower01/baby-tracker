@@ -261,10 +261,41 @@ export default function EntryBody(props: Props) {
         ))}
 
       {entry.note && (
-        <Typography variant="body1" sx={textStyle}>
+        <Typography
+          variant="body1"
+          sx={{
+            ...textStyle,
+          }}
+        >
           {entry.note}
         </Typography>
       )}
+
+      {entry.editedBy?.name != null ? (
+        <Typography
+          variant="body2"
+          fontStyle={"italic"}
+          sx={{
+            ...textStyle,
+            opacity: 0.35,
+            fontSize: "1em",
+          }}
+        >
+          {entry.editedBy.name}
+        </Typography>
+      ) : entry.createdBy?.name != null ? (
+        <Typography
+          variant="body2"
+          fontStyle={"italic"}
+          sx={{
+            ...textStyle,
+            opacity: 0.35,
+            fontSize: "1em",
+          }}
+        >
+          {entry.createdBy.name}
+        </Typography>
+      ) : null}
     </Stack>
   );
 }

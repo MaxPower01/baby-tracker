@@ -85,7 +85,7 @@ export default function RecentEntries(props: Props) {
                     position: topbarHeight != null ? "sticky" : undefined,
                     top: topbarHeight != null ? topbarHeight : undefined,
                     zIndex: 2,
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.background.default,
                   }}
                   startDate={startDate}
                 />

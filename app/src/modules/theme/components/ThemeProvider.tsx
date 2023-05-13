@@ -59,6 +59,13 @@ export default function ThemeProvider(props: ThemeProviderProps) {
       createTheme({
         palette: {
           mode,
+          background: {
+            default: mode === "dark" ? "#1E212A" : "#fff",
+            paper: mode === "dark" ? "#222530" : "#fff",
+          },
+          // primary: {
+          //   main: mode === "dark" ? "#3F6588" : "#3f51b5",
+          // },
         },
         customPalette: {
           background: {
