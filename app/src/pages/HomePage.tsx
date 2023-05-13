@@ -26,10 +26,14 @@ export default function HomePage() {
             }
             return (
               <Stack key={child.id}>
-                <Typography variant={"h4"} textAlign={"center"}>
+                <Typography
+                  variant={"h4"}
+                  textAlign={"center"}
+                  fontWeight={"bold"}
+                >
                   {child.name}
                 </Typography>
-                <Typography
+                {/* <Typography
                   variant={"body2"}
                   textAlign={"center"}
                   sx={{
@@ -37,7 +41,7 @@ export default function HomePage() {
                   }}
                 >
                   {child.id}
-                </Typography>
+                </Typography> */}
               </Stack>
             );
           })}
