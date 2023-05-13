@@ -1,6 +1,5 @@
 import LoadingIndicator from "@/common/components/LoadingIndicator";
 import Section from "@/common/components/Section";
-import SectionTitle from "@/common/components/SectionTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import RecentEntries from "@/modules/entries/components/RecentEntries";
@@ -48,13 +47,13 @@ export default function HomePage() {
         </Stack>
       )}
       <Section>
-        <SectionTitle title="Ajouter une entrée" />
+        {/* <SectionTitle title="Ajouter une entrée" /> */}
         <MenuProvider>
           <NewEntryWidget />
         </MenuProvider>
       </Section>
       <Section dividerPosition="top">
-        <SectionTitle title="Activité récente" />
+        {/* <SectionTitle title="Activité récente" /> */}
         <RecentEntries />
       </Section>
     </Stack>
