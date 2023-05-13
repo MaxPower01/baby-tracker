@@ -66,6 +66,21 @@ export default function GraphicsPage() {
       x: {
         display: false,
       },
+      y: {
+        display: true,
+        ticks: {
+          callback: function (value: any, index: any, values: any) {
+            const date = new Date(value);
+            return date.toLocaleString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+              hourCycle: "h23",
+              day: "numeric",
+              month: "short",
+            });
+          },
+        },
+      },
     },
   };
 
@@ -120,7 +135,6 @@ export default function GraphicsPage() {
       } else {
         entryDate.setMinutes(0);
       }
-      console.log(entryDate);
       const entryLabel = entryDate.toLocaleString(
         undefined,
         dateOptions as any
@@ -146,8 +160,6 @@ export default function GraphicsPage() {
     return date.toLocaleString(undefined, dateOptions as any);
   });
 
-  console.log(labels);
-
   const data = {
     labels: labels,
     datasets: [
@@ -161,7 +173,7 @@ export default function GraphicsPage() {
   };
   return (
     <>
-      <Typography variant={"h4"} textAlign={"center"} fontWeight={"bold"}>
+      <Typography variant={"h6"} textAlign={"center"} fontWeight={"bold"}>
         Allaitements
       </Typography>
       <Bar options={options} data={data} />
