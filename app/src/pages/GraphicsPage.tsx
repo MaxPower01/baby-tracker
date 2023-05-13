@@ -30,7 +30,7 @@ export default function GraphicsPage() {
   });
   const options = {
     indexAxis: "y" as const,
-    aspectRatio: 0.35,
+    aspectRatio: 0.1,
     elements: {
       bar: {
         borderWidth: 2,
