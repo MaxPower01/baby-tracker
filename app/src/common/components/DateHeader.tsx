@@ -62,12 +62,12 @@ export default function DateHeader(props: Props) {
           <Stack
             spacing={1}
             sx={{
-              paddingTop: 0.5,
-              paddingBottom: 0.5,
+              paddingTop: 0.25,
+              paddingBottom: 0.25,
             }}
           >
             <Typography
-              variant="body1"
+              variant="h6"
               textAlign={"left"}
               fontWeight={"bold"}
               sx={{
@@ -81,7 +81,7 @@ export default function DateHeader(props: Props) {
               )}
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               textAlign={"left"}
               sx={{
                 opacity: 0.5,

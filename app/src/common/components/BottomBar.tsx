@@ -25,7 +25,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
   zIndex: 1,
-  top: -30,
+  top: -25,
   left: 0,
   right: 0,
   margin: "0 auto",
@@ -192,16 +192,16 @@ export default function BottomBar(props: Props) {
                   {Icon && (
                     <Icon
                       sx={{
-                        fontSize: isFloatingActionButton ? "2.5em" : undefined,
+                        fontSize: isFloatingActionButton ? "2.5em" : "1.25em",
                       }}
                     />
                   )}
                   {label && (
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       textAlign="center"
                       sx={{
-                        fontSize: "50%",
+                        // fontSize: "50%",
                         fontWeight: isCurrentPage == true ? "bold" : undefined,
                       }}
                     >
