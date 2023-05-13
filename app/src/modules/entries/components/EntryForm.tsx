@@ -44,7 +44,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type EntryFormProps = {
   entry: EntryModel;
@@ -53,11 +53,12 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
-  const { entries, setEntries } = useEntries();
+  const { entryId } = useParams();
+  const { entries } = useEntries();
   const [entry, setEntry] = useState<EntryModel>(
-    props.isEditing
-      ? entries.find((e) => e.id === props.entry.id) ?? props.entry
-      : props.entry
+    entryId == null
+      ? props.entry
+      : entries.find((e) => e.id === entryId) ?? props.entry
   );
   const [endDateWasEditedManually, setEndDateWasEditedManually] =
     useState(false);
@@ -403,7 +404,9 @@ export default function EntryForm(props: EntryFormProps) {
                 onChange={handleStartDateChange}
                 disabled={anyStopwatchIsRunning}
                 disableFuture={true}
-                label="Date de début"
+                label={
+                  entry.activity?.hasDuration == true ? "Date de début" : ""
+                }
                 sx={{
                   flex: 1,
                 }}
@@ -432,44 +435,46 @@ export default function EntryForm(props: EntryFormProps) {
                 }}
               />
             </LocalizationProvider>
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale={dayjsLocaleFrCa}
-            >
-              <MobileDateTimePicker
-                value={dayjs(entry.endDate)}
-                onChange={handleEndDateChange}
-                disabled={anyStopwatchIsRunning}
-                disableFuture={true}
-                label="Date de fin"
-                sx={{
-                  flex: 1,
-                }}
-                slotProps={{
-                  textField: {
-                    sx: {
-                      "& input": {
-                        width: "100%",
-                        cursor: "pointer",
-                        textAlign: "center",
+            {entry.activity?.hasDuration == true && (
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale={dayjsLocaleFrCa}
+              >
+                <MobileDateTimePicker
+                  value={dayjs(entry.endDate)}
+                  onChange={handleEndDateChange}
+                  disabled={anyStopwatchIsRunning}
+                  disableFuture={true}
+                  label="Date de fin"
+                  sx={{
+                    flex: 1,
+                  }}
+                  slotProps={{
+                    textField: {
+                      sx: {
+                        "& input": {
+                          width: "100%",
+                          cursor: "pointer",
+                          textAlign: "center",
+                        },
+                        "& *:before": {
+                          border: "none !important",
+                        },
                       },
-                      "& *:before": {
-                        border: "none !important",
-                      },
+                      variant: "standard",
                     },
-                    variant: "standard",
-                  },
-                }}
-                ampm={false}
-                localeText={{
-                  toolbarTitle: "",
-                  okButtonLabel: "OK",
-                  cancelButtonLabel: "Annuler",
-                  nextMonth: "Mois suivant",
-                  previousMonth: "Mois précédent",
-                }}
-              />
-            </LocalizationProvider>
+                  }}
+                  ampm={false}
+                  localeText={{
+                    toolbarTitle: "",
+                    okButtonLabel: "OK",
+                    cancelButtonLabel: "Annuler",
+                    nextMonth: "Mois suivant",
+                    previousMonth: "Mois précédent",
+                  }}
+                />
+              </LocalizationProvider>
+            )}
           </Stack>
           {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
             <Grid container gap={1} justifyContent="center">
@@ -484,7 +489,6 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(activity.type)}
                     onClick={() => toggleLinkedActivity(activity)}
-                    isSelectable={true}
                     isDisabled={anyStopwatchIsRunning}
                   />
                 );
@@ -504,7 +508,6 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(subActivity.type)}
                     onClick={() => toggleSubActivity(subActivity)}
-                    isSelectable={true}
                     isDisabled={anyStopwatchIsRunning}
                   />
                 );

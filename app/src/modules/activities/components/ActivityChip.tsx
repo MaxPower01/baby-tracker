@@ -9,7 +9,6 @@ type Props = {
   isSelected?: boolean;
   size?: "small" | "medium";
   textColor?: string;
-  isSelectable: boolean;
   isDisabled?: boolean;
 };
 
@@ -19,7 +18,6 @@ export default function ActivityChip({
   isSelected,
   size,
   textColor,
-  isSelectable,
   isDisabled,
 }: Props) {
   return (

@@ -143,12 +143,6 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
               return entry;
             });
           });
-          dispatch(
-            addEntries({
-              entries: newEntries.map((entry) => entry.serialize()),
-              overwrite: true,
-            })
-          );
           return [...newEntries];
         });
       }

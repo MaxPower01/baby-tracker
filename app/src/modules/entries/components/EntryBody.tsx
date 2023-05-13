@@ -4,8 +4,8 @@ import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Box, Grid, Stack, SxProps, Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 type Props = {
   entry: EntryModel;
   sx?: SxProps | undefined;
@@ -13,26 +13,96 @@ type Props = {
 };
 
 export default function EntryBody(props: Props) {
-  const [entry, setEntry] = useState<EntryModel>(props.entry);
+  const { entry, sx, textColor } = props;
   if (!entry) return null;
-  const theme = useTheme();
-  const {
-    time,
-    leftTime,
-    rightTime,
-    note,
-    linkedActivities,
-    subActivities,
-    volume,
-    leftVolume,
-    rightVolume,
-  } = entry;
+  const [timeLabels, setTimeLabels] = useState<string[]>([]);
+  const [volumeLabels, setVolumeLabels] = useState<string[]>([]);
   const iconFontSize = "1.5em";
-  const timeLabels: string[] = useMemo(() => {
+  // const timeLabels: string[] = useMemo(() => {
+  //   let result: string[] = [];
+  //   if (!time) return result;
+  //   if (entry?.activity?.hasSides) {
+  //     if (leftTime && rightTime) {
+  //       let leftLabel = `(G) ${formatStopwatchTime(
+  //         entry.getTime({
+  //           side: "left",
+  //           upToDate: true,
+  //         }),
+  //         true
+  //       )}`;
+  //       let rightLabel = `(D) ${formatStopwatchTime(
+  //         entry.getTime({ side: "right", upToDate: true }),
+  //         true
+  //       )}`;
+  //       // if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
+  //       // if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
+  //       result.push(leftLabel);
+  //       result.push(rightLabel);
+  //     } else {
+  //       let label = `${formatStopwatchTime(
+  //         entry.getTime({ upToDate: true }),
+  //         true
+  //       )}`;
+  //       // if (entry.leftStopwatchIsRunning) label += " (en cours)";
+  //       result.push(label);
+  //     }
+  //   } else {
+  //     let label = `${formatStopwatchTime(
+  //       entry.getTime({ upToDate: true }),
+  //       true
+  //     )}`;
+  //     // if (entry.leftStopwatchIsRunning) label += " (en cours)";
+  //     result.push(label);
+  //   }
+  //   return result;
+  // }, [time, leftTime, rightTime, entry]);
+
+  // const volumeLabels = useMemo(() => {
+  //   let result: string[] = [];
+  //   if (!entry.volume) return result;
+  //   if (entry?.activity?.hasSides) {
+  //     if (entry.leftVolume && rightVolume) {
+  //       let leftLabel = `${entry.leftVolume} ml (G)`;
+  //       let rightLabel = `${rightVolume} ml (D)`;
+  //       result.push(leftLabel);
+  //       result.push(rightLabel);
+  //     } else {
+  //       let label = `${volume} ml`;
+  //       result.push(label);
+  //     }
+  //   } else {
+  //     let label = `${volume} ml`;
+  //     result.push(label);
+  //   }
+  //   return result;
+  // }, [volume, entry.leftVolume, rightVolume, entry]);
+
+  // const shouldRenderCardContent = useMemo(() => {
+  //   return (
+  //     timeLabels.length > 0 ||
+  //     note ||
+  //     linkedActivities.length > 0 ||
+  //     subActivities.length > 0 ||
+  //     volumeLabels.length > 0
+  //   );
+  // }, [timeLabels, note, linkedActivities, volumeLabels]);
+
+  // if (!shouldRenderCardContent) return null;
+
+  const textStyle: SxProps = {
+    // fontStyle: "italic",
+    opacity: 0.8,
+    color: props.textColor,
+  };
+
+  const computeTimeLabels = useCallback(() => {
     let result: string[] = [];
-    if (!time) return result;
+    if (!entry.time) {
+      setTimeLabels(result);
+      return;
+    }
     if (entry?.activity?.hasSides) {
-      if (leftTime && rightTime) {
+      if (entry.leftTime && entry.rightTime) {
         let leftLabel = `(G) ${formatStopwatchTime(
           entry.getTime({
             side: "left",
@@ -64,56 +134,40 @@ export default function EntryBody(props: Props) {
       // if (entry.leftStopwatchIsRunning) label += " (en cours)";
       result.push(label);
     }
-    return result;
-  }, [time, leftTime, rightTime, entry]);
+    setTimeLabels(result);
+  }, [entry]);
 
-  const volumeLabels = useMemo(() => {
+  const computeVolumeLabels = useCallback(() => {
     let result: string[] = [];
-    if (!volume) return result;
+    if (!entry.volume) {
+      setVolumeLabels(result);
+      return;
+    }
     if (entry?.activity?.hasSides) {
-      if (leftVolume && rightVolume) {
-        let leftLabel = `${leftVolume} ml (G)`;
-        let rightLabel = `${rightVolume} ml (D)`;
+      if (entry.leftVolume && entry.rightVolume) {
+        let leftLabel = `${entry.leftVolume} ml (G)`;
+        let rightLabel = `${entry.rightVolume} ml (D)`;
         result.push(leftLabel);
         result.push(rightLabel);
       } else {
-        let label = `${volume} ml`;
+        let label = `${entry.volume} ml`;
         result.push(label);
       }
     } else {
-      let label = `${volume} ml`;
+      let label = `${entry.volume} ml`;
       result.push(label);
     }
-    return result;
-  }, [volume, leftVolume, rightVolume, entry]);
-
-  const shouldRenderCardContent = useMemo(() => {
-    return (
-      timeLabels.length > 0 ||
-      note ||
-      linkedActivities.length > 0 ||
-      subActivities.length > 0 ||
-      volumeLabels.length > 0
-    );
-  }, [timeLabels, note, linkedActivities, volumeLabels]);
-
-  if (!shouldRenderCardContent) return null;
-
-  const textStyle: SxProps = {
-    // fontStyle: "italic",
-    opacity: 0.8,
-    color: props.textColor,
-  };
+    setVolumeLabels(result);
+  }, [entry]);
 
   useEffect(() => {
-    if (entry.anyStopwatchIsRunning) {
-      const intervalId = setInterval(() => {
-        setEntry((prevEntry) => {
-          return prevEntry.clone();
-        });
-      }, 1000);
-      return () => clearInterval(intervalId);
-    }
+    computeTimeLabels();
+    computeVolumeLabels();
+    const intervalId = setInterval(() => {
+      computeTimeLabels();
+      computeVolumeLabels();
+    }, 1000);
+    return () => clearInterval(intervalId);
   }, [entry]);
 
   return (
@@ -123,9 +177,9 @@ export default function EntryBody(props: Props) {
         ...props.sx,
       }}
     >
-      {linkedActivities.length > 0 && (
+      {entry.linkedActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
-          {linkedActivities.map((linkedActivity) => {
+          {entry.linkedActivities.map((linkedActivity) => {
             if (entry.activity == null) return null;
             return (
               <ActivityChip
@@ -133,15 +187,14 @@ export default function EntryBody(props: Props) {
                 activity={linkedActivity}
                 size={"small"}
                 isSelected={true}
-                isSelectable={false}
               />
             );
           })}
         </Grid>
       )}
-      {subActivities.length > 0 && (
+      {entry.subActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
-          {subActivities.map((subActivity) => {
+          {entry.subActivities.map((subActivity) => {
             if (entry.activity == null) return null;
             return (
               <SubActivityChip
@@ -149,7 +202,6 @@ export default function EntryBody(props: Props) {
                 subActivity={subActivity}
                 size={"small"}
                 isSelected={true}
-                isSelectable={false}
               />
             );
           })}
@@ -208,9 +260,9 @@ export default function EntryBody(props: Props) {
           </Stack>
         ))}
 
-      {note && (
+      {entry.note && (
         <Typography variant="body1" sx={textStyle}>
-          {note}
+          {entry.note}
         </Typography>
       )}
     </Stack>

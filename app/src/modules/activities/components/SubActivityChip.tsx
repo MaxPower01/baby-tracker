@@ -8,7 +8,6 @@ type Props = {
   isSelected?: boolean;
   size?: "small" | "medium";
   textColor?: string;
-  isSelectable: boolean;
   isDisabled?: boolean;
 };
 
@@ -18,7 +17,6 @@ export default function SubActivityChip({
   isSelected,
   size,
   textColor,
-  isSelectable,
   isDisabled,
 }: Props) {
   return (
@@ -47,7 +45,6 @@ export default function SubActivityChip({
           onClick(subActivity.type);
         }
       }}
-      color={isSelectable ? "primary" : undefined}
       size={size}
       variant={isSelected ? "filled" : "outlined"}
     />
