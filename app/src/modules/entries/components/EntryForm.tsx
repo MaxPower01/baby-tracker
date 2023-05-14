@@ -275,9 +275,9 @@ export default function EntryForm(props: EntryFormProps) {
         if (!endDateWasEditedManually) {
           newEntry.setEndDate();
         }
-        // save(newEntry);
         return newEntry;
       });
+      // handleSubmit();
     },
     [endDateWasEditedManually]
   );
@@ -330,20 +330,6 @@ export default function EntryForm(props: EntryFormProps) {
       }
       if (!endDateWasEditedManually) entry.setEndDate();
       await saveEntry(entry);
-      // const { id, ...rest } = entry.toJSON({ keepDates: true });
-      // if (id == null) {
-      //   const docRef = await addDoc(
-      //     collection(db, `children/${selectedChild}/entries`),
-      //     {
-      //       ...rest,
-      //     }
-      //   );
-      //   entry.id = docRef.id;
-      // } else {
-      //   await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
-      //     ...rest,
-      //   });
-      // }
       setSnackbarIsOpened(true);
       setSnackbarSeverity("success");
       setSnackbarMessage("Entrée enregistrée");
@@ -647,8 +633,8 @@ export default function EntryForm(props: EntryFormProps) {
         open={snackbarIsOpened}
         autoHideDuration={2000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        TransitionProps={{ dir: "up" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        TransitionProps={{ dir: "down" }}
         TransitionComponent={Slide}
       >
         <Alert
