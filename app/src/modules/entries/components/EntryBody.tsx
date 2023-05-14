@@ -271,7 +271,7 @@ export default function EntryBody(props: Props) {
         </Typography>
       )}
 
-      {entry.editedBy?.name != null ? (
+      {/* {entry.editedBy?.name != null ? (
         <Typography
           variant="body2"
           fontStyle={"italic"}
@@ -295,7 +295,7 @@ export default function EntryBody(props: Props) {
         >
           {entry.createdBy.name}
         </Typography>
-      ) : null}
+      ) : null} */}
     </Stack>
   );
 }
