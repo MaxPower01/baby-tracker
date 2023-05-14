@@ -71,7 +71,6 @@ export default function GraphicsPage() {
         ticks: {
           callback: function (value: any, index: any) {
             const correspondingDate = dates[index];
-            console.log(correspondingDate);
             return correspondingDate.toLocaleString(undefined, {
               hour: "2-digit",
               minute: "2-digit",

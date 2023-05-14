@@ -1,8 +1,8 @@
 import LoadingIndicator from "@/common/components/LoadingIndicator";
 import Section from "@/common/components/Section";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import Entries from "@/modules/entries/components/Entries";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
-import RecentEntries from "@/modules/entries/components/RecentEntries";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Stack, Typography } from "@mui/material";
@@ -54,7 +54,7 @@ export default function HomePage() {
       </Section>
       <Section dividerPosition="top">
         {/* <SectionTitle title="Activité récente" /> */}
-        <RecentEntries />
+        <Entries />
       </Section>
     </Stack>
   );

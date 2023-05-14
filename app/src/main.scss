@@ -1,3 +1,23 @@
+:root {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+#root {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+main {
+	flex-grow: 1;
+}
+
 .ActivityIcon {
 	padding: 0.1em;
 

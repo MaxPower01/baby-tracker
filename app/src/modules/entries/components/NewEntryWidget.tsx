@@ -286,10 +286,11 @@ export default function NewEntryWidget(props: Props) {
     width: "100%",
   };
   const textStyle: SxProps = {
-    // opacity: 0.8,
+    opacity: 0.6,
     textAlign: "center",
-    fontStyle: "italic",
+    // fontStyle: "italic",
     marginTop: 1,
+    // fontWeight: "bold",
   };
 
   const textVariant = "body2";

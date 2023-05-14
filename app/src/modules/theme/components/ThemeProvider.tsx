@@ -57,6 +57,9 @@ export default function ThemeProvider(props: ThemeProviderProps) {
   const theme = React.useMemo(
     () =>
       createTheme({
+        typography: {
+          fontFamily: "'Inter', sans-serif",
+        },
         palette: {
           mode,
           background: {

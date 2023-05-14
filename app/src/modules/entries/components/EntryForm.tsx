@@ -1,13 +1,8 @@
 import Section from "@/common/components/Section";
 import SectionTitle from "@/common/components/SectionTitle";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import {
-  formatStopwatchesTime,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/lib/utils";
+import { formatStopwatchesTime, isNullOrWhiteSpace } from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
@@ -616,14 +611,14 @@ export default function EntryForm(props: EntryFormProps) {
               >
                 Enregistrer
               </Button>
-              <Button
+              {/* <Button
                 variant="outlined"
                 fullWidth
                 size="large"
                 onClick={() => navigate(getPath({ page: PageName.Home }))}
               >
                 Retour à l'accueil
-              </Button>
+              </Button> */}
             </Stack>
           </Toolbar>
         </Container>

@@ -8,7 +8,7 @@ export default function SectionTitle(props: { title: string }) {
       sx={{
         width: "100%",
         opacity: 0.6,
-        fontStyle: "italic",
+        // fontStyle: "italic",
       }}
     >
       {props.title}

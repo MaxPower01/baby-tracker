@@ -6,7 +6,6 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Container } from "@mui/material";
-import "./App.scss";
 
 export default function App() {
   const { user } = useAuthentication();

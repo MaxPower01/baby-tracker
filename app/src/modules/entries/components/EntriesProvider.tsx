@@ -1,9 +1,9 @@
+import TimePeriod from "@/common/enums/TimePeriod";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/lib/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import EntriesContext from "@/modules/entries/components/EntriesContext";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import { addEntries } from "@/modules/entries/state/entriesSlice";
 import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
@@ -27,65 +27,89 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
-  const getEntries = useCallback(async () => {
-    const selectedChild =
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      "";
-    if (user == null || isNullOrWhiteSpace(selectedChild)) {
-      setEntries([]);
-      setIsLoading(false);
-      return;
+  const getDateFor = (timePeriod: TimePeriod) => {
+    const now = new Date();
+    switch (timePeriod) {
+      case TimePeriod.LastWeek:
+        return new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - 7,
+          now.getHours(),
+          now.getMinutes()
+        );
+      case TimePeriod.LastMonth:
+        return new Date(
+          now.getFullYear(),
+          now.getMonth() - 1,
+          now.getDate(),
+          now.getHours(),
+          now.getMinutes()
+        );
+      case TimePeriod.LastDay:
+      default:
+        return new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - 1,
+          now.getHours(),
+          now.getMinutes()
+        );
     }
-    const endAtTimestamp = Timestamp.fromDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1
-      )
-    );
-    const q = query(
-      collection(db, `children/${selectedChild}/entries`),
-      where("startDate", ">=", endAtTimestamp),
-      orderBy("startDate", "desc")
-    );
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      setEntries([]);
-      setIsLoading(false);
-      return;
-    }
-    const entries: EntryModel[] = [];
-    querySnapshot.forEach((doc) => {
-      const entry = EntryModel.fromFirestore(doc.data());
-      entry.id = doc.id;
-      entries.push(entry);
-    });
-    // Entries are added to the store so that they can be used other pages
-    // without having to fetch them again
-    dispatch(
-      addEntries({
-        entries: entries.map((entry) => entry.serialize()),
-        overwrite: true,
-      })
-    );
-    setEntries((prevEntries) => {
-      if (prevEntries.length === 0) {
-        return entries;
+  };
+
+  const getEntries = useCallback(
+    async (params: { timePeriod: TimePeriod }) => {
+      const selectedChild =
+        children.find((child) => child.isSelected)?.id ??
+        user?.selectedChild ??
+        "";
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+        setEntries([]);
+        setIsLoading(false);
+        return [];
       }
-      const newEntries = [...prevEntries];
-      prevEntries.forEach((prevEntry) => {
-        if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
-          newEntries.push(prevEntry);
-        }
+      const endAtTimestamp = Timestamp.fromDate(getDateFor(params.timePeriod));
+      const q = query(
+        collection(db, `children/${selectedChild}/entries`),
+        where("startDate", ">=", endAtTimestamp),
+        orderBy("startDate", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        setEntries([]);
+        setIsLoading(false);
+        return [];
+      }
+      const entries: EntryModel[] = [];
+      querySnapshot.forEach((doc) => {
+        const entry = EntryModel.fromFirestore(doc.data());
+        entry.id = doc.id;
+        entries.push(entry);
       });
-      return newEntries;
-    });
-    setIsLoading(false);
-  }, [user, children]);
+      setIsLoading(false);
+      return entries;
+    },
+    [user, children]
+  );
 
   useEffect(() => {
-    getEntries();
+    getEntries({
+      timePeriod: TimePeriod.LastDay,
+    }).then((fetchedEntries) => {
+      setEntries((prevEntries) => {
+        if (prevEntries.length === 0) {
+          return fetchedEntries;
+        }
+        const newEntries = [...prevEntries];
+        prevEntries.forEach((prevEntry) => {
+          if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
+            newEntries.push(prevEntry);
+          }
+        });
+        return newEntries;
+      });
+    });
     const selectedChild =
       children.find((child) => child.isSelected)?.id ??
       user?.selectedChild ??
@@ -93,13 +117,8 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
     if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
-    const endAtTimestamp = Timestamp.fromDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1
-      )
-    );
+    const now = new Date();
+    const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriod.LastDay));
     const q = query(
       collection(db, `children/${selectedChild}/entries`),
       where("startDate", ">=", endAtTimestamp),

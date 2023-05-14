@@ -1,3 +1,11 @@
+import Section from "@/common/components/Section";
+import TimePeriod from "@/common/enums/TimePeriod";
+import Entries from "@/modules/entries/components/Entries";
+
 export default function EntriesPage() {
-  return <div>Bientôt disponible</div>;
+  return (
+    <Section>
+      <Entries fetchTimePeriod={TimePeriod.LastWeek} />
+    </Section>
+  );
 }

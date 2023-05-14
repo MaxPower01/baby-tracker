@@ -32,7 +32,6 @@ export default function AuthenticationProvider(
   >([]);
 
   const fetchUserDoc = (user: User) => {
-    console.log("Fetching user doc...");
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef)
       .then((docSnap) => {
@@ -42,8 +41,6 @@ export default function AuthenticationProvider(
             name: string;
             isSelected: boolean;
           }[] = [];
-          console.log("Fetching children docs...");
-          console.log(docSnap.data()?.children);
           docSnap.data()?.children.forEach(async (childId: string) => {
             const childRef = doc(db, "children", childId);
             const childDocSnap = await getDoc(childRef);
@@ -85,7 +82,6 @@ export default function AuthenticationProvider(
       user: User | undefined;
       isNewUser: boolean | undefined;
     }>(async (resolve, reject) => {
-      console.log("Signing in with Google...");
       let user: User | undefined;
       let isNewUser: boolean | undefined;
       try {

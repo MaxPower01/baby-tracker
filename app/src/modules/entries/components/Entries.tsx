@@ -1,4 +1,5 @@
 import DateHeader from "@/common/components/DateHeader";
+import TimePeriod from "@/common/enums/TimePeriod";
 import { groupEntriesByDate, groupEntriesByTime } from "@/lib/utils";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -7,18 +8,31 @@ import { Box, CircularProgress, Stack, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
-  // entries: EntryModel[];
-  // isLoadingEntries: boolean;
+  fetchTimePeriod?: TimePeriod;
 };
 
-export default function RecentEntries(props: Props) {
-  // const { entries, isLoadingEntries } = props;
-  const { entries, isLoading } = useEntries();
+export default function Entries(props: Props) {
+  let { entries, setEntries, isLoading, getEntries } = useEntries();
+
   const theme = useTheme();
 
   const [topbarHeight, setTopbarHeight] = useState<number | null>(null);
 
   useEffect(() => {
+    if (props.fetchTimePeriod != null) {
+      getEntries({
+        timePeriod: props.fetchTimePeriod,
+      }).then((fetchedEntries) => {
+        setEntries((prevEntries) => {
+          const newEntries = [...prevEntries];
+          newEntries.push(...fetchedEntries);
+          return newEntries.filter(
+            (entry, index, self) =>
+              self.findIndex((e) => e.id === entry.id) === index
+          );
+        });
+      });
+    }
     function handleResize() {
       const element = document.getElementById("topbar");
       const height = element?.clientHeight;
