@@ -1,8 +1,13 @@
 import Section from "@/common/components/Section";
 import SectionTitle from "@/common/components/SectionTitle";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import { formatStopwatchesTime, isNullOrWhiteSpace } from "@/lib/utils";
+import {
+  formatStopwatchesTime,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/lib/utils";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
@@ -46,7 +51,8 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
-  const { entryId } = useParams();
+  const { entryId: paramsEntryId } = useParams();
+  const [entryId, setEntryId] = useState<string | undefined>(paramsEntryId);
   const { entries, saveEntry } = useEntries();
   const [entry, setEntry] = useState<EntryModel>(
     entryId == null
@@ -249,13 +255,53 @@ export default function EntryForm(props: EntryFormProps) {
   //   });
   // };
 
+  // Handle save
+
+  const handleSave = useCallback(
+    async (overrideEntry?: EntryModel) => {
+      const selectedChild =
+        children.find((child) => child.isSelected)?.id ??
+        user?.selectedChild ??
+        "";
+      const entryToSave = overrideEntry ?? entry;
+      if (entryToSave?.id == null) {
+        entryToSave.id = entryId ?? null;
+      }
+      try {
+        if (user == null || isNullOrWhiteSpace(selectedChild)) {
+          setSnackbarIsOpened(true);
+          setSnackbarSeverity("error");
+          setSnackbarMessage("Aucun enfant sélectionné");
+          return false;
+        }
+        if (!endDateWasEditedManually) entryToSave.setEndDate();
+        const id = await saveEntry(entryToSave);
+        if (id != null) {
+          setEntryId(id);
+        }
+        return true;
+        // setSnackbarIsOpened(true);
+        // setSnackbarSeverity("success");
+        // setSnackbarMessage("Entrée enregistrée");
+      } catch (error) {
+        setSnackbarIsOpened(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
+        return false;
+      }
+    },
+    [entry, user, children, entryId]
+  );
+
   const handleStopwatchChange = useCallback(
-    (params: {
+    async (params: {
       side: string;
       time: number;
       isRunning: boolean;
       lastUpdateTime: number | null;
+      isStartStop: boolean;
     }) => {
+      let entryToSave: EntryModel | null = null;
       setEntry((prevEntry) => {
         const newEntry = prevEntry.clone();
         if (params.side === "left") {
@@ -270,11 +316,15 @@ export default function EntryForm(props: EntryFormProps) {
         if (!endDateWasEditedManually) {
           newEntry.setEndDate();
         }
+        entryToSave = newEntry;
         return newEntry;
       });
+      if (params.isStartStop && entryToSave != null) {
+        await handleSave(entryToSave);
+      }
       // handleSubmit();
     },
-    [endDateWasEditedManually]
+    [endDateWasEditedManually, handleSave]
   );
 
   useEffect(() => {
@@ -282,16 +332,18 @@ export default function EntryForm(props: EntryFormProps) {
       if (props.shouldStartTimer === "left") {
         handleStopwatchChange({
           side: "left",
-          time: 0,
+          time: 1,
           isRunning: true,
           lastUpdateTime: Date.now(),
+          isStartStop: true,
         });
       } else if (props.shouldStartTimer === "right") {
         handleStopwatchChange({
           side: "right",
-          time: 0,
+          time: 1,
           isRunning: true,
           lastUpdateTime: Date.now(),
+          isStartStop: true,
         });
       }
     }
@@ -311,27 +363,13 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    const selectedChild =
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      "";
-    try {
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
-        console.log(user);
-        setSnackbarIsOpened(true);
-        setSnackbarSeverity("error");
-        setSnackbarMessage("Aucun enfant sélectionné");
-        return;
-      }
-      if (!endDateWasEditedManually) entry.setEndDate();
-      await saveEntry(entry);
-      setSnackbarIsOpened(true);
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Entrée enregistrée");
-    } catch (error) {
-      setSnackbarIsOpened(true);
-      setSnackbarSeverity("error");
-      setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
+    const success = await handleSave();
+    if (success) {
+      navigate(
+        getPath({
+          page: PageName.Home,
+        })
+      );
     }
   }, [entry, user, children]);
 

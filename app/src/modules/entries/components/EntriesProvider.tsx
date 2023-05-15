@@ -194,7 +194,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
         user?.selectedChild ??
         "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
-        return;
+        return null;
       }
       const { id, ...rest } = entry.toJSON({ keepDates: true });
       if (id == null) {
@@ -209,7 +209,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
             },
           }
         );
-        entry.id = docRef.id;
+        return docRef.id;
       } else {
         await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
           ...rest,
@@ -219,6 +219,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
             name: user.displayName ?? "",
           },
         });
+        return id;
       }
     },
     [user, children]

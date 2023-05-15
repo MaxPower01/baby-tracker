@@ -4,17 +4,22 @@ import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import { Box, Grid, Stack, SxProps, Typography } from "@mui/material";
+import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 type Props = {
   entry: EntryModel;
   sx?: SxProps | undefined;
-  textColor?: string;
 };
 
 export default function EntryBody(props: Props) {
-  const { entry, sx, textColor } = props;
+  const theme = useTheme();
+  const { entry, sx } = props;
   if (!entry) return null;
+  const hasStopwatchRunning =
+    entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+  const textColor = hasStopwatchRunning
+    ? theme.palette.primary.main
+    : undefined;
   const [timeLabels, setTimeLabels] = useState<string[]>([]);
   const [volumeLabels, setVolumeLabels] = useState<string[]>([]);
   const iconFontSize = "1.5em";
@@ -92,7 +97,7 @@ export default function EntryBody(props: Props) {
   const textStyle: SxProps = {
     // fontStyle: "italic",
     opacity: 0.8,
-    color: props.textColor,
+    color: textColor,
   };
 
   const computeTimeLabels = useCallback(() => {
@@ -174,7 +179,7 @@ export default function EntryBody(props: Props) {
     <Stack
       spacing={1}
       sx={{
-        ...props.sx,
+        ...sx,
       }}
     >
       {entry.linkedActivities.length > 0 && (
@@ -212,7 +217,7 @@ export default function EntryBody(props: Props) {
           <WaterDropIcon
             sx={{
               fontSize: iconFontSize,
-              color: props.textColor,
+              color: textColor,
             }}
           />
           <Box>
@@ -222,7 +227,7 @@ export default function EntryBody(props: Props) {
                 variant="body1"
                 sx={{
                   display: "inline",
-                  color: props.textColor,
+                  color: textColor,
                 }}
               >
                 {labelIndex > 0 && " • "}
@@ -239,11 +244,12 @@ export default function EntryBody(props: Props) {
             spacing={1}
             direction={"row"}
             alignItems={"center"}
+            sx={{}}
           >
             <AccessTimeIcon
               sx={{
-                fontSize: iconFontSize,
-                color: props.textColor,
+                color: textColor,
+                fontSize: hasStopwatchRunning ? "2em" : iconFontSize,
               }}
             />
             <Box>
@@ -251,7 +257,9 @@ export default function EntryBody(props: Props) {
                 variant="body1"
                 sx={{
                   display: "inline",
-                  color: props.textColor,
+                  color: textColor,
+                  fontSize: hasStopwatchRunning ? "2em" : undefined,
+                  fontWeight: hasStopwatchRunning ? "bold" : undefined,
                 }}
               >
                 {label}
@@ -270,32 +278,6 @@ export default function EntryBody(props: Props) {
           {entry.note}
         </Typography>
       )}
-
-      {/* {entry.editedBy?.name != null ? (
-        <Typography
-          variant="body2"
-          fontStyle={"italic"}
-          sx={{
-            ...textStyle,
-            opacity: 0.35,
-            fontSize: "1em",
-          }}
-        >
-          {entry.editedBy.name}
-        </Typography>
-      ) : entry.createdBy?.name != null ? (
-        <Typography
-          variant="body2"
-          fontStyle={"italic"}
-          sx={{
-            ...textStyle,
-            opacity: 0.35,
-            fontSize: "1em",
-          }}
-        >
-          {entry.createdBy.name}
-        </Typography>
-      ) : null} */}
     </Stack>
   );
 }

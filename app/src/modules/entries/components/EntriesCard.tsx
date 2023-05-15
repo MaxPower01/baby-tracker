@@ -235,11 +235,6 @@ export default function EntriesCard(props: Props) {
                       sx={{
                         paddingTop: 1,
                       }}
-                      textColor={
-                        entryHasStopwatchRunning
-                          ? theme.palette.primary.main
-                          : undefined
-                      }
                     />
                   </Stack>
                 </Stack>

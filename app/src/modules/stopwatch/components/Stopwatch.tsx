@@ -26,6 +26,7 @@ type Props = {
     time: number;
     isRunning: boolean;
     lastUpdateTime: number | null;
+    isStartStop: boolean;
   }) => void;
 };
 
@@ -45,6 +46,7 @@ export default function Stopwatch(props: Props) {
           time: newTime,
           isRunning,
           lastUpdateTime: now,
+          isStartStop: false,
         });
       }, 1000);
       return () => clearInterval(intervalId);
@@ -60,6 +62,7 @@ export default function Stopwatch(props: Props) {
       time: !isRunning && time == 0 ? 1000 : time,
       isRunning: !isRunning,
       lastUpdateTime: Date.now(),
+      isStartStop: true,
     });
   };
 
@@ -97,6 +100,7 @@ export default function Stopwatch(props: Props) {
       time: newSeconds * 1000 + newMinutes * 60000 + newHours * 3600000,
       isRunning,
       lastUpdateTime: Date.now(),
+      isStartStop: false,
     });
   };
 

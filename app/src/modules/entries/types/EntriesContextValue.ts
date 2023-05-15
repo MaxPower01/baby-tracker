@@ -7,5 +7,5 @@ export default interface EntriesContextValue {
   isLoading: boolean;
   getEntries: (params: { timePeriod: TimePeriod }) => Promise<EntryModel[]>;
   deleteEntry: (entryId: string) => Promise<void>;
-  saveEntry: (entry: EntryModel) => Promise<void>;
+  saveEntry: (entry: EntryModel) => Promise<string | null>;
 }
