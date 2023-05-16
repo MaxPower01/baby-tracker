@@ -53,12 +53,13 @@ export default class ActivityModel {
     //
     ActivityType.NasalHygiene,
     ActivityType.Temperature,
-    ActivityType.Teeth,
+    ActivityType.NailCutting,
     //
+    ActivityType.Teeth,
     ActivityType.SolidFood,
     ActivityType.Medicine,
-    ActivityType.Vaccine,
     //
+    ActivityType.Vaccine,
     ActivityType.HospitalVisit,
   ];
 
@@ -203,6 +204,9 @@ export default class ActivityModel {
         this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
+        break;
+      case ActivityType.NailCutting:
+        this._name = "Coupe d'ongles";
         break;
       case ActivityType.NasalHygiene:
         this._name = "Hygiène nasale";

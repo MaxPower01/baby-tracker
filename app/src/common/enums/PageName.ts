@@ -5,5 +5,6 @@ enum PageName {
   Entry = "entry",
   Authentication = "authentication",
   Children = "children",
+  Child = "child",
 }
 export default PageName;

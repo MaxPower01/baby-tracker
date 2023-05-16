@@ -47,6 +47,10 @@ function MilkExtractionIcon() {
   return <ReactSVG src="/icons/milk-extraction.svg" className="ActivityIcon" />;
 }
 
+function NailCuttingIcon() {
+  return <ReactSVG src="/icons/nail-clipper.svg" className="ActivityIcon" />;
+}
+
 function NasalHygieneIcon() {
   return <ReactSVG src="/icons/nasal-hygiene.svg" className="ActivityIcon" />;
 }
@@ -135,6 +139,8 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <MedicineIcon />;
           case ActivityType.MilkExtraction:
             return <MilkExtractionIcon />;
+          case ActivityType.NailCutting:
+            return <NailCuttingIcon />;
           case ActivityType.NasalHygiene:
             return <NasalHygieneIcon />;
           case ActivityType.Play:

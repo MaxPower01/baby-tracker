@@ -1,9 +1,16 @@
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import ChildrenForm from "@/modules/children/components/ChildrenForm";
 import { Stack, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 export default function ChildrenPage() {
-  const { children } = useAuthentication();
+  const { user, children } = useAuthentication();
+  const selectedChild = useMemo(() => {
+    return (
+      children.find((child) => child.isSelected)?.id ??
+      user?.selectedChild ??
+      ""
+    );
+  }, [user, children]);
   return (
     <Stack
       spacing={2}
@@ -36,8 +43,6 @@ export default function ChildrenPage() {
           ))}
         </>
       )}
-      <Typography variant={"h4"}>Ajouter un enfant</Typography>
-      <ChildrenForm />
     </Stack>
   );
 }

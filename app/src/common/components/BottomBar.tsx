@@ -1,9 +1,15 @@
 import MenuDrawer from "@/common/components/MenuDrawer";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageName from "@/common/enums/PageName";
-import { getPageName, getPageTitle, getPath } from "@/lib/utils";
+import {
+  getPageName,
+  getPageTitle,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/lib/utils";
 import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
 import ActivityType from "@/modules/activities/enums/ActivityType";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
@@ -15,6 +21,7 @@ import {
   Fab,
   IconButton,
   Stack,
+  SxProps,
   Toolbar,
   Typography,
   styled,
@@ -45,6 +52,7 @@ type BottomBarItem = {
   color: "primary" | "inherit" | "secondary" | "default" | undefined;
   isFloatingActionButton?: boolean;
   isCurrentPage?: boolean;
+  sx?: SxProps;
 };
 
 type Props = {
@@ -52,6 +60,14 @@ type Props = {
 };
 
 export default function BottomBar(props: Props) {
+  const { user, children } = useAuthentication();
+  const selectedChild = useMemo(() => {
+    return (
+      children.find((child) => child.isSelected)?.id ??
+      user?.selectedChild ??
+      ""
+    );
+  }, [user, children]);
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
@@ -106,6 +122,9 @@ export default function BottomBar(props: Props) {
       Icon: AddIcon,
       color: "primary",
       isFloatingActionButton: true,
+      sx: {
+        display: isNullOrWhiteSpace(selectedChild) ? "none" : undefined,
+      },
     },
     {
       id: "entries",
@@ -176,6 +195,7 @@ export default function BottomBar(props: Props) {
                 label,
                 isFloatingActionButton,
                 isCurrentPage,
+                sx,
               }) => (
                 <IconWrapper
                   key={id}
@@ -187,6 +207,7 @@ export default function BottomBar(props: Props) {
                     flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
                     opacity: isCurrentPage == false ? 0.6 : undefined,
+                    ...sx,
                   }}
                 >
                   {Icon && (
