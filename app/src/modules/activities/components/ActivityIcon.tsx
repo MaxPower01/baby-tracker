@@ -35,8 +35,12 @@ function HiccupsIcon() {
   return <ReactSVG src="/icons/burp.svg" className="ActivityIcon" />;
 }
 
-function HospitalVisitIcon() {
+function HospitalIcon() {
   return <ReactSVG src="/icons/hospital-visit.svg" className="ActivityIcon" />;
+}
+
+function MedicalFollowUpIcon() {
+  return <ReactSVG src="/icons/nurse.svg" className="ActivityIcon" />;
 }
 
 function MedicineIcon() {
@@ -133,10 +137,12 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <DiaperIcon />;
           case ActivityType.Hiccups:
             return <HiccupsIcon />;
-          case ActivityType.HospitalVisit:
-            return <HospitalVisitIcon />;
+          case ActivityType.Hospital:
+            return <HospitalIcon />;
           case ActivityType.Medicine:
             return <MedicineIcon />;
+          case ActivityType.MedicalFollowUp:
+            return <MedicalFollowUpIcon />;
           case ActivityType.MilkExtraction:
             return <MilkExtractionIcon />;
           case ActivityType.NailCutting:
@@ -150,6 +156,8 @@ export default function ActivityIcon({ activity, sx }: Props) {
           case ActivityType.Regurgitation:
             return <RegurgitationIcon />;
           case ActivityType.Size:
+            return <SizeIcon />;
+          case ActivityType.HeadCircumference:
             return <SizeIcon />;
           case ActivityType.Sleep:
             return <SleepIcon />;

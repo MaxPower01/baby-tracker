@@ -3,7 +3,7 @@ enum ActivityType {
   BreastFeeding = 2,
   Cry = 3,
   Diaper = 4,
-  HospitalVisit = 6,
+  Hospital = 6,
   Medicine = 7,
   MilkExtraction = 8,
   Play = 9,
@@ -25,5 +25,7 @@ enum ActivityType {
   Hiccups = 25,
   CarRide = 26,
   NailCutting = 27,
+  MedicalFollowUp = 28,
+  HeadCircumference = 29,
 }
 export default ActivityType;

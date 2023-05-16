@@ -47,20 +47,23 @@ export default class ActivityModel {
     ActivityType.CarRide,
     ActivityType.Hiccups,
     //
-    ActivityType.Bath,
     ActivityType.Weight,
     ActivityType.Size,
+    ActivityType.HeadCircumference,
     //
+    ActivityType.Bath,
     ActivityType.NasalHygiene,
-    ActivityType.Temperature,
     ActivityType.NailCutting,
     //
+    ActivityType.Temperature,
     ActivityType.Teeth,
-    ActivityType.SolidFood,
     ActivityType.Medicine,
     //
+    ActivityType.MedicalFollowUp,
+    ActivityType.Hospital,
     ActivityType.Vaccine,
-    ActivityType.HospitalVisit,
+    //
+    ActivityType.SolidFood,
   ];
 
   public get order(): number {
@@ -193,8 +196,38 @@ export default class ActivityModel {
           ActivityType.Urine,
         ];
         break;
-      case ActivityType.HospitalVisit:
+      case ActivityType.Hospital:
         this._name = "Visite à l'hôpital";
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
+        break;
+      case ActivityType.HeadCircumference:
+        this._name = "Tour de tête";
+        break;
+      case ActivityType.MedicalFollowUp:
+        this._name = "Suivi médical";
+        this._linkedTypes = [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
         break;
       case ActivityType.Medicine:
         this._name = "Médicament";
