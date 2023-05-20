@@ -1,12 +1,11 @@
 import PageName from "@/common/enums/PageName";
-import { formatStopwatchTime, getPath } from "@/lib/utils";
+import { formatStopwatchTime, getPath, isNullOrWhiteSpace } from "@/lib/utils";
 import ActivityButton from "@/modules/activities/components/ActivityButton";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import useMenu from "@/modules/menu/hooks/useMenu";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
   Box,
   MenuItem,
@@ -18,190 +17,94 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type Props = {
-  // lastBreastfeedingEntry: EntryModel | null;
-  // lastBottleFeedingEntry: EntryModel | null;
-  // lastDiaperEntry: EntryModel | null;
-  // lastSleepEntry: EntryModel | null;
-  // lastBurpEntry: EntryModel | null;
-  // lastRegurgitationEntry: EntryModel | null;
-  // lastVomitEntry: EntryModel | null;
-};
-
-/*
-  lastBottleFeedingEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.BottleFeeding
-              ) ?? null
-            }
-            lastBreastfeedingEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.BreastFeeding
-              ) ?? null
-            }
-            lastBurpEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.Burp
-              ) ?? null
-            }
-            lastDiaperEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.Diaper
-              ) ?? null
-            }
-            lastSleepEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.Sleep
-              ) ?? null
-            }
-            lastRegurgitationEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.Regurgitation
-              ) ?? null
-            }
-            lastVomitEntry={
-              entries?.find(
-                (entry: EntryModel) =>
-                  entry?.activity?.type == ActivityType.Vomit
-              ) ?? null
-            }
-*/
+type Props = {};
 
 export default function NewEntryWidget(props: Props) {
   const { entries } = useEntries();
-  // const {
-  //   lastBreastfeedingEntry,
-  //   lastBottleFeedingEntry,
-  //   lastDiaperEntry,
-  //   lastSleepEntry,
-  //   lastBurpEntry,
-  //   lastRegurgitationEntry,
-  //   lastVomitEntry,
-  // } = props;
-  const lastBreastfeedingEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) =>
-          entry?.activity?.type == ActivityType.BreastFeeding
-      ) ?? null
-    );
-  }, [entries]);
-  const lastBottleFeedingEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) =>
-          entry?.activity?.type == ActivityType.BottleFeeding
-      ) ?? null
-    );
-  }, [entries]);
-  const lastDiaperEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) => entry?.activity?.type == ActivityType.Diaper
-      ) ?? null
-    );
-  }, [entries]);
-  const lastSleepEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) => entry?.activity?.type == ActivityType.Sleep
-      ) ?? null
-    );
-  }, [entries]);
-  const lastBurpEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) => entry?.activity?.type == ActivityType.Burp
-      ) ?? null
-    );
-  }, [entries]);
-  const lastRegurgitationEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) =>
-          entry?.activity?.type == ActivityType.Regurgitation
-      ) ?? null
-    );
-  }, [entries]);
-  const lastVomitEntry = useMemo(() => {
-    return (
-      entries?.find(
-        (entry: EntryModel) => entry?.activity?.type == ActivityType.Vomit
-      ) ?? null
-    );
-  }, [entries]);
-
   const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
   const bottleFeedingActivity = new ActivityModel(ActivityType.BottleFeeding);
   const diaperActivity = new ActivityModel(ActivityType.Diaper);
   const sleepActivity = new ActivityModel(ActivityType.Sleep);
-  const burpActivity = new ActivityModel(ActivityType.Burp);
-  const regurgitationActivity = new ActivityModel(ActivityType.Regurgitation);
-  const vomitActivity = new ActivityModel(ActivityType.Vomit);
+  // const burpActivity = new ActivityModel(ActivityType.Burp);
+  // const regurgitationActivity = new ActivityModel(ActivityType.Regurgitation);
+  // const vomitActivity = new ActivityModel(ActivityType.Vomit);
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
-  // const lastBreastfeedingEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, breastFeedingActivity.type)
-  // );
-  // const lastBottleFeedingEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, bottleFeedingActivity.type)
-  // );
-  // const lastDiaperEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, diaperActivity.type)
-  // );
-  // const lastSleepEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, sleepActivity.type)
-  // );
-  // const lastBurpEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, burpActivity.type)
-  // );
-  // const lastRegurgitationEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, regurgitationActivity.type)
-  // );
-  // const lastVomitEntry = useSelector((state: RootState) =>
-  //   selectLastEntry(state, vomitActivity.type)
-  // );
-  const [forceUpdate, setForceUpdate] = useState(1);
+  const [now, setNow] = useState(new Date());
+  const lastBreastFeedingEntry = useMemo(() => {
+    const breastFeedingEntries = entries?.filter(
+      (entry: EntryModel) => entry?.activity?.type == ActivityType.BreastFeeding
+    );
+    breastFeedingEntries?.sort((a, b) => {
+      return b?.startDate?.getTime() - a?.startDate?.getTime();
+    });
+    return breastFeedingEntries?.[0] ?? null;
+  }, [entries, now]);
   const lastBreastfeedingLabel = useMemo(() => {
-    if (lastBreastfeedingEntry == null) return null;
-    if (lastBreastfeedingEntry.anyStopwatchIsRunning) {
-      return "En cours";
+    const parts = {
+      title: "",
+      subtitle: "",
+      isLive: false,
+    };
+    if (lastBreastFeedingEntry == null) return null;
+    if (lastBreastFeedingEntry.anyStopwatchIsRunning) {
+      return {
+        title: "En cours",
+        isLive: true,
+        subtitle: "",
+      };
     }
-    const now = new Date();
     const time =
-      lastBreastfeedingEntry.time > 0
+      lastBreastFeedingEntry.time > 0
         ? formatStopwatchTime(
-            lastBreastfeedingEntry.time,
+            lastBreastFeedingEntry.time,
             true,
-            lastBreastfeedingEntry.time < 1000 * 60
+            lastBreastFeedingEntry.time < 1000 * 60
           )
         : null;
-    let result = time == null ? "Il y a" : `${time} il y a `;
-    const diff = now.getTime() - lastBreastfeedingEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    if (
-      lastBreastfeedingEntry.leftTime > 0 &&
-      lastBreastfeedingEntry.rightTime == 0
-    ) {
-      result += " (G)";
-    } else if (
-      lastBreastfeedingEntry.leftTime == 0 &&
-      lastBreastfeedingEntry.rightTime > 0
-    ) {
-      result += " (D)";
+    if (time != null) {
+      parts.title = time;
     }
-    return result;
-  }, [lastBreastfeedingEntry, forceUpdate]);
+
+    parts.subtitle = "Il y a";
+    const diff = now.getTime() - lastBreastFeedingEntry.endDate.getTime();
+    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+    if (
+      lastBreastFeedingEntry.leftTime > 0 &&
+      lastBreastFeedingEntry.rightTime == 0
+    ) {
+      // Add dot symbol
+      parts.title = "Gauche • " + parts.title;
+    } else if (
+      lastBreastFeedingEntry.leftTime == 0 &&
+      lastBreastFeedingEntry.rightTime > 0
+    ) {
+      parts.title = "Droite • " + parts.title;
+    }
+    return parts;
+  }, [lastBreastFeedingEntry, now]);
+  const lastBottleFeedingEntry = useMemo(() => {
+    const bottleFeedingEntries = entries?.filter(
+      (entry: EntryModel) => entry?.activity?.type == ActivityType.BottleFeeding
+    );
+    bottleFeedingEntries?.sort((a, b) => {
+      return b?.startDate?.getTime() - a?.startDate?.getTime();
+    });
+    return bottleFeedingEntries?.[0] ?? null;
+  }, [entries, now]);
   const lastBottleFeedingLabel = useMemo(() => {
+    const parts = {
+      title: "",
+      subtitle: "",
+      isLive: false,
+    };
     if (lastBottleFeedingEntry == null) return null;
     if (lastBottleFeedingEntry.anyStopwatchIsRunning) {
-      return "En cours";
+      return {
+        title: "En cours",
+        isLive: true,
+        subtitle: "",
+      };
     }
     const time =
       lastBottleFeedingEntry.time > 0
@@ -211,63 +114,148 @@ export default function NewEntryWidget(props: Props) {
             lastBottleFeedingEntry.time < 1000 * 60
           )
         : null;
-    let result = time == null ? "Il y a" : `${time} il y a `;
-    const now = new Date();
+    parts.subtitle = "Il y a";
     const diff = now.getTime() - lastBottleFeedingEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastBottleFeedingEntry, forceUpdate]);
+    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+  }, [lastBottleFeedingEntry, now]);
+  const lastDiaperEntry = useMemo(() => {
+    const diaperEntries = entries?.filter(
+      (entry: EntryModel) => entry?.activity?.type == ActivityType.Diaper
+    );
+    diaperEntries?.sort((a, b) => {
+      return b?.startDate?.getTime() - a?.startDate?.getTime();
+    });
+    return diaperEntries?.[0] ?? null;
+  }, [entries, now]);
   const lastDiaperLabel = useMemo(() => {
+    const parts = {
+      title: "",
+      subtitle: "",
+      isLive: false,
+    };
     if (lastDiaperEntry == null) return null;
-    const now = new Date();
-    let result = "Il y a";
+    if (lastDiaperEntry.anyStopwatchIsRunning) {
+      return {
+        title: "En cours",
+        isLive: true,
+        subtitle: "",
+      };
+    }
+    const time = formatStopwatchTime(
+      lastDiaperEntry.time,
+      true,
+      lastDiaperEntry.time < 1000 * 60
+    );
+    parts.subtitle = "Il y a";
     const diff = now.getTime() - lastDiaperEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastDiaperEntry, forceUpdate]);
+    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+    return parts;
+  }, [lastDiaperEntry, now]);
+  const lastSleepEntry = useMemo(() => {
+    const sleepEntries = entries?.filter(
+      (entry: EntryModel) => entry?.activity?.type == ActivityType.Sleep
+    );
+    sleepEntries?.sort((a, b) => {
+      return b?.startDate?.getTime() - a?.startDate?.getTime();
+    });
+    return sleepEntries?.[0] ?? null;
+  }, [entries, now]);
   const lastSleepLabel = useMemo(() => {
+    const parts = {
+      title: "",
+      subtitle: "",
+      isLive: false,
+    };
     if (lastSleepEntry == null) return null;
     if (lastSleepEntry.anyStopwatchIsRunning) {
-      return "En cours";
+      return {
+        title: "En cours",
+        isLive: true,
+        subtitle: "",
+      };
     }
-    const time =
-      lastSleepEntry.time > 0
-        ? formatStopwatchTime(
-            lastSleepEntry.time,
-            true,
-            lastSleepEntry.time < 1000 * 60
-          )
-        : null;
-    let result = time == null ? "Il y a" : `${time} il y a `;
-    const now = new Date();
+    const time = formatStopwatchTime(
+      lastSleepEntry.time,
+      true,
+      lastSleepEntry.time < 1000 * 60
+    );
+    parts.subtitle = "Il y a";
     const diff = now.getTime() - lastSleepEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastSleepEntry, forceUpdate]);
-  const lastBurpLabel = useMemo(() => {
-    if (lastBurpEntry == null) return null;
-    const now = new Date();
-    let result = "Il y a";
-    const diff = now.getTime() - lastBurpEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastBurpEntry, forceUpdate]);
-  const lastRegurgitationLabel = useMemo(() => {
-    if (lastRegurgitationEntry == null) return null;
-    const now = new Date();
-    let result = "Il y a";
-    const diff = now.getTime() - lastRegurgitationEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastRegurgitationEntry, forceUpdate]);
-  const lastVomitLabel = useMemo(() => {
-    if (lastVomitEntry == null) return null;
-    const now = new Date();
-    let result = "Il y a";
-    const diff = now.getTime() - lastVomitEntry.endDate.getTime();
-    result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return result;
-  }, [lastVomitEntry, forceUpdate]);
+    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+    return parts;
+  }, [lastSleepEntry, now]);
+  // const lastBurpEntry = useMemo(() => {
+  //   const burpEntries = entries?.filter(
+  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Burp
+  //   );
+  //   burpEntries?.sort((a, b) => {
+  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
+  //   });
+  //   return burpEntries?.[0] ?? null;
+  // }, [entries, now]);
+  // const lastBurpLabel = useMemo(() => {
+  //   if (lastBurpEntry == null) return null;
+  //   if (lastBurpEntry.anyStopwatchIsRunning) {
+  //     return "En cours";
+  //   }
+  //   const time = formatStopwatchTime(
+  //     lastBurpEntry.time,
+  //     true,
+  //     lastBurpEntry.time < 1000 * 60
+  //   );
+  //   let result = time == null ? "Il y a" : `${time} il y a `;
+  //   const diff = now.getTime() - lastBurpEntry.endDate.getTime();
+  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+  //   return result;
+  // }, [lastBurpEntry, now]);
+  // const lastRegurgitationEntry = useMemo(() => {
+  //   const regurgitationEntries = entries?.filter(
+  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Regurgitation
+  //   );
+  //   regurgitationEntries?.sort((a, b) => {
+  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
+  //   });
+  //   return regurgitationEntries?.[0] ?? null;
+  // }, [entries, now]);
+  // const lastRegurgitationLabel = useMemo(() => {
+  //   if (lastRegurgitationEntry == null) return null;
+  //   if (lastRegurgitationEntry.anyStopwatchIsRunning) {
+  //     return "En cours";
+  //   }
+  //   const time = formatStopwatchTime(
+  //     lastRegurgitationEntry.time,
+  //     true,
+  //     lastRegurgitationEntry.time < 1000 * 60
+  //   );
+  //   let result = time == null ? "Il y a" : `${time} il y a `;
+  //   const diff = now.getTime() - lastRegurgitationEntry.endDate.getTime();
+  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+  //   return result;
+  // }, [lastRegurgitationEntry, now]);
+  // const lastVomitEntry = useMemo(() => {
+  //   const vomitEntries = entries?.filter(
+  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Vomit
+  //   );
+  //   vomitEntries?.sort((a, b) => {
+  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
+  //   });
+  //   return vomitEntries?.[0] ?? null;
+  // }, [entries, now]);
+  // const lastVomitLabel = useMemo(() => {
+  //   if (lastVomitEntry == null) return null;
+  //   if (lastVomitEntry.anyStopwatchIsRunning) {
+  //     return "En cours";
+  //   }
+  //   const time = formatStopwatchTime(
+  //     lastVomitEntry.time,
+  //     true,
+  //     lastVomitEntry.time < 1000 * 60
+  //   );
+  //   let result = time == null ? "Il y a" : `${time} il y a `;
+  //   const diff = now.getTime() - lastVomitEntry.endDate.getTime();
+  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+  //   return result;
+  // }, [lastVomitEntry, now]);
 
   const boxStyle: SxProps = {
     borderRadius: 1,
@@ -285,16 +273,21 @@ export default function NewEntryWidget(props: Props) {
     paddingRight: 2,
     width: "100%",
   };
-  const textStyle: SxProps = {
+  const subtitleStyle: SxProps = {
     opacity: 0.6,
     textAlign: "center",
     // fontStyle: "italic",
-    marginTop: 1,
+    // marginTop: 1,
     // fontWeight: "bold",
+  };
+  const titleStyle: SxProps = {
+    textAlign: "center",
+    // fontWeight: "bold",
+    // opacity: 0.8,
+    // marginTop: 1,
   };
 
   const textVariant = "body2";
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const handleActivityClick = (params: {
     event: React.MouseEvent<HTMLElement, MouseEvent>;
@@ -323,7 +316,7 @@ export default function NewEntryWidget(props: Props) {
   };
   useEffect(() => {
     const interval = setInterval(() => {
-      setForceUpdate((prev) => prev + 1);
+      setNow(new Date());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -338,7 +331,6 @@ export default function NewEntryWidget(props: Props) {
           fontSize: "4em",
         },
         width: "100%",
-        // This should be a horizontal scroller
         overflowX: "scroll",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
@@ -360,16 +352,41 @@ export default function NewEntryWidget(props: Props) {
           }}
           onClick={openMenu}
         />
-        {lastBreastfeedingLabel != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastBreastfeedingLabel}
-          </Typography>
-        )}
+        <Stack
+          sx={
+            {
+              // marginTop: 1,
+            }
+          }
+        >
+          {lastBreastfeedingLabel != null &&
+            !isNullOrWhiteSpace(lastBreastfeedingLabel.subtitle) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...subtitleStyle,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastBreastfeedingLabel.subtitle}
+              </Typography>
+            )}
+          {lastBreastfeedingLabel != null &&
+            !isNullOrWhiteSpace(lastBreastfeedingLabel.title) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...titleStyle,
+                  color: lastBreastfeedingLabel.isLive
+                    ? theme.palette.primary.main
+                    : undefined,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastBreastfeedingLabel.title}
+              </Typography>
+            )}
+        </Stack>
         <Menu>
           <MenuItem
             onClick={(e) => {
@@ -381,7 +398,9 @@ export default function NewEntryWidget(props: Props) {
             }}
           >
             <Stack direction={"row"} spacing={1}>
-              <Typography>Côté gauche</Typography>
+              <Typography>
+                Démarrer le <strong>côté gauche</strong>
+              </Typography>
             </Stack>
           </MenuItem>
           <MenuItem
@@ -395,7 +414,9 @@ export default function NewEntryWidget(props: Props) {
             }}
           >
             <Stack direction={"row"} spacing={1}>
-              <Typography>Côté droit</Typography>
+              <Typography>
+                Démarrer le <strong>côté droit</strong>
+              </Typography>
             </Stack>
           </MenuItem>
         </Menu>
@@ -415,16 +436,39 @@ export default function NewEntryWidget(props: Props) {
             handleActivityClick({ event: e, activity: bottleFeedingActivity });
           }}
         />
-        {lastBottleFeedingLabel != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastBottleFeedingLabel}
-          </Typography>
-        )}
+        <Stack
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          {lastBottleFeedingLabel != null &&
+            !isNullOrWhiteSpace(lastBottleFeedingLabel.subtitle) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...subtitleStyle,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastBottleFeedingLabel.subtitle}
+              </Typography>
+            )}
+          {lastBottleFeedingLabel != null &&
+            !isNullOrWhiteSpace(lastBottleFeedingLabel.title) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...titleStyle,
+                  color: lastBottleFeedingLabel.isLive
+                    ? theme.palette.primary.main
+                    : undefined,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastBottleFeedingLabel.title}
+              </Typography>
+            )}
+        </Stack>
       </Box>
       <Box
         sx={{
@@ -441,16 +485,39 @@ export default function NewEntryWidget(props: Props) {
             handleActivityClick({ event: e, activity: diaperActivity });
           }}
         />
-        {lastDiaperEntry != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastDiaperLabel}
-          </Typography>
-        )}
+        <Stack
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          {lastDiaperLabel != null &&
+            !isNullOrWhiteSpace(lastDiaperLabel.subtitle) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...subtitleStyle,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastDiaperLabel.subtitle}
+              </Typography>
+            )}
+          {lastDiaperLabel != null &&
+            !isNullOrWhiteSpace(lastDiaperLabel.title) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...titleStyle,
+                  color: lastDiaperLabel.isLive
+                    ? theme.palette.primary.main
+                    : undefined,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastDiaperLabel.title}
+              </Typography>
+            )}
+        </Stack>
       </Box>
       <Box
         sx={{
@@ -471,18 +538,41 @@ export default function NewEntryWidget(props: Props) {
             });
           }}
         />
-        {lastSleepEntry != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastSleepLabel}
-          </Typography>
-        )}
+        <Stack
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          {lastSleepLabel != null &&
+            !isNullOrWhiteSpace(lastSleepLabel.subtitle) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...subtitleStyle,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastSleepLabel.subtitle}
+              </Typography>
+            )}
+          {lastSleepLabel != null &&
+            !isNullOrWhiteSpace(lastSleepLabel.title) && (
+              <Typography
+                variant={textVariant}
+                sx={{
+                  ...titleStyle,
+                  color: lastSleepLabel.isLive
+                    ? theme.palette.primary.main
+                    : undefined,
+                  // lineHeight: 1,
+                }}
+              >
+                {lastSleepLabel.title}
+              </Typography>
+            )}
+        </Stack>
       </Box>
-      <Box
+      {/* <Box
         sx={{
           ...boxStyle,
         }}
@@ -497,7 +587,7 @@ export default function NewEntryWidget(props: Props) {
             handleActivityClick({ event: e, activity: burpActivity });
           }}
         />
-        {lastBurpEntry != null && (
+        {lastBurpLabel != null && (
           <Typography
             variant={textVariant}
             sx={{
@@ -523,7 +613,7 @@ export default function NewEntryWidget(props: Props) {
             handleActivityClick({ event: e, activity: regurgitationActivity });
           }}
         />
-        {lastRegurgitationEntry != null && (
+        {lastRegurgitationLabel != null && (
           <Typography
             variant={textVariant}
             sx={{
@@ -549,7 +639,7 @@ export default function NewEntryWidget(props: Props) {
             handleActivityClick({ event: e, activity: vomitActivity });
           }}
         />
-        {lastVomitEntry != null && (
+        {lastVomitLabel != null && (
           <Typography
             variant={textVariant}
             sx={{
@@ -559,7 +649,7 @@ export default function NewEntryWidget(props: Props) {
             {lastVomitLabel}
           </Typography>
         )}
-      </Box>
+      </Box> */}
     </Stack>
   );
 }

@@ -53,7 +53,7 @@ export default function DateHeader(props: Props) {
               borderRadius: 1,
             }}
           >
-            <Typography textAlign={"center"} fontWeight={"bold"} variant="h5">
+            <Typography textAlign={"center"} fontWeight={600} variant="h5">
               {startDate.toLocaleDateString("fr-CA", {
                 day: "numeric",
               })}
@@ -69,7 +69,7 @@ export default function DateHeader(props: Props) {
             <Typography
               variant="h6"
               textAlign={"left"}
-              fontWeight={"bold"}
+              fontWeight={600}
               sx={{
                 lineHeight: 1,
               }}

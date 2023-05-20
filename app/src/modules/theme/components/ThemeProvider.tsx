@@ -58,7 +58,7 @@ export default function ThemeProvider(props: ThemeProviderProps) {
     () =>
       createTheme({
         typography: {
-          fontFamily: "'Inter', sans-serif",
+          fontFamily: "'Noto Sans', sans-serif",
         },
         palette: {
           mode,

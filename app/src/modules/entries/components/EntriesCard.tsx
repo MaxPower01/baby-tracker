@@ -151,7 +151,7 @@ export default function EntriesCard(props: Props) {
                         width: "4.5em",
                         height: "4.5em",
                         borderRadius: "50%",
-                        border: "2px solid",
+                        border: "1px solid",
                         // backgroundColor: theme.customPalette.background.avatar,
                         backgroundColor: theme.palette.divider,
                         flexShrink: 0,

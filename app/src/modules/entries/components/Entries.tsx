@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function Entries(props: Props) {
-  let { entries, setEntries, isLoading, getEntries } = useEntries();
+  const { entries, setEntries, isLoading, getEntries } = useEntries();
 
   const theme = useTheme();
 
