@@ -11,6 +11,7 @@ declare module "@mui/material/styles" {
     customPalette: {
       background: {
         avatar: string;
+        almostTransparent: string;
       };
     };
   }
@@ -20,6 +21,7 @@ declare module "@mui/material/styles" {
     customPalette?: {
       background?: {
         avatar?: string;
+        almostTransparent?: string;
       };
     };
   }
@@ -73,6 +75,10 @@ export default function ThemeProvider(props: ThemeProviderProps) {
         customPalette: {
           background: {
             avatar: mode === "dark" ? "hsl(0 0% 20% / 1)" : "hsl(0 0% 80% / 1)",
+            almostTransparent:
+              mode === "dark"
+                ? "hsl(0 0% 100% / 0.035)"
+                : "hsl(0 0% 0% / 0.035)",
           },
         },
         shape: {

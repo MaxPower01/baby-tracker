@@ -10,38 +10,53 @@ export default function ChildPage() {
     return <ChildWizard />;
   } else {
     return (
-      <Stack
-        spacing={2}
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Box
+      <Stack spacing={4}>
+        <Stack
+          spacing={2}
+          justifyContent={"center"}
+          alignItems={"center"}
           sx={{
-            fontSize: "15em",
+            width: "100%",
           }}
         >
-          <ReactSVG src="/stickers/baby.svg" className="Sticker" />
-        </Box>
-        <Typography variant={"h4"} textAlign={"center"} fontWeight={"bold"}>
-          Ajoutez un enfant
-        </Typography>
-        <Typography variant={"body1"} textAlign={"center"}>
-          La première étape pour utiliser l'application est d'ajouter un enfant
-          à votre compte.
-        </Typography>
-        <Button
-          variant={"contained"}
-          color={"primary"}
-          size="large"
-          onClick={() => {
-            setShowWizard(true);
+          <Box
+            sx={{
+              fontSize: "15em",
+            }}
+          >
+            <ReactSVG src="/stickers/baby.svg" className="Sticker" />
+          </Box>
+          <Typography variant={"h4"} textAlign={"center"} fontWeight={"bold"}>
+            Ajoutez un enfant
+          </Typography>
+          <Stack spacing={1}>
+            <Typography variant={"body1"} textAlign={"center"}>
+              La première étape pour utiliser l'application est d'ajouter un
+              enfant à votre compte.
+            </Typography>
+          </Stack>
+          <Button
+            variant={"contained"}
+            color={"primary"}
+            size="large"
+            onClick={() => {
+              setShowWizard(true);
+            }}
+          >
+            Ajouter un enfant
+          </Button>
+        </Stack>
+        <Typography
+          variant={"body1"}
+          textAlign={"center"}
+          sx={{
+            fontStyle: "italic",
+            opacity: 0.5,
           }}
         >
-          Ajouter un enfant
-        </Button>
+          Si votre partenaire a déjà ajouté un enfant, demandez-lui de vous
+          ajouter en tant que parent, puis rafrachissez la page.
+        </Typography>
       </Stack>
     );
   }

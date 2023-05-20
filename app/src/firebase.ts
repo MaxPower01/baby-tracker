@@ -52,4 +52,4 @@ if (process.env.NODE_ENV === "development") {
 
 const googleAuthProvider = new GoogleAuthProvider();
 
-export { db, auth, googleAuthProvider };
+export { db, auth, googleAuthProvider, storage, functions };

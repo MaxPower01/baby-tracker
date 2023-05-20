@@ -267,11 +267,16 @@ export default function NewEntryWidget(props: Props) {
     maxWidth: "10em",
   };
   const activityButtonStyle: SxProps = {
-    paddingTop: 1,
-    paddingBottom: 1,
+    paddingTop: 1.5,
+    paddingBottom: 1.5,
     paddingLeft: 2,
     paddingRight: 2,
-    width: "100%",
+    // width: "100%",
+    // flex: 1,
+    width: "10em",
+    background: theme.customPalette.background?.almostTransparent,
+    border: "1px solid",
+    borderColor: theme.customPalette.background?.almostTransparent,
   };
   const subtitleStyle: SxProps = {
     opacity: 0.6,
@@ -353,11 +358,9 @@ export default function NewEntryWidget(props: Props) {
           onClick={openMenu}
         />
         <Stack
-          sx={
-            {
-              // marginTop: 1,
-            }
-          }
+          sx={{
+            marginTop: 1,
+          }}
         >
           {lastBreastfeedingLabel != null &&
             !isNullOrWhiteSpace(lastBreastfeedingLabel.subtitle) && (

@@ -1,13 +1,14 @@
 // // The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
 // const { logger } = require("firebase-functions");
 // const { onRequest } = require("firebase-functions/v2/https");
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
 // const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 
 // // The Firebase Admin SDK to access Firestore.
-// const { initializeApp } = require("firebase-admin/app");
-// const { getFirestore } = require("firebase-admin/firestore");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
 
-// initializeApp();
+initializeApp();
 
 // // Take the text parameter passed to this HTTP endpoint and insert it into
 // // Firestore under the path /messages/:documentId/original
@@ -121,3 +122,123 @@
 //   });
 //   res.json({ result: `Added endDate to all entries.` });
 // });
+
+exports.addParent = onCall(async (request) => {
+  // Validate input parameters
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User is not authenticated.");
+  }
+
+  // Data passed from the client.
+  const { childId, parentEmail } = request.data;
+  // Authentication / user information is automatically added to the request.
+  const uid = request.auth.uid;
+  const name = request.auth.token.name || null;
+  const picture = request.auth.token.picture || null;
+  const email = request.auth.token.email || null;
+
+  if (!childId || !parentEmail) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Missing child ID or parent email."
+    );
+  }
+
+  // Check the user doc to see if its "selectedChild" field matches the childId
+  const userRef = getFirestore().collection("users").doc(uid);
+  const userSnapshot = await userRef.get();
+  const userData = userSnapshot.data();
+  const selectedChild = userData.selectedChild;
+  if (selectedChild !== childId) {
+    throw new HttpsError(
+      "permission-denied",
+      "User does not have permission to add parent to this child."
+    );
+  }
+
+  // Retrieve the parent's user doc
+  const parentUserDoc = await getFirestore()
+    .collection("users")
+    .where("email", "==", parentEmail)
+    .limit(1)
+    .get();
+  const parentUserData = parentUserDoc.docs[0].data();
+  if (!parentUserData) {
+    throw new HttpsError(
+      "not-found",
+      `Parent user does not exist with email: ${parentEmail}`
+    );
+  }
+  // Check if child is already within the "children" array
+  const isChildAlreadyAdded = parentUserData.children.some(
+    (child) => child.id === childId
+  );
+  if (isChildAlreadyAdded) {
+    throw new HttpsError(
+      "already-exists",
+      "Parent already has access to this child."
+    );
+  }
+
+  // Retrieve child document
+  const childRef = getFirestore().collection("children").doc(childId);
+  const childSnapshot = await childRef.get();
+  if (!childSnapshot.exists) {
+    throw new HttpsError("not-found", "Child document does not exist.");
+  }
+  const childData = childSnapshot.data();
+  // Check if parent email is already present
+  const isParentAlreadyAdded = childData.parents.some(
+    (parent) => parent === parentUserData.uid
+  );
+  if (isParentAlreadyAdded) {
+    throw new HttpsError("already-exists", "Parent email already added.");
+  }
+
+  // Parent exists and child exists, so add parent to child's parents array and child to parent's children array
+  const updatedParents = [...childData.parents, parentUserData.uid];
+  await childRef.update({ parents: updatedParents });
+  const updatedChildren = [...parentUserData.children, childSnapshot.id];
+  await getFirestore()
+    .collection("users")
+    .doc(parentUserData.uid)
+    .update({ children: updatedChildren, selectedChild: childSnapshot.id });
+
+  //   if (!childSnapshot.exists) {
+  //     throw new functions.https.HttpsError(
+  //       "not-found",
+  //       "Child document does not exist."
+  //     );
+  //   }
+
+  //   const childData = childSnapshot.data();
+
+  // Check if parent email is already present
+  //   const isParentAlreadyAdded = childData.parents.some(
+  //     (parent) => parent.email === parentEmail
+  //   );
+  //   if (isParentAlreadyAdded) {
+  //     throw new functions.https.HttpsError(
+  //       "already-exists",
+  //       "Parent email already added."
+  //     );
+  //   }
+
+  // Generate access code
+  //   const accessCode = "TEST";
+
+  // Add the new parent to the child's parents array
+  //   const updatedParents = [
+  //     ...childData.parents,
+  //     {
+  //       email: parentEmail,
+  //       accessCode: accessCode,
+  //     },
+  //   ];
+
+  // Update child document with the new parent
+  //   await childRef.update({ parents: updatedParents });
+
+  // Return the access code to the client-side code
+  return { success: true };
+});
