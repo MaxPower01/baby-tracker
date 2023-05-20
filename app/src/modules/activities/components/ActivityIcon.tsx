@@ -111,6 +111,18 @@ function WeightIcon() {
   return <ReactSVG src="/icons/weight.svg" className="ActivityIcon" />;
 }
 
+function FartIcon() {
+  return <ReactSVG src="/icons/fart.svg" className="ActivityIcon" />;
+}
+
+function SymptomIcon() {
+  return <ReactSVG src="/icons/symptom.svg" className="ActivityIcon" />;
+}
+
+function NoteIcon() {
+  return <ReactSVG src="/icons/note.svg" className="ActivityIcon" />;
+}
+
 type Props = {
   activity: ActivityModel;
   sx?: SxProps | undefined;
@@ -177,6 +189,12 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <WalkIcon />;
           case ActivityType.Weight:
             return <WeightIcon />;
+          case ActivityType.Fart:
+            return <FartIcon />;
+          case ActivityType.Symptom:
+            return <SymptomIcon />;
+          case ActivityType.Note:
+            return <NoteIcon />;
           default:
             return null;
         }

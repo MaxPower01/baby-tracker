@@ -30,39 +30,33 @@ export default class ActivityModel {
     ActivityType.BreastFeeding,
     ActivityType.BottleFeeding,
     ActivityType.Burp,
-    //
     ActivityType.Diaper,
     ActivityType.Poop,
     ActivityType.Urine,
-    //
     ActivityType.Sleep,
-    ActivityType.Play,
     ActivityType.Walk,
-    //
+    ActivityType.Note,
+    ActivityType.Play,
     ActivityType.Cry,
     ActivityType.Regurgitation,
     ActivityType.Vomit,
-    //
+    ActivityType.Fart,
     ActivityType.MilkExtraction,
     ActivityType.CarRide,
     ActivityType.Hiccups,
-    //
     ActivityType.Weight,
     ActivityType.Size,
     ActivityType.HeadCircumference,
-    //
     ActivityType.Bath,
     ActivityType.NasalHygiene,
     ActivityType.NailCutting,
-    //
     ActivityType.Temperature,
     ActivityType.Teeth,
+    ActivityType.Symptom,
     ActivityType.Medicine,
-    //
     ActivityType.MedicalFollowUp,
     ActivityType.Hospital,
     ActivityType.Vaccine,
-    //
     ActivityType.SolidFood,
   ];
 
@@ -304,6 +298,15 @@ export default class ActivityModel {
         break;
       case ActivityType.Weight:
         this._name = "Poids";
+        break;
+      case ActivityType.Fart:
+        this._name = "Pet";
+        break;
+      case ActivityType.Symptom:
+        this._name = "Symptôme";
+        break;
+      case ActivityType.Note:
+        this._name = "Note";
         break;
       default:
         this._name = "_";

@@ -27,5 +27,8 @@ enum ActivityType {
   NailCutting = 27,
   MedicalFollowUp = 28,
   HeadCircumference = 29,
+  Fart = 30,
+  Note = 31,
+  Symptom = 32,
 }
 export default ActivityType;
