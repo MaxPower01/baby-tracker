@@ -34,7 +34,7 @@ export default function ActivityBarChart(props: Props) {
       value: 0,
     }));
 
-    for (const entry of entries) {
+    for (const entry of activityEntries) {
       const dataPoint = {
         date: mapStartDateToClosestDate(entry.startDate, datesArray),
         value: entry.time,
