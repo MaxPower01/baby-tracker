@@ -153,7 +153,9 @@ export default function EntriesCard(props: Props) {
                         borderRadius: "50%",
                         border: "1px solid",
                         // backgroundColor: theme.customPalette.background.avatar,
-                        backgroundColor: theme.palette.divider,
+                        backgroundColor: entryHasStopwatchRunning
+                          ? `${theme.palette.primary.main}30`
+                          : theme.palette.divider,
                         flexShrink: 0,
                         zIndex: 1,
                         borderColor: entryHasStopwatchRunning
@@ -232,6 +234,13 @@ export default function EntriesCard(props: Props) {
                     />
                     <EntryBody
                       entry={entry}
+                      previousEntry={
+                        // Find the next entry that has the same activity
+                        entries
+                          .slice(0, entryIndex)
+                          .reverse()
+                          .find((e) => e.activity === entry.activity)
+                      }
                       sx={{
                         paddingTop: 1,
                       }}

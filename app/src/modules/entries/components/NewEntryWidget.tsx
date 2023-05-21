@@ -31,35 +31,35 @@ export default function NewEntryWidget(props: Props) {
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
-  const lastBreastFeedingEntry = useMemo(() => {
-    const breastFeedingEntries = entries?.filter(
+  const lastBreastfeedingEntry = useMemo(() => {
+    const breastfeedingEntries = entries?.filter(
       (entry: EntryModel) => entry?.activity?.type == ActivityType.BreastFeeding
     );
-    breastFeedingEntries?.sort((a, b) => {
+    breastfeedingEntries?.sort((a, b) => {
       return b?.startDate?.getTime() - a?.startDate?.getTime();
     });
-    return breastFeedingEntries?.[0] ?? null;
+    return breastfeedingEntries?.[0] ?? null;
   }, [entries, now]);
   const lastBreastfeedingLabel = useMemo(() => {
     const parts = {
       title: "",
       subtitle: "",
-      isLive: false,
+      isInProgress: false,
     };
-    if (lastBreastFeedingEntry == null) return null;
-    if (lastBreastFeedingEntry.anyStopwatchIsRunning) {
+    if (lastBreastfeedingEntry == null) return null;
+    if (lastBreastfeedingEntry.anyStopwatchIsRunning) {
       return {
         title: "En cours",
-        isLive: true,
+        isInProgress: true,
         subtitle: "",
       };
     }
     const time =
-      lastBreastFeedingEntry.time > 0
+      lastBreastfeedingEntry.time > 0
         ? formatStopwatchTime(
-            lastBreastFeedingEntry.time,
+            lastBreastfeedingEntry.time,
             true,
-            lastBreastFeedingEntry.time < 1000 * 60
+            lastBreastfeedingEntry.time < 1000 * 60
           )
         : null;
     if (time != null) {
@@ -67,22 +67,22 @@ export default function NewEntryWidget(props: Props) {
     }
 
     parts.subtitle = "Il y a";
-    const diff = now.getTime() - lastBreastFeedingEntry.endDate.getTime();
+    const diff = now.getTime() - lastBreastfeedingEntry.endDate.getTime();
     parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     if (
-      lastBreastFeedingEntry.leftTime > 0 &&
-      lastBreastFeedingEntry.rightTime == 0
+      lastBreastfeedingEntry.leftTime > 0 &&
+      lastBreastfeedingEntry.rightTime == 0
     ) {
       // Add dot symbol
       parts.title = "Gauche • " + parts.title;
     } else if (
-      lastBreastFeedingEntry.leftTime == 0 &&
-      lastBreastFeedingEntry.rightTime > 0
+      lastBreastfeedingEntry.leftTime == 0 &&
+      lastBreastfeedingEntry.rightTime > 0
     ) {
       parts.title = "Droite • " + parts.title;
     }
     return parts;
-  }, [lastBreastFeedingEntry, now]);
+  }, [lastBreastfeedingEntry, now]);
   const lastBottleFeedingEntry = useMemo(() => {
     const bottleFeedingEntries = entries?.filter(
       (entry: EntryModel) => entry?.activity?.type == ActivityType.BottleFeeding
@@ -96,13 +96,13 @@ export default function NewEntryWidget(props: Props) {
     const parts = {
       title: "",
       subtitle: "",
-      isLive: false,
+      isInProgress: false,
     };
     if (lastBottleFeedingEntry == null) return null;
     if (lastBottleFeedingEntry.anyStopwatchIsRunning) {
       return {
         title: "En cours",
-        isLive: true,
+        isInProgress: true,
         subtitle: "",
       };
     }
@@ -131,13 +131,13 @@ export default function NewEntryWidget(props: Props) {
     const parts = {
       title: "",
       subtitle: "",
-      isLive: false,
+      isInProgress: false,
     };
     if (lastDiaperEntry == null) return null;
     if (lastDiaperEntry.anyStopwatchIsRunning) {
       return {
         title: "En cours",
-        isLive: true,
+        isInProgress: true,
         subtitle: "",
       };
     }
@@ -164,13 +164,13 @@ export default function NewEntryWidget(props: Props) {
     const parts = {
       title: "",
       subtitle: "",
-      isLive: false,
+      isInProgress: false,
     };
     if (lastSleepEntry == null) return null;
     if (lastSleepEntry.anyStopwatchIsRunning) {
       return {
         title: "En cours",
-        isLive: true,
+        isInProgress: true,
         subtitle: "",
       };
     }
@@ -184,78 +184,6 @@ export default function NewEntryWidget(props: Props) {
     parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
     return parts;
   }, [lastSleepEntry, now]);
-  // const lastBurpEntry = useMemo(() => {
-  //   const burpEntries = entries?.filter(
-  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Burp
-  //   );
-  //   burpEntries?.sort((a, b) => {
-  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
-  //   });
-  //   return burpEntries?.[0] ?? null;
-  // }, [entries, now]);
-  // const lastBurpLabel = useMemo(() => {
-  //   if (lastBurpEntry == null) return null;
-  //   if (lastBurpEntry.anyStopwatchIsRunning) {
-  //     return "En cours";
-  //   }
-  //   const time = formatStopwatchTime(
-  //     lastBurpEntry.time,
-  //     true,
-  //     lastBurpEntry.time < 1000 * 60
-  //   );
-  //   let result = time == null ? "Il y a" : `${time} il y a `;
-  //   const diff = now.getTime() - lastBurpEntry.endDate.getTime();
-  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-  //   return result;
-  // }, [lastBurpEntry, now]);
-  // const lastRegurgitationEntry = useMemo(() => {
-  //   const regurgitationEntries = entries?.filter(
-  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Regurgitation
-  //   );
-  //   regurgitationEntries?.sort((a, b) => {
-  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
-  //   });
-  //   return regurgitationEntries?.[0] ?? null;
-  // }, [entries, now]);
-  // const lastRegurgitationLabel = useMemo(() => {
-  //   if (lastRegurgitationEntry == null) return null;
-  //   if (lastRegurgitationEntry.anyStopwatchIsRunning) {
-  //     return "En cours";
-  //   }
-  //   const time = formatStopwatchTime(
-  //     lastRegurgitationEntry.time,
-  //     true,
-  //     lastRegurgitationEntry.time < 1000 * 60
-  //   );
-  //   let result = time == null ? "Il y a" : `${time} il y a `;
-  //   const diff = now.getTime() - lastRegurgitationEntry.endDate.getTime();
-  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-  //   return result;
-  // }, [lastRegurgitationEntry, now]);
-  // const lastVomitEntry = useMemo(() => {
-  //   const vomitEntries = entries?.filter(
-  //     (entry: EntryModel) => entry?.activity?.type == ActivityType.Vomit
-  //   );
-  //   vomitEntries?.sort((a, b) => {
-  //     return b?.startDate?.getTime() - a?.startDate?.getTime();
-  //   });
-  //   return vomitEntries?.[0] ?? null;
-  // }, [entries, now]);
-  // const lastVomitLabel = useMemo(() => {
-  //   if (lastVomitEntry == null) return null;
-  //   if (lastVomitEntry.anyStopwatchIsRunning) {
-  //     return "En cours";
-  //   }
-  //   const time = formatStopwatchTime(
-  //     lastVomitEntry.time,
-  //     true,
-  //     lastVomitEntry.time < 1000 * 60
-  //   );
-  //   let result = time == null ? "Il y a" : `${time} il y a `;
-  //   const diff = now.getTime() - lastVomitEntry.endDate.getTime();
-  //   result += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-  //   return result;
-  // }, [lastVomitEntry, now]);
 
   const boxStyle: SxProps = {
     borderRadius: 1,
@@ -265,6 +193,8 @@ export default function NewEntryWidget(props: Props) {
     flexDirection: "column",
     alignItems: "center",
     maxWidth: "10em",
+    marginLeft: 1,
+    marginRight: 1,
   };
   const activityButtonStyle: SxProps = {
     paddingTop: 1.5,
@@ -274,7 +204,7 @@ export default function NewEntryWidget(props: Props) {
     // width: "100%",
     // flex: 1,
     width: "10em",
-    background: theme.customPalette.background?.almostTransparent,
+    backgroundColor: theme.customPalette.background?.almostTransparent,
     border: "1px solid",
     borderColor: theme.customPalette.background?.almostTransparent,
   };
@@ -299,9 +229,26 @@ export default function NewEntryWidget(props: Props) {
     activity: ActivityModel;
     rightSide?: boolean;
     startTimer?: boolean;
+    lastEntry?: EntryModel;
+    label?: {
+      title: string;
+      subtitle: string;
+      isInProgress: boolean;
+    } | null;
   }) => {
-    const { activity, rightSide, startTimer, event } = params;
+    const { activity, rightSide, startTimer, event, lastEntry, label } = params;
     closeMenu(event);
+    if (lastEntry != null && label != null) {
+      if (label.isInProgress) {
+        navigate(
+          getPath({
+            page: PageName.Entry,
+            id: lastEntry.id ?? "",
+          })
+        );
+        return;
+      }
+    }
     const urlParams = {
       activity: activity.type.toString(),
     } as any;
@@ -319,6 +266,7 @@ export default function NewEntryWidget(props: Props) {
       })
     );
   };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(new Date());
@@ -327,11 +275,13 @@ export default function NewEntryWidget(props: Props) {
   }, []);
   return (
     <Stack
-      spacing={2}
+      // spacing={2}
       direction={"row"}
       justifyContent={"flex-start"}
       alignItems={"flex-start"}
       sx={{
+        paddingTop: 0.5,
+        paddingBottom: 0.5,
         "& .ActivityIcon": {
           fontSize: "4em",
         },
@@ -347,16 +297,44 @@ export default function NewEntryWidget(props: Props) {
       <Box
         sx={{
           ...boxStyle,
+          order: lastBreastfeedingLabel?.isInProgress ? 0 : 1,
         }}
       >
-        <ActivityButton
-          activity={breastFeedingActivity}
-          showLabel
+        <Box
           sx={{
-            ...activityButtonStyle,
+            border: "1px solid",
+            borderColor: lastBreastfeedingLabel?.isInProgress
+              ? (theme.palette.primary.main as string)
+              : "transparent",
+            backgroundColor: lastBreastfeedingLabel?.isInProgress
+              ? `${theme.palette.primary.main}20`
+              : undefined,
+            boxShadow: lastBreastfeedingLabel?.isInProgress
+              ? `0 0 5px 0px ${theme.palette.primary.main}`
+              : undefined,
+            borderRadius: 1,
           }}
-          onClick={openMenu}
-        />
+        >
+          <ActivityButton
+            activity={breastFeedingActivity}
+            showLabel
+            sx={{
+              ...activityButtonStyle,
+            }}
+            onClick={(e) => {
+              if (lastBreastfeedingLabel?.isInProgress) {
+                handleActivityClick({
+                  event: e,
+                  activity: breastFeedingActivity,
+                  lastEntry: lastBreastfeedingEntry,
+                  label: lastBreastfeedingLabel,
+                });
+              } else {
+                openMenu(e);
+              }
+            }}
+          />
+        </Box>
         <Stack
           sx={{
             marginTop: 1,
@@ -380,7 +358,7 @@ export default function NewEntryWidget(props: Props) {
                 variant={textVariant}
                 sx={{
                   ...titleStyle,
-                  color: lastBreastfeedingLabel.isLive
+                  color: lastBreastfeedingLabel.isInProgress
                     ? theme.palette.primary.main
                     : undefined,
                   // lineHeight: 1,
@@ -427,18 +405,40 @@ export default function NewEntryWidget(props: Props) {
       <Box
         sx={{
           ...boxStyle,
+          order: lastBottleFeedingLabel?.isInProgress ? 0 : 2,
         }}
       >
-        <ActivityButton
-          activity={bottleFeedingActivity}
-          showLabel
+        <Box
           sx={{
-            ...activityButtonStyle,
+            border: "1px solid",
+            borderColor: lastBottleFeedingLabel?.isInProgress
+              ? (theme.palette.primary.main as string)
+              : "transparent",
+            backgroundColor: lastBottleFeedingLabel?.isInProgress
+              ? `${theme.palette.primary.main}20`
+              : undefined,
+            boxShadow: lastBottleFeedingLabel?.isInProgress
+              ? `0 0 5px 0px ${theme.palette.primary.main}`
+              : undefined,
+            borderRadius: 1,
           }}
-          onClick={(e) => {
-            handleActivityClick({ event: e, activity: bottleFeedingActivity });
-          }}
-        />
+        >
+          <ActivityButton
+            activity={bottleFeedingActivity}
+            showLabel
+            sx={{
+              ...activityButtonStyle,
+            }}
+            onClick={(e) => {
+              handleActivityClick({
+                event: e,
+                activity: bottleFeedingActivity,
+                lastEntry: lastBottleFeedingEntry,
+                label: lastBottleFeedingLabel,
+              });
+            }}
+          />
+        </Box>
         <Stack
           sx={{
             marginTop: 1,
@@ -462,7 +462,7 @@ export default function NewEntryWidget(props: Props) {
                 variant={textVariant}
                 sx={{
                   ...titleStyle,
-                  color: lastBottleFeedingLabel.isLive
+                  color: lastBottleFeedingLabel.isInProgress
                     ? theme.palette.primary.main
                     : undefined,
                   // lineHeight: 1,
@@ -476,18 +476,40 @@ export default function NewEntryWidget(props: Props) {
       <Box
         sx={{
           ...boxStyle,
+          order: lastDiaperLabel?.isInProgress ? 0 : 3,
         }}
       >
-        <ActivityButton
-          activity={diaperActivity}
-          showLabel
+        <Box
           sx={{
-            ...activityButtonStyle,
+            border: "1px solid",
+            borderColor: lastDiaperLabel?.isInProgress
+              ? (theme.palette.primary.main as string)
+              : "transparent",
+            backgroundColor: lastDiaperLabel?.isInProgress
+              ? `${theme.palette.primary.main}20`
+              : undefined,
+            boxShadow: lastDiaperLabel?.isInProgress
+              ? `0 0 5px 0px ${theme.palette.primary.main}`
+              : undefined,
+            borderRadius: 1,
           }}
-          onClick={(e) => {
-            handleActivityClick({ event: e, activity: diaperActivity });
-          }}
-        />
+        >
+          <ActivityButton
+            activity={diaperActivity}
+            showLabel
+            sx={{
+              ...activityButtonStyle,
+            }}
+            onClick={(e) => {
+              handleActivityClick({
+                event: e,
+                activity: diaperActivity,
+                lastEntry: lastDiaperEntry,
+                label: lastDiaperLabel,
+              });
+            }}
+          />
+        </Box>
         <Stack
           sx={{
             marginTop: 1,
@@ -511,7 +533,7 @@ export default function NewEntryWidget(props: Props) {
                 variant={textVariant}
                 sx={{
                   ...titleStyle,
-                  color: lastDiaperLabel.isLive
+                  color: lastDiaperLabel.isInProgress
                     ? theme.palette.primary.main
                     : undefined,
                   // lineHeight: 1,
@@ -525,22 +547,41 @@ export default function NewEntryWidget(props: Props) {
       <Box
         sx={{
           ...boxStyle,
+          order: lastSleepLabel?.isInProgress ? 0 : 4,
         }}
       >
-        <ActivityButton
-          activity={sleepActivity}
-          showLabel
+        <Box
           sx={{
-            ...activityButtonStyle,
+            border: "1px solid",
+            borderColor: lastSleepLabel?.isInProgress
+              ? (theme.palette.primary.main as string)
+              : "transparent",
+            backgroundColor: lastSleepLabel?.isInProgress
+              ? `${theme.palette.primary.main}20`
+              : undefined,
+            boxShadow: lastSleepLabel?.isInProgress
+              ? `0 0 5px 0px ${theme.palette.primary.main}`
+              : undefined,
+            borderRadius: 1,
           }}
-          onClick={(e) => {
-            handleActivityClick({
-              event: e,
-              activity: sleepActivity,
-              startTimer: true,
-            });
-          }}
-        />
+        >
+          <ActivityButton
+            activity={sleepActivity}
+            showLabel
+            sx={{
+              ...activityButtonStyle,
+            }}
+            onClick={(e) => {
+              handleActivityClick({
+                event: e,
+                activity: sleepActivity,
+                startTimer: true,
+                lastEntry: lastSleepEntry,
+                label: lastSleepLabel,
+              });
+            }}
+          />
+        </Box>
         <Stack
           sx={{
             marginTop: 1,
@@ -564,7 +605,7 @@ export default function NewEntryWidget(props: Props) {
                 variant={textVariant}
                 sx={{
                   ...titleStyle,
-                  color: lastSleepLabel.isLive
+                  color: lastSleepLabel.isInProgress
                     ? theme.palette.primary.main
                     : undefined,
                   // lineHeight: 1,
@@ -575,84 +616,6 @@ export default function NewEntryWidget(props: Props) {
             )}
         </Stack>
       </Box>
-      {/* <Box
-        sx={{
-          ...boxStyle,
-        }}
-      >
-        <ActivityButton
-          activity={burpActivity}
-          showLabel
-          sx={{
-            ...activityButtonStyle,
-          }}
-          onClick={(e) => {
-            handleActivityClick({ event: e, activity: burpActivity });
-          }}
-        />
-        {lastBurpLabel != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastBurpLabel}
-          </Typography>
-        )}
-      </Box>
-      <Box
-        sx={{
-          ...boxStyle,
-        }}
-      >
-        <ActivityButton
-          activity={regurgitationActivity}
-          showLabel
-          sx={{
-            ...activityButtonStyle,
-          }}
-          onClick={(e) => {
-            handleActivityClick({ event: e, activity: regurgitationActivity });
-          }}
-        />
-        {lastRegurgitationLabel != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastRegurgitationLabel}
-          </Typography>
-        )}
-      </Box>
-      <Box
-        sx={{
-          ...boxStyle,
-        }}
-      >
-        <ActivityButton
-          activity={vomitActivity}
-          showLabel
-          sx={{
-            ...activityButtonStyle,
-          }}
-          onClick={(e) => {
-            handleActivityClick({ event: e, activity: vomitActivity });
-          }}
-        />
-        {lastVomitLabel != null && (
-          <Typography
-            variant={textVariant}
-            sx={{
-              ...textStyle,
-            }}
-          >
-            {lastVomitLabel}
-          </Typography>
-        )}
-      </Box> */}
     </Stack>
   );
 }
