@@ -249,6 +249,7 @@ export default function EntryBody(props: Props) {
           <span
             style={{
               fontWeight: 400,
+              whiteSpace: "nowrap",
             }}
           >
             {timeElapsedSincePreviousEntryLabel.time}
