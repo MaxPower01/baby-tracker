@@ -110,12 +110,10 @@ export default class ActivityModel {
 
   public constructor(type: ActivityType) {
     this._type = type;
+    this._name = this.getNameFor(type);
+    this._previousEntryLabelPrefix = this.getPreviousEntryLabelPrefixFor(type);
     switch (type) {
       case ActivityType.Bath:
-        this._name = "Bain";
-        //this._previousEntryLabelPrefix = "Dernier bain il y a";
-        // this._previousEntryLabelPrefix = "Bain précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le bain précédent:";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -127,10 +125,6 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.BottleFeeding:
-        this._name = "Biberon";
-        //this._previousEntryLabelPrefix = "Dernier biberon il y a";
-        // this._previousEntryLabelPrefix = "Biberon précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le biberon précédent:";
         this._hasDuration = true;
         this._hasVolume = true;
         this._linkedTypes = [
@@ -140,10 +134,6 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.BreastFeeding:
-        this._name = "Allaitement";
-        //this._previousEntryLabelPrefix = "Dernier allaitement il y a";
-        // this._previousEntryLabelPrefix = "Allaitement précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier allaitement:";
         this._hasDuration = true;
         this._hasSides = true;
         this._linkedTypes = [
@@ -153,17 +143,9 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Burp:
-        this._name = "Rot";
-        //this._previousEntryLabelPrefix = "Dernier rot il y a";
-        // this._previousEntryLabelPrefix = "Rot précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier rot:";
         this._linkedTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.CarRide:
-        this._name = "Trajet en voiture";
-        //this._previousEntryLabelPrefix = "Dernier trajet en voiture il y a";
-        // this._previousEntryLabelPrefix = "Trajet en voiture précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier trajet en voiture:";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -179,10 +161,6 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Cry:
-        this._name = "Pleurs";
-        //this._previousEntryLabelPrefix = "Derniers pleurs il y a";
-        // this._previousEntryLabelPrefix = "Pleurs précédents il y a";
-        this._previousEntryLabelPrefix = "Depuis les derniers pleurs:";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -194,10 +172,6 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Diaper:
-        this._name = "Couche";
-        //this._previousEntryLabelPrefix = "Dernière couche il y a";
-        // this._previousEntryLabelPrefix = "Couche précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière couche:";
         this._linkedTypes = [
           ActivityType.Poop,
           ActivityType.Urine,
@@ -208,10 +182,6 @@ export default class ActivityModel {
         this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Hiccups:
-        this._name = "Hoquet";
-        //this._previousEntryLabelPrefix = "Dernier hoquet il y a";
-        // this._previousEntryLabelPrefix = "Hoquet précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier hoquet:";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -221,11 +191,6 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Hospital:
-        this._name = "Visite à l'hôpital";
-        //this._previousEntryLabelPrefix = "Dernière visite à l'hôpital il y a";
-        // this._previousEntryLabelPrefix = "Visite à l'hôpital précédente il y a";
-        this._previousEntryLabelPrefix =
-          "Depuis la dernière visite à l'hôpital:";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -240,17 +205,8 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.HeadCircumference:
-        this._name = "Tour de tête";
-        //this._previousEntryLabelPrefix = "Dernier tour de tête mesuré il y a";
-        // this._previousEntryLabelPrefix = "Tour de tête précédent mesuré il y a";
-        this._previousEntryLabelPrefix =
-          "Depuis le dernier tour de tête mesuré:";
         break;
       case ActivityType.MedicalFollowUp:
-        this._name = "Suivi médical";
-        //this._previousEntryLabelPrefix = "Dernier suivi médical il y a";
-        // this._previousEntryLabelPrefix = "Suivi médical précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier suivi médical:";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -265,32 +221,15 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Medicine:
-        this._name = "Médicament";
-        //this._previousEntryLabelPrefix = "Dernier médicament donné il y a";
-        // this._previousEntryLabelPrefix = "Médicament précédent donné il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier médicament donné:";
         break;
       case ActivityType.MilkExtraction:
-        this._name = "Extraction de lait";
-        //this._previousEntryLabelPrefix = "Dernière extraction de lait il y a";
-        // this._previousEntryLabelPrefix = "Extraction de lait précédente il y a";
-        this._previousEntryLabelPrefix =
-          "Depuis la dernière extraction de lait:";
         this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
         break;
       case ActivityType.NailCutting:
-        this._name = "Coupe d'ongles";
-        //this._previousEntryLabelPrefix = "Dernière coupe d'ongles il y a";
-        // this._previousEntryLabelPrefix = "Coupe d'ongles précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière coupe d'ongles:";
         break;
       case ActivityType.NasalHygiene:
-        this._name = "Hygiène nasale";
-        //this._previousEntryLabelPrefix = "Dernière hygiène nasale il y a";
-        // this._previousEntryLabelPrefix = "Hygiène nasale précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière hygiène nasale:";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -299,30 +238,14 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Play:
-        this._name = "Jeu";
-        //this._previousEntryLabelPrefix = "Dernier jeu il y a";
-        // this._previousEntryLabelPrefix = "Jeu précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier jeu:";
         this._hasDuration = true;
         break;
       case ActivityType.Poop:
-        this._name = "Caca";
-        //this._previousEntryLabelPrefix = "Dernier caca il y a";
-        // this._previousEntryLabelPrefix = "Caca précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier caca:";
         this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Size:
-        this._name = "Taille";
-        //this._previousEntryLabelPrefix = "Dernière taille mesurée il y a";
-        // this._previousEntryLabelPrefix = "Taille précédente mesurée il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière taille mesurée:";
         break;
       case ActivityType.Sleep:
-        this._name = "Sommeil";
-        //this._previousEntryLabelPrefix = "Dernier sommeil il y a";
-        // this._previousEntryLabelPrefix = "Sommeil précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier sommeil:";
         this._hasDuration = true;
         this._subTypes = [
           SubActivityType.Crib,
@@ -331,54 +254,20 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.SolidFood:
-        this._name = "Nourriture solide";
-        //this._previousEntryLabelPrefix = "Dernière nourriture solide il y a";
-        // this._previousEntryLabelPrefix = "Nourriture solide précédente il y a";
-        this._previousEntryLabelPrefix =
-          "Depuis la dernière nourriture solide:";
         break;
       case ActivityType.Regurgitation:
-        this._name = "Régurgitation";
-        //this._previousEntryLabelPrefix = "Dernière régurgitation il y a";
-        // this._previousEntryLabelPrefix = "Régurgitation précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière régurgitation:";
         break;
       case ActivityType.Temperature:
-        this._name = "Température";
-        //this._previousEntryLabelPrefix = "Dernière température prise il y a";
-        // this._previousEntryLabelPrefix = "Température précédente prise il y a";
-        this._previousEntryLabelPrefix =
-          "Depuis la dernière température prise:";
         break;
       case ActivityType.Teeth:
-        this._name = "Dents";
-        //this._previousEntryLabelPrefix = "Dernière dent apparue il y a";
-        // this._previousEntryLabelPrefix = "Dent précédente apparue il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière dent apparue:";
         break;
       case ActivityType.Urine:
-        this._name = "Pipi";
-        //this._previousEntryLabelPrefix = "Dernier pipi il y a";
-        // this._previousEntryLabelPrefix = "Pipi précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier pipi:";
         break;
       case ActivityType.Vaccine:
-        this._name = "Vaccin";
-        //this._previousEntryLabelPrefix = "Dernier vaccin il y a";
-        // this._previousEntryLabelPrefix = "Vaccin précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier vaccin:";
         break;
       case ActivityType.Vomit:
-        this._name = "Vomi";
-        //this._previousEntryLabelPrefix = "Dernier vomi il y a";
-        // this._previousEntryLabelPrefix = "Vomi précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier vomi:";
         break;
       case ActivityType.Walk:
-        this._name = "Marche";
-        //this._previousEntryLabelPrefix = "Dernière marche il y a";
-        // this._previousEntryLabelPrefix = "Marche précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière marche:";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -394,35 +283,153 @@ export default class ActivityModel {
         ];
         break;
       case ActivityType.Weight:
-        this._name = "Poids";
-        //this._previousEntryLabelPrefix = "Dernier poids il y a";
-        // this._previousEntryLabelPrefix = "Poids précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier poids:";
         break;
       case ActivityType.Fart:
-        this._name = "Pet";
-        //this._previousEntryLabelPrefix = "Dernier pet il y a";
-        // this._previousEntryLabelPrefix = "Pet précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier pet:";
         break;
       case ActivityType.Symptom:
-        this._name = "Symptôme";
-        //this._previousEntryLabelPrefix = "Dernier symptôme il y a";
-        // this._previousEntryLabelPrefix = "Symptôme précédent il y a";
-        this._previousEntryLabelPrefix = "Depuis le dernier symptôme:";
         break;
       case ActivityType.Note:
-        this._name = "Note";
-        //this._previousEntryLabelPrefix = "Dernière note il y a";
-        // this._previousEntryLabelPrefix = "Note précédente il y a";
-        this._previousEntryLabelPrefix = "Depuis la dernière note:";
         break;
       default:
-        this._name = "_";
-        //this._previousEntryLabelPrefix = "_";
-        // this._previousEntryLabelPrefix = "_";
-        this._previousEntryLabelPrefix = "_";
         break;
+    }
+  }
+
+  public getNameFor(type: ActivityType): string {
+    switch (type) {
+      case ActivityType.Bath:
+        return "Bain";
+      case ActivityType.BottleFeeding:
+        return "Biberon";
+      case ActivityType.BreastFeeding:
+        return "Allaitement";
+      case ActivityType.Burp:
+        return "Rot";
+      case ActivityType.CarRide:
+        return "Trajet en voiture";
+      case ActivityType.Cry:
+        return "Pleurs";
+      case ActivityType.Diaper:
+        return "Couche";
+      case ActivityType.Hiccups:
+        return "Hoquet";
+      case ActivityType.Hospital:
+        return "Visite à l'hôpital";
+      case ActivityType.HeadCircumference:
+        return "Tour de tête";
+      case ActivityType.MedicalFollowUp:
+        return "Suivi médical";
+      case ActivityType.Medicine:
+        return "Médicament";
+      case ActivityType.MilkExtraction:
+        return "Extraction de lait";
+      case ActivityType.NailCutting:
+        return "Coupe d'ongles";
+      case ActivityType.NasalHygiene:
+        return "Hygiène nasale";
+      case ActivityType.Play:
+        return "Jeu";
+      case ActivityType.Poop:
+        return "Caca";
+      case ActivityType.Size:
+        return "Taille";
+      case ActivityType.Sleep:
+        return "Sommeil";
+      case ActivityType.SolidFood:
+        return "Nourriture solide";
+      case ActivityType.Regurgitation:
+        return "Régurgitation";
+      case ActivityType.Temperature:
+        return "Température";
+      case ActivityType.Teeth:
+        return "Dents";
+      case ActivityType.Urine:
+        return "Pipi";
+      case ActivityType.Vaccine:
+        return "Vaccin";
+      case ActivityType.Vomit:
+        return "Vomi";
+      case ActivityType.Walk:
+        return "Marche";
+      case ActivityType.Weight:
+        return "Poids";
+      case ActivityType.Fart:
+        return "Pet";
+      case ActivityType.Symptom:
+        return "Symptôme";
+      case ActivityType.Note:
+        return "Note";
+      default:
+        return "_";
+    }
+  }
+
+  getPreviousEntryLabelPrefixFor(type: ActivityType): string {
+    switch (type) {
+      case ActivityType.Bath:
+        return "Depuis le bain précédent:";
+      case ActivityType.BottleFeeding:
+        return "Depuis le biberon précédent:";
+      case ActivityType.BreastFeeding:
+        return "Depuis l'allaitement précédent:";
+      case ActivityType.Burp:
+        return "Depuis le rot précédent:";
+      case ActivityType.CarRide:
+        return "Depuis le trajet en voiture précédent:";
+      case ActivityType.Cry:
+        return "Depuis les pleurs précédents:";
+      case ActivityType.Diaper:
+        return "Depuis la couche précédente:";
+      case ActivityType.Hiccups:
+        return "Depuis le hoquet précédent:";
+      case ActivityType.Hospital:
+        return "Depuis la visite à l'hôpital précédente:";
+      case ActivityType.HeadCircumference:
+        return "Depuis le tour de tête précédent:";
+      case ActivityType.MedicalFollowUp:
+        return "Depuis le suivi médical précédent:";
+      case ActivityType.Medicine:
+        return "Depuis le médicament précédent:";
+      case ActivityType.MilkExtraction:
+        return "Depuis l'extraction de lait précédente:";
+      case ActivityType.NailCutting:
+        return "Depuis la coupe d'ongles précédente:";
+      case ActivityType.NasalHygiene:
+        return "Depuis l'hygiène nasale précédente:";
+      case ActivityType.Play:
+        return "Depuis le jeu précédent:";
+      case ActivityType.Poop:
+        return "Depuis le caca précédent:";
+      case ActivityType.Size:
+        return "Depuis la taille précédente:";
+      case ActivityType.Sleep:
+        return "Depuis le sommeil précédent:";
+      case ActivityType.SolidFood:
+        return "Depuis la nourriture solide précédente:";
+      case ActivityType.Regurgitation:
+        return "Depuis la régurgitation précédente:";
+      case ActivityType.Temperature:
+        return "Depuis la température précédente:";
+      case ActivityType.Teeth:
+        return "Depuis la dent précédente:";
+      case ActivityType.Urine:
+        return "Depuis le pipi précédent:";
+      case ActivityType.Vaccine:
+        return "Depuis le vaccin précédent:";
+      case ActivityType.Vomit:
+        return "Depuis le vomi précédent:";
+      case ActivityType.Walk:
+        return "Depuis la marche précédente:";
+      case ActivityType.Weight:
+        return "Depuis le poids précédent:";
+      case ActivityType.Fart:
+        return "Depuis le pet précédent:";
+      case ActivityType.Symptom:
+        return "Depuis le symptôme précédent:";
+      case ActivityType.Note:
+        return "Depuis la note précédente:";
+      default:
+        return "";
     }
   }
 
