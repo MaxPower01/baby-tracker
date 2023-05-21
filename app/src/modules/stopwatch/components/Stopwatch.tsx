@@ -125,15 +125,15 @@ export default function Stopwatch(props: Props) {
     },
   };
 
-  const playPauseButtonFontSize = "3em";
+  const playPauseButtonFontSize = "3.5em";
 
   return (
     <Stack spacing={2} sx={props.sx}>
-      {props.label && (
+      {/* {props.label && (
         <Typography textAlign="center" variant="body1">
           {props.label}
         </Typography>
-      )}
+      )} */}
       <Stack
         // direction={"row"}
         alignItems={"center"}
@@ -148,30 +148,39 @@ export default function Stopwatch(props: Props) {
           disabled={props.buttonIsDisabled}
           sx={{
             borderRadius: "9999px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
             paddingLeft: 2,
             paddingRight: 2,
             paddingTop: 1,
             paddingBottom: 1,
+            minWidth: "10em",
           }}
           variant={isRunning ? "contained" : "outlined"}
         >
-          {isRunning ? (
-            <PauseIcon
-              sx={{
-                fontSize: playPauseButtonFontSize,
-              }}
-            />
-          ) : (
-            <PlayArrowIcon
-              sx={{
-                fontSize: playPauseButtonFontSize,
-              }}
-            />
-          )}
+          <Stack spacing={0} justifyContent={"center"} alignItems={"center"}>
+            {props.label && (
+              <Typography
+                textAlign="center"
+                variant="body1"
+                textTransform={"none"}
+                fontWeight={"300"}
+              >
+                {props.label}
+              </Typography>
+            )}
+            {isRunning ? (
+              <PauseIcon
+                sx={{
+                  fontSize: playPauseButtonFontSize,
+                }}
+              />
+            ) : (
+              <PlayArrowIcon
+                sx={{
+                  fontSize: playPauseButtonFontSize,
+                }}
+              />
+            )}
+          </Stack>
         </Button>
         <Stack
           direction={"row"}

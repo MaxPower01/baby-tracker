@@ -5,7 +5,7 @@ import EntryModel from "@/modules/entries/models/EntryModel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 type Props = {
   entry: EntryModel;
   previousEntry?: EntryModel;
@@ -29,6 +29,24 @@ export default function EntryBody(props: Props) {
     opacity: 0.8,
     color: textColor,
   };
+
+  const timeElapsedSincePreviousEntryLabel = useMemo(() => {
+    if (!entry || !entry.activity || !previousEntry) return null;
+    const diff = entry.startDate.getTime() - previousEntry.endDate.getTime();
+    const duration =
+      previousEntry.time > 0
+        ? formatStopwatchTime(
+            previousEntry.time,
+            true,
+            previousEntry.time < 1000 * 60
+          )
+        : null;
+    return {
+      prefix: entry.activity.previousEntryLabelPrefix,
+      time: formatStopwatchTime(diff, true),
+      duration: duration,
+    };
+  }, [entry, previousEntry]);
 
   const computeTimeLabels = useCallback(() => {
     let result: string[] = [];
@@ -214,6 +232,27 @@ export default function EntryBody(props: Props) {
           }}
         >
           {entry.note}
+        </Typography>
+      )}
+
+      {timeElapsedSincePreviousEntryLabel != null && (
+        <Typography
+          variant="body2"
+          sx={{
+            ...textStyle,
+            opacity: 0.5,
+            fontStyle: "italic",
+            fontWeight: 300,
+          }}
+        >
+          {timeElapsedSincePreviousEntryLabel.prefix}{" "}
+          <span
+            style={{
+              fontWeight: 400,
+            }}
+          >
+            {timeElapsedSincePreviousEntryLabel.time}
+          </span>
         </Typography>
       )}
     </Stack>

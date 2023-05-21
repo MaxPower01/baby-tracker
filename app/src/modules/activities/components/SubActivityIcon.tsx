@@ -4,7 +4,11 @@ import { Box, SxProps } from "@mui/material";
 import { ReactSVG } from "react-svg";
 
 function MeconiumIcon() {
-  return <ReactSVG src="/poop.svg" className="ActivityIcon" />;
+  return <ReactSVG src="icons/poop.svg" className="ActivityIcon" />;
+}
+
+function SleepIcon() {
+  return <ReactSVG src="/icons/sleep.svg" className="ActivityIcon" />;
 }
 
 type Props = {
@@ -19,6 +23,10 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
         switch (subActivity.type) {
           case SubActivityType.Meconium:
             return <MeconiumIcon />;
+          case SubActivityType.Cradle:
+          case SubActivityType.Crib:
+          case SubActivityType.Bed:
+            return <SleepIcon />;
           default:
             return null;
         }

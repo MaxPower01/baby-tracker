@@ -116,7 +116,10 @@ export default function Entries(props: Props) {
                       <MenuProvider
                         key={`${timeEntries.entries[0].startDate.toISOString()}`}
                       >
-                        <EntriesCard entries={timeEntries.entries} />
+                        <EntriesCard
+                          entries={timeEntries.entries}
+                          allEntries={entries}
+                        />
                       </MenuProvider>
                     );
                   })}

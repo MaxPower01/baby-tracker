@@ -100,11 +100,21 @@ export default class ActivityModel {
     return this._linkedTypes.length > 0;
   }
 
+  private _previousEntryLabelPrefix: string;
+  public get previousEntryLabelPrefix(): string {
+    return this._previousEntryLabelPrefix;
+  }
+  public set previousEntryLabelPrefix(v: string) {
+    this._previousEntryLabelPrefix = v;
+  }
+
   public constructor(type: ActivityType) {
     this._type = type;
     switch (type) {
       case ActivityType.Bath:
         this._name = "Bain";
+        //this._previousEntryLabelPrefix = "Dernier bain il y a";
+        this._previousEntryLabelPrefix = "Bain précédent il y a";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -117,6 +127,8 @@ export default class ActivityModel {
         break;
       case ActivityType.BottleFeeding:
         this._name = "Biberon";
+        //this._previousEntryLabelPrefix = "Dernier biberon il y a";
+        this._previousEntryLabelPrefix = "Biberon précédent il y a";
         this._hasDuration = true;
         this._hasVolume = true;
         this._linkedTypes = [
@@ -127,6 +139,8 @@ export default class ActivityModel {
         break;
       case ActivityType.BreastFeeding:
         this._name = "Allaitement";
+        //this._previousEntryLabelPrefix = "Dernier allaitement il y a";
+        this._previousEntryLabelPrefix = "Allaitement précédent il y a";
         this._hasDuration = true;
         this._hasSides = true;
         this._linkedTypes = [
@@ -137,10 +151,14 @@ export default class ActivityModel {
         break;
       case ActivityType.Burp:
         this._name = "Rot";
+        //this._previousEntryLabelPrefix = "Dernier rot il y a";
+        this._previousEntryLabelPrefix = "Rot précédent il y a";
         this._linkedTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.CarRide:
         this._name = "Trajet en voiture";
+        //this._previousEntryLabelPrefix = "Dernier trajet en voiture il y a";
+        this._previousEntryLabelPrefix = "Trajet en voiture précédent il y a";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -157,6 +175,8 @@ export default class ActivityModel {
         break;
       case ActivityType.Cry:
         this._name = "Pleurs";
+        //this._previousEntryLabelPrefix = "Derniers pleurs il y a";
+        this._previousEntryLabelPrefix = "Pleurs précédents il y a";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -169,6 +189,8 @@ export default class ActivityModel {
         break;
       case ActivityType.Diaper:
         this._name = "Couche";
+        //this._previousEntryLabelPrefix = "Dernière couche il y a";
+        this._previousEntryLabelPrefix = "Couche précédente il y a";
         this._linkedTypes = [
           ActivityType.Poop,
           ActivityType.Urine,
@@ -180,18 +202,20 @@ export default class ActivityModel {
         break;
       case ActivityType.Hiccups:
         this._name = "Hoquet";
+        //this._previousEntryLabelPrefix = "Dernier hoquet il y a";
+        this._previousEntryLabelPrefix = "Hoquet précédent il y a";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
           ActivityType.Burp,
           ActivityType.Cry,
-          ActivityType.Poop,
-          ActivityType.Urine,
         ];
         break;
       case ActivityType.Hospital:
         this._name = "Visite à l'hôpital";
+        //this._previousEntryLabelPrefix = "Dernière visite à l'hôpital il y a";
+        this._previousEntryLabelPrefix = "Visite à l'hôpital précédente il y a";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -207,9 +231,13 @@ export default class ActivityModel {
         break;
       case ActivityType.HeadCircumference:
         this._name = "Tour de tête";
+        //this._previousEntryLabelPrefix = "Dernier tour de tête mesuré il y a";
+        this._previousEntryLabelPrefix = "Tour de tête précédent mesuré il y a";
         break;
       case ActivityType.MedicalFollowUp:
         this._name = "Suivi médical";
+        //this._previousEntryLabelPrefix = "Dernier suivi médical il y a";
+        this._previousEntryLabelPrefix = "Suivi médical précédent il y a";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -225,18 +253,26 @@ export default class ActivityModel {
         break;
       case ActivityType.Medicine:
         this._name = "Médicament";
+        //this._previousEntryLabelPrefix = "Dernier médicament donné il y a";
+        this._previousEntryLabelPrefix = "Médicament précédent donné il y a";
         break;
       case ActivityType.MilkExtraction:
         this._name = "Extraction de lait";
+        //this._previousEntryLabelPrefix = "Dernière extraction de lait il y a";
+        this._previousEntryLabelPrefix = "Extraction de lait précédente il y a";
         this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
         break;
       case ActivityType.NailCutting:
         this._name = "Coupe d'ongles";
+        //this._previousEntryLabelPrefix = "Dernière coupe d'ongles il y a";
+        this._previousEntryLabelPrefix = "Coupe d'ongles précédente il y a";
         break;
       case ActivityType.NasalHygiene:
         this._name = "Hygiène nasale";
+        //this._previousEntryLabelPrefix = "Dernière hygiène nasale il y a";
+        this._previousEntryLabelPrefix = "Hygiène nasale précédente il y a";
         this._linkedTypes = [
           ActivityType.Regurgitation,
           ActivityType.Vomit,
@@ -246,42 +282,71 @@ export default class ActivityModel {
         break;
       case ActivityType.Play:
         this._name = "Jeu";
+        //this._previousEntryLabelPrefix = "Dernier jeu il y a";
+        this._previousEntryLabelPrefix = "Jeu précédent il y a";
         this._hasDuration = true;
         break;
       case ActivityType.Poop:
         this._name = "Caca";
+        //this._previousEntryLabelPrefix = "Dernier caca il y a";
+        this._previousEntryLabelPrefix = "Caca précédent il y a";
         this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Size:
         this._name = "Taille";
+        //this._previousEntryLabelPrefix = "Dernière taille mesurée il y a";
+        this._previousEntryLabelPrefix = "Taille précédente mesurée il y a";
         break;
       case ActivityType.Sleep:
         this._name = "Sommeil";
+        //this._previousEntryLabelPrefix = "Dernier sommeil il y a";
+        this._previousEntryLabelPrefix = "Sommeil précédent il y a";
         this._hasDuration = true;
+        this._subTypes = [
+          SubActivityType.Crib,
+          SubActivityType.Cradle,
+          SubActivityType.Bed,
+        ];
         break;
       case ActivityType.SolidFood:
         this._name = "Nourriture solide";
+        //this._previousEntryLabelPrefix = "Dernière nourriture solide il y a";
+        this._previousEntryLabelPrefix = "Nourriture solide précédente il y a";
         break;
       case ActivityType.Regurgitation:
         this._name = "Régurgitation";
+        //this._previousEntryLabelPrefix = "Dernière régurgitation il y a";
+        this._previousEntryLabelPrefix = "Régurgitation précédente il y a";
         break;
       case ActivityType.Temperature:
         this._name = "Température";
+        //this._previousEntryLabelPrefix = "Dernière température prise il y a";
+        this._previousEntryLabelPrefix = "Température précédente prise il y a";
         break;
       case ActivityType.Teeth:
         this._name = "Dents";
+        //this._previousEntryLabelPrefix = "Dernière dent apparue il y a";
+        this._previousEntryLabelPrefix = "Dent précédente apparue il y a";
         break;
       case ActivityType.Urine:
         this._name = "Pipi";
+        //this._previousEntryLabelPrefix = "Dernier pipi il y a";
+        this._previousEntryLabelPrefix = "Pipi précédent il y a";
         break;
       case ActivityType.Vaccine:
         this._name = "Vaccin";
+        //this._previousEntryLabelPrefix = "Dernier vaccin il y a";
+        this._previousEntryLabelPrefix = "Vaccin précédent il y a";
         break;
       case ActivityType.Vomit:
         this._name = "Vomi";
+        //this._previousEntryLabelPrefix = "Dernier vomi il y a";
+        this._previousEntryLabelPrefix = "Vomi précédent il y a";
         break;
       case ActivityType.Walk:
         this._name = "Marche";
+        //this._previousEntryLabelPrefix = "Dernière marche il y a";
+        this._previousEntryLabelPrefix = "Marche précédente il y a";
         this._hasDuration = true;
         this._linkedTypes = [
           ActivityType.Regurgitation,
@@ -298,18 +363,28 @@ export default class ActivityModel {
         break;
       case ActivityType.Weight:
         this._name = "Poids";
+        //this._previousEntryLabelPrefix = "Dernier poids il y a";
+        this._previousEntryLabelPrefix = "Poids précédent il y a";
         break;
       case ActivityType.Fart:
         this._name = "Pet";
+        //this._previousEntryLabelPrefix = "Dernier pet il y a";
+        this._previousEntryLabelPrefix = "Pet précédent il y a";
         break;
       case ActivityType.Symptom:
         this._name = "Symptôme";
+        //this._previousEntryLabelPrefix = "Dernier symptôme il y a";
+        this._previousEntryLabelPrefix = "Symptôme précédent il y a";
         break;
       case ActivityType.Note:
         this._name = "Note";
+        //this._previousEntryLabelPrefix = "Dernière note il y a";
+        this._previousEntryLabelPrefix = "Note précédente il y a";
         break;
       default:
         this._name = "_";
+        //this._previousEntryLabelPrefix = "_";
+        this._previousEntryLabelPrefix = "_";
         break;
     }
   }

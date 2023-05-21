@@ -31,11 +31,12 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
   entries: EntryModel[];
+  allEntries: EntryModel[];
 };
 
 export default function EntriesCard(props: Props) {
   const navigate = useNavigate();
-  const { entries } = props;
+  const { entries, allEntries } = props;
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -89,6 +90,17 @@ export default function EntriesCard(props: Props) {
           const entryHasStopwatchRunning =
             entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
           if (entry.id == null) return null;
+          const previousEntry = allEntries
+            .slice()
+            // .reverse()
+            .find(
+              (e) =>
+                e.id != null &&
+                e.id != entry.id &&
+                e.activity?.type == entry.activity?.type &&
+                e.startDate.getTime() < entry.startDate.getTime()
+            );
+
           return (
             <CardActionArea
               key={entry.id}
@@ -234,13 +246,7 @@ export default function EntriesCard(props: Props) {
                     />
                     <EntryBody
                       entry={entry}
-                      previousEntry={
-                        // Find the next entry that has the same activity
-                        entries
-                          .slice(0, entryIndex)
-                          .reverse()
-                          .find((e) => e.activity === entry.activity)
-                      }
+                      previousEntry={previousEntry}
                       sx={{
                         paddingTop: 1,
                       }}

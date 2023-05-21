@@ -114,9 +114,16 @@ export default function NewEntryWidget(props: Props) {
             lastBottleFeedingEntry.time < 1000 * 60
           )
         : null;
+    const volume = lastBottleFeedingEntry.volume;
+    if (volume != null) {
+      parts.title = `${volume} ml`;
+    } else if (time != null) {
+      parts.title = time;
+    }
     parts.subtitle = "Il y a";
     const diff = now.getTime() - lastBottleFeedingEntry.endDate.getTime();
     parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+    return parts;
   }, [lastBottleFeedingEntry, now]);
   const lastDiaperEntry = useMemo(() => {
     const diaperEntries = entries?.filter(
@@ -141,11 +148,6 @@ export default function NewEntryWidget(props: Props) {
         subtitle: "",
       };
     }
-    const time = formatStopwatchTime(
-      lastDiaperEntry.time,
-      true,
-      lastDiaperEntry.time < 1000 * 60
-    );
     parts.subtitle = "Il y a";
     const diff = now.getTime() - lastDiaperEntry.endDate.getTime();
     parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
@@ -174,11 +176,17 @@ export default function NewEntryWidget(props: Props) {
         subtitle: "",
       };
     }
-    const time = formatStopwatchTime(
-      lastSleepEntry.time,
-      true,
-      lastSleepEntry.time < 1000 * 60
-    );
+    const time =
+      lastSleepEntry.time > 0
+        ? formatStopwatchTime(
+            lastSleepEntry.time,
+            true,
+            lastSleepEntry.time < 1000 * 60
+          )
+        : null;
+    if (time != null) {
+      parts.title = time;
+    }
     parts.subtitle = "Il y a";
     const diff = now.getTime() - lastSleepEntry.endDate.getTime();
     parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;

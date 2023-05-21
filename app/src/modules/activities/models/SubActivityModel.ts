@@ -1,4 +1,5 @@
 import SubActivityType from "@/modules/activities/enums/SubActivityType";
+
 export class SubActivityModel {
   private _type: SubActivityType;
   public get type(): SubActivityType {
@@ -7,6 +8,7 @@ export class SubActivityModel {
   public set type(v: SubActivityType) {
     this._type = v;
   }
+
   private _name: string;
   public get name(): string {
     return this._name;
@@ -20,6 +22,15 @@ export class SubActivityModel {
     switch (type) {
       case SubActivityType.Meconium:
         this._name = "Méconium";
+        break;
+      case SubActivityType.Crib:
+        this._name = "Bassinette";
+        break;
+      case SubActivityType.Cradle:
+        this._name = "Berceau";
+        break;
+      case SubActivityType.Bed:
+        this._name = "Lit";
         break;
       default:
         this._name = "_";
