@@ -132,6 +132,12 @@ export default class ActivityModel {
           ActivityType.Vomit,
           ActivityType.Burp,
         ];
+        this._subTypes = [
+          SubActivityType.FormulaMilk,
+          SubActivityType.BreastMilk,
+          SubActivityType.AdaptedCowMilk,
+          SubActivityType.GoatMilk,
+        ];
         break;
       case ActivityType.BreastFeeding:
         this._hasDuration = true;
@@ -179,7 +185,6 @@ export default class ActivityModel {
           ActivityType.Regurgitation,
           ActivityType.Vomit,
         ];
-        this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Hiccups:
         this._hasDuration = true;

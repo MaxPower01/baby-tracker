@@ -32,6 +32,18 @@ export class SubActivityModel {
       case SubActivityType.Bed:
         this._name = "Lit";
         break;
+      case SubActivityType.FormulaMilk:
+        this._name = "Lait maternisé";
+        break;
+      case SubActivityType.BreastMilk:
+        this._name = "Lait maternel";
+        break;
+      case SubActivityType.AdaptedCowMilk:
+        this._name = "Lait de vache adapté";
+        break;
+      case SubActivityType.GoatMilk:
+        this._name = "Lait de chèvre";
+        break;
       default:
         this._name = "_";
         break;

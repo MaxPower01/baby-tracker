@@ -486,25 +486,6 @@ export default function EntryForm(props: EntryFormProps) {
               </LocalizationProvider>
             )}
           </Stack>
-          {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
-            <Grid container gap={1} justifyContent="center">
-              {entry.activity?.linkedTypes.map((activityType) => {
-                if (entry.activity == null) return null;
-                const activity = new ActivityModel(activityType);
-                return (
-                  <ActivityChip
-                    key={`${entry.activity.type}-${activityType}`}
-                    activity={activity}
-                    isSelected={linkedActivities
-                      .map((a) => a.type)
-                      .includes(activity.type)}
-                    onClick={() => toggleLinkedActivity(activity)}
-                    isDisabled={anyStopwatchIsRunning}
-                  />
-                );
-              })}
-            </Grid>
-          )}
           {(subActivitiesTypes?.length ?? 0) > 0 && (
             <Grid container gap={1} justifyContent="center">
               {subActivitiesTypes.map((subActivityType) => {
@@ -518,6 +499,25 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(subActivity.type)}
                     onClick={() => toggleSubActivity(subActivity)}
+                    isDisabled={anyStopwatchIsRunning}
+                  />
+                );
+              })}
+            </Grid>
+          )}
+          {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
+            <Grid container gap={1} justifyContent="center">
+              {entry.activity?.linkedTypes.map((activityType) => {
+                if (entry.activity == null) return null;
+                const activity = new ActivityModel(activityType);
+                return (
+                  <ActivityChip
+                    key={`${entry.activity.type}-${activityType}`}
+                    activity={activity}
+                    isSelected={linkedActivities
+                      .map((a) => a.type)
+                      .includes(activity.type)}
+                    onClick={() => toggleLinkedActivity(activity)}
                     isDisabled={anyStopwatchIsRunning}
                   />
                 );
