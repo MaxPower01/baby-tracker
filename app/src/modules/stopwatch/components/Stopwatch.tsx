@@ -1,19 +1,29 @@
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import { formatStopwatchTime, isNullOrWhiteSpace } from "@/lib/utils";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 // import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import CloseIcon from "@mui/icons-material/Close";
 import {
+  Box,
   Button,
-  // IconButton,
+  Container,
+  Divider,
+  IconButton,
   InputAdornment,
   Stack,
+  SwipeableDrawer,
   SxProps,
   TextField,
+  Toolbar,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Props = {
+  playPauseButtonId: string;
+  editButtonId: string;
   label?: string;
   sx?: SxProps | undefined;
   time: number;
@@ -35,6 +45,8 @@ export default function Stopwatch(props: Props) {
     props;
 
   const theme = useTheme();
+
+  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
   useEffect(() => {
     if (isRunning) {
@@ -114,13 +126,15 @@ export default function Stopwatch(props: Props) {
     // transform: "translateX(-0.5em)",
   };
 
+  const textFieldVariant = "standard";
+
   const inputStyle: SxProps = {
     "& input": {
-      textAlign: "right",
-      fontSize: "1.5em",
+      textAlign: "center",
+      fontSize: "2em",
       fontWeight: "bold",
       // width: "2em",
-      maxWidth: "3em",
+      // maxWidth: "5em",
       color: theme.palette.primary.main,
     },
   };
@@ -128,154 +142,228 @@ export default function Stopwatch(props: Props) {
   const playPauseButtonFontSize = "3.5em";
 
   return (
-    <Stack spacing={2} sx={props.sx}>
-      {/* {props.label && (
+    <>
+      <Stack spacing={2} sx={props.sx}>
+        {/* {props.label && (
         <Typography textAlign="center" variant="body1">
           {props.label}
         </Typography>
       )} */}
-      <Stack
-        // direction={"row"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
-        spacing={2}
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Button
-          onClick={handleStartStop}
-          disabled={props.buttonIsDisabled}
-          sx={{
-            borderRadius: "9999px",
-            paddingLeft: 2,
-            paddingRight: 2,
-            paddingTop: 1,
-            paddingBottom: 1,
-            minWidth: "10em",
-          }}
-          variant={isRunning ? "contained" : "outlined"}
-        >
-          <Stack spacing={0} justifyContent={"center"} alignItems={"center"}>
-            {props.label && (
-              <Typography
-                textAlign="center"
-                variant="body1"
-                textTransform={"none"}
-                fontWeight={"300"}
-              >
-                {props.label}
-              </Typography>
-            )}
-            {isRunning ? (
-              <PauseIcon
-                sx={{
-                  fontSize: playPauseButtonFontSize,
-                }}
-              />
-            ) : (
-              <PlayArrowIcon
-                sx={{
-                  fontSize: playPauseButtonFontSize,
-                }}
-              />
-            )}
-          </Stack>
-        </Button>
         <Stack
-          direction={"row"}
-          spacing={0}
-          justifyContent={"center"}
+          // direction={"row"}
           alignItems={"center"}
+          justifyContent={"space-between"}
+          spacing={2}
+          sx={{
+            width: "100%",
+          }}
         >
-          <TextField
-            variant="standard"
-            type="number"
-            name="hours"
-            placeholder="00"
-            value={hours}
-            onChange={handleInputChange}
+          <Button
+            id={props.playPauseButtonId}
+            onClick={handleStartStop}
+            disabled={props.buttonIsDisabled}
             sx={{
-              ...textfieldStyle,
+              borderRadius: "9999px",
+              paddingLeft: 2,
+              paddingRight: 2,
+              paddingTop: 1,
+              paddingBottom: 1,
+              minWidth: "10em",
             }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">h</InputAdornment>,
-              onFocus: (event) => {
-                if (inputsAreReadOnly) {
-                  event.target.blur();
-                } else {
-                  event.target.select();
-                }
-              },
-              readOnly: inputsAreReadOnly,
-              "aria-valuemin": 0,
-              "aria-colcount": 2,
-              sx: {
-                ...inputStyle,
-              },
-            }}
-            // disabled={props.inputsAreDisabled}
-          />
-          <TextField
-            variant="standard"
-            type="number"
-            name="minutes"
-            placeholder="00"
-            value={minutes}
-            sx={{
-              ...textfieldStyle,
-            }}
-            onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">m</InputAdornment>,
-              onFocus: (event) => {
-                if (inputsAreReadOnly) {
-                  event.target.blur();
-                } else {
-                  event.target.select();
-                }
-              },
-              readOnly: inputsAreReadOnly,
-              "aria-valuemin": 0,
-              "aria-valuemax": 59,
-              "aria-colcount": 2,
-              sx: {
-                ...inputStyle,
-              },
-            }}
-            // disabled={props.inputsAreDisabled}
-          />
-          <TextField
-            variant="standard"
-            type="number"
-            name="seconds"
-            placeholder="00"
-            sx={{
-              ...textfieldStyle,
-            }}
-            value={seconds}
-            onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">s</InputAdornment>,
-              onFocus: (event) => {
-                if (inputsAreReadOnly) {
-                  event.target.blur();
-                } else {
-                  event.target.select();
-                }
-              },
-              readOnly: inputsAreReadOnly,
-              "aria-valuemin": 0,
-              "aria-valuemax": 59,
-              "aria-colcount": 2,
-              sx: {
-                ...inputStyle,
-              },
-            }}
-            // disabled={props.inputsAreDisabled}
-          />
+            variant={isRunning ? "contained" : "outlined"}
+          >
+            <Stack spacing={0} justifyContent={"center"} alignItems={"center"}>
+              {props.label && (
+                <Typography
+                  textAlign="center"
+                  variant="body1"
+                  textTransform={"none"}
+                  fontWeight={"300"}
+                >
+                  {props.label}
+                </Typography>
+              )}
+              {isRunning ? (
+                <PauseIcon
+                  sx={{
+                    fontSize: playPauseButtonFontSize,
+                  }}
+                />
+              ) : (
+                <PlayArrowIcon
+                  sx={{
+                    fontSize: playPauseButtonFontSize,
+                  }}
+                />
+              )}
+            </Stack>
+          </Button>
+          <Stack
+            direction={"row"}
+            spacing={0}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Button
+              id={props.editButtonId}
+              variant="outlined"
+              onClick={() => {
+                setDrawerIsOpen(true);
+              }}
+              disabled={inputsAreReadOnly}
+            >
+              <Typography variant="h6">
+                {formatStopwatchTime(time, false, true)}
+              </Typography>
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+
+      <SwipeableDrawer
+        anchor="bottom"
+        open={drawerIsOpen}
+        onOpen={() => {}}
+        onClose={() => setDrawerIsOpen(false)}
+        disableSwipeToOpen={true}
+      >
+        <Box
+          sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            backgroundColor: "inherit",
+            backgroundImage: "inherit",
+          }}
+        >
+          <Container maxWidth={CSSBreakpoint.Small} disableGutters>
+            <Toolbar>
+              <Typography variant="h6">
+                Modifier la durée
+                {!isNullOrWhiteSpace(props.label) && ` (${props.label})`}
+              </Typography>
+              <Box sx={{ flexGrow: 1 }} />
+              <IconButton onClick={() => setDrawerIsOpen(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider
+              sx={{
+                marginLeft: 2,
+                marginRight: 2,
+              }}
+            />
+          </Container>
+        </Box>
+        <Container maxWidth={CSSBreakpoint.Small}>
+          <Box
+            sx={{
+              maxHeight: "70vh",
+            }}
+          >
+            <Stack
+              direction={"row"}
+              spacing={2}
+              justifyContent={"center"}
+              alignItems={"center"}
+              sx={{
+                marginTop: 2,
+                marginBottom: 2,
+              }}
+            >
+              <TextField
+                variant={textFieldVariant}
+                type="number"
+                name="hours"
+                placeholder="00"
+                value={hours}
+                onChange={handleInputChange}
+                sx={{
+                  ...textfieldStyle,
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">heures</InputAdornment>
+                  ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
+                }}
+              />
+              <TextField
+                variant={textFieldVariant}
+                type="number"
+                name="minutes"
+                placeholder="00"
+                value={minutes}
+                sx={{
+                  ...textfieldStyle,
+                }}
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">minutes</InputAdornment>
+                  ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-valuemax": 59,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
+                }}
+              />
+              <TextField
+                variant={textFieldVariant}
+                type="number"
+                name="seconds"
+                placeholder="00"
+                sx={{
+                  ...textfieldStyle,
+                }}
+                value={seconds}
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">secondes</InputAdornment>
+                  ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-valuemax": 59,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
+                }}
+              />
+            </Stack>
+          </Box>
+        </Container>
+      </SwipeableDrawer>
+    </>
   );
 }

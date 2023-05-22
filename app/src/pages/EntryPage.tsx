@@ -4,6 +4,7 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import EntryForm from "@/modules/entries/components/EntryForm";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import { selectEntry } from "@/modules/entries/state/entriesSlice";
+import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { RootState } from "@/modules/store/store";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -41,10 +42,12 @@ export default function EntryPage() {
   // }
 
   return (
-    <EntryForm
-      entry={entry}
-      isEditing={existingEntry != null}
-      shouldStartTimer={shouldStartTimerParam as any}
-    />
+    <MenuProvider>
+      <EntryForm
+        entry={entry}
+        isEditing={existingEntry != null}
+        shouldStartTimer={shouldStartTimerParam as any}
+      />
+    </MenuProvider>
   );
 }

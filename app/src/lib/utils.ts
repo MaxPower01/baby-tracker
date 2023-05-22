@@ -177,7 +177,7 @@ export function formatStopwatchesTime(
     if (showLetters) {
       return "0 s";
     }
-    return "00:00";
+    return "00:00:00";
   }
   let seconds = Math.floor((totalTime % 60000) / 1000);
   let minutes = Math.floor((totalTime % 3600000) / 60000);

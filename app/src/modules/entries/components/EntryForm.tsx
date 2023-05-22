@@ -17,6 +17,7 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import useEntries from "@/modules/entries/hooks/useEntries";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
+import useMenu from "@/modules/menu/hooks/useMenu";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
@@ -24,9 +25,11 @@ import {
   Alert,
   AlertColor,
   AppBar,
+  Box,
   Button,
   Container,
   Grid,
+  MenuItem,
   Slide,
   Snackbar,
   Stack,
@@ -35,6 +38,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import VolumeMenu from "@mui/material/Menu";
 import {
   LocalizationProvider,
   MobileDateTimePicker,
@@ -54,6 +58,20 @@ export default function EntryForm(props: EntryFormProps) {
   const { entryId: paramsEntryId } = useParams();
   const [entryId, setEntryId] = useState<string | undefined>(paramsEntryId);
   const { entries, saveEntry } = useEntries();
+  const {
+    Menu: StopwatchMenu,
+    openMenu: openStopwatchMenu,
+    closeMenu: closeStopwatchMenu,
+  } = useMenu();
+
+  const [volumeMenuAnchorEl, setVolumeMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
+  const volumeMenuOpen = Boolean(volumeMenuAnchorEl);
+
+  const handleVolumeMenuClose = () => {
+    setVolumeMenuAnchorEl(null);
+  };
+
   const [entry, setEntry] = useState<EntryModel>(
     entryId == null
       ? props.entry
@@ -66,16 +84,16 @@ export default function EntryForm(props: EntryFormProps) {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     AlertColor | undefined
   >(undefined);
-  const [snackbarIsOpened, setSnackbarIsOpened] = useState(false);
+  const [snackbarIsOpen, setSnackbarIsOpen] = useState(false);
 
   const handleSnackbarClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setSnackbarIsOpened(false);
+    // if (reason === "clickaway") {
+    //   return;
+    // }
+    setSnackbarIsOpen(false);
   };
 
   const navigate = useNavigate();
@@ -200,7 +218,57 @@ export default function EntryForm(props: EntryFormProps) {
     });
   }, [entry]);
 
-  // Handle the volume
+  // Handle the stopwatches
+
+  const anyStopwatchIsRunning = useMemo(() => {
+    return entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+  }, [entry]);
+
+  const stopWatchTimeLabel = useMemo(() => {
+    return formatStopwatchesTime([entry.leftTime, entry.rightTime], true);
+  }, [entry]);
+
+  const leftStopwatchPlayPauseButtonId =
+    "entryFormLeftStopwatchPlayPauseButton";
+  const leftStopwatchEditButtonId = "entryFormLeftStopwatchEditButton";
+  const rightStopwatchPlayPauseButtonId =
+    "entryFormRightStopwatchPlayPauseButton";
+  const rightStopwatchEditButtonId = "entryFormRightStopwatchEditButton";
+
+  const triggerEditOnLeftStopwatch = (e: React.MouseEvent) => {
+    const leftStopwatchEditButton = document.getElementById(
+      leftStopwatchEditButtonId
+    );
+    if (leftStopwatchEditButton != null) {
+      leftStopwatchEditButton.click();
+    }
+  };
+
+  const triggerEditOnRightStopwatch = (e: React.MouseEvent) => {
+    const rightStopwatchEditButton = document.getElementById(
+      rightStopwatchEditButtonId
+    );
+    if (rightStopwatchEditButton != null) {
+      rightStopwatchEditButton.click();
+    }
+  };
+
+  const handleDurationClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (anyStopwatchIsRunning) {
+        return;
+      }
+      const hasSides = entry.activity?.hasSides ?? false;
+      if (hasSides) {
+        openStopwatchMenu(e);
+      } else {
+        triggerEditOnLeftStopwatch(e);
+      }
+    },
+    [entry, anyStopwatchIsRunning]
+  );
+
+  // Handle volume
 
   const handleVolumeChange = (params: { side: string; newVolume: number }) => {
     if (params.newVolume < 0) return;
@@ -222,38 +290,37 @@ export default function EntryForm(props: EntryFormProps) {
     return `${volume} ml`;
   }, [entry]);
 
-  // Handle the stopwatches
+  const leftVolumeButtonId = "entryFormLeftVolumeButton";
+  const rightVolumeButtonId = "entryFormRightVolumeButton";
 
-  const anyStopwatchIsRunning = useMemo(() => {
-    return entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
-  }, [entry]);
+  const triggerEditOnLeftVolume = (e: React.MouseEvent) => {
+    const leftVolumeButton = document.getElementById(leftVolumeButtonId);
+    if (leftVolumeButton != null) {
+      leftVolumeButton.click();
+    }
+  };
 
-  const stopWatchTimeLabel = useMemo(() => {
-    return formatStopwatchesTime([entry.leftTime, entry.rightTime], true);
-  }, [entry]);
+  const triggerEditOnRightVolume = (e: React.MouseEvent) => {
+    const rightVolumeButton = document.getElementById(rightVolumeButtonId);
+    if (rightVolumeButton != null) {
+      rightVolumeButton.click();
+    }
+  };
 
-  // const handleStopwatchChange = (params: {
-  //   side: string;
-  //   time: number;
-  //   isRunning: boolean;
-  //   lastUpdateTime: number | null;
-  // }) => {
-  //   setEntry((prevEntry) => {
-  //     const newEntry = prevEntry.clone();
-  //     if (params.side === "left") {
-  //       newEntry.leftTime = params.time;
-  //       newEntry.leftStopwatchIsRunning = params.isRunning;
-  //       newEntry.leftStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
-  //     } else {
-  //       newEntry.rightTime = params.time;
-  //       newEntry.rightStopwatchIsRunning = params.isRunning;
-  //       newEntry.rightStopwatchLastUpdateTime = params.lastUpdateTime ?? null;
-  //     }
-  //     newEntry.setEndDate();
-  //     // save(newEntry);
-  //     return newEntry;
-  //   });
-  // };
+  const handleVolumeClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (anyStopwatchIsRunning) {
+        return;
+      }
+      const hasSides = entry.activity?.hasSides ?? false;
+      if (hasSides) {
+        setVolumeMenuAnchorEl(e.currentTarget);
+      } else {
+        triggerEditOnLeftVolume(e);
+      }
+    },
+    [entry, anyStopwatchIsRunning]
+  );
 
   // Handle save
 
@@ -269,7 +336,7 @@ export default function EntryForm(props: EntryFormProps) {
       }
       try {
         if (user == null || isNullOrWhiteSpace(selectedChild)) {
-          setSnackbarIsOpened(true);
+          setSnackbarIsOpen(true);
           setSnackbarSeverity("error");
           setSnackbarMessage("Aucun enfant sélectionné");
           return false;
@@ -284,7 +351,7 @@ export default function EntryForm(props: EntryFormProps) {
         // setSnackbarSeverity("success");
         // setSnackbarMessage("Entrée enregistrée");
       } catch (error) {
-        setSnackbarIsOpened(true);
+        setSnackbarIsOpen(true);
         setSnackbarSeverity("error");
         setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
         return false;
@@ -404,6 +471,15 @@ export default function EntryForm(props: EntryFormProps) {
             sx={{
               width: "100%",
             }}
+            onClick={(e) => {
+              if (anyStopwatchIsRunning) {
+                setSnackbarMessage(
+                  "Les modifications sont désactivées pendant que le chronomètre tourne."
+                );
+                setSnackbarSeverity("info");
+                setSnackbarIsOpen(true);
+              }
+            }}
           >
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
@@ -487,7 +563,20 @@ export default function EntryForm(props: EntryFormProps) {
             )}
           </Stack>
           {(subActivitiesTypes?.length ?? 0) > 0 && (
-            <Grid container gap={1} justifyContent="center">
+            <Grid
+              container
+              gap={1}
+              justifyContent="center"
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
+            >
               {subActivitiesTypes.map((subActivityType) => {
                 if (entry.activity == null) return null;
                 const subActivity = new SubActivityModel(subActivityType);
@@ -506,7 +595,20 @@ export default function EntryForm(props: EntryFormProps) {
             </Grid>
           )}
           {(entry.activity?.linkedTypes?.length ?? 0) > 0 && (
-            <Grid container gap={1} justifyContent="center">
+            <Grid
+              container
+              gap={1}
+              justifyContent="center"
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
+            >
               {entry.activity?.linkedTypes.map((activityType) => {
                 if (entry.activity == null) return null;
                 const activity = new ActivityModel(activityType);
@@ -529,9 +631,32 @@ export default function EntryForm(props: EntryFormProps) {
         {entry.activity?.hasVolume == true && (
           <Section dividerPosition="top">
             <SectionTitle title="Quantité" />
-            <Typography textAlign="center" variant="h4">
-              {volumeLabel}
-            </Typography>
+            <Box
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
+            >
+              <Button
+                variant="text"
+                onClick={(e) => handleVolumeClick(e)}
+                disabled={anyStopwatchIsRunning}
+              >
+                <Typography
+                  textAlign="center"
+                  variant="h4"
+                  textTransform={"none"}
+                  color={theme.palette.text.primary}
+                >
+                  {volumeLabel}
+                </Typography>
+              </Button>
+            </Box>
             <Stack
               direction={"row"}
               justifyContent={"space-around"}
@@ -539,8 +664,18 @@ export default function EntryForm(props: EntryFormProps) {
               sx={{
                 width: "100%",
               }}
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
             >
               <VolumeInput
+                buttonId={leftVolumeButtonId}
                 volume={entry.leftVolume}
                 onChange={({ volume }) =>
                   handleVolumeChange({ side: "left", newVolume: volume })
@@ -550,6 +685,7 @@ export default function EntryForm(props: EntryFormProps) {
               />
               {entry.activity?.hasSides && (
                 <VolumeInput
+                  buttonId={rightVolumeButtonId}
                   volume={entry.rightVolume}
                   onChange={({ volume }) =>
                     handleVolumeChange({ side: "right", newVolume: volume })
@@ -558,50 +694,155 @@ export default function EntryForm(props: EntryFormProps) {
                   inputsAreDisabled={anyStopwatchIsRunning}
                 />
               )}
+              <VolumeMenu
+                anchorEl={volumeMenuAnchorEl}
+                open={volumeMenuOpen}
+                onClose={handleVolumeMenuClose}
+              >
+                <MenuItem
+                  onClick={(e) => {
+                    handleVolumeMenuClose();
+                    triggerEditOnLeftVolume(e);
+                  }}
+                >
+                  Modifier le côté gauche
+                </MenuItem>
+                <MenuItem
+                  onClick={(e) => {
+                    handleVolumeMenuClose();
+                    triggerEditOnRightVolume(e);
+                  }}
+                >
+                  Modifier le côté droit
+                </MenuItem>
+              </VolumeMenu>
             </Stack>
           </Section>
         )}
         {entry.activity?.hasDuration == true && (
           <Section dividerPosition="top">
             <SectionTitle title="Durée" />
-            <Typography textAlign="center" variant="h4">
-              {stopWatchTimeLabel}
-            </Typography>
-            <Stack direction={"row"} spacing={4}>
-              <Stopwatch
-                label={entry.activity?.hasSides ? "Gauche" : undefined}
-                sx={{ flex: 1, width: "100%" }}
-                time={entry.leftTime}
-                isRunning={entry.leftStopwatchIsRunning}
-                lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
-                buttonIsDisabled={entry.rightStopwatchIsRunning}
-                // inputsAreDisabled={anyStopwatchIsRunning}
-                inputsAreReadOnly={anyStopwatchIsRunning}
-                onChange={(params) =>
-                  handleStopwatchChange({
-                    ...params,
-                    side: "left",
-                  })
+            <Box
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
                 }
-              />
-              {entry.activity?.hasSides && (
+              }}
+            >
+              <Button
+                variant="text"
+                onClick={(e) => handleDurationClick(e)}
+                disabled={anyStopwatchIsRunning}
+              >
+                <Typography
+                  textAlign="center"
+                  variant="h4"
+                  textTransform={"none"}
+                  color={theme.palette.text.primary}
+                >
+                  {stopWatchTimeLabel}
+                </Typography>
+              </Button>
+            </Box>
+            <Stack
+              direction={"row"}
+              spacing={4}
+              sx={{
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  flex: 1,
+                  width: "100%",
+                }}
+                onClick={(e) => {
+                  if (entry.rightStopwatchIsRunning) {
+                    setSnackbarMessage(
+                      "Les modifications sont désactivées pendant que le chronomètre tourne."
+                    );
+                    setSnackbarSeverity("info");
+                    setSnackbarIsOpen(true);
+                  }
+                }}
+              >
                 <Stopwatch
-                  label="Droite"
+                  playPauseButtonId={leftStopwatchPlayPauseButtonId}
+                  editButtonId={leftStopwatchEditButtonId}
+                  label={entry.activity?.hasSides ? "Gauche" : undefined}
                   sx={{ flex: 1, width: "100%" }}
-                  time={entry.rightTime}
-                  isRunning={entry.rightStopwatchIsRunning}
-                  lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
-                  buttonIsDisabled={entry.leftStopwatchIsRunning}
+                  time={entry.leftTime}
+                  isRunning={entry.leftStopwatchIsRunning}
+                  lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
+                  buttonIsDisabled={entry.rightStopwatchIsRunning}
                   // inputsAreDisabled={anyStopwatchIsRunning}
                   inputsAreReadOnly={anyStopwatchIsRunning}
                   onChange={(params) =>
                     handleStopwatchChange({
                       ...params,
-                      side: "right",
+                      side: "left",
                     })
                   }
                 />
+              </Box>
+              {entry.activity?.hasSides && (
+                <Box
+                  sx={{
+                    flex: 1,
+                    width: "100%",
+                  }}
+                  onClick={(e) => {
+                    if (entry.leftStopwatchIsRunning) {
+                      setSnackbarMessage(
+                        "Les modifications sont désactivées pendant que le chronomètre tourne."
+                      );
+                      setSnackbarSeverity("info");
+                      setSnackbarIsOpen(true);
+                    }
+                  }}
+                >
+                  <Stopwatch
+                    playPauseButtonId={rightStopwatchPlayPauseButtonId}
+                    editButtonId={rightStopwatchEditButtonId}
+                    label="Droite"
+                    sx={{ flex: 1, width: "100%" }}
+                    time={entry.rightTime}
+                    isRunning={entry.rightStopwatchIsRunning}
+                    lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
+                    buttonIsDisabled={entry.leftStopwatchIsRunning}
+                    // inputsAreDisabled={anyStopwatchIsRunning}
+                    inputsAreReadOnly={anyStopwatchIsRunning}
+                    onChange={(params) =>
+                      handleStopwatchChange({
+                        ...params,
+                        side: "right",
+                      })
+                    }
+                  />
+                </Box>
               )}
+              <StopwatchMenu>
+                <MenuItem
+                  onClick={(e) => {
+                    closeStopwatchMenu(e);
+                    triggerEditOnLeftStopwatch(e);
+                  }}
+                >
+                  Modifier le côté gauche
+                </MenuItem>
+                <MenuItem
+                  onClick={(e) => {
+                    closeStopwatchMenu(e);
+                    triggerEditOnRightStopwatch(e);
+                  }}
+                >
+                  Modifier le côté droit
+                </MenuItem>
+              </StopwatchMenu>
             </Stack>
           </Section>
         )}
@@ -618,6 +859,15 @@ export default function EntryForm(props: EntryFormProps) {
             multiline
             minRows={5}
             disabled={anyStopwatchIsRunning}
+            onClick={(e) => {
+              if (anyStopwatchIsRunning) {
+                setSnackbarMessage(
+                  "Les modifications sont désactivées pendant que le chronomètre tourne."
+                );
+                setSnackbarSeverity("info");
+                setSnackbarIsOpen(true);
+              }
+            }}
           />
         </Section>
       </Stack>
@@ -663,11 +913,10 @@ export default function EntryForm(props: EntryFormProps) {
       </AppBar>
 
       <Snackbar
-        open={snackbarIsOpened}
-        autoHideDuration={2000}
+        open={snackbarIsOpen}
+        autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        TransitionProps={{ dir: "down" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         TransitionComponent={Slide}
       >
         <Alert
