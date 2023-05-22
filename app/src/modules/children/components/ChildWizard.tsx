@@ -6,6 +6,7 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import {
   Button,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -35,7 +36,9 @@ export default function ChildWizard() {
   const { user, setChildren } = useAuthentication();
   const [step, setStep] = useState(1);
   const [sex, setSex] = useState("");
+  const [sexError, setSexError] = useState("");
   const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
   const [birthDate, setBirthDate] = useState<Dayjs | null>(dayjs());
 
   const goToNextStep = () => {
@@ -47,13 +50,29 @@ export default function ChildWizard() {
   };
 
   const handleSexChange = (event: SelectChangeEvent<string>) => {
-    console.log(event);
     setSex(event.target.value);
+    setSexError("");
   };
+
+  const handleSubmitSex = useCallback(() => {
+    if (sex === "") {
+      setSexError("Veuillez sélectionner un sexe pour continuer");
+      return;
+    }
+    goToNextStep();
+  }, [sex]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
+
+  const handleNameSubmit = useCallback(() => {
+    if (name === "") {
+      setNameError("Veuillez entrer un nom pour continuer");
+      return;
+    }
+    goToNextStep();
+  }, [name]);
 
   const handleBirthDateChange = (newBirdhDate: Dayjs | null) => {
     setBirthDate(newBirdhDate);
@@ -105,12 +124,16 @@ export default function ChildWizard() {
                 }}
                 onChange={handleSexChange}
                 autoFocus
+                error={sexError !== ""}
               >
                 <MenuItem value="male">Garçon</MenuItem>
                 <MenuItem value="female">Fille</MenuItem>
               </Select>
+              <FormHelperText error={sexError !== ""}>
+                {sexError !== "" ? sexError : ""}
+              </FormHelperText>
             </FormControl>
-            <Button onClick={goToNextStep} variant="contained">
+            <Button onClick={handleSubmitSex} variant="contained">
               Suivant
             </Button>
           </>
@@ -125,9 +148,11 @@ export default function ChildWizard() {
                 value={name}
                 onChange={handleNameChange}
                 autoFocus
+                helperText={nameError}
+                error={nameError !== ""}
               />
             </FormControl>
-            <Button onClick={goToNextStep} variant="contained">
+            <Button onClick={handleNameSubmit} variant="contained">
               Suivant
             </Button>
             <Button onClick={goToPreviousStep} variant="outlined">
@@ -168,7 +193,20 @@ export default function ChildWizard() {
       default:
         return null;
     }
-  }, [step, sex, name, birthDate]);
+  }, [
+    step,
+    sex,
+    name,
+    birthDate,
+    sexError,
+    handleSexChange,
+    handleSubmitSex,
+    handleNameChange,
+    handleNameSubmit,
+    handleBirthDateChange,
+    handleSubmit,
+    goToPreviousStep,
+  ]);
 
   return <Stack spacing={2}>{renderStep()}</Stack>;
 }
