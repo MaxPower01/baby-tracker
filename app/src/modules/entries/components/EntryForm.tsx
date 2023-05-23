@@ -563,7 +563,6 @@ export default function EntryForm(props: EntryFormProps) {
             )}
           </Stack>
           {(subActivitiesTypes?.length ?? 0) > 0 && (
-            // Test
             <Grid
               container
               gap={1}
