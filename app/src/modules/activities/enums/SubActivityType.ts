@@ -7,5 +7,8 @@ enum SubActivityType {
   BreastMilk = 6,
   AdaptedCowMilk = 7,
   GoatMilk = 8,
+  Swing = 9,
+  SalineSolution = 10,
+  NasalAspirator = 11,
 }
 export default SubActivityType;

@@ -112,118 +112,38 @@ export default class ActivityModel {
     this._type = type;
     this._name = this.getNameFor(type);
     this._previousEntryLabelPrefix = this.getPreviousEntryLabelPrefixFor(type);
+    this._linkedTypes = this.getLinkedTypesFor(type);
+    this._subTypes = this.getSubTypesFor(type);
     switch (type) {
       case ActivityType.Bath:
         this._hasDuration = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-          ActivityType.Poop,
-          ActivityType.Urine,
-        ];
         break;
       case ActivityType.BottleFeeding:
         this._hasDuration = true;
         this._hasVolume = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-        ];
-        this._subTypes = [
-          SubActivityType.FormulaMilk,
-          SubActivityType.BreastMilk,
-          SubActivityType.AdaptedCowMilk,
-          SubActivityType.GoatMilk,
-        ];
         break;
       case ActivityType.BreastFeeding:
         this._hasDuration = true;
         this._hasSides = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-        ];
         break;
       case ActivityType.Burp:
-        this._linkedTypes = [ActivityType.Regurgitation, ActivityType.Vomit];
         break;
       case ActivityType.CarRide:
         this._hasDuration = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-          ActivityType.Poop,
-          ActivityType.Urine,
-          ActivityType.Sleep,
-          ActivityType.Diaper,
-          ActivityType.BreastFeeding,
-          ActivityType.Hiccups,
-        ];
         break;
       case ActivityType.Cry:
         this._hasDuration = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Hiccups,
-          ActivityType.Poop,
-          ActivityType.Urine,
-        ];
         break;
       case ActivityType.Diaper:
-        this._linkedTypes = [
-          ActivityType.Poop,
-          ActivityType.Urine,
-          ActivityType.Burp,
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-        ];
         break;
       case ActivityType.Hiccups:
         this._hasDuration = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-        ];
         break;
       case ActivityType.Hospital:
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-          ActivityType.Poop,
-          ActivityType.Urine,
-          ActivityType.Sleep,
-          ActivityType.Diaper,
-          ActivityType.BreastFeeding,
-          ActivityType.Hiccups,
-        ];
         break;
       case ActivityType.HeadCircumference:
         break;
       case ActivityType.MedicalFollowUp:
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-          ActivityType.Poop,
-          ActivityType.Urine,
-          ActivityType.Sleep,
-          ActivityType.Diaper,
-          ActivityType.BreastFeeding,
-          ActivityType.Hiccups,
-        ];
         break;
       case ActivityType.Medicine:
         break;
@@ -235,28 +155,16 @@ export default class ActivityModel {
       case ActivityType.NailCutting:
         break;
       case ActivityType.NasalHygiene:
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-        ];
         break;
       case ActivityType.Play:
         this._hasDuration = true;
         break;
       case ActivityType.Poop:
-        this._subTypes = [SubActivityType.Meconium];
         break;
       case ActivityType.Size:
         break;
       case ActivityType.Sleep:
         this._hasDuration = true;
-        this._subTypes = [
-          SubActivityType.Crib,
-          SubActivityType.Cradle,
-          SubActivityType.Bed,
-        ];
         break;
       case ActivityType.SolidFood:
         break;
@@ -274,18 +182,6 @@ export default class ActivityModel {
         break;
       case ActivityType.Walk:
         this._hasDuration = true;
-        this._linkedTypes = [
-          ActivityType.Regurgitation,
-          ActivityType.Vomit,
-          ActivityType.Burp,
-          ActivityType.Cry,
-          ActivityType.Sleep,
-          ActivityType.Diaper,
-          ActivityType.Poop,
-          ActivityType.Urine,
-          ActivityType.BreastFeeding,
-          ActivityType.Hiccups,
-        ];
         break;
       case ActivityType.Weight:
         break;
@@ -436,6 +332,240 @@ export default class ActivityModel {
       default:
         return "";
     }
+  }
+
+  getLinkedTypesFor(type: ActivityType): ActivityType[] {
+    switch (type) {
+      case ActivityType.Bath:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
+      case ActivityType.BottleFeeding:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+        ];
+      case ActivityType.BreastFeeding:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+        ];
+      case ActivityType.Burp:
+        return [ActivityType.Regurgitation, ActivityType.Vomit];
+      case ActivityType.CarRide:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
+      case ActivityType.Cry:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Hiccups,
+          ActivityType.Poop,
+          ActivityType.Urine,
+        ];
+      case ActivityType.Diaper:
+        return [
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Burp,
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+        ];
+      case ActivityType.Hiccups:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+        ];
+      case ActivityType.Hospital:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
+      case ActivityType.HeadCircumference:
+        break;
+      case ActivityType.MedicalFollowUp:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
+      case ActivityType.Medicine:
+        break;
+      case ActivityType.MilkExtraction:
+        break;
+      case ActivityType.NailCutting:
+        break;
+      case ActivityType.NasalHygiene:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+        ];
+      case ActivityType.Play:
+        break;
+      case ActivityType.Poop:
+        break;
+      case ActivityType.Size:
+        break;
+      case ActivityType.Sleep:
+        break;
+      case ActivityType.SolidFood:
+        break;
+      case ActivityType.Regurgitation:
+        break;
+      case ActivityType.Temperature:
+        break;
+      case ActivityType.Teeth:
+        break;
+      case ActivityType.Urine:
+        break;
+      case ActivityType.Vaccine:
+        break;
+      case ActivityType.Vomit:
+        break;
+      case ActivityType.Walk:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Sleep,
+          ActivityType.Diaper,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.BreastFeeding,
+          ActivityType.Hiccups,
+        ];
+      case ActivityType.Weight:
+        break;
+      case ActivityType.Fart:
+        break;
+      case ActivityType.Symptom:
+        break;
+      case ActivityType.Note:
+        break;
+      default:
+        break;
+    }
+
+    return [];
+  }
+
+  getSubTypesFor(type: ActivityType): SubActivityType[] {
+    switch (type) {
+      case ActivityType.Bath:
+        break;
+      case ActivityType.BottleFeeding:
+        return [
+          SubActivityType.FormulaMilk,
+          SubActivityType.BreastMilk,
+          SubActivityType.AdaptedCowMilk,
+          SubActivityType.GoatMilk,
+        ];
+      case ActivityType.BreastFeeding:
+        break;
+      case ActivityType.Burp:
+        break;
+      case ActivityType.CarRide:
+        break;
+      case ActivityType.Cry:
+        break;
+      case ActivityType.Diaper:
+        break;
+      case ActivityType.Hiccups:
+        break;
+      case ActivityType.Hospital:
+        break;
+      case ActivityType.HeadCircumference:
+        break;
+      case ActivityType.MedicalFollowUp:
+        break;
+      case ActivityType.Medicine:
+        break;
+      case ActivityType.MilkExtraction:
+        break;
+      case ActivityType.NailCutting:
+        break;
+      case ActivityType.NasalHygiene:
+        return [SubActivityType.SalineSolution, SubActivityType.NasalAspirator];
+      case ActivityType.Play:
+        break;
+      case ActivityType.Poop:
+        return [SubActivityType.Meconium];
+      case ActivityType.Size:
+        break;
+      case ActivityType.Sleep:
+        return [
+          SubActivityType.Crib,
+          SubActivityType.Cradle,
+          SubActivityType.Bed,
+          SubActivityType.Swing,
+        ];
+      case ActivityType.SolidFood:
+        break;
+      case ActivityType.Regurgitation:
+        break;
+      case ActivityType.Temperature:
+        break;
+      case ActivityType.Teeth:
+        break;
+      case ActivityType.Urine:
+        break;
+      case ActivityType.Vaccine:
+        break;
+      case ActivityType.Vomit:
+        break;
+      case ActivityType.Walk:
+        break;
+      case ActivityType.Weight:
+        break;
+      case ActivityType.Fart:
+        break;
+      case ActivityType.Symptom:
+        break;
+      case ActivityType.Note:
+        break;
+      default:
+        break;
+    }
+
+    return [];
   }
 
   public toJSON(): any {

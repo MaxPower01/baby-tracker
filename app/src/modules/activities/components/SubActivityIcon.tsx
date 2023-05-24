@@ -15,6 +15,10 @@ function BottleFeedingIcon() {
   return <ReactSVG src="/icons/bottle-feeding.svg" className="ActivityIcon" />;
 }
 
+function NasalHygieneIcon() {
+  return <ReactSVG src="/icons/nasal-hygiene.svg" className="ActivityIcon" />;
+}
+
 type Props = {
   subActivity: SubActivityModel;
   sx?: SxProps | undefined;
@@ -30,12 +34,16 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
           case SubActivityType.Cradle:
           case SubActivityType.Crib:
           case SubActivityType.Bed:
+          case SubActivityType.Swing:
             return <SleepIcon />;
           case SubActivityType.FormulaMilk:
           case SubActivityType.BreastMilk:
           case SubActivityType.AdaptedCowMilk:
           case SubActivityType.GoatMilk:
             return <BottleFeedingIcon />;
+          case SubActivityType.NasalAspirator:
+          case SubActivityType.SalineSolution:
+            return <NasalHygieneIcon />;
           default:
             return null;
         }

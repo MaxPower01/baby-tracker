@@ -240,7 +240,7 @@ export default function EntryBody(props: Props) {
           variant="body2"
           sx={{
             ...textStyle,
-            opacity: 0.5,
+            opacity: 0.35,
             fontStyle: "italic",
             fontWeight: 300,
           }}

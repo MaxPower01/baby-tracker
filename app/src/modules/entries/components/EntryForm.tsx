@@ -199,20 +199,24 @@ export default function EntryForm(props: EntryFormProps) {
   }, [entry]);
 
   const subActivitiesTypes = useMemo(() => {
-    let result = entry.linkedActivities
-      .map((a) => {
-        return a.subTypes.map((subType) => {
-          return subType;
-        });
-      })
-      .flat();
-    if (entry.activity != null) {
-      result = result.concat(
-        entry.activity.subTypes.map((subType) => {
-          return subType;
-        })
-      );
-    }
+    // let result = entry.linkedActivities
+    //   .map((a) => {
+    //     return a.subTypes.map((subType) => {
+    //       return subType;
+    //     });
+    //   })
+    //   .flat();
+    // if (entry.activity != null) {
+    //   result = result.concat(
+    //     entry.activity.subTypes.map((subType) => {
+    //       return subType;
+    //     })
+    //   );
+    // }
+    if (entry.activity == null) return [];
+    let result = entry.activity.subTypes.map((subType) => {
+      return subType;
+    });
     return result.filter((subType, index, self) => {
       return self.findIndex((s) => s === subType) === index;
     });

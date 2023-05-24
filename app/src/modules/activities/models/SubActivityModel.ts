@@ -44,6 +44,15 @@ export class SubActivityModel {
       case SubActivityType.GoatMilk:
         this._name = "Lait de chèvre";
         break;
+      case SubActivityType.Swing:
+        this._name = "Balançoire";
+        break;
+      case SubActivityType.SalineSolution:
+        this._name = "Solution saline";
+        break;
+      case SubActivityType.NasalAspirator:
+        this._name = "Aspirateur nasal";
+        break;
       default:
         this._name = "_";
         break;
