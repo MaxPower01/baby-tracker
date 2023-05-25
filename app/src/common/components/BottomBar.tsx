@@ -213,7 +213,7 @@ export default function BottomBar(props: Props) {
                   {Icon && (
                     <Icon
                       sx={{
-                        fontSize: isFloatingActionButton ? "2.5em" : "1.25em",
+                        fontSize: isFloatingActionButton ? "2em" : "1em",
                       }}
                     />
                   )}

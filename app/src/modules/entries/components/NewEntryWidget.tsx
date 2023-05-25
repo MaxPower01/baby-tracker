@@ -1,11 +1,3 @@
-import PageName from "@/common/enums/PageName";
-import { formatStopwatchTime, getPath, isNullOrWhiteSpace } from "@/lib/utils";
-import ActivityButton from "@/modules/activities/components/ActivityButton";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import useMenu from "@/modules/menu/hooks/useMenu";
 import {
   Box,
   MenuItem,
@@ -14,13 +6,26 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { formatStopwatchTime, getPath, isNullOrWhiteSpace } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
+
+import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
+import ActivityButton from "@/modules/activities/components/ActivityButton";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import AddIcon from "@mui/icons-material/Add";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import PageName from "@/common/enums/PageName";
+import useEntries from "@/modules/entries/hooks/useEntries";
+import useMenu from "@/modules/menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 export default function NewEntryWidget(props: Props) {
   const { entries } = useEntries();
+  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
+  const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
   const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
   const bottleFeedingActivity = new ActivityModel(ActivityType.BottleFeeding);
   const diaperActivity = new ActivityModel(ActivityType.Diaper);
@@ -203,6 +208,7 @@ export default function NewEntryWidget(props: Props) {
     maxWidth: "10em",
     marginLeft: 1,
     marginRight: 1,
+    height: "100%",
   };
   const activityButtonStyle: SxProps = {
     paddingTop: 1.5,
@@ -282,348 +288,418 @@ export default function NewEntryWidget(props: Props) {
     return () => clearInterval(interval);
   }, []);
   return (
-    <Stack
-      // spacing={2}
-      direction={"row"}
-      justifyContent={"flex-start"}
-      alignItems={"flex-start"}
-      sx={{
-        paddingTop: 0.5,
-        paddingBottom: 0.5,
-        "& .ActivityIcon": {
-          fontSize: "4em",
-        },
-        width: "100%",
-        overflowX: "scroll",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-      }}
-    >
-      <Box
+    <>
+      <Stack
+        // spacing={2}
+        direction={"row"}
+        justifyContent={"flex-start"}
+        alignItems={"flex-start"}
         sx={{
-          ...boxStyle,
-          order: lastBreastfeedingLabel?.isInProgress ? 0 : 1,
+          paddingTop: 0.5,
+          paddingBottom: 0.5,
+          "& .ActivityIcon": {
+            fontSize: "4em",
+          },
+          width: "100%",
+          overflowX: "scroll",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          display: "grid",
+          gridTemplateColumns: "repeat(5, minmax(10em, 1fr))",
         }}
       >
         <Box
           sx={{
-            border: "1px solid",
-            borderColor: lastBreastfeedingLabel?.isInProgress
-              ? (theme.palette.primary.main as string)
-              : "transparent",
-            backgroundColor: lastBreastfeedingLabel?.isInProgress
-              ? `${theme.palette.primary.main}20`
-              : undefined,
-            boxShadow: lastBreastfeedingLabel?.isInProgress
-              ? `0 0 5px 0px ${theme.palette.primary.main}`
-              : undefined,
-            borderRadius: 1,
+            ...boxStyle,
+            order: lastBreastfeedingLabel?.isInProgress ? 0 : 1,
           }}
         >
-          <ActivityButton
-            activity={breastFeedingActivity}
-            showLabel
+          <Box
             sx={{
-              ...activityButtonStyle,
+              border: "1px solid",
+              borderColor: lastBreastfeedingLabel?.isInProgress
+                ? (theme.palette.primary.main as string)
+                : "transparent",
+              backgroundColor: lastBreastfeedingLabel?.isInProgress
+                ? `${theme.palette.primary.main}20`
+                : undefined,
+              boxShadow: lastBreastfeedingLabel?.isInProgress
+                ? `0 0 5px 0px ${theme.palette.primary.main}`
+                : undefined,
+              borderRadius: 1,
             }}
-            onClick={(e) => {
-              if (lastBreastfeedingLabel?.isInProgress) {
+          >
+            <ActivityButton
+              activity={breastFeedingActivity}
+              showLabel
+              sx={{
+                ...activityButtonStyle,
+              }}
+              onClick={(e) => {
+                if (lastBreastfeedingLabel?.isInProgress) {
+                  handleActivityClick({
+                    event: e,
+                    activity: breastFeedingActivity,
+                    lastEntry: lastBreastfeedingEntry,
+                    label: lastBreastfeedingLabel,
+                  });
+                } else {
+                  openMenu(e);
+                }
+              }}
+            />
+          </Box>
+          <Stack
+            sx={{
+              marginTop: 1,
+            }}
+          >
+            {lastBreastfeedingLabel != null &&
+              !isNullOrWhiteSpace(lastBreastfeedingLabel.subtitle) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...subtitleStyle,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastBreastfeedingLabel.subtitle}
+                </Typography>
+              )}
+            {lastBreastfeedingLabel != null &&
+              !isNullOrWhiteSpace(lastBreastfeedingLabel.title) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...titleStyle,
+                    color: lastBreastfeedingLabel.isInProgress
+                      ? theme.palette.primary.main
+                      : undefined,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastBreastfeedingLabel.title}
+                </Typography>
+              )}
+          </Stack>
+          <Menu>
+            <MenuItem
+              onClick={(e) => {
                 handleActivityClick({
                   event: e,
                   activity: breastFeedingActivity,
-                  lastEntry: lastBreastfeedingEntry,
-                  label: lastBreastfeedingLabel,
+                  startTimer: true,
                 });
-              } else {
-                openMenu(e);
-              }
-            }}
-          />
+              }}
+            >
+              <Stack direction={"row"} spacing={1}>
+                <Typography>
+                  Démarrer le <strong>côté gauche</strong>
+                </Typography>
+              </Stack>
+            </MenuItem>
+            <MenuItem
+              onClick={(e) => {
+                handleActivityClick({
+                  event: e,
+                  activity: breastFeedingActivity,
+                  rightSide: true,
+                  startTimer: true,
+                });
+              }}
+            >
+              <Stack direction={"row"} spacing={1}>
+                <Typography>
+                  Démarrer le <strong>côté droit</strong>
+                </Typography>
+              </Stack>
+            </MenuItem>
+          </Menu>
         </Box>
-        <Stack
+        <Box
           sx={{
-            marginTop: 1,
+            ...boxStyle,
+            order: lastBottleFeedingLabel?.isInProgress ? 0 : 2,
           }}
         >
-          {lastBreastfeedingLabel != null &&
-            !isNullOrWhiteSpace(lastBreastfeedingLabel.subtitle) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...subtitleStyle,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastBreastfeedingLabel.subtitle}
-              </Typography>
-            )}
-          {lastBreastfeedingLabel != null &&
-            !isNullOrWhiteSpace(lastBreastfeedingLabel.title) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...titleStyle,
-                  color: lastBreastfeedingLabel.isInProgress
-                    ? theme.palette.primary.main
-                    : undefined,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastBreastfeedingLabel.title}
-              </Typography>
-            )}
-        </Stack>
-        <Menu>
-          <MenuItem
-            onClick={(e) => {
-              handleActivityClick({
-                event: e,
-                activity: breastFeedingActivity,
-                startTimer: true,
-              });
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: lastBottleFeedingLabel?.isInProgress
+                ? (theme.palette.primary.main as string)
+                : "transparent",
+              backgroundColor: lastBottleFeedingLabel?.isInProgress
+                ? `${theme.palette.primary.main}20`
+                : undefined,
+              boxShadow: lastBottleFeedingLabel?.isInProgress
+                ? `0 0 5px 0px ${theme.palette.primary.main}`
+                : undefined,
+              borderRadius: 1,
             }}
           >
-            <Stack direction={"row"} spacing={1}>
-              <Typography>
-                Démarrer le <strong>côté gauche</strong>
-              </Typography>
-            </Stack>
-          </MenuItem>
-          <MenuItem
-            onClick={(e) => {
-              handleActivityClick({
-                event: e,
-                activity: breastFeedingActivity,
-                rightSide: true,
-                startTimer: true,
-              });
+            <ActivityButton
+              activity={bottleFeedingActivity}
+              showLabel
+              sx={{
+                ...activityButtonStyle,
+              }}
+              onClick={(e) => {
+                handleActivityClick({
+                  event: e,
+                  activity: bottleFeedingActivity,
+                  lastEntry: lastBottleFeedingEntry,
+                  label: lastBottleFeedingLabel,
+                });
+              }}
+            />
+          </Box>
+          <Stack
+            sx={{
+              marginTop: 1,
             }}
           >
-            <Stack direction={"row"} spacing={1}>
-              <Typography>
-                Démarrer le <strong>côté droit</strong>
-              </Typography>
-            </Stack>
-          </MenuItem>
-        </Menu>
-      </Box>
-      <Box
-        sx={{
-          ...boxStyle,
-          order: lastBottleFeedingLabel?.isInProgress ? 0 : 2,
-        }}
-      >
+            {lastBottleFeedingLabel != null &&
+              !isNullOrWhiteSpace(lastBottleFeedingLabel.subtitle) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...subtitleStyle,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastBottleFeedingLabel.subtitle}
+                </Typography>
+              )}
+            {lastBottleFeedingLabel != null &&
+              !isNullOrWhiteSpace(lastBottleFeedingLabel.title) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...titleStyle,
+                    color: lastBottleFeedingLabel.isInProgress
+                      ? theme.palette.primary.main
+                      : undefined,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastBottleFeedingLabel.title}
+                </Typography>
+              )}
+          </Stack>
+        </Box>
         <Box
           sx={{
-            border: "1px solid",
-            borderColor: lastBottleFeedingLabel?.isInProgress
-              ? (theme.palette.primary.main as string)
-              : "transparent",
-            backgroundColor: lastBottleFeedingLabel?.isInProgress
-              ? `${theme.palette.primary.main}20`
-              : undefined,
-            boxShadow: lastBottleFeedingLabel?.isInProgress
-              ? `0 0 5px 0px ${theme.palette.primary.main}`
-              : undefined,
-            borderRadius: 1,
+            ...boxStyle,
+            order: lastDiaperLabel?.isInProgress ? 0 : 3,
           }}
         >
-          <ActivityButton
-            activity={bottleFeedingActivity}
-            showLabel
+          <Box
             sx={{
-              ...activityButtonStyle,
+              border: "1px solid",
+              borderColor: lastDiaperLabel?.isInProgress
+                ? (theme.palette.primary.main as string)
+                : "transparent",
+              backgroundColor: lastDiaperLabel?.isInProgress
+                ? `${theme.palette.primary.main}20`
+                : undefined,
+              boxShadow: lastDiaperLabel?.isInProgress
+                ? `0 0 5px 0px ${theme.palette.primary.main}`
+                : undefined,
+              borderRadius: 1,
             }}
-            onClick={(e) => {
-              handleActivityClick({
-                event: e,
-                activity: bottleFeedingActivity,
-                lastEntry: lastBottleFeedingEntry,
-                label: lastBottleFeedingLabel,
-              });
+          >
+            <ActivityButton
+              activity={diaperActivity}
+              showLabel
+              sx={{
+                ...activityButtonStyle,
+              }}
+              onClick={(e) => {
+                handleActivityClick({
+                  event: e,
+                  activity: diaperActivity,
+                  lastEntry: lastDiaperEntry,
+                  label: lastDiaperLabel,
+                });
+              }}
+            />
+          </Box>
+          <Stack
+            sx={{
+              marginTop: 1,
             }}
-          />
+          >
+            {lastDiaperLabel != null &&
+              !isNullOrWhiteSpace(lastDiaperLabel.subtitle) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...subtitleStyle,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastDiaperLabel.subtitle}
+                </Typography>
+              )}
+            {lastDiaperLabel != null &&
+              !isNullOrWhiteSpace(lastDiaperLabel.title) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...titleStyle,
+                    color: lastDiaperLabel.isInProgress
+                      ? theme.palette.primary.main
+                      : undefined,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastDiaperLabel.title}
+                </Typography>
+              )}
+          </Stack>
         </Box>
-        <Stack
-          sx={{
-            marginTop: 1,
-          }}
-        >
-          {lastBottleFeedingLabel != null &&
-            !isNullOrWhiteSpace(lastBottleFeedingLabel.subtitle) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...subtitleStyle,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastBottleFeedingLabel.subtitle}
-              </Typography>
-            )}
-          {lastBottleFeedingLabel != null &&
-            !isNullOrWhiteSpace(lastBottleFeedingLabel.title) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...titleStyle,
-                  color: lastBottleFeedingLabel.isInProgress
-                    ? theme.palette.primary.main
-                    : undefined,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastBottleFeedingLabel.title}
-              </Typography>
-            )}
-        </Stack>
-      </Box>
-      <Box
-        sx={{
-          ...boxStyle,
-          order: lastDiaperLabel?.isInProgress ? 0 : 3,
-        }}
-      >
         <Box
           sx={{
-            border: "1px solid",
-            borderColor: lastDiaperLabel?.isInProgress
-              ? (theme.palette.primary.main as string)
-              : "transparent",
-            backgroundColor: lastDiaperLabel?.isInProgress
-              ? `${theme.palette.primary.main}20`
-              : undefined,
-            boxShadow: lastDiaperLabel?.isInProgress
-              ? `0 0 5px 0px ${theme.palette.primary.main}`
-              : undefined,
-            borderRadius: 1,
+            ...boxStyle,
+            order: lastSleepLabel?.isInProgress ? 0 : 4,
           }}
         >
-          <ActivityButton
-            activity={diaperActivity}
-            showLabel
+          <Box
             sx={{
-              ...activityButtonStyle,
+              border: "1px solid",
+              borderColor: lastSleepLabel?.isInProgress
+                ? (theme.palette.primary.main as string)
+                : "transparent",
+              backgroundColor: lastSleepLabel?.isInProgress
+                ? `${theme.palette.primary.main}20`
+                : undefined,
+              boxShadow: lastSleepLabel?.isInProgress
+                ? `0 0 5px 0px ${theme.palette.primary.main}`
+                : undefined,
+              borderRadius: 1,
             }}
-            onClick={(e) => {
-              handleActivityClick({
-                event: e,
-                activity: diaperActivity,
-                lastEntry: lastDiaperEntry,
-                label: lastDiaperLabel,
-              });
+          >
+            <ActivityButton
+              activity={sleepActivity}
+              showLabel
+              sx={{
+                ...activityButtonStyle,
+              }}
+              onClick={(e) => {
+                handleActivityClick({
+                  event: e,
+                  activity: sleepActivity,
+                  startTimer: true,
+                  lastEntry: lastSleepEntry,
+                  label: lastSleepLabel,
+                });
+              }}
+            />
+          </Box>
+          <Stack
+            sx={{
+              marginTop: 1,
             }}
-          />
+          >
+            {lastSleepLabel != null &&
+              !isNullOrWhiteSpace(lastSleepLabel.subtitle) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...subtitleStyle,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastSleepLabel.subtitle}
+                </Typography>
+              )}
+            {lastSleepLabel != null &&
+              !isNullOrWhiteSpace(lastSleepLabel.title) && (
+                <Typography
+                  variant={textVariant}
+                  sx={{
+                    ...titleStyle,
+                    color: lastSleepLabel.isInProgress
+                      ? theme.palette.primary.main
+                      : undefined,
+                    // lineHeight: 1,
+                  }}
+                >
+                  {lastSleepLabel.title}
+                </Typography>
+              )}
+          </Stack>
         </Box>
-        <Stack
-          sx={{
-            marginTop: 1,
-          }}
-        >
-          {lastDiaperLabel != null &&
-            !isNullOrWhiteSpace(lastDiaperLabel.subtitle) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...subtitleStyle,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastDiaperLabel.subtitle}
-              </Typography>
-            )}
-          {lastDiaperLabel != null &&
-            !isNullOrWhiteSpace(lastDiaperLabel.title) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...titleStyle,
-                  color: lastDiaperLabel.isInProgress
-                    ? theme.palette.primary.main
-                    : undefined,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastDiaperLabel.title}
-              </Typography>
-            )}
-        </Stack>
-      </Box>
-      <Box
-        sx={{
-          ...boxStyle,
-          order: lastSleepLabel?.isInProgress ? 0 : 4,
-        }}
-      >
+
         <Box
           sx={{
-            border: "1px solid",
-            borderColor: lastSleepLabel?.isInProgress
-              ? (theme.palette.primary.main as string)
-              : "transparent",
-            backgroundColor: lastSleepLabel?.isInProgress
-              ? `${theme.palette.primary.main}20`
-              : undefined,
-            boxShadow: lastSleepLabel?.isInProgress
-              ? `0 0 5px 0px ${theme.palette.primary.main}`
-              : undefined,
-            borderRadius: 1,
+            ...boxStyle,
+            order: 9999,
           }}
         >
-          <ActivityButton
-            activity={sleepActivity}
-            showLabel
+          <Box
             sx={{
-              ...activityButtonStyle,
+              border: "1px solid",
+              borderColor: lastSleepLabel?.isInProgress
+                ? (theme.palette.primary.main as string)
+                : "transparent",
+              backgroundColor: lastSleepLabel?.isInProgress
+                ? `${theme.palette.primary.main}20`
+                : undefined,
+              boxShadow: lastSleepLabel?.isInProgress
+                ? `0 0 5px 0px ${theme.palette.primary.main}`
+                : undefined,
+              borderRadius: 1,
+              flexGrow: 1,
+              "& button": {
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                "& svg": {
+                  fontSize: "3.5em",
+                  // opacity: 0.8,
+                },
+              },
             }}
-            onClick={(e) => {
-              handleActivityClick({
-                event: e,
-                activity: sleepActivity,
-                startTimer: true,
-                lastEntry: lastSleepEntry,
-                label: lastSleepLabel,
-              });
+          >
+            <ActivityButton
+              Icon={AddIcon}
+              activity={null}
+              // showLabel
+              // overrideLabel="Autre"
+              sx={{
+                ...activityButtonStyle,
+              }}
+              onClick={(e) => {
+                setActivitiesDrawerIsOpen(true);
+              }}
+            />
+          </Box>
+          <Stack
+            sx={{
+              marginTop: 1,
             }}
-          />
+          ></Stack>
         </Box>
-        <Stack
-          sx={{
-            marginTop: 1,
-          }}
-        >
-          {lastSleepLabel != null &&
-            !isNullOrWhiteSpace(lastSleepLabel.subtitle) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...subtitleStyle,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastSleepLabel.subtitle}
-              </Typography>
-            )}
-          {lastSleepLabel != null &&
-            !isNullOrWhiteSpace(lastSleepLabel.title) && (
-              <Typography
-                variant={textVariant}
-                sx={{
-                  ...titleStyle,
-                  color: lastSleepLabel.isInProgress
-                    ? theme.palette.primary.main
-                    : undefined,
-                  // lineHeight: 1,
-                }}
-              >
-                {lastSleepLabel.title}
-              </Typography>
-            )}
-        </Stack>
-      </Box>
-    </Stack>
+      </Stack>
+
+      <ActivitiesDrawer
+        isOpen={activitiesDrawerIsOpen}
+        onClose={() => setActivitiesDrawerIsOpen(false)}
+        handleActivityClick={(type: ActivityType) =>
+          navigate(
+            getPath({
+              page: PageName.Entry,
+              params: { activity: type.toString() },
+            })
+          )
+        }
+      />
+    </>
   );
 }
