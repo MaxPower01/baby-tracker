@@ -1,7 +1,8 @@
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Chip, Typography } from "@mui/material";
+
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 
 type Props = {
   activity: ActivityModel;
@@ -24,7 +25,7 @@ export default function ActivityChip({
     <Chip
       key={`${activity.type}-${activity.type}`}
       label={
-        <Typography variant="body2" fontWeight={"bold"}>
+        <Typography variant="body2" fontWeight={"bold"} color={textColor}>
           {activity.name}
         </Typography>
       }

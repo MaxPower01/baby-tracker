@@ -1,11 +1,13 @@
-import { formatStopwatchTime } from "@/lib/utils";
-import ActivityChip from "@/modules/activities/components/ActivityChip";
-import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import OpacityIcon from "@mui/icons-material/Opacity";
 import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ActivityChip from "@/modules/activities/components/ActivityChip";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import OpacityIcon from "@mui/icons-material/Opacity";
+import SubActivityChip from "@/modules/activities/components/SubActivityChip";
+import { formatStopwatchTime } from "@/lib/utils";
+
 type Props = {
   entry: EntryModel;
   previousEntry?: EntryModel;
@@ -140,6 +142,7 @@ export default function EntryBody(props: Props) {
                 activity={linkedActivity}
                 size={"small"}
                 isSelected={true}
+                textColor={textColor}
               />
             );
           })}
@@ -156,6 +159,7 @@ export default function EntryBody(props: Props) {
                 subActivity={subActivity}
                 size={"small"}
                 isSelected={true}
+                textColor={textColor}
               />
             );
           })}

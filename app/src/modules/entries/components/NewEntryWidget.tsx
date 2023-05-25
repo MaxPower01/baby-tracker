@@ -307,8 +307,8 @@ export default function NewEntryWidget(props: Props) {
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          display: "grid",
-          gridTemplateColumns: "repeat(5, minmax(10em, 1fr))",
+          // display: "grid",
+          // gridTemplateColumns: "repeat(5, minmax(10em, 1fr))",
         }}
       >
         <Box
@@ -634,7 +634,7 @@ export default function NewEntryWidget(props: Props) {
           </Stack>
         </Box>
 
-        <Box
+        {/* <Box
           sx={{
             ...boxStyle,
             order: 9999,
@@ -643,17 +643,14 @@ export default function NewEntryWidget(props: Props) {
           <Box
             sx={{
               border: "1px solid",
-              borderColor: lastSleepLabel?.isInProgress
-                ? (theme.palette.primary.main as string)
-                : "transparent",
-              backgroundColor: lastSleepLabel?.isInProgress
-                ? `${theme.palette.primary.main}20`
-                : undefined,
-              boxShadow: lastSleepLabel?.isInProgress
-                ? `0 0 5px 0px ${theme.palette.primary.main}`
-                : undefined,
+              borderColor: "transparent",
+              backgroundColor: undefined,
+              boxShadow: undefined,
               borderRadius: 1,
-              flexGrow: 1,
+              // flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               "& button": {
                 height: "100%",
                 display: "flex",
@@ -685,10 +682,10 @@ export default function NewEntryWidget(props: Props) {
               marginTop: 1,
             }}
           ></Stack>
-        </Box>
+        </Box> */}
       </Stack>
 
-      <ActivitiesDrawer
+      {/* <ActivitiesDrawer
         isOpen={activitiesDrawerIsOpen}
         onClose={() => setActivitiesDrawerIsOpen(false)}
         handleActivityClick={(type: ActivityType) =>
@@ -699,7 +696,7 @@ export default function NewEntryWidget(props: Props) {
             })
           )
         }
-      />
+      /> */}
     </>
   );
 }

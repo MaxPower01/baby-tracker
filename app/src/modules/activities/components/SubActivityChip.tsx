@@ -1,7 +1,9 @@
-import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
-import SubActivityType from "@/modules/activities/enums/SubActivityType";
-import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import { Chip, Typography } from "@mui/material";
+
+import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
+import SubActivityType from "@/modules/activities/enums/SubActivityType";
+
 type Props = {
   subActivity: SubActivityModel;
   onClick?: (type: SubActivityType) => void;
@@ -23,7 +25,7 @@ export default function SubActivityChip({
     <Chip
       key={`${subActivity.type}-${subActivity.type}`}
       label={
-        <Typography variant="body2" fontWeight={"bold"}>
+        <Typography variant="body2" fontWeight={"bold"} color={textColor}>
           {subActivity.name}
         </Typography>
       }
