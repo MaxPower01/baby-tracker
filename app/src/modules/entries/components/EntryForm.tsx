@@ -65,7 +65,14 @@ export default function EntryForm(props: EntryFormProps) {
     closeMenu: closeStopwatchMenu,
   } = useMenu();
 
-  const [lastChange, setLastChange] = useState<string>("");
+  const [hasPendingChanges, setHasPendingChanges] = useState(true); // To ensure that a new entry is saved even without any changes
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [note, setNote] = useState(
+    entryId == null
+      ? props.entry.note
+      : entries.find((e) => e.id === entryId)?.note ?? props.entry.note ?? ""
+  );
 
   const [volumeMenuAnchorEl, setVolumeMenuAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -138,7 +145,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
-    setLastChange("startDate");
+    setHasPendingChanges(true);
   };
 
   const handleEndDateChange = (newEndDate: Dayjs | null) => {
@@ -150,7 +157,7 @@ export default function EntryForm(props: EntryFormProps) {
       return newEntry;
     });
     setEndDateWasEditedManually(true);
-    setLastChange("endDate");
+    setHasPendingChanges(true);
   };
 
   // Handle the sub-activities
@@ -173,7 +180,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
-    setLastChange("linkedActivities");
+    setHasPendingChanges(true);
   };
 
   const toggleSubActivity = (subActivity: SubActivityModel) => {
@@ -194,7 +201,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
-    setLastChange("subActivities");
+    setHasPendingChanges(true);
   };
 
   const linkedActivities = useMemo(() => {
@@ -280,7 +287,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
-    setLastChange("volume");
+    setHasPendingChanges(true);
   };
 
   const volumeLabel = useMemo(() => {
@@ -324,6 +331,7 @@ export default function EntryForm(props: EntryFormProps) {
 
   const handleSave = useCallback(
     async (overrideEntry?: EntryModel) => {
+      setIsSaving(true);
       const selectedChild = user?.selectedChild ?? "";
       const entryToSave = overrideEntry ?? entry;
       if (entryToSave?.id == null) {
@@ -337,22 +345,26 @@ export default function EntryForm(props: EntryFormProps) {
           return false;
         }
         if (!endDateWasEditedManually) entryToSave.setEndDate();
+        entryToSave.note = note;
         const id = await saveEntry(entryToSave);
         if (id != null) {
           setEntryId(id);
         }
+        setIsSaving(false);
+        setHasPendingChanges(false);
         return true;
         // setSnackbarIsOpened(true);
         // setSnackbarSeverity("success");
         // setSnackbarMessage("Entrée enregistrée");
       } catch (error) {
+        setIsSaving(false);
         setSnackbarIsOpen(true);
         setSnackbarSeverity("error");
         setSnackbarMessage("Erreur lors de l'enregistrement de l'entrée");
         return false;
       }
     },
-    [entry, user, children, entryId]
+    [entry, user, children, entryId, note]
   );
 
   const handleStopwatchChange = useCallback(
@@ -381,10 +393,10 @@ export default function EntryForm(props: EntryFormProps) {
         entryToSave = newEntry;
         return newEntry;
       });
+      setHasPendingChanges(true);
       if (params.isStartStop && entryToSave != null) {
         await handleSave(entryToSave);
       }
-      // handleSubmit();
     },
     [endDateWasEditedManually, handleSave]
   );
@@ -414,26 +426,46 @@ export default function EntryForm(props: EntryFormProps) {
   // Handle the notes
 
   const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEntry((prevEntry) => {
-      const newEntry = prevEntry.clone();
-      newEntry.note = event.target.value;
-      // save(newEntry);
-      return newEntry;
-    });
+    // setEntry((prevEntry) => {
+    //   const newEntry = prevEntry.clone();
+    //   newEntry.note = event.target.value;
+    //   // save(newEntry);
+    //   return newEntry;
+    // });
+    setNote(event.target.value);
+    setHasPendingChanges(true);
   };
 
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
-    const success = await handleSave();
-    if (success) {
+    if (isSaving) return;
+    if (hasPendingChanges) {
+      const success = await handleSave();
+      if (success) {
+        navigate(
+          getPath({
+            page: PageName.Home,
+          })
+        );
+      }
+    } else {
       navigate(
         getPath({
           page: PageName.Home,
         })
       );
     }
-  }, [entry, user, children]);
+  }, [
+    entry,
+    user,
+    children,
+    entryId,
+    handleSave,
+    isSaving,
+    hasPendingChanges,
+    note,
+  ]);
 
   return (
     <>
@@ -469,7 +501,7 @@ export default function EntryForm(props: EntryFormProps) {
             onClick={(e) => {
               if (anyStopwatchIsRunning) {
                 setSnackbarMessage(
-                  "Les modifications sont désactivées pendant que le chronomètre tourne."
+                  "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                 );
                 setSnackbarSeverity("info");
                 setSnackbarIsOpen(true);
@@ -504,6 +536,8 @@ export default function EntryForm(props: EntryFormProps) {
                       },
                     },
                     variant: "standard",
+                    error: false,
+                    helperText: "",
                   },
                 }}
                 ampm={false}
@@ -542,6 +576,7 @@ export default function EntryForm(props: EntryFormProps) {
                           border: "none !important",
                         },
                       },
+                      error: false,
                       variant: "standard",
                     },
                   }}
@@ -563,13 +598,13 @@ export default function EntryForm(props: EntryFormProps) {
               gap={1}
               justifyContent="center"
               onClick={(e) => {
-                if (anyStopwatchIsRunning) {
-                  setSnackbarMessage(
-                    "Les modifications sont désactivées pendant que le chronomètre tourne."
-                  );
-                  setSnackbarSeverity("info");
-                  setSnackbarIsOpen(true);
-                }
+                // if (anyStopwatchIsRunning) {
+                //   setSnackbarMessage(
+                //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                //   );
+                //   setSnackbarSeverity("info");
+                //   setSnackbarIsOpen(true);
+                // }
               }}
             >
               {subActivitiesTypes.map((subActivityType) => {
@@ -583,7 +618,7 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(subActivity.type)}
                     onClick={() => toggleSubActivity(subActivity)}
-                    isDisabled={anyStopwatchIsRunning}
+                    // isDisabled={anyStopwatchIsRunning}
                   />
                 );
               })}
@@ -595,13 +630,13 @@ export default function EntryForm(props: EntryFormProps) {
               gap={1}
               justifyContent="center"
               onClick={(e) => {
-                if (anyStopwatchIsRunning) {
-                  setSnackbarMessage(
-                    "Les modifications sont désactivées pendant que le chronomètre tourne."
-                  );
-                  setSnackbarSeverity("info");
-                  setSnackbarIsOpen(true);
-                }
+                // if (anyStopwatchIsRunning) {
+                //   setSnackbarMessage(
+                //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                //   );
+                //   setSnackbarSeverity("info");
+                //   setSnackbarIsOpen(true);
+                // }
               }}
             >
               {entry.activity?.linkedTypes.map((activityType) => {
@@ -615,7 +650,7 @@ export default function EntryForm(props: EntryFormProps) {
                       .map((a) => a.type)
                       .includes(activity.type)}
                     onClick={() => toggleLinkedActivity(activity)}
-                    isDisabled={anyStopwatchIsRunning}
+                    // isDisabled={anyStopwatchIsRunning}
                   />
                 );
               })}
@@ -630,7 +665,7 @@ export default function EntryForm(props: EntryFormProps) {
               onClick={(e) => {
                 if (anyStopwatchIsRunning) {
                   setSnackbarMessage(
-                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                   );
                   setSnackbarSeverity("info");
                   setSnackbarIsOpen(true);
@@ -662,7 +697,7 @@ export default function EntryForm(props: EntryFormProps) {
               onClick={(e) => {
                 if (anyStopwatchIsRunning) {
                   setSnackbarMessage(
-                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                   );
                   setSnackbarSeverity("info");
                   setSnackbarIsOpen(true);
@@ -721,7 +756,7 @@ export default function EntryForm(props: EntryFormProps) {
               onClick={(e) => {
                 if (anyStopwatchIsRunning) {
                   setSnackbarMessage(
-                    "Les modifications sont désactivées pendant que le chronomètre tourne."
+                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                   );
                   setSnackbarSeverity("info");
                   setSnackbarIsOpen(true);
@@ -758,7 +793,7 @@ export default function EntryForm(props: EntryFormProps) {
                 onClick={(e) => {
                   if (entry.rightStopwatchIsRunning) {
                     setSnackbarMessage(
-                      "Les modifications sont désactivées pendant que le chronomètre tourne."
+                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                     );
                     setSnackbarSeverity("info");
                     setSnackbarIsOpen(true);
@@ -793,7 +828,7 @@ export default function EntryForm(props: EntryFormProps) {
                   onClick={(e) => {
                     if (entry.leftStopwatchIsRunning) {
                       setSnackbarMessage(
-                        "Les modifications sont désactivées pendant que le chronomètre tourne."
+                        "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                       );
                       setSnackbarSeverity("info");
                       setSnackbarIsOpen(true);
@@ -848,20 +883,20 @@ export default function EntryForm(props: EntryFormProps) {
             label=""
             name="note"
             type="text"
-            value={entry.note}
+            value={note}
             onChange={handleNoteChange}
             fullWidth
             multiline
             minRows={5}
-            disabled={anyStopwatchIsRunning}
+            // disabled={anyStopwatchIsRunning}
             onClick={(e) => {
-              if (anyStopwatchIsRunning) {
-                setSnackbarMessage(
-                  "Les modifications sont désactivées pendant que le chronomètre tourne."
-                );
-                setSnackbarSeverity("info");
-                setSnackbarIsOpen(true);
-              }
+              // if (anyStopwatchIsRunning) {
+              //   setSnackbarMessage(
+              //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+              //   );
+              //   setSnackbarSeverity("info");
+              //   setSnackbarIsOpen(true);
+              // }
             }}
           />
         </Section>
@@ -919,7 +954,7 @@ export default function EntryForm(props: EntryFormProps) {
           severity={snackbarSeverity}
           sx={{ width: "100%" }}
           elevation={6}
-          variant="filled"
+          variant="standard"
         >
           {snackbarMessage}
         </Alert>

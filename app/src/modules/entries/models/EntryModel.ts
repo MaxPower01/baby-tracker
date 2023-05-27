@@ -1,7 +1,7 @@
 import ActivityModel from "@/modules/activities/models/ActivityModel";
+import { DocumentData } from "firebase/firestore";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs from "dayjs";
-import { DocumentData } from "firebase/firestore";
 
 export default class EntryModel {
   private _id: string | null = null;
@@ -389,21 +389,20 @@ export default class EntryModel {
 
   public setEndDate() {
     if (this.time) {
-      if (this.lastStopwatchUpdateTime != null) {
-        const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
-        // const timeDate = this.startDate.add(this.time, "millisecond");
-        const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
-        if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
-          this.endDate = lastStopwatchUpdateTimeDate.toDate();
-        } else {
-          this.endDate = timeDate.toDate();
-        }
-      } else {
-        // this.endDate = this.startDate.add(this.time, "millisecond");
+      // if (this.lastStopwatchUpdateTime != null) {
+      //   const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
+      //   // const timeDate = this.startDate.add(this.time, "millisecond");
+      //   const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
+      //   if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
+      //     this.endDate = lastStopwatchUpdateTimeDate.toDate();
+      //   } else {
+      //     this.endDate = timeDate.toDate();
+      //   }
+      // } else {
         this.endDate = dayjs(this.startDate)
           .add(this.time, "millisecond")
           .toDate();
-      }
+      // }
     } else {
       this.endDate = this.startDate;
     }

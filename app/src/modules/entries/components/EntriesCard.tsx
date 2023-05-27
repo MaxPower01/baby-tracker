@@ -183,7 +183,7 @@ export default function EntriesCard(props: Props) {
                         <ActivityIcon
                           activity={entry.activity}
                           sx={{
-                            fontSize: "3em",
+                            fontSize: "3.5em",
                             transform:
                               entry.activity.hasSides &&
                               entry.leftTime &&

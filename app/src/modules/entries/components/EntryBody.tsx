@@ -132,14 +132,14 @@ export default function EntryBody(props: Props) {
         ...sx,
       }}
     >
-      {entry.linkedActivities.length > 0 && (
+      {entry.subActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
-          {entry.linkedActivities.map((linkedActivity) => {
+          {entry.subActivities.map((subActivity) => {
             if (entry.activity == null) return null;
             return (
-              <ActivityChip
-                key={`${entry.id}-${entry.activity.type}-${linkedActivity.type}`}
-                activity={linkedActivity}
+              <SubActivityChip
+                key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
+                subActivity={subActivity}
                 size={"small"}
                 isSelected={true}
                 textColor={textColor}
@@ -149,14 +149,14 @@ export default function EntryBody(props: Props) {
         </Grid>
       )}
 
-      {entry.subActivities.length > 0 && (
+      {entry.linkedActivities.length > 0 && (
         <Grid justifyContent="flex-start" gap={1} container>
-          {entry.subActivities.map((subActivity) => {
+          {entry.linkedActivities.map((linkedActivity) => {
             if (entry.activity == null) return null;
             return (
-              <SubActivityChip
-                key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
-                subActivity={subActivity}
+              <ActivityChip
+                key={`${entry.id}-${entry.activity.type}-${linkedActivity.type}`}
+                activity={linkedActivity}
                 size={"small"}
                 isSelected={true}
                 textColor={textColor}

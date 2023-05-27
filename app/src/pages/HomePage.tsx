@@ -5,6 +5,7 @@ import LoadingIndicator from "@/common/components/LoadingIndicator";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import Section from "@/common/components/Section";
+import SectionTitle from "@/common/components/SectionTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 

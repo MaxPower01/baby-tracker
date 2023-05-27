@@ -1,4 +1,4 @@
-import { Chip, Typography } from "@mui/material";
+import { Chip, Typography, useTheme } from "@mui/material";
 
 import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
@@ -21,14 +21,19 @@ export default function SubActivityChip({
   textColor,
   isDisabled,
 }: Props) {
+  const theme = useTheme();
   return (
     <Chip
       key={`${subActivity.type}-${subActivity.type}`}
       label={
-        <Typography variant="body2" fontWeight={"bold"} color={textColor}>
+        <Typography variant="body2" fontWeight={600} color={textColor}>
           {subActivity.name}
         </Typography>
       }
+      sx={{
+        border: "1px solid",
+        borderColor: theme.palette.divider,
+      }}
       icon={
         <SubActivityIcon
           subActivity={subActivity}

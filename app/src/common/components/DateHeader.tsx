@@ -61,7 +61,7 @@ export default function DateHeader(props: Props) {
             </Typography>
           </Box>
           <Stack
-            spacing={1}
+            spacing={0.5}
             sx={{
               paddingTop: 0.25,
               paddingBottom: 0.25,

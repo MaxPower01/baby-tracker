@@ -1,4 +1,4 @@
-import { Chip, Typography } from "@mui/material";
+import { Chip, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
@@ -21,14 +21,19 @@ export default function ActivityChip({
   textColor,
   isDisabled,
 }: Props) {
+  const theme = useTheme();
   return (
     <Chip
       key={`${activity.type}-${activity.type}`}
       label={
-        <Typography variant="body2" fontWeight={"bold"} color={textColor}>
+        <Typography variant="body2" fontWeight={600} color={textColor}>
           {activity.name}
         </Typography>
       }
+      sx={{
+        border: "1px solid",
+        borderColor: theme.palette.divider,
+      }}
       icon={
         <ActivityIcon
           activity={activity}
