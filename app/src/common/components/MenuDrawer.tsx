@@ -1,12 +1,3 @@
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
-import { functions } from "@/firebase";
-import { getPath, isNullOrWhiteSpace } from "@/lib/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
-import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import {
   Avatar,
   Button,
@@ -23,8 +14,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { httpsCallable } from "firebase/functions";
+import { getPath, isNullOrWhiteSpace } from "@/utils/utils";
 import { useCallback, useMemo, useState } from "react";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import ChildCareIcon from "@mui/icons-material/ChildCare";
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import PageName from "@/common/enums/PageName";
+import { functions } from "@/firebase";
+import { httpsCallable } from "firebase/functions";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuDrawer(props: {
@@ -40,11 +41,7 @@ export default function MenuDrawer(props: {
   const [email, setEmail] = useState("");
 
   const selectedChild = useMemo(() => {
-    return (
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      ""
-    );
+    return user?.selectedChild ?? "";
   }, [user, children]);
 
   const selectedChildName = useMemo(() => {

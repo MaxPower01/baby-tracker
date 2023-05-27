@@ -1,9 +1,3 @@
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import { formatStopwatchTime, isNullOrWhiteSpace } from "@/lib/utils";
-import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-// import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -19,7 +13,15 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
+
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CloseIcon from "@mui/icons-material/Close";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+
+// import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 type Props = {
   playPauseButtonId: string;

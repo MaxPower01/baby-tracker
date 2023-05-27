@@ -1,11 +1,12 @@
+import { Stack, Typography } from "@mui/material";
+
+import Entries from "@/modules/entries/components/Entries";
 import LoadingIndicator from "@/common/components/LoadingIndicator";
+import MenuProvider from "@/modules/menu/components/MenuProvider";
+import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import Section from "@/common/components/Section";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import Entries from "@/modules/entries/components/Entries";
-import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import useEntries from "@/modules/entries/hooks/useEntries";
-import MenuProvider from "@/modules/menu/components/MenuProvider";
-import { Stack, Typography } from "@mui/material";
 
 export default function HomePage() {
   const { user, children } = useAuthentication();
@@ -20,9 +21,6 @@ export default function HomePage() {
       {(children?.length ?? 0) > 0 && (
         <Stack>
           {children.map((child) => {
-            if (child.isSelected == false) {
-              return null;
-            }
             return (
               <Stack key={child.id}>
                 <Typography

@@ -1,6 +1,6 @@
-import PageName from "@/common/enums/PageName";
-import { getPath, isNullOrWhiteSpace } from "@/lib/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { getPath, isNullOrWhiteSpace } from "@/utils/utils";
+
 import AuthenticationPage from "@/pages/AuthenticationPage";
 import ChildPage from "@/pages/ChildPage";
 import ChildrenPage from "@/pages/ChildrenPage";
@@ -8,17 +8,14 @@ import EntriesPage from "@/pages/EntriesPage";
 import EntryPage from "@/pages/EntryPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
+import PageName from "@/common/enums/PageName";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useMemo } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
 
 export default function PrivateRoutes() {
   const { user, children } = useAuthentication();
   const selectedChild = useMemo(() => {
-    return (
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      ""
-    );
+    return user?.selectedChild ?? "";
   }, [user, children]);
   return (
     <Routes>

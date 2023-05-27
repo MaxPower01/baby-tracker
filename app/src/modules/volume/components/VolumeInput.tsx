@@ -1,6 +1,3 @@
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import { isNullOrWhiteSpace } from "@/lib/utils";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -16,6 +13,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CloseIcon from "@mui/icons-material/Close";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useState } from "react";
 
 type Props = {

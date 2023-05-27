@@ -1,4 +1,3 @@
-import { upperCaseFirst } from "@/lib/utils";
 import {
   Box,
   Button,
@@ -7,6 +6,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+
+import { upperCaseFirst } from "@/utils/utils";
 
 type Props = {
   sx?: SxProps;

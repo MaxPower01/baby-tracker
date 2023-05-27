@@ -1,26 +1,3 @@
-import Section from "@/common/components/Section";
-import SectionTitle from "@/common/components/SectionTitle";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
-import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import {
-  formatStopwatchesTime,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/lib/utils";
-import ActivityChip from "@/modules/activities/components/ActivityChip";
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
-import useMenu from "@/modules/menu/hooks/useMenu";
-import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import VolumeInput from "@/modules/volume/components/VolumeInput";
 import {
   Alert,
   AlertColor,
@@ -38,15 +15,39 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import VolumeMenu from "@mui/material/Menu";
 import {
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import {
+  formatStopwatchesTime,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/utils/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import ActivityChip from "@/modules/activities/components/ActivityChip";
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import PageName from "@/common/enums/PageName";
+import Section from "@/common/components/Section";
+import SectionTitle from "@/common/components/SectionTitle";
+import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
+import SubActivityChip from "@/modules/activities/components/SubActivityChip";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
+import VolumeInput from "@/modules/volume/components/VolumeInput";
+import VolumeMenu from "@mui/material/Menu";
+import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
+import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useEntries from "@/modules/entries/hooks/useEntries";
+import useMenu from "@/modules/menu/hooks/useMenu";
 
 type EntryFormProps = {
   entry: EntryModel;
@@ -63,6 +64,8 @@ export default function EntryForm(props: EntryFormProps) {
     openMenu: openStopwatchMenu,
     closeMenu: closeStopwatchMenu,
   } = useMenu();
+
+  const [lastChange, setLastChange] = useState<string>("");
 
   const [volumeMenuAnchorEl, setVolumeMenuAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -135,6 +138,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
+    setLastChange("startDate");
   };
 
   const handleEndDateChange = (newEndDate: Dayjs | null) => {
@@ -146,6 +150,7 @@ export default function EntryForm(props: EntryFormProps) {
       return newEntry;
     });
     setEndDateWasEditedManually(true);
+    setLastChange("endDate");
   };
 
   // Handle the sub-activities
@@ -168,6 +173,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
+    setLastChange("linkedActivities");
   };
 
   const toggleSubActivity = (subActivity: SubActivityModel) => {
@@ -188,6 +194,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
+    setLastChange("subActivities");
   };
 
   const linkedActivities = useMemo(() => {
@@ -199,20 +206,6 @@ export default function EntryForm(props: EntryFormProps) {
   }, [entry]);
 
   const subActivitiesTypes = useMemo(() => {
-    // let result = entry.linkedActivities
-    //   .map((a) => {
-    //     return a.subTypes.map((subType) => {
-    //       return subType;
-    //     });
-    //   })
-    //   .flat();
-    // if (entry.activity != null) {
-    //   result = result.concat(
-    //     entry.activity.subTypes.map((subType) => {
-    //       return subType;
-    //     })
-    //   );
-    // }
     if (entry.activity == null) return [];
     let result = entry.activity.subTypes.map((subType) => {
       return subType;
@@ -287,6 +280,7 @@ export default function EntryForm(props: EntryFormProps) {
       // save(newEntry);
       return newEntry;
     });
+    setLastChange("volume");
   };
 
   const volumeLabel = useMemo(() => {
@@ -330,10 +324,7 @@ export default function EntryForm(props: EntryFormProps) {
 
   const handleSave = useCallback(
     async (overrideEntry?: EntryModel) => {
-      const selectedChild =
-        children.find((child) => child.isSelected)?.id ??
-        user?.selectedChild ??
-        "";
+      const selectedChild = user?.selectedChild ?? "";
       const entryToSave = overrideEntry ?? entry;
       if (entryToSave?.id == null) {
         entryToSave.id = entryId ?? null;

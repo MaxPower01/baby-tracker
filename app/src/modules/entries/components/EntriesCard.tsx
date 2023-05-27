@@ -1,14 +1,3 @@
-import PageName from "@/common/enums/PageName";
-import { getPath } from "@/lib/utils";
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import EntryBody from "@/modules/entries/components/EntryBody";
-import EntryHeader from "@/modules/entries/components/EntryHeader";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import useMenu from "@/modules/menu/hooks/useMenu";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
   Button,
@@ -27,6 +16,18 @@ import {
   useTheme,
 } from "@mui/material";
 import { useCallback, useState } from "react";
+
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EntryBody from "@/modules/entries/components/EntryBody";
+import EntryHeader from "@/modules/entries/components/EntryHeader";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PageName from "@/common/enums/PageName";
+import { getPath } from "@/utils/utils";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import useEntries from "@/modules/entries/hooks/useEntries";
+import useMenu from "@/modules/menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 
 type Props = {

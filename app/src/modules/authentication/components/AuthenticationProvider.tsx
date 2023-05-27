@@ -1,13 +1,3 @@
-import { auth, db, googleAuthProvider } from "@/firebase";
-import AuthenticationContext from "@/modules/authentication/components/AuthenticationContext";
-import AuthenticationContextValue from "@/modules/authentication/types/AuthenticationContextValue";
-import CustomUser from "@/modules/authentication/types/CustomUser";
-import {
-  User,
-  getAdditionalUserInfo,
-  onAuthStateChanged,
-  signInWithPopup,
-} from "firebase/auth";
 import {
   DocumentData,
   WithFieldValue,
@@ -15,7 +5,19 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
+import {
+  User,
+  getAdditionalUserInfo,
+  onAuthStateChanged,
+  signInWithPopup,
+} from "firebase/auth";
+import { auth, db, googleAuthProvider } from "@/firebase";
 import { useEffect, useMemo, useState } from "react";
+
+import AuthenticationContext from "@/modules/authentication/components/AuthenticationContext";
+import AuthenticationContextValue from "@/modules/authentication/types/AuthenticationContextValue";
+import Child from "@/modules/authentication/types/Child";
+import CustomUser from "@/modules/authentication/types/CustomUser";
 
 export default function AuthenticationProvider(
   props: React.PropsWithChildren<{}>
@@ -23,35 +25,39 @@ export default function AuthenticationProvider(
   // Store the user in a state variable
 
   const [user, setUser] = useState<CustomUser | null>(null);
-  const [children, setChildren] = useState<
-    {
-      id: string;
-      name: string;
-      isSelected: boolean;
-    }[]
-  >([]);
+  const [children, setChildren] = useState<Child[]>([]);
 
   const fetchUserDoc = (user: User) => {
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef)
       .then((docSnap) => {
-        if (docSnap.data()?.children) {
-          const newChildren: {
-            id: string;
-            name: string;
-            isSelected: boolean;
-          }[] = [];
-          docSnap.data()?.children.forEach(async (childId: string) => {
-            const childRef = doc(db, "children", childId);
-            const childDocSnap = await getDoc(childRef);
-            newChildren.push({
-              id: childDocSnap.id,
-              name: childDocSnap.data()?.name ?? "",
-              isSelected: childDocSnap.id === docSnap.data()?.selectedChild,
+        const userData = docSnap.data();
+        if (userData != null) {
+          setUser(userData as CustomUser);
+          if (userData?.children) {
+            const newChildren: Child[] = [];
+            docSnap.data()?.children.forEach(async (childId: string) => {
+              const childRef = doc(db, "children", childId);
+              const childDocSnap = await getDoc(childRef);
+              const childData = childDocSnap.data();
+              if (childData) {
+                const { birthDate, ...childDataWithoutBirthDate } = childData;
+                const parsedBirthDate = birthDate.toDate();
+                if (parsedBirthDate) {
+                  newChildren.push({
+                    id: childId,
+                    birthDate: parsedBirthDate as Date,
+                    ...(childDataWithoutBirthDate as any),
+                  });
+                } else {
+                  throw new Error("Birth date is null");
+                }
+              }
             });
-          });
-          setChildren(newChildren);
-          setUser(docSnap.data() as CustomUser);
+            setChildren(newChildren);
+          }
+        } else {
+          setUser(null);
         }
       })
       .catch((error) => {
@@ -140,6 +146,7 @@ export default function AuthenticationProvider(
   const context: AuthenticationContextValue = useMemo(() => {
     return {
       user,
+      setUser,
       children,
       setChildren,
       googleSignInWithPopup,

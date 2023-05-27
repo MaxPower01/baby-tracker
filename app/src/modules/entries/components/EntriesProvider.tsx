@@ -1,11 +1,3 @@
-import TimePeriod from "@/common/enums/TimePeriod";
-import { db } from "@/firebase";
-import { isNullOrWhiteSpace } from "@/lib/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import EntriesContext from "@/modules/entries/components/EntriesContext";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import {
   Timestamp,
   addDoc,
@@ -20,6 +12,15 @@ import {
   where,
 } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import EntriesContext from "@/modules/entries/components/EntriesContext";
+import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import TimePeriod from "@/common/enums/TimePeriod";
+import { db } from "@/firebase";
+import { isNullOrWhiteSpace } from "@/utils/utils";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
 export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user, children } = useAuthentication();
@@ -60,10 +61,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const getEntries = useCallback(
     async (params: { timePeriod: TimePeriod }) => {
-      const selectedChild =
-        children.find((child) => child.isSelected)?.id ??
-        user?.selectedChild ??
-        "";
+      const selectedChild = user?.selectedChild ?? "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         setEntries([]);
         setIsLoading(false);
@@ -110,10 +108,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
         return newEntries;
       });
     });
-    const selectedChild =
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      "";
+    const selectedChild = user?.selectedChild ?? "";
     if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return;
     }
@@ -175,10 +170,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const deleteEntry = useCallback(
     async (entryId: string) => {
-      const selectedChild =
-        children.find((child) => child.isSelected)?.id ??
-        user?.selectedChild ??
-        "";
+      const selectedChild = user?.selectedChild ?? "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         return;
       }
@@ -189,10 +181,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const saveEntry = useCallback(
     async (entry: EntryModel) => {
-      const selectedChild =
-        children.find((child) => child.isSelected)?.id ??
-        user?.selectedChild ??
-        "";
+      const selectedChild = user?.selectedChild ?? "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         return null;
       }

@@ -6,7 +6,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { formatStopwatchTime, getPath, isNullOrWhiteSpace } from "@/lib/utils";
+import {
+  formatStopwatchTime,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
 import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";

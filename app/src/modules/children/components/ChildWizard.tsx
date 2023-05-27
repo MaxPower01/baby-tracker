@@ -1,8 +1,3 @@
-import PageName from "@/common/enums/PageName";
-import { db } from "@/firebase";
-import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import { getPath } from "@/lib/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import {
   Button,
   FormControl,
@@ -18,8 +13,6 @@ import {
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
 import {
   Timestamp,
   addDoc,
@@ -28,12 +21,21 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Child from "@/modules/authentication/types/Child";
+import PageName from "@/common/enums/PageName";
+import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
+import { db } from "@/firebase";
+import { getPath } from "@/utils/utils";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
 export default function ChildWizard() {
   const navigate = useNavigate();
-  const { user, setChildren } = useAuthentication();
+  const { user, setUser, setChildren } = useAuthentication();
   const [step, setStep] = useState(1);
   const [sex, setSex] = useState("");
   const [sexError, setSexError] = useState("");
@@ -95,8 +97,31 @@ export default function ChildWizard() {
       }).then(() => {
         setChildren((prev) => [
           ...prev,
-          { id: docRef.id, name: name, isSelected: true },
+          {
+            id: docRef.id,
+            name: name,
+            birthDate: birthDate.toDate(),
+            sex: sex,
+          },
         ]);
+        setUser((prev) => {
+          if (!prev) {
+            return null;
+          }
+          return {
+            ...prev,
+            selectedChild: docRef.id,
+            children: [
+              ...prev.children,
+              {
+                id: docRef.id,
+                name: name,
+                birthDate: birthDate.toDate(),
+                sex: sex,
+              },
+            ] as Child[],
+          };
+        });
         navigate(
           getPath({
             page: PageName.Home,

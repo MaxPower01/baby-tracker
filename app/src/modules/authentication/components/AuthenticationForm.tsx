@@ -1,10 +1,12 @@
+import { Button, Stack, Typography } from "@mui/material";
+
+import GoogleIcon from "@mui/icons-material/Google";
 import PageName from "@/common/enums/PageName";
-import { getPath } from "@/lib/utils";
+import { getPath } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
-import GoogleIcon from "@mui/icons-material/Google";
-import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 

@@ -1,17 +1,5 @@
-import { resetAppState } from "@/app/state/appSlice";
-import PageName from "@/common/enums/PageName";
-import { auth, db } from "@/firebase";
-import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "@/lib/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import EntryModel from "@/modules/entries/models/EntryModel";
-import {
-  resetEntriesState,
-  selectEntries,
-} from "@/modules/entries/state/entriesSlice";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Avatar, Button, Stack, Typography } from "@mui/material";
+import { auth, db } from "@/firebase";
 import {
   collection,
   doc,
@@ -20,9 +8,22 @@ import {
   query,
   writeBatch,
 } from "firebase/firestore";
+import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "@/utils/utils";
+import {
+  resetEntriesState,
+  selectEntries,
+} from "@/modules/entries/state/entriesSlice";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EntryModel from "@/modules/entries/models/EntryModel";
+import PageName from "@/common/enums/PageName";
+import { resetAppState } from "@/app/state/appSlice";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
+import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function MenuPage() {
   // const { Menu, openMenu, closeMenu } = useMenu();

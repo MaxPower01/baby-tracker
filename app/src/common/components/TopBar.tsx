@@ -1,9 +1,3 @@
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
-import { getPageName, getPageTitle, getPath } from "@/lib/utils";
-import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-// import DeleteIcon from "@mui/icons-material/Delete";
 import {
   AppBar,
   Box,
@@ -12,9 +6,17 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { getPageName, getPageTitle, getPath } from "@/utils/utils";
 import { useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import PageName from "@/common/enums/PageName";
+import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
+import { useSelector } from "react-redux";
+
+// import DeleteIcon from "@mui/icons-material/Delete";
 
 type Props = {
   component: React.ElementType<any> | undefined;

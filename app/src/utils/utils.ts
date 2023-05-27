@@ -1,6 +1,6 @@
-import PageName from "@/common/enums/PageName";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
+import PageName from "@/common/enums/PageName";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Exportation                                */

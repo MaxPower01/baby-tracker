@@ -1,11 +1,12 @@
-import DateHeader from "@/common/components/DateHeader";
-import TimePeriod from "@/common/enums/TimePeriod";
-import { groupEntriesByDate, groupEntriesByTime } from "@/lib/utils";
-import EntriesCard from "@/modules/entries/components/EntriesCard";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Box, CircularProgress, Stack, useTheme } from "@mui/material";
+import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
+
+import DateHeader from "@/common/components/DateHeader";
+import EntriesCard from "@/modules/entries/components/EntriesCard";
+import MenuProvider from "@/modules/menu/components/MenuProvider";
+import TimePeriod from "@/common/enums/TimePeriod";
+import useEntries from "@/modules/entries/hooks/useEntries";
 
 type Props = {
   fetchTimePeriod?: TimePeriod;

@@ -6,7 +6,7 @@ import ActivityChip from "@/modules/activities/components/ActivityChip";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import { formatStopwatchTime } from "@/lib/utils";
+import { formatStopwatchTime } from "@/utils/utils";
 
 type Props = {
   entry: EntryModel;

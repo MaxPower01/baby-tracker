@@ -1,20 +1,3 @@
-import MenuDrawer from "@/common/components/MenuDrawer";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
-import {
-  getPageName,
-  getPageTitle,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/lib/utils";
-import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import AddIcon from "@mui/icons-material/Add";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
-import HomeIcon from "@mui/icons-material/Home";
-import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Container,
@@ -26,8 +9,26 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import {
+  getPageName,
+  getPageTitle,
+  getPath,
+  isNullOrWhiteSpace,
+} from "@/utils/utils";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+
+import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import AddIcon from "@mui/icons-material/Add";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import HomeIcon from "@mui/icons-material/Home";
+import MenuDrawer from "@/common/components/MenuDrawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import PageName from "@/common/enums/PageName";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -62,11 +63,7 @@ type Props = {
 export default function BottomBar(props: Props) {
   const { user, children } = useAuthentication();
   const selectedChild = useMemo(() => {
-    return (
-      children.find((child) => child.isSelected)?.id ??
-      user?.selectedChild ??
-      ""
-    );
+    return user?.selectedChild ?? "";
   }, [user, children]);
   const navigate = useNavigate();
 
