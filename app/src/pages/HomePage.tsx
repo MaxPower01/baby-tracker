@@ -5,6 +5,7 @@ import LoadingIndicator from "@/common/components/LoadingIndicator";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import Section from "@/common/components/Section";
+import SectionStack from "@/common/components/SectionStack";
 import SectionTitle from "@/common/components/SectionTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -18,33 +19,7 @@ export default function HomePage() {
   }
 
   return (
-    <Stack spacing={2}>
-      {(children?.length ?? 0) > 0 && (
-        <Stack>
-          {children.map((child) => {
-            return (
-              <Stack key={child.id}>
-                <Typography
-                  variant={"h4"}
-                  textAlign={"center"}
-                  fontWeight={"bold"}
-                >
-                  {child.name}
-                </Typography>
-                {/* <Typography
-                  variant={"body2"}
-                  textAlign={"center"}
-                  sx={{
-                    opacity: 0.5,
-                  }}
-                >
-                  {child.id}
-                </Typography> */}
-              </Stack>
-            );
-          })}
-        </Stack>
-      )}
+    <SectionStack>
       <Section>
         {/* <SectionTitle title="Ajouter une entrée" /> */}
         <MenuProvider>
@@ -55,6 +30,6 @@ export default function HomePage() {
         {/* <SectionTitle title="Activité récente" /> */}
         <Entries />
       </Section>
-    </Stack>
+    </SectionStack>
   );
 }

@@ -1,5 +1,6 @@
+import { Box, Stack, Typography } from "@mui/material";
+
 import AuthenticationForm from "@/modules/authentication/components/AuthenticationForm";
-import { Stack, Typography } from "@mui/material";
 
 export default function AuthenticationPage() {
   return (

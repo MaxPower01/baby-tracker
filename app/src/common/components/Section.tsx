@@ -14,7 +14,7 @@ export default function Section(props: {
         component={"section"}
         sx={{ width: "100%", paddingTop: 2, paddingBottom: 2, ...props.sx }}
       >
-        <Stack alignItems="center" spacing={3}>
+        <Stack alignItems="center" spacing={2}>
           {props.children}
         </Stack>
       </Box>

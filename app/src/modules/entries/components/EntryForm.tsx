@@ -36,6 +36,7 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageName from "@/common/enums/PageName";
 import Section from "@/common/components/Section";
+import SectionStack from "@/common/components/SectionStack";
 import SectionTitle from "@/common/components/SectionTitle";
 import Stopwatch from "@/modules/stopwatch/components/Stopwatch";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
@@ -469,13 +470,7 @@ export default function EntryForm(props: EntryFormProps) {
 
   return (
     <>
-      <Stack
-        spacing={2}
-        alignItems="center"
-        sx={{
-          width: "100%",
-        }}
-      >
+      <SectionStack>
         <Section>
           {entry.activity != null && (
             <Stack justifyContent={"center"} alignItems={"center"}>
@@ -900,7 +895,7 @@ export default function EntryForm(props: EntryFormProps) {
             }}
           />
         </Section>
-      </Stack>
+      </SectionStack>
 
       <AppBar
         position="fixed"
