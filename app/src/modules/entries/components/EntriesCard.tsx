@@ -123,7 +123,8 @@ export default function EntriesCard(props: Props) {
                 sx={{
                   paddingTop: useCompactMode ? 1 : 4,
                   paddingBottom: useCompactMode ? 1 : 4,
-                  borderBottom: nextEntryExists ? "1px solid" : undefined,
+                  borderBottom:
+                    nextEntryExists && useCompactMode ? "1px solid" : undefined,
                   borderColor: "divider",
                 }}
               >
