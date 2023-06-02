@@ -220,7 +220,9 @@ export default function EntryBody(props: Props) {
                     ? useCompactMode
                       ? "body1"
                       : "h6"
-                    : "caption"
+                    : useCompactMode
+                    ? "caption"
+                    : "body1"
                 }
                 sx={{
                   display: "inline",
