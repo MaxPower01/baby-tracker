@@ -92,7 +92,7 @@ export default function NewEntryWidget(props: Props) {
     });
   }, [entries, now]);
 
-  const activityButtonWidth = "10em";
+  const activityButtonWidth = "11em";
   const activityButtonPaddingLeftRight = 2;
 
   const boxStyle: SxProps = {
