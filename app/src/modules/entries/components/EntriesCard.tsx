@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   IconButton,
   MenuItem,
   Stack,
@@ -65,7 +66,17 @@ export default function EntriesCard(props: Props) {
 
   return (
     <>
-      <Card>
+      <Card
+        sx={
+          {
+            // backgroundColor: useCompactMode ? "transparent" : undefined,
+            // backgroundImage: useCompactMode ? "none" : undefined,
+            // border: useCompactMode ? "1px solid" : undefined,
+            // borderColor: useCompactMode ? theme.palette.divider : undefined,
+            // boxShadow: useCompactMode ? "none" : undefined,
+          }
+        }
+      >
         {/* <CardHeader
         title={
           <Typography variant="subtitle1">
@@ -104,167 +115,178 @@ export default function EntriesCard(props: Props) {
             );
 
           return (
-            <CardActionArea
-              key={entry.id}
-              onClick={() => {
-                navigate(
-                  getPath({
-                    page: PageName.Entry,
-                    id: entry.id ?? "",
-                  })
-                );
-              }}
-              sx={{
-                borderRadius: 0,
-              }}
-              component={Box}
-            >
-              <CardContent
-                sx={{
-                  paddingTop: useCompactMode ? 1 : 4,
-                  paddingBottom: useCompactMode ? 1 : 4,
-                  borderBottom:
-                    nextEntryExists && useCompactMode ? "1px solid" : undefined,
-                  borderColor: "divider",
+            <Box key={entry.id}>
+              <CardActionArea
+                onClick={() => {
+                  navigate(
+                    getPath({
+                      page: PageName.Entry,
+                      id: entry.id ?? "",
+                    })
+                  );
                 }}
+                sx={{
+                  borderRadius: 0,
+                  backgroundColor: "transparent",
+                }}
+                component={Box}
               >
-                <Stack
+                <CardContent
                   sx={{
-                    fontSize: useCompactMode ? "0.5em" : "0.8em",
-                    position: "relative",
+                    paddingTop: useCompactMode ? 1 : 4,
+                    paddingBottom: useCompactMode ? 1 : 4,
+                    // borderBottom:
+                    //   nextEntryExists && useCompactMode ? "1px solid" : undefined,
+                    // borderColor: theme.palette.divider,
                   }}
                 >
-                  {nextEntryExists && (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: "4.75em",
-                        left: "calc(2.25em - 2px)",
-                        height: "100%",
-                        opacity: 0.5,
-                        paddingTop: 1,
-                        paddingBottom: 1,
-                        display: useCompactMode ? "none" : undefined,
-                      }}
+                  <Stack
+                    sx={{
+                      fontSize: useCompactMode ? "0.65em" : "0.8em",
+                      position: "relative",
+                    }}
+                  >
+                    {nextEntryExists && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "4.75em",
+                          left: "calc(2.25em - 2px)",
+                          height: "100%",
+                          opacity: 0.5,
+                          paddingTop: 1,
+                          paddingBottom: 1,
+                          display: useCompactMode ? "none" : undefined,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            borderLeft: "4px solid",
+                            borderColor: "divider",
+                            borderRadius: "9999px",
+                            height: "100%",
+                          }}
+                        ></Box>
+                      </Box>
+                    )}
+                    <Stack
+                      direction={"row"}
+                      justifyContent={"flex-start"}
+                      alignItems={"center"}
+                      spacing={2}
                     >
                       <Box
                         sx={{
-                          borderLeft: "4px solid",
-                          borderColor: "divider",
-                          borderRadius: "9999px",
-                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "4.5em",
+                          height: "4.5em",
+                          borderRadius: "50%",
+                          border: "1px solid",
+                          // backgroundColor: theme.customPalette.background.avatar,
+                          backgroundColor: entryHasStopwatchRunning
+                            ? `${theme.palette.primary.main}30`
+                            : "transparent",
+                          flexShrink: 0,
+                          zIndex: 1,
+                          borderColor: entryHasStopwatchRunning
+                            ? theme.palette.primary.main
+                            : "transparent",
+                          boxShadow: entryHasStopwatchRunning
+                            ? `0 0 5px 0px ${theme.palette.primary.main}`
+                            : "",
                         }}
-                      ></Box>
-                    </Box>
-                  )}
-                  <Stack
-                    direction={"row"}
-                    justifyContent={"flex-start"}
-                    alignItems={"center"}
-                    spacing={2}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "4.5em",
-                        height: "4.5em",
-                        borderRadius: "50%",
-                        border: "1px solid",
-                        // backgroundColor: theme.customPalette.background.avatar,
-                        backgroundColor: entryHasStopwatchRunning
-                          ? `${theme.palette.primary.main}30`
-                          : theme.palette.divider,
-                        flexShrink: 0,
-                        zIndex: 1,
-                        borderColor: entryHasStopwatchRunning
-                          ? theme.palette.primary.main
-                          : theme.palette.divider,
-                        boxShadow: entryHasStopwatchRunning
-                          ? `0 0 5px 0px ${theme.palette.primary.main}`
-                          : "",
-                      }}
-                    >
-                      {entry.activity != null && (
-                        <ActivityIcon
-                          activity={entry.activity}
-                          sx={{
-                            fontSize: "3.5em",
-                            transform:
-                              entry.activity.hasSides &&
-                              entry.leftTime &&
-                              !entry.rightTime
-                                ? "scaleX(-1)"
-                                : "scaleX(1)",
-                          }}
+                      >
+                        {entry.activity != null && (
+                          <ActivityIcon
+                            activity={entry.activity}
+                            sx={{
+                              fontSize: "3.5em",
+                              transform:
+                                entry.activity.hasSides &&
+                                entry.leftTime &&
+                                !entry.rightTime
+                                  ? "scaleX(-1)"
+                                  : "scaleX(1)",
+                            }}
+                          />
+                        )}
+                      </Box>
+                      <Stack
+                        direction={"row"}
+                        justifyContent={"space-between"}
+                        spacing={2}
+                        sx={{
+                          flexGrow: 1,
+                        }}
+                      >
+                        <EntryHeader
+                          entry={entry}
+                          hideIcon
+                          textColor={
+                            entryHasStopwatchRunning
+                              ? theme.palette.primary.main
+                              : undefined
+                          }
+                          useCompactMode={useCompactMode}
                         />
-                      )}
-                    </Box>
+                        <IconButton
+                          sx={{
+                            opacity: 0.5,
+                            zIndex: 1,
+                          }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setMenuEntryId(entry.id);
+                            openMenu(event);
+                          }}
+                          size="large"
+                        >
+                          <MoreVertIcon fontSize="medium" />
+                        </IconButton>
+                      </Stack>
+                    </Stack>
+
                     <Stack
                       direction={"row"}
-                      justifyContent={"space-between"}
+                      justifyContent={"flex-start"}
+                      alignItems={"center"}
                       spacing={2}
-                      sx={{
-                        flexGrow: 1,
-                      }}
                     >
-                      <EntryHeader
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "4.5em",
+                          borderRadius: "50%",
+                          borderColor: "transparent",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <EntryBody
                         entry={entry}
-                        hideIcon
-                        textColor={
-                          entryHasStopwatchRunning
-                            ? theme.palette.primary.main
-                            : undefined
-                        }
+                        previousEntry={previousEntry}
+                        sx={{
+                          paddingTop: useCompactMode ? 0 : 1,
+                        }}
                         useCompactMode={useCompactMode}
                       />
-                      <IconButton
-                        sx={{
-                          opacity: 0.5,
-                          zIndex: 1,
-                        }}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setMenuEntryId(entry.id);
-                          openMenu(event);
-                        }}
-                        size="large"
-                      >
-                        <MoreVertIcon fontSize="medium" />
-                      </IconButton>
                     </Stack>
                   </Stack>
+                </CardContent>
+              </CardActionArea>
 
-                  <Stack
-                    direction={"row"}
-                    justifyContent={"flex-start"}
-                    alignItems={"center"}
-                    spacing={2}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "4.5em",
-                        borderRadius: "50%",
-                        borderColor: "transparent",
-                        flexShrink: 0,
-                      }}
-                    />
-                    <EntryBody
-                      entry={entry}
-                      previousEntry={previousEntry}
-                      sx={{
-                        paddingTop: useCompactMode ? 0 : 1,
-                      }}
-                      useCompactMode={useCompactMode}
-                    />
-                  </Stack>
-                </Stack>
-              </CardContent>
-            </CardActionArea>
+              {nextEntryExists && useCompactMode && (
+                <Divider
+                  sx={{
+                    marginLeft: 2,
+                    marginRight: 2,
+                  }}
+                />
+              )}
+            </Box>
           );
         })}
       </Card>

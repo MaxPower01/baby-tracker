@@ -54,14 +54,34 @@ export default function NewEntryWidget(props: Props) {
       }) as ActivityModel[];
 
     return activities.map((activity) => {
-      const activityEntries = entries?.filter(
-        (entry: EntryModel) => entry?.activity?.type == activity.type
-      );
+      const activityEntries = entries?.filter((entry: EntryModel) => {
+        if (entry == null || entry.activity == null) return false;
+        let isActivity = false;
+        if (entry.activity.type == activity.type) {
+          isActivity = true;
+        }
+        if (!isActivity && entry.linkedActivities != null) {
+          isActivity = entry.linkedActivities.some(
+            (linkedActivity) => linkedActivity.type == activity.type
+          );
+        }
+        return isActivity;
+      });
       const lastActivityEntry = activityEntries?.[0] ?? null;
       const isInProgress = lastActivityEntry?.anyStopwatchIsRunning ?? false;
+      const isLinkedActivity =
+        lastActivityEntry?.activity?.type != activity.type;
       const lastEntryLabels = {
-        title: activity.getLastEntryTitle(lastActivityEntry, now),
-        subtitle: activity.getLastEntrySubtitle(lastActivityEntry, now),
+        title: activity.getLastEntryTitle({
+          lastEntry: lastActivityEntry,
+          now,
+          lastEntryIsLinkedActivity: isLinkedActivity,
+        }),
+        subtitle: activity.getLastEntrySubtitle({
+          lastEntry: lastActivityEntry,
+          now,
+          lastEntryIsLinkedActivity: isLinkedActivity,
+        }),
       };
       return {
         activity,
@@ -295,6 +315,7 @@ export default function NewEntryWidget(props: Props) {
                   sx={{
                     ...subtitleStyle,
                     // lineHeight: 1,
+                    // whiteSpace: "pre",
                   }}
                 >
                   {lastEntryLabels.subtitle}
@@ -307,6 +328,7 @@ export default function NewEntryWidget(props: Props) {
                       ? theme.palette.primary.main
                       : undefined,
                     fontWeight: isInProgress ? "bold" : undefined,
+                    // whiteSpace: "pre",
                     // lineHeight: 1,
                   }}
                 >

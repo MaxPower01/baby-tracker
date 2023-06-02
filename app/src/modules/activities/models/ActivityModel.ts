@@ -1,7 +1,8 @@
+import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
+
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import SubActivityType from "@/modules/activities/enums/SubActivityType";
-import { formatStopwatchTime } from "@/utils/utils";
 
 export default class ActivityModel {
   private _type: ActivityType;
@@ -336,21 +337,53 @@ export default class ActivityModel {
     }
   }
 
-  getLastEntryTitle(lastEntry: EntryModel, now?: Date): string {
+  getLastEntryTitle({
+    lastEntry,
+    now,
+    lastEntryIsLinkedActivity,
+  }: {
+    lastEntry: EntryModel;
+    now?: Date;
+    lastEntryIsLinkedActivity?: boolean;
+  }): string {
     if (lastEntry == null) return "";
     if (lastEntry.anyStopwatchIsRunning) return "En cours";
+    if (lastEntryIsLinkedActivity) return lastEntry.activity?.name ?? "";
     if (now == null) now = new Date();
+    let result = "";
     const time =
       lastEntry.time > 0
         ? formatStopwatchTime(lastEntry.time, true, lastEntry.time < 1000 * 60)
         : null;
-    if (time != null) {
-      return time;
+
+    if (lastEntry.activity?.type == ActivityType.BreastFeeding) {
+      if (lastEntry.leftTime > 0 && lastEntry.rightTime == 0) {
+        result += "Gauche";
+      } else if (lastEntry.leftTime == 0 && lastEntry.rightTime > 0) {
+        result += "Droite";
+      }
+    } else if (lastEntry.activity?.type == ActivityType.BottleFeeding) {
+      if (lastEntry.volume != null) {
+        result += `${lastEntry.volume} ml`;
+      }
     }
-    return "";
+
+    if (time != null) {
+      if (!isNullOrWhiteSpace(result)) result += " • ";
+      result += `${time}`;
+    }
+    return result.trim();
   }
 
-  getLastEntrySubtitle(lastEntry: EntryModel, now?: Date): string {
+  getLastEntrySubtitle({
+    lastEntry,
+    now,
+    lastEntryIsLinkedActivity,
+  }: {
+    lastEntry: EntryModel;
+    now?: Date;
+    lastEntryIsLinkedActivity?: boolean;
+  }): string {
     if (lastEntry == null || lastEntry.anyStopwatchIsRunning) return "";
     if (now == null) now = new Date();
     const diff = now.getTime() - lastEntry.endDate.getTime();

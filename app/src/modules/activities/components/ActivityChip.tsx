@@ -11,6 +11,7 @@ type Props = {
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
+  useCompactMode?: boolean;
 };
 
 export default function ActivityChip({
@@ -20,13 +21,18 @@ export default function ActivityChip({
   size,
   textColor,
   isDisabled,
+  useCompactMode,
 }: Props) {
   const theme = useTheme();
   return (
     <Chip
       key={`${activity.type}-${activity.type}`}
       label={
-        <Typography variant="body2" fontWeight={600} color={textColor}>
+        <Typography
+          variant={useCompactMode ? "caption" : "body2"}
+          fontWeight={useCompactMode ? 500 : 600}
+          color={textColor}
+        >
           {activity.name}
         </Typography>
       }
@@ -40,7 +46,7 @@ export default function ActivityChip({
           sx={{
             marginRight: size === "small" ? -0.5 : -1,
             marginLeft: 0.5,
-            fontSize: "1.35em",
+            fontSize: useCompactMode ? "1.15em" : "1.35em",
             color: textColor,
           }}
         />

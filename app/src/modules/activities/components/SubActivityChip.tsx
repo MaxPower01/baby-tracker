@@ -11,6 +11,7 @@ type Props = {
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
+  useCompactMode?: boolean;
 };
 
 export default function SubActivityChip({
@@ -20,6 +21,7 @@ export default function SubActivityChip({
   size,
   textColor,
   isDisabled,
+  useCompactMode,
 }: Props) {
   const theme = useTheme();
   return (

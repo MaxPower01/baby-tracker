@@ -1,4 +1,10 @@
-import { Box, CircularProgress, Stack, useTheme } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
@@ -68,7 +74,18 @@ export default function Entries(props: Props) {
   }
 
   if (!entries || entries.length === 0 || !entriesByDate) {
-    return <div>Aucune entrée</div>;
+    return (
+      <Typography
+        variant="body1"
+        sx={{
+          textAlign: "center",
+          opacity: 0.5,
+          fontStyle: "italic",
+        }}
+      >
+        Aucune entrée au cours des 24 dernières heures
+      </Typography>
+    );
   }
 
   return (

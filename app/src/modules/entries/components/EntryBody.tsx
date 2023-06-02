@@ -128,7 +128,7 @@ export default function EntryBody(props: Props) {
 
   return (
     <Stack
-      spacing={useCompactMode ? 0 : 1}
+      spacing={useCompactMode ? 0.5 : 1}
       sx={{
         ...sx,
       }}
@@ -161,6 +161,7 @@ export default function EntryBody(props: Props) {
                 size={"small"}
                 isSelected={true}
                 textColor={textColor}
+                useCompactMode={useCompactMode}
               />
             );
           })}
@@ -171,7 +172,7 @@ export default function EntryBody(props: Props) {
         volumeLabels.map((label, labelIndex) => (
           <Stack
             key={labelIndex}
-            spacing={1}
+            spacing={useCompactMode ? 0.5 : 1}
             direction={"row"}
             alignItems={"center"}
             sx={{}}
@@ -202,7 +203,7 @@ export default function EntryBody(props: Props) {
         timeLabels.map((label, labelIndex) => (
           <Stack
             key={labelIndex}
-            spacing={1}
+            spacing={useCompactMode ? 0.5 : 1}
             direction={"row"}
             alignItems={"center"}
             sx={{}}
