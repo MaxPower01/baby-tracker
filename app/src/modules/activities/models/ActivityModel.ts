@@ -355,7 +355,7 @@ export default class ActivityModel {
     if (now == null) now = new Date();
     const diff = now.getTime() - lastEntry.endDate.getTime();
     if (diff < 1000 * 60) {
-      return "Il y a moins de 1 m";
+      return "À l'instant";
     }
     return `Il y a ${formatStopwatchTime(diff, true, false)}`;
   }
