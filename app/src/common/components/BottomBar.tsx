@@ -9,12 +9,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import {
-  getPageName,
-  getPageTitle,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/utils/utils";
+import { getPageName, getPath, isNullOrWhiteSpace } from "@/utils/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
@@ -28,6 +23,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import MenuDrawer from "@/common/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import PageName from "@/common/enums/PageName";
+import getPageTitle from "@/utils/getPageTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
 const FloatingActionButton = styled(Fab)({

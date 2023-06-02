@@ -23,6 +23,7 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PageName from "@/common/enums/PageName";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { functions } from "@/firebase";
 import { httpsCallable } from "firebase/functions";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -139,7 +140,28 @@ export default function MenuDrawer(props: {
                 width: "100%",
               }}
               alignItems={"flex-start"}
+              spacing={1}
             >
+              <Button
+                variant="text"
+                fullWidth
+                sx={{
+                  color: theme.palette.text.primary,
+                  textAlign: "left",
+                  justifyContent: "flex-start",
+                }}
+                onClick={() => {
+                  props.onClose();
+                  navigate(getPath({ page: PageName.Settings }));
+                }}
+              >
+                <SettingsIcon
+                  sx={{
+                    marginRight: 1,
+                  }}
+                />
+                <Typography variant="body1">Paramètres</Typography>
+              </Button>
               <Button
                 variant="text"
                 fullWidth

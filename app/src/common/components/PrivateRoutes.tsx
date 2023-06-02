@@ -9,6 +9,7 @@ import EntryPage from "@/pages/EntryPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
 import PageName from "@/common/enums/PageName";
+import SettingsPage from "@/pages/SettingsPage";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useMemo } from "react";
 
@@ -52,6 +53,10 @@ export default function PrivateRoutes() {
             <Route
               path={getPath({ page: PageName.Authentication })}
               element={<AuthenticationPage />}
+            />
+            <Route
+              path={getPath({ page: PageName.Settings })}
+              element={<SettingsPage />}
             />
             <Route path={getPath({ page: PageName.Entry })}>
               <Route path="" element={<EntryPage />} />

@@ -6,13 +6,14 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { getPageName, getPageTitle, getPath } from "@/utils/utils";
+import { getPageName, getPath } from "@/utils/utils";
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageName from "@/common/enums/PageName";
+import getPageTitle from "@/utils/getPageTitle";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useSelector } from "react-redux";
 
