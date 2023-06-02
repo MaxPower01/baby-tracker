@@ -86,6 +86,9 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
         entries.push(entry);
       });
       setIsLoading(false);
+      entries.sort((a, b) => {
+        return b.startDate.getTime() - a.startDate.getTime();
+      });
       return entries;
     },
     [user, children]
@@ -104,6 +107,9 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           if (!newEntries.some((newEntry) => newEntry.id === prevEntry.id)) {
             newEntries.push(prevEntry);
           }
+        });
+        newEntries.sort((a, b) => {
+          return b.startDate.getTime() - a.startDate.getTime();
         });
         return newEntries;
       });

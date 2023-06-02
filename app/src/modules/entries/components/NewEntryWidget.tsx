@@ -27,6 +27,17 @@ import { useNavigate } from "react-router-dom";
 type Props = {};
 
 export default function NewEntryWidget(props: Props) {
+  const activitiesCount = Object.values(ActivityType).length / 2;
+  const allActivities = Object.values(ActivityType)
+    .map((type) => {
+      if (typeof type === "string") return null;
+      return new ActivityModel(type);
+    })
+    .filter((activity) => activity != null)
+    .sort((a, b) => {
+      if (a == null || b == null) return 0;
+      return a.order - b.order;
+    }) as ActivityModel[];
   const { entries } = useEntries();
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
   const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
@@ -225,6 +236,8 @@ export default function NewEntryWidget(props: Props) {
     backgroundColor: theme.customPalette.background?.almostTransparent,
     border: "1px solid",
     borderColor: theme.customPalette.background?.almostTransparent,
+    flexGrow: 1,
+    height: "100%",
   };
   const subtitleStyle: SxProps = {
     opacity: 0.6,
@@ -248,13 +261,20 @@ export default function NewEntryWidget(props: Props) {
     rightSide?: boolean;
     startTimer?: boolean;
     lastEntry?: EntryModel;
-    label?: {
+    data?: {
       title: string;
       subtitle: string;
       isInProgress: boolean;
     } | null;
   }) => {
-    const { activity, rightSide, startTimer, event, lastEntry, label } = params;
+    const {
+      activity,
+      rightSide,
+      startTimer,
+      event,
+      lastEntry,
+      data: label,
+    } = params;
     closeMenu(event);
     if (lastEntry != null && label != null) {
       if (label.isInProgress) {
@@ -311,11 +331,101 @@ export default function NewEntryWidget(props: Props) {
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          // display: "grid",
-          // gridTemplateColumns: "repeat(5, minmax(10em, 1fr))",
+          display: "grid",
+          gridTemplateColumns: `${allActivities.map(() => "1fr").join(" ")}`,
         }}
       >
-        <Box
+        {allActivities.map((activity) => {
+          const activityEntries = entries?.filter(
+            (entry: EntryModel) => entry?.activity?.type == activity.type
+          );
+          const lastActivityEntry = activityEntries?.[0] ?? null;
+          const isInProgress =
+            lastActivityEntry?.anyStopwatchIsRunning ?? false;
+          const lastEntryLabels = {
+            title: activity.getLastEntryTitle(lastActivityEntry),
+            subtitle: activity.getLastEntrySubtitle(lastActivityEntry),
+          };
+          return (
+            <Box
+              key={activity.type}
+              sx={{
+                ...boxStyle,
+                order: isInProgress ? 0 : activity.order,
+              }}
+            >
+              <Box
+                sx={{
+                  border: "1px solid",
+                  borderColor: isInProgress
+                    ? (theme.palette.primary.main as string)
+                    : "transparent",
+                  backgroundColor: isInProgress
+                    ? `${theme.palette.primary.main}20`
+                    : undefined,
+                  boxShadow: isInProgress
+                    ? `0 0 5px 0px ${theme.palette.primary.main}`
+                    : undefined,
+                  borderRadius: 1,
+                  flexGrow: 1,
+                }}
+              >
+                <ActivityButton
+                  activity={activity}
+                  showLabel
+                  sx={{
+                    ...activityButtonStyle,
+                  }}
+                  onClick={(e) => {
+                    handleActivityClick({
+                      event: e,
+                      activity: activity,
+                      startTimer: false,
+                      lastEntry: lastActivityEntry,
+                      data: {
+                        title: "",
+                        isInProgress: isInProgress,
+                        subtitle: "",
+                      },
+                    });
+                  }}
+                />
+              </Box>
+              <Stack
+                sx={{
+                  marginTop: 1,
+                }}
+              >
+                {!isNullOrWhiteSpace(lastEntryLabels.subtitle) && (
+                  <Typography
+                    variant={textVariant}
+                    sx={{
+                      ...subtitleStyle,
+                      // lineHeight: 1,
+                    }}
+                  >
+                    {lastEntryLabels.subtitle}
+                  </Typography>
+                )}
+                {!isNullOrWhiteSpace(lastEntryLabels.title) && (
+                  <Typography
+                    variant={textVariant}
+                    sx={{
+                      ...titleStyle,
+                      color: isInProgress
+                        ? theme.palette.primary.main
+                        : undefined,
+                      // lineHeight: 1,
+                    }}
+                  >
+                    {lastEntryLabels.title}
+                  </Typography>
+                )}
+              </Stack>
+            </Box>
+          );
+        })}
+        {/* <Box
           sx={{
             ...boxStyle,
             order: lastBreastfeedingLabel?.isInProgress ? 0 : 1,
@@ -636,7 +746,7 @@ export default function NewEntryWidget(props: Props) {
                 </Typography>
               )}
           </Stack>
-        </Box>
+        </Box> */}
 
         {/* <Box
           sx={{

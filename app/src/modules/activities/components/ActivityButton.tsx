@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Stack,
   SvgIconTypeMap,
@@ -48,19 +49,40 @@ export default function ActivityButton({
         color: theme.palette.text.primary,
       }}
     >
-      <Stack spacing={1} justifyContent={"center"} alignItems={"center"}>
+      <Stack
+        spacing={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        sx={{
+          flexGrow: 1,
+        }}
+      >
         {activity != null && (
           <>
-            <ActivityIcon activity={activity} />
+            <ActivityIcon
+              activity={activity}
+              sx={{
+                flexShrink: 0,
+              }}
+            />
             {showLabel != null && (
-              <Typography
-                variant="button"
-                textAlign="center"
-                fontWeight={"bold"}
-                lineHeight={1.2}
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                {overrideLabel ?? activity.name}
-              </Typography>
+                <Typography
+                  variant="button"
+                  textAlign="center"
+                  fontWeight={"bold"}
+                  lineHeight={1.2}
+                >
+                  {overrideLabel ?? activity.name}
+                </Typography>
+              </Box>
             )}
           </>
         )}
@@ -72,14 +94,23 @@ export default function ActivityButton({
               }}
             />
             {showLabel != null && overrideLabel != null && (
-              <Typography
-                variant="button"
-                textAlign="center"
-                fontWeight={400}
-                lineHeight={1.2}
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                {overrideLabel}
-              </Typography>
+                <Typography
+                  variant="button"
+                  textAlign="center"
+                  fontWeight={400}
+                  lineHeight={1.2}
+                >
+                  {overrideLabel}
+                </Typography>
+              </Box>
             )}
           </>
         )}

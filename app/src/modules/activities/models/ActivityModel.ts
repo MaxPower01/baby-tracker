@@ -1,5 +1,7 @@
 import ActivityType from "@/modules/activities/enums/ActivityType";
+import EntryModel from "@/modules/entries/models/EntryModel";
 import SubActivityType from "@/modules/activities/enums/SubActivityType";
+import { formatStopwatchTime } from "@/utils/utils";
 
 export default class ActivityModel {
 	private _type: ActivityType;
@@ -333,6 +335,21 @@ export default class ActivityModel {
 				return "";
 		}
 	}
+
+	getLastEntryTitle(lastEntry: EntryModel): string {
+		if (lastEntry == null)
+			return "";
+			return "";
+		}
+		
+		getLastEntrySubtitle(lastEntry: EntryModel): string {
+			if (lastEntry == null)
+			return "";
+			const now = new Date();
+			const diff = now.getTime() - lastEntry.endDate.getTime();
+		return `Il y a ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+	}
+
 
 	getLinkedTypesFor(type: ActivityType): ActivityType[] {
 		switch (type) {
