@@ -89,7 +89,7 @@ export default function EntryHeader(props: Props) {
       )}
       <Stack spacing={props.useCompactMode ? 0.25 : 0}>
         <Typography
-          variant="body2"
+          variant={props.useCompactMode ? "caption" : "body2"}
           sx={{
             lineHeight: 1,
             opacity: 0.6,
@@ -100,7 +100,7 @@ export default function EntryHeader(props: Props) {
         </Typography>
         <Typography
           variant={props.useCompactMode ? "body1" : "h6"}
-          fontWeight={"bold"}
+          fontWeight={props.useCompactMode ? 600 : "bold"}
           sx={{
             color: props.textColor,
           }}

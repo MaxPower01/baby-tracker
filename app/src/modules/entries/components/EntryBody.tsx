@@ -128,7 +128,7 @@ export default function EntryBody(props: Props) {
 
   return (
     <Stack
-      spacing={1}
+      spacing={useCompactMode ? 0 : 1}
       sx={{
         ...sx,
       }}
@@ -184,7 +184,7 @@ export default function EntryBody(props: Props) {
             />
             <Box>
               <Typography
-                variant="body1"
+                variant={useCompactMode ? "caption" : "body1"}
                 sx={{
                   display: "inline",
                   color: textColor,
@@ -210,20 +210,21 @@ export default function EntryBody(props: Props) {
             <AccessTimeIcon
               sx={{
                 color: textColor,
-                fontSize: hasStopwatchRunning ? "2em" : iconFontSize,
+                fontSize: iconFontSize,
               }}
             />
             <Box>
               <Typography
-                variant="body1"
+                variant={
+                  hasStopwatchRunning
+                    ? useCompactMode
+                      ? "body1"
+                      : "h6"
+                    : "caption"
+                }
                 sx={{
                   display: "inline",
                   color: textColor,
-                  fontSize: hasStopwatchRunning
-                    ? useCompactMode
-                      ? "1.8em"
-                      : "2em"
-                    : undefined,
                   fontWeight: hasStopwatchRunning
                     ? useCompactMode
                       ? 600
@@ -239,7 +240,7 @@ export default function EntryBody(props: Props) {
 
       {entry.note && (
         <Typography
-          variant="body1"
+          variant={useCompactMode ? "caption" : "body1"}
           sx={{
             ...textStyle,
           }}
@@ -248,9 +249,9 @@ export default function EntryBody(props: Props) {
         </Typography>
       )}
 
-      {timeElapsedSincePreviousEntryLabel != null && !useCompactMode && (
+      {timeElapsedSincePreviousEntryLabel != null && (
         <Typography
-          variant="body2"
+          variant={useCompactMode ? "caption" : "body2"}
           sx={{
             ...textStyle,
             opacity: 0.35,

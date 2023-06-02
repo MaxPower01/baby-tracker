@@ -114,13 +114,17 @@ export default function EntriesCard(props: Props) {
                   })
                 );
               }}
-              sx={{}}
+              sx={{
+                borderRadius: 0,
+              }}
               component={Box}
             >
               <CardContent
                 sx={{
                   paddingTop: useCompactMode ? 1 : 4,
                   paddingBottom: useCompactMode ? 1 : 4,
+                  borderBottom: nextEntryExists ? "1px solid" : undefined,
+                  borderColor: "divider",
                 }}
               >
                 <Stack

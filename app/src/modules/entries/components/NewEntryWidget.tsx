@@ -71,169 +71,8 @@ export default function NewEntryWidget(props: Props) {
       };
     });
   }, [entries, now]);
-  const lastBreastfeedingEntry = useMemo(() => {
-    const breastfeedingEntries = entries?.filter(
-      (entry: EntryModel) => entry?.activity?.type == ActivityType.BreastFeeding
-    );
-    breastfeedingEntries?.sort((a, b) => {
-      return b?.startDate?.getTime() - a?.startDate?.getTime();
-    });
-    return breastfeedingEntries?.[0] ?? null;
-  }, [entries, now]);
-  const lastBreastfeedingLabel = useMemo(() => {
-    const parts = {
-      title: "",
-      subtitle: "",
-      isInProgress: false,
-    };
-    if (lastBreastfeedingEntry == null) return null;
-    if (lastBreastfeedingEntry.anyStopwatchIsRunning) {
-      return {
-        title: "En cours",
-        isInProgress: true,
-        subtitle: "",
-      };
-    }
-    const time =
-      lastBreastfeedingEntry.time > 0
-        ? formatStopwatchTime(
-            lastBreastfeedingEntry.time,
-            true,
-            lastBreastfeedingEntry.time < 1000 * 60
-          )
-        : null;
-    if (time != null) {
-      parts.title = time;
-    }
 
-    parts.subtitle = "Il y a";
-    const diff = now.getTime() - lastBreastfeedingEntry.endDate.getTime();
-    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    if (
-      lastBreastfeedingEntry.leftTime > 0 &&
-      lastBreastfeedingEntry.rightTime == 0
-    ) {
-      // Add dot symbol
-      parts.title = "Gauche • " + parts.title;
-    } else if (
-      lastBreastfeedingEntry.leftTime == 0 &&
-      lastBreastfeedingEntry.rightTime > 0
-    ) {
-      parts.title = "Droite • " + parts.title;
-    }
-    return parts;
-  }, [lastBreastfeedingEntry, now]);
-  const lastBottleFeedingEntry = useMemo(() => {
-    const bottleFeedingEntries = entries?.filter(
-      (entry: EntryModel) => entry?.activity?.type == ActivityType.BottleFeeding
-    );
-    bottleFeedingEntries?.sort((a, b) => {
-      return b?.startDate?.getTime() - a?.startDate?.getTime();
-    });
-    return bottleFeedingEntries?.[0] ?? null;
-  }, [entries, now]);
-  const lastBottleFeedingLabel = useMemo(() => {
-    const parts = {
-      title: "",
-      subtitle: "",
-      isInProgress: false,
-    };
-    if (lastBottleFeedingEntry == null) return null;
-    if (lastBottleFeedingEntry.anyStopwatchIsRunning) {
-      return {
-        title: "En cours",
-        isInProgress: true,
-        subtitle: "",
-      };
-    }
-    const time =
-      lastBottleFeedingEntry.time > 0
-        ? formatStopwatchTime(
-            lastBottleFeedingEntry.time,
-            true,
-            lastBottleFeedingEntry.time < 1000 * 60
-          )
-        : null;
-    const volume = lastBottleFeedingEntry.volume;
-    if (volume != null) {
-      parts.title = `${volume} ml`;
-    } else if (time != null) {
-      parts.title = time;
-    }
-    parts.subtitle = "Il y a";
-    const diff = now.getTime() - lastBottleFeedingEntry.endDate.getTime();
-    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return parts;
-  }, [lastBottleFeedingEntry, now]);
-  const lastDiaperEntry = useMemo(() => {
-    const diaperEntries = entries?.filter(
-      (entry: EntryModel) => entry?.activity?.type == ActivityType.Diaper
-    );
-    diaperEntries?.sort((a, b) => {
-      return b?.startDate?.getTime() - a?.startDate?.getTime();
-    });
-    return diaperEntries?.[0] ?? null;
-  }, [entries, now]);
-  const lastDiaperLabel = useMemo(() => {
-    const parts = {
-      title: "",
-      subtitle: "",
-      isInProgress: false,
-    };
-    if (lastDiaperEntry == null) return null;
-    if (lastDiaperEntry.anyStopwatchIsRunning) {
-      return {
-        title: "En cours",
-        isInProgress: true,
-        subtitle: "",
-      };
-    }
-    parts.subtitle = "Il y a";
-    const diff = now.getTime() - lastDiaperEntry.endDate.getTime();
-    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return parts;
-  }, [lastDiaperEntry, now]);
-  const lastSleepEntry = useMemo(() => {
-    const sleepEntries = entries?.filter(
-      (entry: EntryModel) => entry?.activity?.type == ActivityType.Sleep
-    );
-    sleepEntries?.sort((a, b) => {
-      return b?.startDate?.getTime() - a?.startDate?.getTime();
-    });
-    return sleepEntries?.[0] ?? null;
-  }, [entries, now]);
-  const lastSleepLabel = useMemo(() => {
-    const parts = {
-      title: "",
-      subtitle: "",
-      isInProgress: false,
-    };
-    if (lastSleepEntry == null) return null;
-    if (lastSleepEntry.anyStopwatchIsRunning) {
-      return {
-        title: "En cours",
-        isInProgress: true,
-        subtitle: "",
-      };
-    }
-    const time =
-      lastSleepEntry.time > 0
-        ? formatStopwatchTime(
-            lastSleepEntry.time,
-            true,
-            lastSleepEntry.time < 1000 * 60
-          )
-        : null;
-    if (time != null) {
-      parts.title = time;
-    }
-    parts.subtitle = "Il y a";
-    const diff = now.getTime() - lastSleepEntry.endDate.getTime();
-    parts.subtitle += ` ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
-    return parts;
-  }, [lastSleepEntry, now]);
-
-  const activityButtonWidth = "12em";
+  const activityButtonWidth = "10em";
   const activityButtonPaddingLeftRight = 2;
 
   const boxStyle: SxProps = {
@@ -413,37 +252,6 @@ export default function NewEntryWidget(props: Props) {
                     }}
                   />
                 </Box>
-                {/* <Stack
-                  sx={{
-                    marginTop: 1,
-                  }}
-                >
-                  {!isNullOrWhiteSpace(lastEntryLabels.subtitle) && (
-                    <Typography
-                      variant={textVariant}
-                      sx={{
-                        ...subtitleStyle,
-                        // lineHeight: 1,
-                      }}
-                    >
-                      {lastEntryLabels.subtitle}
-                    </Typography>
-                  )}
-                  {!isNullOrWhiteSpace(lastEntryLabels.title) && (
-                    <Typography
-                      variant={textVariant}
-                      sx={{
-                        ...titleStyle,
-                        color: isInProgress
-                          ? theme.palette.primary.main
-                          : undefined,
-                        // lineHeight: 1,
-                      }}
-                    >
-                      {lastEntryLabels.title}
-                    </Typography>
-                  )}
-                </Stack> */}
               </Box>
             );
           }
@@ -451,7 +259,6 @@ export default function NewEntryWidget(props: Props) {
       </Stack>
 
       <Stack
-        // spacing={2}
         direction={"row"}
         justifyContent={"flex-start"}
         alignItems={"flex-start"}
@@ -480,6 +287,7 @@ export default function NewEntryWidget(props: Props) {
                   width: `calc(${activityButtonWidth} + 1.5px)`,
                   paddingLeft: activityButtonPaddingLeftRight,
                   paddingRight: activityButtonPaddingLeftRight,
+                  order: isInProgress ? 0 : activity.order,
                 }}
               >
                 <Typography
@@ -489,7 +297,7 @@ export default function NewEntryWidget(props: Props) {
                     // lineHeight: 1,
                   }}
                 >
-                  {lastEntryLabels.subtitle ?? ""}
+                  {lastEntryLabels.subtitle}
                 </Typography>
                 <Typography
                   variant={textVariant}
@@ -502,7 +310,7 @@ export default function NewEntryWidget(props: Props) {
                     // lineHeight: 1,
                   }}
                 >
-                  {lastEntryLabels.title ?? ""}
+                  {lastEntryLabels.title}
                 </Typography>
               </Stack>
             );
