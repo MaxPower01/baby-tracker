@@ -89,7 +89,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       entries.sort((a, b) => {
         return b.startDate.getTime() - a.startDate.getTime();
       });
-      return entries;
+      return [...entries];
     },
     [user, children]
   );
@@ -111,7 +111,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
         newEntries.sort((a, b) => {
           return b.startDate.getTime() - a.startDate.getTime();
         });
-        return newEntries;
+        return [...newEntries];
       });
     });
     const selectedChild = user?.selectedChild ?? "";
@@ -166,6 +166,9 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
               }
               return entry;
             });
+          });
+          newEntries.sort((a, b) => {
+            return b.startDate.getTime() - a.startDate.getTime();
           });
           return [...newEntries];
         });

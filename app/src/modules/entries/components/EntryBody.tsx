@@ -12,11 +12,12 @@ type Props = {
   entry: EntryModel;
   previousEntry?: EntryModel;
   sx?: SxProps | undefined;
+  useCompactMode?: boolean;
 };
 
 export default function EntryBody(props: Props) {
   const theme = useTheme();
-  const { entry, sx, previousEntry } = props;
+  const { entry, sx, previousEntry, useCompactMode } = props;
   if (!entry) return null;
   const hasStopwatchRunning =
     entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
@@ -218,8 +219,16 @@ export default function EntryBody(props: Props) {
                 sx={{
                   display: "inline",
                   color: textColor,
-                  fontSize: hasStopwatchRunning ? "2em" : undefined,
-                  fontWeight: hasStopwatchRunning ? "bold" : undefined,
+                  fontSize: hasStopwatchRunning
+                    ? useCompactMode
+                      ? "1.8em"
+                      : "2em"
+                    : undefined,
+                  fontWeight: hasStopwatchRunning
+                    ? useCompactMode
+                      ? 600
+                      : "bold"
+                    : undefined,
                 }}
               >
                 {label}
@@ -239,7 +248,7 @@ export default function EntryBody(props: Props) {
         </Typography>
       )}
 
-      {timeElapsedSincePreviousEntryLabel != null && (
+      {timeElapsedSincePreviousEntryLabel != null && !useCompactMode && (
         <Typography
           variant="body2"
           sx={{

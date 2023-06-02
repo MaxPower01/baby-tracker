@@ -1,12 +1,14 @@
+import { Box, Stack, Typography } from "@mui/material";
+
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import { Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 
 type Props = {
   entry: EntryModel;
   hideIcon?: boolean;
   textColor?: string;
+  useCompactMode?: boolean;
 };
 
 export default function EntryHeader(props: Props) {
@@ -85,7 +87,7 @@ export default function EntryHeader(props: Props) {
           <ActivityIcon activity={entry.activity} />
         </Box>
       )}
-      <Stack>
+      <Stack spacing={props.useCompactMode ? 0.25 : 0}>
         <Typography
           variant="body2"
           sx={{
@@ -97,7 +99,7 @@ export default function EntryHeader(props: Props) {
           {subtitle}
         </Typography>
         <Typography
-          variant="h6"
+          variant={props.useCompactMode ? "body1" : "h6"}
           fontWeight={"bold"}
           sx={{
             color: props.textColor,

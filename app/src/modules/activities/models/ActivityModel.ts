@@ -336,18 +336,37 @@ export default class ActivityModel {
 		}
 	}
 
-	getLastEntryTitle(lastEntry: EntryModel): string {
+	getLastEntryTitle(lastEntry: EntryModel, now?: Date): string {
 		if (lastEntry == null)
 			return "";
+			if (lastEntry.anyStopwatchIsRunning)
+			return "En cours";
+			if (now == null)
+			now = new Date();
+			const time =
+			lastEntry.time > 0
+			  ? formatStopwatchTime(
+				  lastEntry.time,
+				  true,
+				  lastEntry.time < 1000 * 60
+				)
+			  : null;
+		  if (time != null) {
+			return time;
+		  }
 			return "";
 		}
 		
-		getLastEntrySubtitle(lastEntry: EntryModel): string {
-			if (lastEntry == null)
+		getLastEntrySubtitle(lastEntry: EntryModel, now?: Date): string {
+			if (lastEntry == null || lastEntry.anyStopwatchIsRunning)
 			return "";
-			const now = new Date();
+			if (now == null)
+			now = new Date();
 			const diff = now.getTime() - lastEntry.endDate.getTime();
-		return `Il y a ${formatStopwatchTime(diff, true, diff < 1000 * 60)}`;
+			if (diff < 1000 * 60) {
+			return "Il y a moins de 1 m";
+			}
+		return `Il y a ${formatStopwatchTime(diff, true, false)}`;
 	}
 
 

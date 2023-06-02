@@ -10,6 +10,7 @@ import useEntries from "@/modules/entries/hooks/useEntries";
 
 type Props = {
   fetchTimePeriod?: TimePeriod;
+  useCompactMode?: boolean;
 };
 
 export default function Entries(props: Props) {
@@ -106,7 +107,7 @@ export default function Entries(props: Props) {
                 />
 
                 <Stack
-                  spacing={4}
+                  spacing={props.useCompactMode ? 2 : 4}
                   sx={{
                     paddingTop: 1,
                     paddingBottom: 1,
@@ -120,6 +121,7 @@ export default function Entries(props: Props) {
                         <EntriesCard
                           entries={timeEntries.entries}
                           allEntries={entries}
+                          useCompactMode={props.useCompactMode}
                         />
                       </MenuProvider>
                     );

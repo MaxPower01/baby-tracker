@@ -27,18 +27,8 @@ import { useNavigate } from "react-router-dom";
 type Props = {};
 
 export default function NewEntryWidget(props: Props) {
-  const activitiesCount = Object.values(ActivityType).length / 2;
-  const allActivities = Object.values(ActivityType)
-    .map((type) => {
-      if (typeof type === "string") return null;
-      return new ActivityModel(type);
-    })
-    .filter((activity) => activity != null)
-    .sort((a, b) => {
-      if (a == null || b == null) return 0;
-      return a.order - b.order;
-    }) as ActivityModel[];
   const { entries } = useEntries();
+
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
   const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
   const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
@@ -51,6 +41,36 @@ export default function NewEntryWidget(props: Props) {
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
+  const allActivitiesWithLastEntry = useMemo(() => {
+    const activities = Object.values(ActivityType)
+      .map((type) => {
+        if (typeof type === "string") return null;
+        return new ActivityModel(type);
+      })
+      .filter((activity) => activity != null)
+      .sort((a, b) => {
+        if (a == null || b == null) return 0;
+        return a.order - b.order;
+      }) as ActivityModel[];
+
+    return activities.map((activity) => {
+      const activityEntries = entries?.filter(
+        (entry: EntryModel) => entry?.activity?.type == activity.type
+      );
+      const lastActivityEntry = activityEntries?.[0] ?? null;
+      const isInProgress = lastActivityEntry?.anyStopwatchIsRunning ?? false;
+      const lastEntryLabels = {
+        title: activity.getLastEntryTitle(lastActivityEntry, now),
+        subtitle: activity.getLastEntrySubtitle(lastActivityEntry, now),
+      };
+      return {
+        activity,
+        isInProgress,
+        lastEntry: lastActivityEntry,
+        lastEntryLabels,
+      };
+    });
+  }, [entries, now]);
   const lastBreastfeedingEntry = useMemo(() => {
     const breastfeedingEntries = entries?.filter(
       (entry: EntryModel) => entry?.activity?.type == ActivityType.BreastFeeding
@@ -213,6 +233,9 @@ export default function NewEntryWidget(props: Props) {
     return parts;
   }, [lastSleepEntry, now]);
 
+  const activityButtonWidth = "12em";
+  const activityButtonPaddingLeftRight = 2;
+
   const boxStyle: SxProps = {
     borderRadius: 1,
     flexShrink: 0,
@@ -220,19 +243,19 @@ export default function NewEntryWidget(props: Props) {
     justifyContent: "flex-start",
     flexDirection: "column",
     alignItems: "center",
-    maxWidth: "10em",
-    marginLeft: 1,
-    marginRight: 1,
+    // width: "10em",
+    // marginLeft: 1,
+    // marginRight: 1,
     height: "100%",
   };
   const activityButtonStyle: SxProps = {
     paddingTop: 1.5,
     paddingBottom: 1.5,
-    paddingLeft: 2,
-    paddingRight: 2,
+    paddingLeft: activityButtonPaddingLeftRight,
+    paddingRight: activityButtonPaddingLeftRight,
     // width: "100%",
     // flex: 1,
-    width: "10em",
+    width: activityButtonWidth,
     backgroundColor: theme.customPalette.background?.almostTransparent,
     border: "1px solid",
     borderColor: theme.customPalette.background?.almostTransparent,
@@ -308,11 +331,125 @@ export default function NewEntryWidget(props: Props) {
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(new Date());
-    }, 1000);
+    }, 1000 * 60);
     return () => clearInterval(interval);
   }, []);
+
   return (
-    <>
+    <Box
+      sx={{
+        width: "100%",
+        overflowX: "scroll",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
+    >
+      <Stack
+        // spacing={2}
+        direction={"row"}
+        justifyContent={"flex-start"}
+        alignItems={"flex-start"}
+        sx={{
+          paddingTop: 0.5,
+          paddingBottom: 0.5,
+          "& .ActivityIcon": {
+            fontSize: "4em",
+          },
+          display: "grid",
+          gap: 2,
+          gridTemplateColumns: `${allActivitiesWithLastEntry
+            .map(() => "1fr")
+            .join(" ")}`,
+        }}
+      >
+        {allActivitiesWithLastEntry.map(
+          ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
+            return (
+              <Box
+                key={activity.type}
+                sx={{
+                  ...boxStyle,
+                  order: isInProgress ? 0 : activity.order,
+                }}
+              >
+                <Box
+                  sx={{
+                    border: "1px solid",
+                    borderColor: isInProgress
+                      ? (theme.palette.primary.main as string)
+                      : "transparent",
+                    backgroundColor: isInProgress
+                      ? `${theme.palette.primary.main}20`
+                      : undefined,
+                    boxShadow: isInProgress
+                      ? `0 0 5px 0px ${theme.palette.primary.main}`
+                      : undefined,
+                    borderRadius: 1,
+                    flexGrow: 1,
+                    width: "100%",
+                  }}
+                >
+                  <ActivityButton
+                    activity={activity}
+                    showLabel
+                    sx={{
+                      ...activityButtonStyle,
+                    }}
+                    onClick={(e) => {
+                      handleActivityClick({
+                        event: e,
+                        activity: activity,
+                        startTimer: false,
+                        lastEntry: lastEntry,
+                        data: {
+                          title: "",
+                          isInProgress: isInProgress,
+                          subtitle: "",
+                        },
+                      });
+                    }}
+                  />
+                </Box>
+                {/* <Stack
+                  sx={{
+                    marginTop: 1,
+                  }}
+                >
+                  {!isNullOrWhiteSpace(lastEntryLabels.subtitle) && (
+                    <Typography
+                      variant={textVariant}
+                      sx={{
+                        ...subtitleStyle,
+                        // lineHeight: 1,
+                      }}
+                    >
+                      {lastEntryLabels.subtitle}
+                    </Typography>
+                  )}
+                  {!isNullOrWhiteSpace(lastEntryLabels.title) && (
+                    <Typography
+                      variant={textVariant}
+                      sx={{
+                        ...titleStyle,
+                        color: isInProgress
+                          ? theme.palette.primary.main
+                          : undefined,
+                        // lineHeight: 1,
+                      }}
+                    >
+                      {lastEntryLabels.title}
+                    </Typography>
+                  )}
+                </Stack> */}
+              </Box>
+            );
+          }
+        )}
+      </Stack>
+
       <Stack
         // spacing={2}
         direction={"row"}
@@ -325,154 +462,26 @@ export default function NewEntryWidget(props: Props) {
             fontSize: "4em",
           },
           width: "100%",
-          overflowX: "scroll",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
           display: "grid",
-          gridTemplateColumns: `${allActivities.map(() => "1fr").join(" ")}`,
+          gap: 2,
+          gridTemplateColumns: `${allActivitiesWithLastEntry
+            .map(() => "1fr")
+            .join(" ")}`,
         }}
       >
-        {allActivities.map((activity) => {
-          const activityEntries = entries?.filter(
-            (entry: EntryModel) => entry?.activity?.type == activity.type
-          );
-          const lastActivityEntry = activityEntries?.[0] ?? null;
-          const isInProgress =
-            lastActivityEntry?.anyStopwatchIsRunning ?? false;
-          const lastEntryLabels = {
-            title: activity.getLastEntryTitle(lastActivityEntry),
-            subtitle: activity.getLastEntrySubtitle(lastActivityEntry),
-          };
-          return (
-            <Box
-              key={activity.type}
-              sx={{
-                ...boxStyle,
-                order: isInProgress ? 0 : activity.order,
-              }}
-            >
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: isInProgress
-                    ? (theme.palette.primary.main as string)
-                    : "transparent",
-                  backgroundColor: isInProgress
-                    ? `${theme.palette.primary.main}20`
-                    : undefined,
-                  boxShadow: isInProgress
-                    ? `0 0 5px 0px ${theme.palette.primary.main}`
-                    : undefined,
-                  borderRadius: 1,
-                  flexGrow: 1,
-                }}
-              >
-                <ActivityButton
-                  activity={activity}
-                  showLabel
-                  sx={{
-                    ...activityButtonStyle,
-                  }}
-                  onClick={(e) => {
-                    handleActivityClick({
-                      event: e,
-                      activity: activity,
-                      startTimer: false,
-                      lastEntry: lastActivityEntry,
-                      data: {
-                        title: "",
-                        isInProgress: isInProgress,
-                        subtitle: "",
-                      },
-                    });
-                  }}
-                />
-              </Box>
+        {allActivitiesWithLastEntry.map(
+          ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
+            return (
               <Stack
+                key={activity.type}
                 sx={{
                   marginTop: 1,
+                  fontSize: theme.typography.button.fontSize,
+                  width: `calc(${activityButtonWidth} + 1.5px)`,
+                  paddingLeft: activityButtonPaddingLeftRight,
+                  paddingRight: activityButtonPaddingLeftRight,
                 }}
               >
-                {!isNullOrWhiteSpace(lastEntryLabels.subtitle) && (
-                  <Typography
-                    variant={textVariant}
-                    sx={{
-                      ...subtitleStyle,
-                      // lineHeight: 1,
-                    }}
-                  >
-                    {lastEntryLabels.subtitle}
-                  </Typography>
-                )}
-                {!isNullOrWhiteSpace(lastEntryLabels.title) && (
-                  <Typography
-                    variant={textVariant}
-                    sx={{
-                      ...titleStyle,
-                      color: isInProgress
-                        ? theme.palette.primary.main
-                        : undefined,
-                      // lineHeight: 1,
-                    }}
-                  >
-                    {lastEntryLabels.title}
-                  </Typography>
-                )}
-              </Stack>
-            </Box>
-          );
-        })}
-        {/* <Box
-          sx={{
-            ...boxStyle,
-            order: lastBreastfeedingLabel?.isInProgress ? 0 : 1,
-          }}
-        >
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: lastBreastfeedingLabel?.isInProgress
-                ? (theme.palette.primary.main as string)
-                : "transparent",
-              backgroundColor: lastBreastfeedingLabel?.isInProgress
-                ? `${theme.palette.primary.main}20`
-                : undefined,
-              boxShadow: lastBreastfeedingLabel?.isInProgress
-                ? `0 0 5px 0px ${theme.palette.primary.main}`
-                : undefined,
-              borderRadius: 1,
-            }}
-          >
-            <ActivityButton
-              activity={breastFeedingActivity}
-              showLabel
-              sx={{
-                ...activityButtonStyle,
-              }}
-              onClick={(e) => {
-                if (lastBreastfeedingLabel?.isInProgress) {
-                  handleActivityClick({
-                    event: e,
-                    activity: breastFeedingActivity,
-                    lastEntry: lastBreastfeedingEntry,
-                    label: lastBreastfeedingLabel,
-                  });
-                } else {
-                  openMenu(e);
-                }
-              }}
-            />
-          </Box>
-          <Stack
-            sx={{
-              marginTop: 1,
-            }}
-          >
-            {lastBreastfeedingLabel != null &&
-              !isNullOrWhiteSpace(lastBreastfeedingLabel.subtitle) && (
                 <Typography
                   variant={textVariant}
                   sx={{
@@ -480,337 +489,26 @@ export default function NewEntryWidget(props: Props) {
                     // lineHeight: 1,
                   }}
                 >
-                  {lastBreastfeedingLabel.subtitle}
+                  {lastEntryLabels.subtitle ?? ""}
                 </Typography>
-              )}
-            {lastBreastfeedingLabel != null &&
-              !isNullOrWhiteSpace(lastBreastfeedingLabel.title) && (
                 <Typography
                   variant={textVariant}
                   sx={{
                     ...titleStyle,
-                    color: lastBreastfeedingLabel.isInProgress
+                    color: isInProgress
                       ? theme.palette.primary.main
                       : undefined,
+                    fontWeight: isInProgress ? "bold" : undefined,
                     // lineHeight: 1,
                   }}
                 >
-                  {lastBreastfeedingLabel.title}
-                </Typography>
-              )}
-          </Stack>
-          <Menu>
-            <MenuItem
-              onClick={(e) => {
-                handleActivityClick({
-                  event: e,
-                  activity: breastFeedingActivity,
-                  startTimer: true,
-                });
-              }}
-            >
-              <Stack direction={"row"} spacing={1}>
-                <Typography>
-                  Démarrer le <strong>côté gauche</strong>
+                  {lastEntryLabels.title ?? ""}
                 </Typography>
               </Stack>
-            </MenuItem>
-            <MenuItem
-              onClick={(e) => {
-                handleActivityClick({
-                  event: e,
-                  activity: breastFeedingActivity,
-                  rightSide: true,
-                  startTimer: true,
-                });
-              }}
-            >
-              <Stack direction={"row"} spacing={1}>
-                <Typography>
-                  Démarrer le <strong>côté droit</strong>
-                </Typography>
-              </Stack>
-            </MenuItem>
-          </Menu>
-        </Box>
-        <Box
-          sx={{
-            ...boxStyle,
-            order: lastBottleFeedingLabel?.isInProgress ? 0 : 2,
-          }}
-        >
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: lastBottleFeedingLabel?.isInProgress
-                ? (theme.palette.primary.main as string)
-                : "transparent",
-              backgroundColor: lastBottleFeedingLabel?.isInProgress
-                ? `${theme.palette.primary.main}20`
-                : undefined,
-              boxShadow: lastBottleFeedingLabel?.isInProgress
-                ? `0 0 5px 0px ${theme.palette.primary.main}`
-                : undefined,
-              borderRadius: 1,
-            }}
-          >
-            <ActivityButton
-              activity={bottleFeedingActivity}
-              showLabel
-              sx={{
-                ...activityButtonStyle,
-              }}
-              onClick={(e) => {
-                handleActivityClick({
-                  event: e,
-                  activity: bottleFeedingActivity,
-                  lastEntry: lastBottleFeedingEntry,
-                  label: lastBottleFeedingLabel,
-                });
-              }}
-            />
-          </Box>
-          <Stack
-            sx={{
-              marginTop: 1,
-            }}
-          >
-            {lastBottleFeedingLabel != null &&
-              !isNullOrWhiteSpace(lastBottleFeedingLabel.subtitle) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...subtitleStyle,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastBottleFeedingLabel.subtitle}
-                </Typography>
-              )}
-            {lastBottleFeedingLabel != null &&
-              !isNullOrWhiteSpace(lastBottleFeedingLabel.title) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...titleStyle,
-                    color: lastBottleFeedingLabel.isInProgress
-                      ? theme.palette.primary.main
-                      : undefined,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastBottleFeedingLabel.title}
-                </Typography>
-              )}
-          </Stack>
-        </Box>
-        <Box
-          sx={{
-            ...boxStyle,
-            order: lastDiaperLabel?.isInProgress ? 0 : 3,
-          }}
-        >
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: lastDiaperLabel?.isInProgress
-                ? (theme.palette.primary.main as string)
-                : "transparent",
-              backgroundColor: lastDiaperLabel?.isInProgress
-                ? `${theme.palette.primary.main}20`
-                : undefined,
-              boxShadow: lastDiaperLabel?.isInProgress
-                ? `0 0 5px 0px ${theme.palette.primary.main}`
-                : undefined,
-              borderRadius: 1,
-            }}
-          >
-            <ActivityButton
-              activity={diaperActivity}
-              showLabel
-              sx={{
-                ...activityButtonStyle,
-              }}
-              onClick={(e) => {
-                handleActivityClick({
-                  event: e,
-                  activity: diaperActivity,
-                  lastEntry: lastDiaperEntry,
-                  label: lastDiaperLabel,
-                });
-              }}
-            />
-          </Box>
-          <Stack
-            sx={{
-              marginTop: 1,
-            }}
-          >
-            {lastDiaperLabel != null &&
-              !isNullOrWhiteSpace(lastDiaperLabel.subtitle) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...subtitleStyle,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastDiaperLabel.subtitle}
-                </Typography>
-              )}
-            {lastDiaperLabel != null &&
-              !isNullOrWhiteSpace(lastDiaperLabel.title) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...titleStyle,
-                    color: lastDiaperLabel.isInProgress
-                      ? theme.palette.primary.main
-                      : undefined,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastDiaperLabel.title}
-                </Typography>
-              )}
-          </Stack>
-        </Box>
-        <Box
-          sx={{
-            ...boxStyle,
-            order: lastSleepLabel?.isInProgress ? 0 : 4,
-          }}
-        >
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: lastSleepLabel?.isInProgress
-                ? (theme.palette.primary.main as string)
-                : "transparent",
-              backgroundColor: lastSleepLabel?.isInProgress
-                ? `${theme.palette.primary.main}20`
-                : undefined,
-              boxShadow: lastSleepLabel?.isInProgress
-                ? `0 0 5px 0px ${theme.palette.primary.main}`
-                : undefined,
-              borderRadius: 1,
-            }}
-          >
-            <ActivityButton
-              activity={sleepActivity}
-              showLabel
-              sx={{
-                ...activityButtonStyle,
-              }}
-              onClick={(e) => {
-                handleActivityClick({
-                  event: e,
-                  activity: sleepActivity,
-                  startTimer: true,
-                  lastEntry: lastSleepEntry,
-                  label: lastSleepLabel,
-                });
-              }}
-            />
-          </Box>
-          <Stack
-            sx={{
-              marginTop: 1,
-            }}
-          >
-            {lastSleepLabel != null &&
-              !isNullOrWhiteSpace(lastSleepLabel.subtitle) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...subtitleStyle,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastSleepLabel.subtitle}
-                </Typography>
-              )}
-            {lastSleepLabel != null &&
-              !isNullOrWhiteSpace(lastSleepLabel.title) && (
-                <Typography
-                  variant={textVariant}
-                  sx={{
-                    ...titleStyle,
-                    color: lastSleepLabel.isInProgress
-                      ? theme.palette.primary.main
-                      : undefined,
-                    // lineHeight: 1,
-                  }}
-                >
-                  {lastSleepLabel.title}
-                </Typography>
-              )}
-          </Stack>
-        </Box> */}
-
-        {/* <Box
-          sx={{
-            ...boxStyle,
-            order: 9999,
-          }}
-        >
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "transparent",
-              backgroundColor: undefined,
-              boxShadow: undefined,
-              borderRadius: 1,
-              // flexGrow: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              "& button": {
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                "& svg": {
-                  fontSize: "3.5em",
-                  // opacity: 0.8,
-                },
-              },
-            }}
-          >
-            <ActivityButton
-              Icon={AddIcon}
-              activity={null}
-              // showLabel
-              // overrideLabel="Autre"
-              sx={{
-                ...activityButtonStyle,
-              }}
-              onClick={(e) => {
-                setActivitiesDrawerIsOpen(true);
-              }}
-            />
-          </Box>
-          <Stack
-            sx={{
-              marginTop: 1,
-            }}
-          ></Stack>
-        </Box> */}
+            );
+          }
+        )}
       </Stack>
-
-      {/* <ActivitiesDrawer
-        isOpen={activitiesDrawerIsOpen}
-        onClose={() => setActivitiesDrawerIsOpen(false)}
-        handleActivityClick={(type: ActivityType) =>
-          navigate(
-            getPath({
-              page: PageName.Entry,
-              params: { activity: type.toString() },
-            })
-          )
-        }
-      /> */}
-    </>
+    </Box>
   );
 }

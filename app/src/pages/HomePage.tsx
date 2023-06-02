@@ -1,4 +1,13 @@
-import { Stack, Typography } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  FormLabel,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material";
 
 import Entries from "@/modules/entries/components/Entries";
 import LoadingIndicator from "@/common/components/LoadingIndicator";
@@ -9,10 +18,17 @@ import SectionStack from "@/common/components/SectionStack";
 import SectionTitle from "@/common/components/SectionTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
+import { useState } from "react";
 
 export default function HomePage() {
-  const { user, children } = useAuthentication();
-  const { entries, isLoading } = useEntries();
+  const { user } = useAuthentication();
+  const [useCompactMode, setUseCompactMode] = useState(false);
+
+  const handleCompactModeSwitchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setUseCompactMode(event.target.checked);
+  };
 
   if (user?.selectedChild == null) {
     return <LoadingIndicator />;
@@ -28,7 +44,19 @@ export default function HomePage() {
       </Section>
       <Section dividerPosition="top">
         {/* <SectionTitle title="Activité récente" /> */}
-        <Entries />
+        <FormControl>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={useCompactMode}
+                onChange={handleCompactModeSwitchChange}
+                name="useCompactMode"
+              />
+            }
+            label="Mode compact"
+          />
+        </FormControl>
+        <Entries useCompactMode={useCompactMode} />
       </Section>
     </SectionStack>
   );

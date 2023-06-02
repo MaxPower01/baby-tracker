@@ -79,6 +79,9 @@ export default function ActivityButton({
                   textAlign="center"
                   fontWeight={"bold"}
                   lineHeight={1.2}
+                  sx={{
+                    wordBreak: "break-word",
+                  }}
                 >
                   {overrideLabel ?? activity.name}
                 </Typography>
@@ -107,6 +110,9 @@ export default function ActivityButton({
                   textAlign="center"
                   fontWeight={400}
                   lineHeight={1.2}
+                  sx={{
+                    wordBreak: "break-word",
+                  }}
                 >
                   {overrideLabel}
                 </Typography>

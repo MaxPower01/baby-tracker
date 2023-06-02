@@ -33,11 +33,12 @@ import { useNavigate } from "react-router-dom";
 type Props = {
   entries: EntryModel[];
   allEntries: EntryModel[];
+  useCompactMode?: boolean;
 };
 
 export default function EntriesCard(props: Props) {
   const navigate = useNavigate();
-  const { entries, allEntries } = props;
+  const { entries, allEntries, useCompactMode } = props;
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -118,13 +119,13 @@ export default function EntriesCard(props: Props) {
             >
               <CardContent
                 sx={{
-                  paddingTop: 4,
-                  paddingBottom: 4,
+                  paddingTop: useCompactMode ? 1 : 4,
+                  paddingBottom: useCompactMode ? 1 : 4,
                 }}
               >
                 <Stack
                   sx={{
-                    fontSize: "0.8em",
+                    fontSize: useCompactMode ? "0.5em" : "0.8em",
                     position: "relative",
                   }}
                 >
@@ -138,6 +139,7 @@ export default function EntriesCard(props: Props) {
                         opacity: 0.5,
                         paddingTop: 1,
                         paddingBottom: 1,
+                        display: useCompactMode ? "none" : undefined,
                       }}
                     >
                       <Box
@@ -210,6 +212,7 @@ export default function EntriesCard(props: Props) {
                             ? theme.palette.primary.main
                             : undefined
                         }
+                        useCompactMode={useCompactMode}
                       />
                       <IconButton
                         sx={{
@@ -249,8 +252,9 @@ export default function EntriesCard(props: Props) {
                       entry={entry}
                       previousEntry={previousEntry}
                       sx={{
-                        paddingTop: 1,
+                        paddingTop: useCompactMode ? 0 : 1,
                       }}
+                      useCompactMode={useCompactMode}
                     />
                   </Stack>
                 </Stack>
