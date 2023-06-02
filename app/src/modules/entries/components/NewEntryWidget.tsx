@@ -231,7 +231,7 @@ export default function NewEntryWidget(props: Props) {
                 key={activity.type}
                 sx={{
                   ...boxStyle,
-                  order: isInProgress ? 0 : activity.order,
+                  order: isInProgress ? 0 : activity.order + 1,
                 }}
               >
                 <Box
@@ -307,7 +307,7 @@ export default function NewEntryWidget(props: Props) {
                   width: `calc(${activityButtonWidth} + 1.5px)`,
                   paddingLeft: activityButtonPaddingLeftRight,
                   paddingRight: activityButtonPaddingLeftRight,
-                  order: isInProgress ? 0 : activity.order,
+                  order: isInProgress ? 0 : activity.order + 1,
                 }}
               >
                 <Typography
