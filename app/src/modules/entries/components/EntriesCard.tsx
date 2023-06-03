@@ -26,20 +26,22 @@ import EntryModel from "@/modules/entries/models/EntryModel";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PageName from "@/common/enums/PageName";
 import { getPath } from "@/utils/utils";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 type Props = {
   entries: EntryModel[];
   allEntries: EntryModel[];
-  useCompactMode?: boolean;
 };
 
 export default function EntriesCard(props: Props) {
   const navigate = useNavigate();
-  const { entries, allEntries, useCompactMode } = props;
+  const { entries, allEntries } = props;
+  const useCompactMode = useSelector(selectUseCompactMode);
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -229,7 +231,6 @@ export default function EntriesCard(props: Props) {
                               ? theme.palette.primary.main
                               : undefined
                           }
-                          useCompactMode={useCompactMode}
                         />
                         <IconButton
                           sx={{
@@ -271,7 +272,6 @@ export default function EntriesCard(props: Props) {
                         sx={{
                           paddingTop: useCompactMode ? 0 : 1,
                         }}
-                        useCompactMode={useCompactMode}
                       />
                     </Stack>
                   </Stack>

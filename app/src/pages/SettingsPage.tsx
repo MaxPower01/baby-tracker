@@ -15,10 +15,15 @@ import {
   selectGroupEntriesBy,
   selectTheme,
   selectUseCompactMode,
+  updateGroupEntriesBy,
+  updateTheme,
+  updateUseCompactMode,
 } from "@/modules/settings/state/settingsSlice";
 
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import GroupEntriesBy from "@/modules/settings/types/GroupEntriesBy";
+import GroupEntriesBy from "@/modules/settings/enums/GroupEntriesBy";
+import ThemeMode from "@/modules/theme/enums/ThemeMode";
+import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 function CustomStack(props: { children: React.ReactNode }) {
@@ -34,16 +39,24 @@ function CustomStack(props: { children: React.ReactNode }) {
 }
 
 export default function SettingsPage() {
+  const dispatch = useAppDispatch();
+
   const initialTheme = useSelector(selectTheme);
   const [theme, setTheme] = useState(initialTheme);
-  const handleThemeChange = (event: SelectChangeEvent<string>) => {
-    setTheme(event.target.value as "light" | "dark");
+  const handleThemeChange = (event: SelectChangeEvent<ThemeMode>) => {
+    const newValue = event.target.value as ThemeMode;
+    setTheme(newValue);
+    dispatch(updateTheme(newValue));
   };
 
   const initialGroupEntriesBy = useSelector(selectGroupEntriesBy);
   const [groupEntriesBy, setGroupEntries] = useState(initialGroupEntriesBy);
-  const handleGroupEntriesByChange = (event: SelectChangeEvent<string>) => {
-    setGroupEntries(event.target.value as GroupEntriesBy);
+  const handleGroupEntriesByChange = (
+    event: SelectChangeEvent<GroupEntriesBy>
+  ) => {
+    const newValue = event.target.value as GroupEntriesBy;
+    setGroupEntries(newValue);
+    dispatch(updateGroupEntriesBy(newValue));
   };
 
   const initialUseCompactMode = useSelector(selectUseCompactMode);
@@ -51,7 +64,9 @@ export default function SettingsPage() {
   const handleCompactModeSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setUseCompactMode(event.target.checked);
+    const newValue = event.target.checked;
+    setUseCompactMode(newValue);
+    dispatch(updateUseCompactMode(newValue));
   };
 
   return (
@@ -82,8 +97,8 @@ export default function SettingsPage() {
               value={theme}
               onChange={handleThemeChange}
             >
-              <MenuItem value={"dark"}>Sombre</MenuItem>
-              <MenuItem value={"light"}>Clair</MenuItem>
+              <MenuItem value={ThemeMode.Dark}>Sombre</MenuItem>
+              <MenuItem value={ThemeMode.Light}>Clair</MenuItem>
             </Select>
           </FormControl>
         </CustomStack>
@@ -99,12 +114,16 @@ export default function SettingsPage() {
               value={groupEntriesBy}
               onChange={handleGroupEntriesByChange}
             >
-              <MenuItem value={"none"}>Ne pas grouper</MenuItem>
-              <MenuItem value={"5m"}>5 minutes</MenuItem>
-              <MenuItem value={"15m"}>15 minutes</MenuItem>
-              <MenuItem value={"30m"}>30 minutes</MenuItem>
-              <MenuItem value={"1h"}>1 heure</MenuItem>
-              <MenuItem value={"2h"}>2 heures</MenuItem>
+              <MenuItem value={GroupEntriesBy.None}>Ne pas grouper</MenuItem>
+              <MenuItem value={GroupEntriesBy.FiveMinutes}>5 minutes</MenuItem>
+              <MenuItem value={GroupEntriesBy.FifteenMinutes}>
+                15 minutes
+              </MenuItem>
+              <MenuItem value={GroupEntriesBy.ThirtyMinutes}>
+                30 minutes
+              </MenuItem>
+              <MenuItem value={GroupEntriesBy.OneHour}>1 heure</MenuItem>
+              <MenuItem value={GroupEntriesBy.TwoHours}>2 heures</MenuItem>
             </Select>
           </FormControl>
         </CustomStack>

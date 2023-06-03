@@ -12,15 +12,17 @@ import DateHeader from "@/common/components/DateHeader";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import TimePeriod from "@/common/enums/TimePeriod";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
+import { useSelector } from "react-redux";
 
 type Props = {
   fetchTimePeriod?: TimePeriod;
-  useCompactMode?: boolean;
 };
 
 export default function Entries(props: Props) {
   const { entries, setEntries, isLoading, getEntries } = useEntries();
+  const useCompactMode = useSelector(selectUseCompactMode);
 
   const theme = useTheme();
 
@@ -124,7 +126,7 @@ export default function Entries(props: Props) {
                 />
 
                 <Stack
-                  spacing={props.useCompactMode ? 2 : 4}
+                  spacing={useCompactMode ? 2 : 4}
                   sx={{
                     paddingTop: 1,
                     paddingBottom: 1,
@@ -138,7 +140,6 @@ export default function Entries(props: Props) {
                         <EntriesCard
                           entries={timeEntries.entries}
                           allEntries={entries}
-                          useCompactMode={props.useCompactMode}
                         />
                       </MenuProvider>
                     );

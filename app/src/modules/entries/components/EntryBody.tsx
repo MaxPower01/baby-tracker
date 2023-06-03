@@ -7,17 +7,19 @@ import EntryModel from "@/modules/entries/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import { formatStopwatchTime } from "@/utils/utils";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
   entry: EntryModel;
   previousEntry?: EntryModel;
   sx?: SxProps | undefined;
-  useCompactMode?: boolean;
 };
 
 export default function EntryBody(props: Props) {
+  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
-  const { entry, sx, previousEntry, useCompactMode } = props;
+  const { entry, sx, previousEntry } = props;
   if (!entry) return null;
   const hasStopwatchRunning =
     entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;

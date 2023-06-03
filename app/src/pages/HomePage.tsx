@@ -38,7 +38,7 @@ export default function HomePage() {
       <Section dividerPosition="top">
         {/* <SectionTitle title="Activité récente" /> */}
 
-        <Entries useCompactMode={true} />
+        <Entries />
       </Section>
     </SectionStack>
   );

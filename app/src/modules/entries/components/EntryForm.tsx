@@ -44,7 +44,7 @@ import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
 import VolumeMenu from "@mui/material/Menu";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import { setEditingEntryId } from "@/modules/entries/state/entriesSlice";
+import { updateEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -126,7 +126,7 @@ export default function EntryForm(props: EntryFormProps) {
   }, []);
 
   useEffect(() => {
-    if (entry.id) dispatch(setEditingEntryId(entry.id));
+    if (entry.id) dispatch(updateEditingEntryId(entry.id));
   }, [entry]);
 
   // const save = useCallback(

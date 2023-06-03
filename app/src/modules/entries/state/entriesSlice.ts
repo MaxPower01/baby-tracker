@@ -72,7 +72,7 @@ const slice = createSlice({
       Object.assign(state, defaultState);
       setLocalState(key, state);
     },
-    setEditingEntryId: (state, action: PayloadAction<string>) => {
+    updateEditingEntryId: (state, action: PayloadAction<string>) => {
       state.editingEntryId = action.payload;
     },
   },
@@ -83,7 +83,7 @@ export const {
   resetEntriesState,
   removeEntry,
   addEntries,
-  setEditingEntryId,
+  updateEditingEntryId,
 } = slice.actions;
 
 export const selectEntries = (state: RootState) => {
