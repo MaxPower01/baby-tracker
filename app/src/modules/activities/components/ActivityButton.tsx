@@ -75,6 +75,7 @@ export default function ActivityButton({
                 }}
               >
                 <Typography
+                  className="ActivityButton__Typography"
                   variant="button"
                   textAlign="center"
                   fontWeight={"bold"}

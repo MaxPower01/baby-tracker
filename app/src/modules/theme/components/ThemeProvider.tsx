@@ -1,10 +1,13 @@
-import ColorModeContext from "@/modules/theme/components/ColorModeContext";
 import {
-  createTheme,
   ThemeProvider as MuiThemeProvider,
+  createTheme,
 } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import React, { useEffect } from "react";
+
+import ColorModeContext from "@/modules/theme/components/ColorModeContext";
+import { selectThemeMode } from "@/modules/settings/state/settingsSlice";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useSelector } from "react-redux";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -41,16 +44,20 @@ export default function ThemeProvider(props: ThemeProviderProps) {
 
   const defaultMode = systemMode;
 
-  const [mode, setMode] = React.useState<"light" | "dark">(defaultMode);
+  // const initialThemeMode = useSelector(selectThemeMode);
+
+  const [themeMode, setThemeMode] = React.useState<"light" | "dark">(
+    defaultMode
+  );
 
   useEffect(() => {
-    setMode(prefersDarkMode ? "dark" : "light");
+    setThemeMode(prefersDarkMode ? "dark" : "light");
   }, [prefersDarkMode]);
 
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
       },
     }),
     []
@@ -63,10 +70,10 @@ export default function ThemeProvider(props: ThemeProviderProps) {
           fontFamily: "'Noto Sans', sans-serif",
         },
         palette: {
-          mode,
+          mode: themeMode,
           background: {
-            default: mode === "dark" ? "#1E212A" : "#fff",
-            paper: mode === "dark" ? "#222530" : "#fff",
+            default: themeMode === "dark" ? "#1E212A" : "#fff",
+            paper: themeMode === "dark" ? "#222530" : "#fff",
           },
           // primary: {
           //   main: mode === "dark" ? "#3F6588" : "#3f51b5",
@@ -74,9 +81,10 @@ export default function ThemeProvider(props: ThemeProviderProps) {
         },
         customPalette: {
           background: {
-            avatar: mode === "dark" ? "hsl(0 0% 20% / 1)" : "hsl(0 0% 80% / 1)",
+            avatar:
+              themeMode === "dark" ? "hsl(0 0% 20% / 1)" : "hsl(0 0% 80% / 1)",
             almostTransparent:
-              mode === "dark"
+              themeMode === "dark"
                 ? "hsl(0 0% 100% / 0.035)"
                 : "hsl(0 0% 0% / 0.035)",
           },
@@ -85,7 +93,7 @@ export default function ThemeProvider(props: ThemeProviderProps) {
           borderRadius: 16,
         },
       }),
-    [mode]
+    [themeMode]
   );
 
   return (

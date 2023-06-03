@@ -283,6 +283,7 @@ export default function EntriesCard(props: Props) {
                   sx={{
                     marginLeft: 2,
                     marginRight: 2,
+                    opacity: 0.5,
                   }}
                 />
               )}

@@ -20,9 +20,11 @@ import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageName from "@/common/enums/PageName";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 type Props = {};
 
@@ -38,6 +40,7 @@ export default function NewEntryWidget(props: Props) {
   // const burpActivity = new ActivityModel(ActivityType.Burp);
   // const regurgitationActivity = new ActivityModel(ActivityType.Regurgitation);
   // const vomitActivity = new ActivityModel(ActivityType.Vomit);
+  const useCompactMode = useSelector(selectUseCompactMode);
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
@@ -92,8 +95,11 @@ export default function NewEntryWidget(props: Props) {
     });
   }, [entries, now]);
 
-  const activityButtonWidth = "11em";
+  const activityButtonWidth = useCompactMode ? "12em" : "11em";
   const activityButtonPaddingLeftRight = 2;
+  const activityButtonFontSize = useCompactMode ? "0.7em" : undefined;
+  const boxPadding = 4;
+  const activityButtonTypographyFontSize = useCompactMode ? "1em" : undefined;
 
   const boxStyle: SxProps = {
     borderRadius: 1,
@@ -106,10 +112,11 @@ export default function NewEntryWidget(props: Props) {
     // marginLeft: 1,
     // marginRight: 1,
     height: "100%",
+    padding: `${boxPadding}px`,
   };
   const activityButtonStyle: SxProps = {
-    paddingTop: 1.5,
-    paddingBottom: 1.5,
+    paddingTop: useCompactMode ? 0.5 : 1,
+    paddingBottom: useCompactMode ? 0.5 : 1,
     paddingLeft: activityButtonPaddingLeftRight,
     paddingRight: activityButtonPaddingLeftRight,
     // width: "100%",
@@ -120,6 +127,7 @@ export default function NewEntryWidget(props: Props) {
     borderColor: theme.customPalette.background?.almostTransparent,
     flexGrow: 1,
     height: "100%",
+    fontSize: activityButtonFontSize,
   };
   const subtitleStyle: SxProps = {
     opacity: 0.6,
@@ -203,6 +211,9 @@ export default function NewEntryWidget(props: Props) {
         msOverflowStyle: "none",
         "&::-webkit-scrollbar": {
           display: "none",
+        },
+        "& .ActivityButton__Typography": {
+          fontSize: activityButtonTypographyFontSize,
         },
       }}
     >
@@ -303,8 +314,12 @@ export default function NewEntryWidget(props: Props) {
                 key={activity.type}
                 sx={{
                   marginTop: 1,
-                  fontSize: theme.typography.button.fontSize,
-                  width: `calc(${activityButtonWidth} + 1.5px)`,
+                  fontSize: useCompactMode
+                    ? activityButtonFontSize
+                    : theme.typography.button.fontSize,
+                  width: `calc(${activityButtonWidth} + 1.5px + ${
+                    boxPadding * 2
+                  }px)`,
                   paddingLeft: activityButtonPaddingLeftRight,
                   paddingRight: activityButtonPaddingLeftRight,
                   order: isInProgress ? 0 : activity.order + 1,

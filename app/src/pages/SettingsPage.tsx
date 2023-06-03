@@ -13,10 +13,10 @@ import {
 import React, { useState } from "react";
 import {
   selectGroupEntriesBy,
-  selectTheme,
+  selectThemeMode,
   selectUseCompactMode,
   updateGroupEntriesBy,
-  updateTheme,
+  updateThemeMode,
   updateUseCompactMode,
 } from "@/modules/settings/state/settingsSlice";
 
@@ -41,12 +41,12 @@ function CustomStack(props: { children: React.ReactNode }) {
 export default function SettingsPage() {
   const dispatch = useAppDispatch();
 
-  const initialTheme = useSelector(selectTheme);
+  const initialTheme = useSelector(selectThemeMode);
   const [theme, setTheme] = useState(initialTheme);
   const handleThemeChange = (event: SelectChangeEvent<ThemeMode>) => {
     const newValue = event.target.value as ThemeMode;
     setTheme(newValue);
-    dispatch(updateTheme(newValue));
+    dispatch(updateThemeMode(newValue));
   };
 
   const initialGroupEntriesBy = useSelector(selectGroupEntriesBy);
