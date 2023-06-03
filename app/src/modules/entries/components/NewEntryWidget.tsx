@@ -229,7 +229,7 @@ export default function NewEntryWidget(props: Props) {
             fontSize: "4em",
           },
           display: "grid",
-          gap: 2,
+          gap: 0.5,
           gridTemplateColumns: `${allActivitiesWithLastEntry
             .map(() => "1fr")
             .join(" ")}`,
@@ -301,7 +301,7 @@ export default function NewEntryWidget(props: Props) {
           },
           width: "100%",
           display: "grid",
-          gap: 2,
+          gap: 0.5,
           gridTemplateColumns: `${allActivitiesWithLastEntry
             .map(() => "1fr")
             .join(" ")}`,
