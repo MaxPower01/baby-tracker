@@ -1,11 +1,13 @@
 import appReducer from "@/app/state/appSlice";
-import entriesReducer from "@/modules/entries/state/entriesSlice";
 import { configureStore } from "@reduxjs/toolkit";
+import entriesReducer from "@/modules/entries/state/entriesSlice";
 import logger from "redux-logger";
+import settingsReducer from "@/modules/settings/state/settingsSlice";
 
 const reducer = {
   appReducer,
   entriesReducer,
+  settingsReducer,
 };
 
 const store = configureStore({

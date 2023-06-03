@@ -22,13 +22,6 @@ import { useState } from "react";
 
 export default function HomePage() {
   const { user } = useAuthentication();
-  const [useCompactMode, setUseCompactMode] = useState(false);
-
-  const handleCompactModeSwitchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setUseCompactMode(event.target.checked);
-  };
 
   if (user?.selectedChild == null) {
     return <LoadingIndicator />;
@@ -44,19 +37,8 @@ export default function HomePage() {
       </Section>
       <Section dividerPosition="top">
         {/* <SectionTitle title="Activité récente" /> */}
-        <FormControl>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={useCompactMode}
-                onChange={handleCompactModeSwitchChange}
-                name="useCompactMode"
-              />
-            }
-            label="Mode compact"
-          />
-        </FormControl>
-        <Entries useCompactMode={useCompactMode} />
+
+        <Entries useCompactMode={true} />
       </Section>
     </SectionStack>
   );

@@ -1,66 +1,142 @@
 import {
+  Container,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
 } from "@mui/material";
+import React, { useState } from "react";
+import {
+  selectGroupEntriesBy,
+  selectTheme,
+  selectUseCompactMode,
+} from "@/modules/settings/state/settingsSlice";
 
-import React from "react";
-import SettingsIcon from "@mui/icons-material/Settings";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import GroupEntriesBy from "@/modules/settings/types/GroupEntriesBy";
+import { useSelector } from "react-redux";
+
+function CustomStack(props: { children: React.ReactNode }) {
+  return (
+    <Stack
+      spacing={1}
+      // direction={"row"}
+      // alignItems={"center"}
+      // justifyContent={"space-between"}
+      {...props}
+    />
+  );
+}
 
 export default function SettingsPage() {
-  const [theme, setTheme] = React.useState("dark");
+  const initialTheme = useSelector(selectTheme);
+  const [theme, setTheme] = useState(initialTheme);
   const handleThemeChange = (event: SelectChangeEvent<string>) => {
-    setTheme(event.target.value);
+    setTheme(event.target.value as "light" | "dark");
   };
 
-  const [groupEntries, setGroupEntries] = React.useState("no");
-  const handleGroupEntriesChange = (event: SelectChangeEvent<string>) => {
-    setGroupEntries(event.target.value);
+  const initialGroupEntriesBy = useSelector(selectGroupEntriesBy);
+  const [groupEntriesBy, setGroupEntries] = useState(initialGroupEntriesBy);
+  const handleGroupEntriesByChange = (event: SelectChangeEvent<string>) => {
+    setGroupEntries(event.target.value as GroupEntriesBy);
+  };
+
+  const initialUseCompactMode = useSelector(selectUseCompactMode);
+  const [useCompactMode, setUseCompactMode] = useState(initialUseCompactMode);
+  const handleCompactModeSwitchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setUseCompactMode(event.target.checked);
   };
 
   return (
-    <Stack
-      sx={{
-        width: "100%",
-      }}
-      spacing={4}
-    >
-      <Stack spacing={1}>
-        <InputLabel id="theme-select-label">Thème</InputLabel>
-        <FormControl>
-          <Select
-            labelId="theme-select-label"
-            id="theme-select"
-            value={theme}
-            onChange={handleThemeChange}
+    <Container maxWidth={CSSBreakpoint.ExtraSmall}>
+      <Stack
+        sx={{
+          width: "100%",
+        }}
+        spacing={4}
+      >
+        <CustomStack>
+          <InputLabel
+            id="theme-select-label"
+            sx={{
+              flexGrow: 1,
+            }}
           >
-            <MenuItem value={"dark"}>Sombre</MenuItem>
-            <MenuItem value={"light"}>Clair</MenuItem>
-          </Select>
-        </FormControl>
-      </Stack>
+            Thème
+          </InputLabel>
+          <FormControl
+            sx={{
+              flexShrink: 0,
+            }}
+          >
+            <Select
+              labelId="theme-select-label"
+              id="theme-select"
+              value={theme}
+              onChange={handleThemeChange}
+            >
+              <MenuItem value={"dark"}>Sombre</MenuItem>
+              <MenuItem value={"light"}>Clair</MenuItem>
+            </Select>
+          </FormControl>
+        </CustomStack>
 
-      <Stack spacing={1}>
-        <InputLabel id="group-entries-select-label">
-          Grouper les entrées rapprochées
-        </InputLabel>
-        <FormControl>
-          <Select
-            labelId="group-entries-select-label"
-            id="group-entries-select"
-            value={groupEntries}
-            onChange={handleGroupEntriesChange}
-          >
-            <MenuItem value={"no"}>Ne pas grouper</MenuItem>
-            <MenuItem value={"15"}>15 minutes</MenuItem>
-            <MenuItem value={"30"}>30 minutes</MenuItem>
-            <MenuItem value={"60"}>1 heure</MenuItem>
-          </Select>
-        </FormControl>
+        <CustomStack>
+          <InputLabel id="group-entries-select-label">
+            Grouper les entrées rapprochées
+          </InputLabel>
+          <FormControl>
+            <Select
+              labelId="group-entries-select-label"
+              id="group-entries-select"
+              value={groupEntriesBy}
+              onChange={handleGroupEntriesByChange}
+            >
+              <MenuItem value={"none"}>Ne pas grouper</MenuItem>
+              <MenuItem value={"5m"}>5 minutes</MenuItem>
+              <MenuItem value={"15m"}>15 minutes</MenuItem>
+              <MenuItem value={"30m"}>30 minutes</MenuItem>
+              <MenuItem value={"1h"}>1 heure</MenuItem>
+              <MenuItem value={"2h"}>2 heures</MenuItem>
+            </Select>
+          </FormControl>
+        </CustomStack>
+
+        <CustomStack>
+          {/* <InputLabel id="group-entries-select-label">
+            Grouper les entrées rapprochées
+          </InputLabel> */}
+          <FormControl>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={useCompactMode}
+                  onChange={handleCompactModeSwitchChange}
+                  name="useCompactMode"
+                />
+              }
+              label="Mode compact"
+              labelPlacement="start"
+              slotProps={{
+                typography: {
+                  sx: {
+                    flexGrow: 1,
+                    marginLeft: -2,
+                  },
+                },
+              }}
+              sx={{}}
+            />
+          </FormControl>
+        </CustomStack>
       </Stack>
-    </Stack>
+    </Container>
   );
 }
