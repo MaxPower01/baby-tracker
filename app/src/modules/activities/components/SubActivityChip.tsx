@@ -3,6 +3,8 @@ import { Chip, Typography, useTheme } from "@mui/material";
 import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import SubActivityType from "@/modules/activities/enums/SubActivityType";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
   subActivity: SubActivityModel;
@@ -11,7 +13,6 @@ type Props = {
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
-  useCompactMode?: boolean;
 };
 
 export default function SubActivityChip({
@@ -21,14 +22,19 @@ export default function SubActivityChip({
   size,
   textColor,
   isDisabled,
-  useCompactMode,
 }: Props) {
+  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
+
   return (
     <Chip
       key={`${subActivity.type}-${subActivity.type}`}
       label={
-        <Typography variant="body2" fontWeight={600} color={textColor}>
+        <Typography
+          variant={useCompactMode ? "caption" : "body2"}
+          fontWeight={useCompactMode ? 500 : 600}
+          color={textColor}
+        >
           {subActivity.name}
         </Typography>
       }

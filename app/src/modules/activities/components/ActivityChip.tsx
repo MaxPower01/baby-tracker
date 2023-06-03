@@ -3,6 +3,8 @@ import { Chip, Typography, useTheme } from "@mui/material";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
   activity: ActivityModel;
@@ -11,7 +13,6 @@ type Props = {
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
-  useCompactMode?: boolean;
 };
 
 export default function ActivityChip({
@@ -21,8 +22,8 @@ export default function ActivityChip({
   size,
   textColor,
   isDisabled,
-  useCompactMode,
 }: Props) {
+  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
   return (
     <Chip

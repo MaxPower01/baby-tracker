@@ -163,7 +163,6 @@ export default function EntryBody(props: Props) {
                 size={"small"}
                 isSelected={true}
                 textColor={textColor}
-                useCompactMode={useCompactMode}
               />
             );
           })}
