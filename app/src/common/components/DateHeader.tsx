@@ -54,7 +54,7 @@ export default function DateHeader(props: Props) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: useCompactMode ? 0.5 : 1,
+              borderRadius: useCompactMode ? 0.75 : 1,
             }}
           >
             <Typography
