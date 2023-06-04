@@ -49,8 +49,8 @@ export default function DateHeader(props: Props) {
             sx={{
               // background: theme.customPalette.background.avatar,
               background: theme.palette.divider,
-              minWidth: "3.25em",
-              minHeight: "3.25em",
+              minWidth: useCompactMode ? "2.75em" : "3.25em",
+              minHeight: useCompactMode ? "2.75em" : "3.25em",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",

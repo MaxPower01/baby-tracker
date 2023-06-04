@@ -313,7 +313,7 @@ export default function NewEntryWidget(props: Props) {
               <Stack
                 key={activity.type}
                 sx={{
-                  marginTop: 0.5,
+                  marginTop: useCompactMode ? 0 : 0.5,
                   fontSize: useCompactMode
                     ? activityButtonFontSize
                     : theme.typography.button.fontSize,
