@@ -48,11 +48,19 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getMinutes()
         );
       case TimePeriod.LastDay:
-      default:
         return new Date(
           now.getFullYear(),
           now.getMonth(),
           now.getDate() - 1,
+          now.getHours(),
+          now.getMinutes()
+        );
+      case TimePeriod.LastTwoDays:
+      default:
+        return new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - 2,
           now.getHours(),
           now.getMinutes()
         );
@@ -96,7 +104,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     getEntries({
-      timePeriod: TimePeriod.LastDay,
+      timePeriod: TimePeriod.LastTwoDays,
     }).then((fetchedEntries) => {
       setEntries((prevEntries) => {
         if (prevEntries.length === 0) {
@@ -119,7 +127,9 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       return;
     }
     const now = new Date();
-    const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriod.LastDay));
+    const endAtTimestamp = Timestamp.fromDate(
+      getDateFor(TimePeriod.LastTwoDays)
+    );
     const q = query(
       collection(db, `children/${selectedChild}/entries`),
       where("startDate", ">=", endAtTimestamp),

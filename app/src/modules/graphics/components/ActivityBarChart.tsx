@@ -1,10 +1,12 @@
-import LoadingIndicator from "@/common/components/LoadingIndicator";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import useEntries from "@/modules/entries/hooks/useEntries";
-import { Typography, useTheme } from "@mui/material";
 import * as d3 from "d3";
+
+import { Typography, useTheme } from "@mui/material";
 import { useEffect, useMemo, useRef } from "react";
+
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import LoadingIndicator from "@/common/components/LoadingIndicator";
+import useEntries from "@/modules/entries/hooks/useEntries";
 
 interface DataPoint {
   date: Date;
@@ -17,13 +19,11 @@ type Props = {
 
 export default function ActivityBarChart(props: Props) {
   const { entries, isLoading } = useEntries();
-  const activityEntries = useMemo(
-    () =>
-      entries.filter((entry) => {
-        return entry.activity?.type == props.activityType;
-      }),
-    [entries]
-  );
+  const activityEntries = useMemo(() => {
+    return entries.filter((entry) => {
+      return entry.activity?.type == props.activityType;
+    });
+  }, [entries, props.activityType]);
   const chartRef = useRef<SVGSVGElement | null>(null);
   const theme = useTheme();
 
@@ -129,18 +129,25 @@ export default function ActivityBarChart(props: Props) {
     // .style("opacity", 0.5); // Set the desired text color
   };
 
+  const clearChart = () => {
+    d3.select(chartRef.current).selectAll("*").remove();
+  };
+
   useEffect(() => {
     if (!isLoading && activityEntries.length > 0) {
       drawChart();
     } else {
-      // Clear the chart
-      d3.select(chartRef.current).selectAll("*").remove();
+      clearChart();
     }
+
+    return () => {
+      clearChart();
+    };
   }, [isLoading, entries, activityEntries]);
 
   // Generate an array of dates, 30 minutes apart, representing the last 24 hours
   const generateDatesArray = (): Date[] => {
-    const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24 hours ago
+    const startDate = new Date(Date.now() - 48 * 60 * 60 * 1000); // 24 hours ago
     startDate.setMinutes(Math.floor(startDate.getMinutes() / 15) * 15, 0, 0); // Round down to the nearest quarter hour
     const endDate = new Date();
 
@@ -191,22 +198,33 @@ export default function ActivityBarChart(props: Props) {
 
   if (activityEntries.length === 0) {
     return (
-      <Typography variant="body1" textAlign={"center"}>
-        Aucune entrée n'a été enregistrée pour les dernières 24 heures pour
+      <Typography
+        variant="body1"
+        textAlign={"center"}
+        sx={{
+          opacity: 0.5,
+        }}
+      >
+        Aucune entrée n'a été enregistrée pour les dernières 48 heures pour
         l'acvitité sélectionnée.
       </Typography>
     );
   }
 
-  return (
-    <>
-      <Typography variant="h6" textAlign={"center"} fontWeight={"bold"}>
-        {new ActivityModel(props.activityType).name}
+  if (activityEntries[0].activity?.hasDuration != true) {
+    return (
+      <Typography
+        variant="body1"
+        textAlign={"center"}
+        sx={{
+          opacity: 0.5,
+        }}
+      >
+        Le type d'activité sélectionné ne permet pas de générer de graphique
+        pour le moment.
       </Typography>
-      <Typography variant="body1" textAlign={"center"}>
-        Entrées des dernières 24 heures
-      </Typography>
-      <svg ref={chartRef}></svg>
-    </>
-  );
+    );
+  }
+
+  return <svg ref={chartRef}></svg>;
 }
