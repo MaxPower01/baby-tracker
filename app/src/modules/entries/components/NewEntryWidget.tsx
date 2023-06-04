@@ -143,7 +143,7 @@ export default function NewEntryWidget(props: Props) {
     // marginTop: 1,
   };
 
-  const textVariant = "body2";
+  const textVariant = useCompactMode ? "caption" : "body2";
   const navigate = useNavigate();
   const handleActivityClick = (params: {
     event: React.MouseEvent<HTMLElement, MouseEvent>;
@@ -313,7 +313,7 @@ export default function NewEntryWidget(props: Props) {
               <Stack
                 key={activity.type}
                 sx={{
-                  marginTop: 1,
+                  marginTop: 0.5,
                   fontSize: useCompactMode
                     ? activityButtonFontSize
                     : theme.typography.button.fontSize,

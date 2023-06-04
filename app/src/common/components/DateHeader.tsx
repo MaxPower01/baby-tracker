@@ -7,7 +7,9 @@ import {
   useTheme,
 } from "@mui/material";
 
+import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { upperCaseFirst } from "@/utils/utils";
+import { useSelector } from "react-redux";
 
 type Props = {
   sx?: SxProps;
@@ -16,6 +18,7 @@ type Props = {
 
 export default function DateHeader(props: Props) {
   const { startDate, sx } = props;
+  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
   return (
     <Box
@@ -37,7 +40,7 @@ export default function DateHeader(props: Props) {
           direction={"row"}
           justifyContent={"flex-start"}
           alignItems={"center"}
-          spacing={2}
+          spacing={useCompactMode ? 1 : 2}
           sx={{
             width: "100%",
           }}
@@ -54,7 +57,11 @@ export default function DateHeader(props: Props) {
               borderRadius: 1,
             }}
           >
-            <Typography textAlign={"center"} fontWeight={600} variant="h5">
+            <Typography
+              textAlign={"center"}
+              fontWeight={600}
+              variant={useCompactMode ? "h6" : "h5"}
+            >
               {startDate.toLocaleDateString("fr-CA", {
                 day: "numeric",
               })}
@@ -68,7 +75,7 @@ export default function DateHeader(props: Props) {
             }}
           >
             <Typography
-              variant="h6"
+              variant={useCompactMode ? "body1" : "h6"}
               textAlign={"left"}
               fontWeight={600}
               sx={{
@@ -82,7 +89,7 @@ export default function DateHeader(props: Props) {
               )}
             </Typography>
             <Typography
-              variant="body1"
+              variant={useCompactMode ? "caption" : "body1"}
               textAlign={"left"}
               sx={{
                 opacity: 0.5,
