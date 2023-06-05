@@ -505,13 +505,13 @@ export default function EntryForm(props: EntryFormProps) {
           >
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
-              adapterLocale={dayjsLocaleFrCa}
+              adapterLocale={dayjsLocaleFrCa as any}
             >
               <MobileDateTimePicker
                 value={dayjs(entry.startDate)}
                 onChange={handleStartDateChange}
                 disabled={anyStopwatchIsRunning}
-                disableFuture={true}
+                // disableFuture={true}
                 label={
                   entry.activity?.hasDuration == true ? "Date de début" : ""
                 }
@@ -548,13 +548,13 @@ export default function EntryForm(props: EntryFormProps) {
             {entry.activity?.hasDuration == true && (
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
-                adapterLocale={dayjsLocaleFrCa}
+                adapterLocale={dayjsLocaleFrCa as any}
               >
                 <MobileDateTimePicker
                   value={dayjs(entry.endDate)}
                   onChange={handleEndDateChange}
                   disabled={anyStopwatchIsRunning}
-                  disableFuture={true}
+                  // disableFuture={true}
                   label="Date de fin"
                   sx={{
                     flex: 1,

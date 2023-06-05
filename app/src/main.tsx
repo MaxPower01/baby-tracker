@@ -10,7 +10,7 @@ import ReactDOM from "react-dom/client";
 import StoreProvider from "@/modules/store/components/StoreProvider";
 import ThemeProvider from "@/modules/theme/components/ThemeProvider";
 
-history.scrollRestoration = "manual";
+// history.scrollRestoration = "manual";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

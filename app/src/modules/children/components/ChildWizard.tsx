@@ -190,7 +190,7 @@ export default function ChildWizard() {
           <>
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
-              adapterLocale={dayjsLocaleFrCa}
+              adapterLocale={dayjsLocaleFrCa as any}
             >
               <MobileDateTimePicker
                 value={birthDate}
