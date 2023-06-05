@@ -10,5 +10,6 @@ enum SubActivityType {
   Swing = 9,
   SalineSolution = 10,
   NasalAspirator = 11,
+  PlayMat = 12,
 }
 export default SubActivityType;

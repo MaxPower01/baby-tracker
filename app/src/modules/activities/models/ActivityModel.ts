@@ -113,93 +113,32 @@ export default class ActivityModel {
 
   public constructor(type: ActivityType) {
     this._type = type;
-    this._name = this.getNameFor(type);
-    this._previousEntryLabelPrefix = this.getPreviousEntryLabelPrefixFor(type);
-    this._linkedTypes = this.getLinkedTypesFor(type);
-    this._subTypes = this.getSubTypesFor(type);
+    this._name = this.getName(type);
+    this._previousEntryLabelPrefix = this.getPreviousEntryLabelPrefix(type);
+    this._linkedTypes = this.getLinkedTypes(type);
+    this._subTypes = this.getSubTypes(type);
+    this._hasDuration = this.getHasDuration(type);
+    this._hasVolume = this.getHasVolume(type);
+    this._hasSides = this.getHasSides(type);
     switch (type) {
       case ActivityType.Bath:
-        this._hasDuration = true;
         break;
       case ActivityType.BottleFeeding:
-        this._hasDuration = true;
         this._hasVolume = true;
         break;
       case ActivityType.BreastFeeding:
-        this._hasDuration = true;
         this._hasSides = true;
-        break;
-      case ActivityType.Burp:
-        break;
-      case ActivityType.CarRide:
-        this._hasDuration = true;
-        break;
-      case ActivityType.Cry:
-        this._hasDuration = true;
-        break;
-      case ActivityType.Diaper:
-        break;
-      case ActivityType.Hiccups:
-        this._hasDuration = true;
-        break;
-      case ActivityType.Hospital:
-        break;
-      case ActivityType.HeadCircumference:
-        break;
-      case ActivityType.MedicalFollowUp:
-        break;
-      case ActivityType.Medicine:
         break;
       case ActivityType.MilkExtraction:
-        this._hasDuration = true;
         this._hasVolume = true;
         this._hasSides = true;
-        break;
-      case ActivityType.NailCutting:
-        break;
-      case ActivityType.NasalHygiene:
-        break;
-      case ActivityType.Play:
-        this._hasDuration = true;
-        break;
-      case ActivityType.Poop:
-        break;
-      case ActivityType.Size:
-        break;
-      case ActivityType.Sleep:
-        this._hasDuration = true;
-        break;
-      case ActivityType.SolidFood:
-        break;
-      case ActivityType.Regurgitation:
-        break;
-      case ActivityType.Temperature:
-        break;
-      case ActivityType.Teeth:
-        break;
-      case ActivityType.Urine:
-        break;
-      case ActivityType.Vaccine:
-        break;
-      case ActivityType.Vomit:
-        break;
-      case ActivityType.Walk:
-        this._hasDuration = true;
-        break;
-      case ActivityType.Weight:
-        break;
-      case ActivityType.Fart:
-        break;
-      case ActivityType.Symptom:
-        break;
-      case ActivityType.Note:
         break;
       default:
         break;
     }
   }
 
-  public getNameFor(type: ActivityType): string {
+  public getName(type: ActivityType): string {
     switch (type) {
       case ActivityType.Bath:
         return "Bain";
@@ -268,7 +207,7 @@ export default class ActivityModel {
     }
   }
 
-  getPreviousEntryLabelPrefixFor(type: ActivityType): string {
+  getPreviousEntryLabelPrefix(type: ActivityType): string {
     switch (type) {
       case ActivityType.Bath:
         return "Depuis le bain précédent:";
@@ -393,7 +332,7 @@ export default class ActivityModel {
     return `Il y a ${formatStopwatchTime(diff, true, false)}`;
   }
 
-  getLinkedTypesFor(type: ActivityType): ActivityType[] {
+  getLinkedTypes(type: ActivityType): ActivityType[] {
     switch (type) {
       case ActivityType.Bath:
         return [
@@ -403,6 +342,16 @@ export default class ActivityModel {
           ActivityType.Cry,
           ActivityType.Poop,
           ActivityType.Urine,
+        ];
+      case ActivityType.Vaccine:
+        return [
+          ActivityType.Regurgitation,
+          ActivityType.Vomit,
+          ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
         ];
       case ActivityType.BottleFeeding:
         return [
@@ -415,6 +364,11 @@ export default class ActivityModel {
           ActivityType.Regurgitation,
           ActivityType.Vomit,
           ActivityType.Burp,
+          ActivityType.Cry,
+          ActivityType.Poop,
+          ActivityType.Urine,
+          ActivityType.Sleep,
+          ActivityType.Fart,
         ];
       case ActivityType.Burp:
         return [ActivityType.Regurgitation, ActivityType.Vomit];
@@ -468,8 +422,6 @@ export default class ActivityModel {
           ActivityType.BreastFeeding,
           ActivityType.Hiccups,
         ];
-      case ActivityType.HeadCircumference:
-        break;
       case ActivityType.MedicalFollowUp:
         return [
           ActivityType.Regurgitation,
@@ -483,12 +435,6 @@ export default class ActivityModel {
           ActivityType.BreastFeeding,
           ActivityType.Hiccups,
         ];
-      case ActivityType.Medicine:
-        break;
-      case ActivityType.MilkExtraction:
-        break;
-      case ActivityType.NailCutting:
-        break;
       case ActivityType.NasalHygiene:
         return [
           ActivityType.Regurgitation,
@@ -496,28 +442,6 @@ export default class ActivityModel {
           ActivityType.Burp,
           ActivityType.Cry,
         ];
-      case ActivityType.Play:
-        break;
-      case ActivityType.Poop:
-        break;
-      case ActivityType.Size:
-        break;
-      case ActivityType.Sleep:
-        break;
-      case ActivityType.SolidFood:
-        break;
-      case ActivityType.Regurgitation:
-        break;
-      case ActivityType.Temperature:
-        break;
-      case ActivityType.Teeth:
-        break;
-      case ActivityType.Urine:
-        break;
-      case ActivityType.Vaccine:
-        break;
-      case ActivityType.Vomit:
-        break;
       case ActivityType.Walk:
         return [
           ActivityType.Regurgitation,
@@ -531,25 +455,13 @@ export default class ActivityModel {
           ActivityType.BreastFeeding,
           ActivityType.Hiccups,
         ];
-      case ActivityType.Weight:
-        break;
-      case ActivityType.Fart:
-        break;
-      case ActivityType.Symptom:
-        break;
-      case ActivityType.Note:
-        break;
       default:
-        break;
+        return [];
     }
-
-    return [];
   }
 
-  getSubTypesFor(type: ActivityType): SubActivityType[] {
+  getSubTypes(type: ActivityType): SubActivityType[] {
     switch (type) {
-      case ActivityType.Bath:
-        break;
       case ActivityType.BottleFeeding:
         return [
           SubActivityType.FormulaMilk,
@@ -557,38 +469,10 @@ export default class ActivityModel {
           SubActivityType.AdaptedCowMilk,
           SubActivityType.GoatMilk,
         ];
-      case ActivityType.BreastFeeding:
-        break;
-      case ActivityType.Burp:
-        break;
-      case ActivityType.CarRide:
-        break;
-      case ActivityType.Cry:
-        break;
-      case ActivityType.Diaper:
-        break;
-      case ActivityType.Hiccups:
-        break;
-      case ActivityType.Hospital:
-        break;
-      case ActivityType.HeadCircumference:
-        break;
-      case ActivityType.MedicalFollowUp:
-        break;
-      case ActivityType.Medicine:
-        break;
-      case ActivityType.MilkExtraction:
-        break;
-      case ActivityType.NailCutting:
-        break;
       case ActivityType.NasalHygiene:
         return [SubActivityType.SalineSolution, SubActivityType.NasalAspirator];
-      case ActivityType.Play:
-        break;
       case ActivityType.Poop:
         return [SubActivityType.Meconium];
-      case ActivityType.Size:
-        break;
       case ActivityType.Sleep:
         return [
           SubActivityType.Crib,
@@ -596,35 +480,50 @@ export default class ActivityModel {
           SubActivityType.Bed,
           SubActivityType.Swing,
         ];
-      case ActivityType.SolidFood:
-        break;
-      case ActivityType.Regurgitation:
-        break;
-      case ActivityType.Temperature:
-        break;
-      case ActivityType.Teeth:
-        break;
-      case ActivityType.Urine:
-        break;
-      case ActivityType.Vaccine:
-        break;
-      case ActivityType.Vomit:
-        break;
-      case ActivityType.Walk:
-        break;
-      case ActivityType.Weight:
-        break;
-      case ActivityType.Fart:
-        break;
-      case ActivityType.Symptom:
-        break;
-      case ActivityType.Note:
-        break;
+      case ActivityType.Play:
+        return [SubActivityType.PlayMat];
       default:
-        break;
+        return [];
     }
+  }
 
-    return [];
+  getHasDuration(type: ActivityType): boolean {
+    switch (type) {
+      case ActivityType.Bath:
+      case ActivityType.BottleFeeding:
+      case ActivityType.BreastFeeding:
+      case ActivityType.CarRide:
+      case ActivityType.Cry:
+      case ActivityType.Hiccups:
+      case ActivityType.MilkExtraction:
+      case ActivityType.Play:
+      case ActivityType.Sleep:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  getHasSides(type: ActivityType): boolean {
+    switch (type) {
+      case ActivityType.BreastFeeding:
+        return true;
+      case ActivityType.MilkExtraction:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  getHasVolume(type: ActivityType): boolean {
+    switch (type) {
+      case ActivityType.BottleFeeding:
+        return true;
+      case ActivityType.MilkExtraction:
+        return true;
+      default:
+        return false;
+    }
   }
 
   public toJSON(): any {

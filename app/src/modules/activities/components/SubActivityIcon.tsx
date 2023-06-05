@@ -1,7 +1,8 @@
-import SubActivityType from "@/modules/activities/enums/SubActivityType";
-import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import { Box, SxProps } from "@mui/material";
+
 import { ReactSVG } from "react-svg";
+import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
+import SubActivityType from "@/modules/activities/enums/SubActivityType";
 
 function MeconiumIcon() {
   return <ReactSVG src="icons/poop.svg" className="ActivityIcon" />;
@@ -17,6 +18,10 @@ function BottleFeedingIcon() {
 
 function NasalHygieneIcon() {
   return <ReactSVG src="/icons/nasal-hygiene.svg" className="ActivityIcon" />;
+}
+
+function PlayIcon() {
+  return <ReactSVG src="/icons/play.svg" className="ActivityIcon" />;
 }
 
 type Props = {
@@ -44,6 +49,8 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
           case SubActivityType.NasalAspirator:
           case SubActivityType.SalineSolution:
             return <NasalHygieneIcon />;
+          case SubActivityType.PlayMat:
+            return <PlayIcon />;
           default:
             return null;
         }

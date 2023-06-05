@@ -53,6 +53,9 @@ export class SubActivityModel {
       case SubActivityType.NasalAspirator:
         this._name = "Aspirateur nasal";
         break;
+      case SubActivityType.PlayMat:
+        this._name = "Tapis d'éveil";
+        break;
       default:
         this._name = "_";
         break;
