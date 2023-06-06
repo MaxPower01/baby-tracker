@@ -30,7 +30,9 @@ export default function ActivityChip({
       key={`${activity.type}-${activity.type}`}
       label={
         <Typography
-          variant={useCompactMode ? "caption" : "body2"}
+          variant={
+            useCompactMode ? "caption" : size == "small" ? "body2" : "body1"
+          }
           fontWeight={useCompactMode ? 500 : 600}
           color={textColor}
         >

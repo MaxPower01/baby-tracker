@@ -34,6 +34,8 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EntryModel from "@/modules/entries/models/EntryModel";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import PageName from "@/common/enums/PageName";
 import Section from "@/common/components/Section";
 import SectionStack from "@/common/components/SectionStack";
@@ -138,12 +140,42 @@ export default function EntryForm(props: EntryFormProps) {
 
   // Handle the date and time
 
+  const handleStartTimeChange = (newStartTime: Dayjs | null) => {
+    if (newStartTime == null) return;
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      const newEntryStartDate = dayjs(newEntry.startDate)
+        .hour(newStartTime.hour())
+        .minute(newStartTime.minute());
+      newEntry.startDate = newEntryStartDate.toDate();
+      return newEntry;
+    });
+    setHasPendingChanges(true);
+  };
+
+  const handleEndTimeChange = (newEndTime: Dayjs | null) => {
+    if (newEndTime == null) return;
+    setEntry((prevEntry) => {
+      const newEntry = prevEntry.clone();
+      const newEntryEndDate = dayjs(newEntry.endDate)
+        .hour(newEndTime.hour())
+        .minute(newEndTime.minute());
+      newEntry.endDate = newEntryEndDate.toDate();
+      return newEntry;
+    });
+    setEndDateWasEditedManually(true);
+    setHasPendingChanges(true);
+  };
+
   const handleStartDateChange = (newStartDate: Dayjs | null) => {
     if (newStartDate == null) return;
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
-      newEntry.startDate = newStartDate.toDate();
-      // save(newEntry);
+      const newEntryStartDate = dayjs(newEntry.startDate)
+        .year(newStartDate.year())
+        .month(newStartDate.month())
+        .date(newStartDate.date());
+      newEntry.startDate = newEntryStartDate.toDate();
       return newEntry;
     });
     setHasPendingChanges(true);
@@ -153,8 +185,11 @@ export default function EntryForm(props: EntryFormProps) {
     if (newEndDate == null) return;
     setEntry((prevEntry) => {
       const newEntry = prevEntry.clone();
-      newEntry.endDate = newEndDate.toDate();
-      // save(newEntry);
+      const newEntryEndDate = dayjs(newEntry.endDate)
+        .year(newEndDate.year())
+        .month(newEndDate.month())
+        .date(newEndDate.date());
+      newEntry.endDate = newEntryEndDate.toDate();
       return newEntry;
     });
     setEndDateWasEditedManually(true);
@@ -487,106 +522,7 @@ export default function EntryForm(props: EntryFormProps) {
               </Stack>
             </Stack>
           )}
-          <Stack
-            direction={"row"}
-            justifyContent={"center"}
-            sx={{
-              width: "100%",
-            }}
-            onClick={(e) => {
-              if (anyStopwatchIsRunning) {
-                setSnackbarMessage(
-                  "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                );
-                setSnackbarSeverity("info");
-                setSnackbarIsOpen(true);
-              }
-            }}
-          >
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale={dayjsLocaleFrCa as any}
-            >
-              <MobileDateTimePicker
-                value={dayjs(entry.startDate)}
-                onChange={handleStartDateChange}
-                disabled={anyStopwatchIsRunning}
-                // disableFuture={true}
-                label={
-                  entry.activity?.hasDuration == true ? "Date de début" : ""
-                }
-                sx={{
-                  flex: 1,
-                }}
-                slotProps={{
-                  textField: {
-                    sx: {
-                      "& input": {
-                        width: "100%",
-                        cursor: "pointer",
-                        textAlign: "center",
-                      },
-                      "& *:before": {
-                        border: "none !important",
-                      },
-                    },
-                    variant: "standard",
-                    error: false,
-                    helperText: "",
-                  },
-                }}
-                ampm={false}
-                localeText={{
-                  toolbarTitle: "",
-                  okButtonLabel: "OK",
-                  cancelButtonLabel: "Annuler",
-                  nextMonth: "Mois suivant",
-                  previousMonth: "Mois précédent",
-                }}
-              />
-            </LocalizationProvider>
-            {entry.activity?.hasDuration == true && (
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale={dayjsLocaleFrCa as any}
-              >
-                <MobileDateTimePicker
-                  value={dayjs(entry.endDate)}
-                  onChange={handleEndDateChange}
-                  disabled={anyStopwatchIsRunning}
-                  // disableFuture={true}
-                  label="Date de fin"
-                  sx={{
-                    flex: 1,
-                  }}
-                  slotProps={{
-                    textField: {
-                      sx: {
-                        "& input": {
-                          width: "100%",
-                          cursor: "pointer",
-                          textAlign: "center",
-                        },
-                        "& *:before": {
-                          border: "none !important",
-                        },
-                      },
-                      error: false,
-                      variant: "standard",
-                    },
-                  }}
-                  ampm={false}
-                  localeText={{
-                    toolbarTitle: "",
-                    okButtonLabel: "OK",
-                    cancelButtonLabel: "Annuler",
-                    nextMonth: "Mois suivant",
-                    previousMonth: "Mois précédent",
-                  }}
-                />
-              </LocalizationProvider>
-            )}
-          </Stack>
+
           {(subActivitiesTypes?.length ?? 0) > 0 && (
             <Grid
               container
@@ -746,7 +682,219 @@ export default function EntryForm(props: EntryFormProps) {
         )}
         {entry.activity?.hasDuration == true && (
           <Section dividerPosition="top">
-            <SectionTitle title="Durée" />
+            <SectionTitle title="Date et durée" />
+            <Stack
+              sx={{
+                width: "100%",
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"space-between"}
+                sx={{
+                  width: "100%",
+                }}
+                onClick={(e) => {
+                  if (anyStopwatchIsRunning) {
+                    setSnackbarMessage(
+                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                    );
+                    setSnackbarSeverity("info");
+                    setSnackbarIsOpen(true);
+                  }
+                }}
+              >
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale={dayjsLocaleFrCa as any}
+                >
+                  <MobileDatePicker
+                    value={dayjs(entry.startDate)}
+                    onChange={handleStartDateChange}
+                    disabled={anyStopwatchIsRunning}
+                    // disableFuture={true}
+                    label={
+                      entry.activity?.hasDuration == true ? "Date de début" : ""
+                    }
+                    sx={{
+                      flex: 1,
+                    }}
+                    slotProps={{
+                      textField: {
+                        sx: {
+                          flex: 1,
+                          "& input": {
+                            width: "100%",
+                            cursor: "pointer",
+                          },
+                          "& *:before": {
+                            border: "none !important",
+                          },
+                        },
+                        variant: "standard",
+                        error: false,
+                        helperText: "",
+                      },
+                    }}
+                    localeText={{
+                      toolbarTitle: "",
+                      okButtonLabel: "OK",
+                      cancelButtonLabel: "Annuler",
+                      nextMonth: "Mois suivant",
+                      previousMonth: "Mois précédent",
+                    }}
+                  />
+                </LocalizationProvider>
+                {entry.activity?.hasDuration == true && (
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale={dayjsLocaleFrCa as any}
+                  >
+                    <MobileDatePicker
+                      value={dayjs(entry.endDate)}
+                      onChange={handleEndDateChange}
+                      disabled={anyStopwatchIsRunning}
+                      // disableFuture={true}
+                      label="Date de fin"
+                      sx={{
+                        flex: 1,
+                      }}
+                      slotProps={{
+                        textField: {
+                          sx: {
+                            flex: 1,
+                            textAlign: "right",
+                            "& label": {
+                              width: "133%",
+                              textAlign: "right",
+                            },
+                            "& input": {
+                              width: "100%",
+                              cursor: "pointer",
+                              textAlign: "right",
+                            },
+                            "& *:before": {
+                              border: "none !important",
+                            },
+                          },
+                          error: false,
+                          variant: "standard",
+                        },
+                      }}
+                      localeText={{
+                        toolbarTitle: "",
+                        okButtonLabel: "OK",
+                        cancelButtonLabel: "Annuler",
+                        nextMonth: "Mois suivant",
+                        previousMonth: "Mois précédent",
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
+              </Stack>
+              <Stack
+                direction={"row"}
+                justifyContent={"space-between"}
+                sx={{
+                  width: "100%",
+                }}
+                onClick={(e) => {
+                  if (anyStopwatchIsRunning) {
+                    setSnackbarMessage(
+                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                    );
+                    setSnackbarSeverity("info");
+                    setSnackbarIsOpen(true);
+                  }
+                }}
+              >
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale={dayjsLocaleFrCa as any}
+                >
+                  <MobileTimePicker
+                    value={dayjs(entry.startDate)}
+                    onChange={handleStartTimeChange}
+                    disabled={anyStopwatchIsRunning}
+                    sx={{
+                      flex: 1,
+                    }}
+                    slotProps={{
+                      textField: {
+                        sx: {
+                          flex: 1,
+                          "& input": {
+                            width: "100%",
+                            cursor: "pointer",
+                          },
+                          "& *:before": {
+                            border: "none !important",
+                          },
+                        },
+                        variant: "standard",
+                        error: false,
+                        helperText: "",
+                      },
+                    }}
+                    ampm={false}
+                    localeText={{
+                      toolbarTitle: "",
+                      okButtonLabel: "OK",
+                      cancelButtonLabel: "Annuler",
+                      nextMonth: "Mois suivant",
+                      previousMonth: "Mois précédent",
+                    }}
+                  />
+                </LocalizationProvider>
+                {entry.activity?.hasDuration == true && (
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale={dayjsLocaleFrCa as any}
+                  >
+                    <MobileTimePicker
+                      value={dayjs(entry.endDate)}
+                      onChange={handleEndTimeChange}
+                      disabled={anyStopwatchIsRunning}
+                      // disableFuture={true}
+                      // label="Date de fin"
+                      sx={{
+                        flex: 1,
+                      }}
+                      slotProps={{
+                        textField: {
+                          sx: {
+                            flex: 1,
+                            textAlign: "right",
+                            "& label": {
+                              width: "133%",
+                              textAlign: "right",
+                            },
+                            "& input": {
+                              width: "100%",
+                              cursor: "pointer",
+                              textAlign: "right",
+                            },
+                            "& *:before": {
+                              border: "none !important",
+                            },
+                          },
+                          error: false,
+                          variant: "standard",
+                        },
+                      }}
+                      ampm={false}
+                      localeText={{
+                        toolbarTitle: "",
+                        okButtonLabel: "OK",
+                        cancelButtonLabel: "Annuler",
+                        nextMonth: "Mois suivant",
+                        previousMonth: "Mois précédent",
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
+              </Stack>
+            </Stack>
             <Box
               onClick={(e) => {
                 if (anyStopwatchIsRunning) {
