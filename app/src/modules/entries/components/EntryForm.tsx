@@ -680,42 +680,82 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Section>
         )}
-        {entry.activity?.hasDuration == true && (
-          <Section dividerPosition="top">
-            <SectionTitle title="Date et durée" />
+        <Section dividerPosition="top">
+          <Stack
+            sx={{
+              width: "100%",
+            }}
+          >
             <Stack
+              direction={"row"}
+              justifyContent={"space-between"}
               sx={{
                 width: "100%",
               }}
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
             >
-              <Stack
-                direction={"row"}
-                justifyContent={"space-between"}
-                sx={{
-                  width: "100%",
-                }}
-                onClick={(e) => {
-                  if (anyStopwatchIsRunning) {
-                    setSnackbarMessage(
-                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                    );
-                    setSnackbarSeverity("info");
-                    setSnackbarIsOpen(true);
-                  }
-                }}
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale={dayjsLocaleFrCa as any}
               >
+                <MobileDatePicker
+                  value={dayjs(entry.startDate)}
+                  onChange={handleStartDateChange}
+                  disabled={anyStopwatchIsRunning}
+                  // disableFuture={true}
+                  label={
+                    entry.activity?.hasDuration == true
+                      ? "Date de début"
+                      : "Date"
+                  }
+                  sx={{
+                    flex: 1,
+                  }}
+                  slotProps={{
+                    textField: {
+                      sx: {
+                        flex: 1,
+                        "& input": {
+                          width: "100%",
+                          cursor: "pointer",
+                        },
+                        "& *:before": {
+                          border: "none !important",
+                        },
+                      },
+                      variant: "standard",
+                      error: false,
+                      helperText: "",
+                    },
+                  }}
+                  localeText={{
+                    toolbarTitle: "",
+                    okButtonLabel: "OK",
+                    cancelButtonLabel: "Annuler",
+                    nextMonth: "Mois suivant",
+                    previousMonth: "Mois précédent",
+                  }}
+                />
+              </LocalizationProvider>
+              {entry.activity?.hasDuration == true && (
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale={dayjsLocaleFrCa as any}
                 >
                   <MobileDatePicker
-                    value={dayjs(entry.startDate)}
-                    onChange={handleStartDateChange}
+                    value={dayjs(entry.endDate)}
+                    onChange={handleEndDateChange}
                     disabled={anyStopwatchIsRunning}
                     // disableFuture={true}
-                    label={
-                      entry.activity?.hasDuration == true ? "Date de début" : ""
-                    }
+                    label="Date de fin"
                     sx={{
                       flex: 1,
                     }}
@@ -723,17 +763,22 @@ export default function EntryForm(props: EntryFormProps) {
                       textField: {
                         sx: {
                           flex: 1,
+                          textAlign: "right",
+                          "& label": {
+                            width: "133%",
+                            textAlign: "right",
+                          },
                           "& input": {
                             width: "100%",
                             cursor: "pointer",
+                            textAlign: "right",
                           },
                           "& *:before": {
                             border: "none !important",
                           },
                         },
-                        variant: "standard",
                         error: false,
-                        helperText: "",
+                        variant: "standard",
                       },
                     }}
                     localeText={{
@@ -745,77 +790,73 @@ export default function EntryForm(props: EntryFormProps) {
                     }}
                   />
                 </LocalizationProvider>
-                {entry.activity?.hasDuration == true && (
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale={dayjsLocaleFrCa as any}
-                  >
-                    <MobileDatePicker
-                      value={dayjs(entry.endDate)}
-                      onChange={handleEndDateChange}
-                      disabled={anyStopwatchIsRunning}
-                      // disableFuture={true}
-                      label="Date de fin"
-                      sx={{
-                        flex: 1,
-                      }}
-                      slotProps={{
-                        textField: {
-                          sx: {
-                            flex: 1,
-                            textAlign: "right",
-                            "& label": {
-                              width: "133%",
-                              textAlign: "right",
-                            },
-                            "& input": {
-                              width: "100%",
-                              cursor: "pointer",
-                              textAlign: "right",
-                            },
-                            "& *:before": {
-                              border: "none !important",
-                            },
-                          },
-                          error: false,
-                          variant: "standard",
-                        },
-                      }}
-                      localeText={{
-                        toolbarTitle: "",
-                        okButtonLabel: "OK",
-                        cancelButtonLabel: "Annuler",
-                        nextMonth: "Mois suivant",
-                        previousMonth: "Mois précédent",
-                      }}
-                    />
-                  </LocalizationProvider>
-                )}
-              </Stack>
-              <Stack
-                direction={"row"}
-                justifyContent={"space-between"}
-                sx={{
-                  width: "100%",
-                }}
-                onClick={(e) => {
-                  if (anyStopwatchIsRunning) {
-                    setSnackbarMessage(
-                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                    );
-                    setSnackbarSeverity("info");
-                    setSnackbarIsOpen(true);
-                  }
-                }}
+              )}
+            </Stack>
+            <Stack
+              direction={"row"}
+              justifyContent={"space-between"}
+              sx={{
+                width: "100%",
+              }}
+              onClick={(e) => {
+                if (anyStopwatchIsRunning) {
+                  setSnackbarMessage(
+                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  );
+                  setSnackbarSeverity("info");
+                  setSnackbarIsOpen(true);
+                }
+              }}
+            >
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale={dayjsLocaleFrCa as any}
               >
+                <MobileTimePicker
+                  value={dayjs(entry.startDate)}
+                  onChange={handleStartTimeChange}
+                  disabled={anyStopwatchIsRunning}
+                  sx={{
+                    flex: 1,
+                  }}
+                  slotProps={{
+                    textField: {
+                      sx: {
+                        flex: 1,
+                        "& input": {
+                          width: "100%",
+                          cursor: "pointer",
+                        },
+                        "& *:before": {
+                          border: "none !important",
+                        },
+                      },
+                      variant: "standard",
+                      error: false,
+                      helperText: "",
+                    },
+                  }}
+                  ampm={false}
+                  localeText={{
+                    toolbarTitle: "",
+                    okButtonLabel: "OK",
+                    cancelButtonLabel: "Annuler",
+                    nextMonth: "Mois suivant",
+                    previousMonth: "Mois précédent",
+                  }}
+                />
+              </LocalizationProvider>
+              {entry.activity?.hasDuration == true && (
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale={dayjsLocaleFrCa as any}
                 >
                   <MobileTimePicker
-                    value={dayjs(entry.startDate)}
-                    onChange={handleStartTimeChange}
+                    value={dayjs(entry.endDate)}
+                    onChange={handleEndTimeChange}
                     disabled={anyStopwatchIsRunning}
+                    // disableFuture={true}
+                    // label="Date de fin"
                     sx={{
                       flex: 1,
                     }}
@@ -823,17 +864,22 @@ export default function EntryForm(props: EntryFormProps) {
                       textField: {
                         sx: {
                           flex: 1,
+                          textAlign: "right",
+                          "& label": {
+                            width: "133%",
+                            textAlign: "right",
+                          },
                           "& input": {
                             width: "100%",
                             cursor: "pointer",
+                            textAlign: "right",
                           },
                           "& *:before": {
                             border: "none !important",
                           },
                         },
-                        variant: "standard",
                         error: false,
-                        helperText: "",
+                        variant: "standard",
                       },
                     }}
                     ampm={false}
@@ -846,95 +892,19 @@ export default function EntryForm(props: EntryFormProps) {
                     }}
                   />
                 </LocalizationProvider>
-                {entry.activity?.hasDuration == true && (
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale={dayjsLocaleFrCa as any}
-                  >
-                    <MobileTimePicker
-                      value={dayjs(entry.endDate)}
-                      onChange={handleEndTimeChange}
-                      disabled={anyStopwatchIsRunning}
-                      // disableFuture={true}
-                      // label="Date de fin"
-                      sx={{
-                        flex: 1,
-                      }}
-                      slotProps={{
-                        textField: {
-                          sx: {
-                            flex: 1,
-                            textAlign: "right",
-                            "& label": {
-                              width: "133%",
-                              textAlign: "right",
-                            },
-                            "& input": {
-                              width: "100%",
-                              cursor: "pointer",
-                              textAlign: "right",
-                            },
-                            "& *:before": {
-                              border: "none !important",
-                            },
-                          },
-                          error: false,
-                          variant: "standard",
-                        },
-                      }}
-                      ampm={false}
-                      localeText={{
-                        toolbarTitle: "",
-                        okButtonLabel: "OK",
-                        cancelButtonLabel: "Annuler",
-                        nextMonth: "Mois suivant",
-                        previousMonth: "Mois précédent",
-                      }}
-                    />
-                  </LocalizationProvider>
-                )}
-              </Stack>
+              )}
             </Stack>
-            <Box
-              onClick={(e) => {
-                if (anyStopwatchIsRunning) {
-                  setSnackbarMessage(
-                    "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                  );
-                  setSnackbarSeverity("info");
-                  setSnackbarIsOpen(true);
-                }
-              }}
-            >
-              <Button
-                variant="text"
-                onClick={(e) => handleDurationClick(e)}
-                disabled={anyStopwatchIsRunning}
-              >
-                <Typography
-                  textAlign="center"
-                  variant="h4"
-                  textTransform={"none"}
-                  color={theme.palette.text.primary}
-                >
-                  {stopWatchTimeLabel}
-                </Typography>
-              </Button>
-            </Box>
-            <Stack
-              direction={"row"}
-              spacing={4}
-              sx={{
-                width: "100%",
-              }}
-            >
+          </Stack>
+
+          {entry.activity?.hasDuration == true && (
+            <>
+              {/* <Typography variant="h6" textAlign={"center"}>
+                Durée
+              </Typography> */}
+
               <Box
-                sx={{
-                  flex: 1,
-                  width: "100%",
-                }}
                 onClick={(e) => {
-                  if (entry.rightStopwatchIsRunning) {
+                  if (anyStopwatchIsRunning) {
                     setSnackbarMessage(
                       "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                     );
@@ -943,33 +913,36 @@ export default function EntryForm(props: EntryFormProps) {
                   }
                 }}
               >
-                <Stopwatch
-                  playPauseButtonId={leftStopwatchPlayPauseButtonId}
-                  editButtonId={leftStopwatchEditButtonId}
-                  label={entry.activity?.hasSides ? "Gauche" : undefined}
-                  sx={{ flex: 1, width: "100%" }}
-                  time={entry.leftTime}
-                  isRunning={entry.leftStopwatchIsRunning}
-                  lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
-                  buttonIsDisabled={entry.rightStopwatchIsRunning}
-                  // inputsAreDisabled={anyStopwatchIsRunning}
-                  inputsAreReadOnly={anyStopwatchIsRunning}
-                  onChange={(params) =>
-                    handleStopwatchChange({
-                      ...params,
-                      side: "left",
-                    })
-                  }
-                />
+                <Button
+                  variant="text"
+                  onClick={(e) => handleDurationClick(e)}
+                  disabled={anyStopwatchIsRunning}
+                >
+                  <Typography
+                    textAlign="center"
+                    variant="h4"
+                    textTransform={"none"}
+                    color={theme.palette.text.primary}
+                  >
+                    {stopWatchTimeLabel}
+                  </Typography>
+                </Button>
               </Box>
-              {entry.activity?.hasSides && (
+
+              <Stack
+                direction={"row"}
+                spacing={4}
+                sx={{
+                  width: "100%",
+                }}
+              >
                 <Box
                   sx={{
                     flex: 1,
                     width: "100%",
                   }}
                   onClick={(e) => {
-                    if (entry.leftStopwatchIsRunning) {
+                    if (entry.rightStopwatchIsRunning) {
                       setSnackbarMessage(
                         "Certaines modifications sont désactivées pendant que le chronomètre tourne."
                       );
@@ -979,46 +952,84 @@ export default function EntryForm(props: EntryFormProps) {
                   }}
                 >
                   <Stopwatch
-                    playPauseButtonId={rightStopwatchPlayPauseButtonId}
-                    editButtonId={rightStopwatchEditButtonId}
-                    label="Droite"
+                    playPauseButtonId={leftStopwatchPlayPauseButtonId}
+                    editButtonId={leftStopwatchEditButtonId}
+                    label={entry.activity?.hasSides ? "Gauche" : undefined}
                     sx={{ flex: 1, width: "100%" }}
-                    time={entry.rightTime}
-                    isRunning={entry.rightStopwatchIsRunning}
-                    lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
-                    buttonIsDisabled={entry.leftStopwatchIsRunning}
+                    time={entry.leftTime}
+                    isRunning={entry.leftStopwatchIsRunning}
+                    lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
+                    buttonIsDisabled={entry.rightStopwatchIsRunning}
                     // inputsAreDisabled={anyStopwatchIsRunning}
                     inputsAreReadOnly={anyStopwatchIsRunning}
                     onChange={(params) =>
                       handleStopwatchChange({
                         ...params,
-                        side: "right",
+                        side: "left",
                       })
                     }
                   />
                 </Box>
-              )}
-              <StopwatchMenu>
-                <MenuItem
-                  onClick={(e) => {
-                    closeStopwatchMenu(e);
-                    triggerEditOnLeftStopwatch(e);
-                  }}
-                >
-                  Modifier le côté gauche
-                </MenuItem>
-                <MenuItem
-                  onClick={(e) => {
-                    closeStopwatchMenu(e);
-                    triggerEditOnRightStopwatch(e);
-                  }}
-                >
-                  Modifier le côté droit
-                </MenuItem>
-              </StopwatchMenu>
-            </Stack>
-          </Section>
-        )}
+                {entry.activity?.hasSides && (
+                  <Box
+                    sx={{
+                      flex: 1,
+                      width: "100%",
+                    }}
+                    onClick={(e) => {
+                      if (entry.leftStopwatchIsRunning) {
+                        setSnackbarMessage(
+                          "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                        );
+                        setSnackbarSeverity("info");
+                        setSnackbarIsOpen(true);
+                      }
+                    }}
+                  >
+                    <Stopwatch
+                      playPauseButtonId={rightStopwatchPlayPauseButtonId}
+                      editButtonId={rightStopwatchEditButtonId}
+                      label="Droite"
+                      sx={{ flex: 1, width: "100%" }}
+                      time={entry.rightTime}
+                      isRunning={entry.rightStopwatchIsRunning}
+                      lastUpdateTime={
+                        entry.rightStopwatchLastUpdateTime ?? null
+                      }
+                      buttonIsDisabled={entry.leftStopwatchIsRunning}
+                      // inputsAreDisabled={anyStopwatchIsRunning}
+                      inputsAreReadOnly={anyStopwatchIsRunning}
+                      onChange={(params) =>
+                        handleStopwatchChange({
+                          ...params,
+                          side: "right",
+                        })
+                      }
+                    />
+                  </Box>
+                )}
+                <StopwatchMenu>
+                  <MenuItem
+                    onClick={(e) => {
+                      closeStopwatchMenu(e);
+                      triggerEditOnLeftStopwatch(e);
+                    }}
+                  >
+                    Modifier le côté gauche
+                  </MenuItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      closeStopwatchMenu(e);
+                      triggerEditOnRightStopwatch(e);
+                    }}
+                  >
+                    Modifier le côté droit
+                  </MenuItem>
+                </StopwatchMenu>
+              </Stack>
+            </>
+          )}
+        </Section>
 
         <Section dividerPosition="top">
           <SectionTitle title="Notes" />
