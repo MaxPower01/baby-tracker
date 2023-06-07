@@ -12,7 +12,6 @@ enum SubActivityType {
   NasalAspirator = 11,
   PlayMat = 12,
   Moise = 13,
-  BellyTime = 14,
   Pool = 15,
   Beach = 16,
 }

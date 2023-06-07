@@ -48,10 +48,6 @@ function PlayMatIcon() {
   return <ReactSVG src="/icons/031-mat.svg" className="ActivityIcon" />;
 }
 
-function BellyTimeIcon() {
-  return <ReactSVG src="/icons/036-mat-1.svg" className="ActivityIcon" />;
-}
-
 function PoolIcon() {
   return (
     <ReactSVG src="/icons/037-swimming-pool.svg" className="ActivityIcon" />
@@ -96,8 +92,6 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
             return <NasalHygieneIcon />;
           case SubActivityType.PlayMat:
             return <PlayMatIcon />;
-          case SubActivityType.BellyTime:
-            return <BellyTimeIcon />;
           case SubActivityType.Pool:
             return <PoolIcon />;
           case SubActivityType.Beach:

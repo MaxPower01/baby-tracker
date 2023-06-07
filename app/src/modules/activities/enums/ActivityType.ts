@@ -36,5 +36,6 @@ enum ActivityType {
   Activity = 36,
   BabyCare = 37,
   BabyToilet = 38,
+  BellyTime = 39,
 }
 export default ActivityType;

@@ -150,6 +150,10 @@ function BabyToiletIcon() {
   return <ReactSVG src="/icons/044-potty.svg" className="ActivityIcon" />;
 }
 
+function BellyTimeIcon() {
+  return <ReactSVG src="/icons/036-mat-1.svg" className="ActivityIcon" />;
+}
+
 type Props = {
   activity: ActivityModel;
   sx?: SxProps | undefined;
@@ -234,6 +238,8 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <BabyCareIcon />;
           case ActivityType.BabyToilet:
             return <BabyToiletIcon />;
+          case ActivityType.BellyTime:
+            return <BellyTimeIcon />;
           default:
             return null;
         }

@@ -59,9 +59,6 @@ export class SubActivityModel {
       case SubActivityType.PlayMat:
         this._name = "Tapis d'éveil";
         break;
-      case SubActivityType.BellyTime:
-        this._name = "Temps sur le ventre";
-        break;
       case SubActivityType.Pool:
         this._name = "Piscine";
         break;

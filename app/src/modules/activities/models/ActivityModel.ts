@@ -67,6 +67,7 @@ export default class ActivityModel {
     ActivityType.Activity,
     ActivityType.BabyCare,
     ActivityType.BabyToilet,
+    ActivityType.BellyTime,
   ];
 
   public get order(): number {
@@ -220,6 +221,8 @@ export default class ActivityModel {
         return "Soins du bébé";
       case ActivityType.BabyToilet:
         return "Petit pot";
+      case ActivityType.BellyTime:
+        return "Temps sur le ventre";
       default:
         return "_";
     }
@@ -301,6 +304,8 @@ export default class ActivityModel {
         return "Depuis les soins du bébé précédents:";
       case ActivityType.BabyToilet:
         return "Depuis le petit pot précédent:";
+      case ActivityType.BellyTime:
+        return "Depuis le temps sur le ventre précédent:";
       default:
         return "";
     }
@@ -485,6 +490,8 @@ export default class ActivityModel {
           ActivityType.BreastFeeding,
           ActivityType.Hiccups,
         ];
+      case ActivityType.BellyTime:
+        return [ActivityType.Cry];
       default:
         return [];
     }
@@ -512,14 +519,9 @@ export default class ActivityModel {
           SubActivityType.Moise,
         ];
       case ActivityType.Play:
-        return [SubActivityType.PlayMat, SubActivityType.BellyTime];
+        return [SubActivityType.PlayMat];
       case ActivityType.Activity:
-        return [
-          SubActivityType.Pool,
-          SubActivityType.Beach,
-          SubActivityType.PlayMat,
-          SubActivityType.BellyTime,
-        ];
+        return [SubActivityType.Pool, SubActivityType.Beach];
       default:
         return [];
     }
@@ -538,6 +540,8 @@ export default class ActivityModel {
       case ActivityType.Sleep:
       case ActivityType.AwakeTime:
       case ActivityType.Activity:
+      case ActivityType.Walk:
+      case ActivityType.BellyTime:
         return true;
       default:
         return false;
