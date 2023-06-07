@@ -61,6 +61,12 @@ export default class ActivityModel {
     ActivityType.Hospital,
     ActivityType.Vaccine,
     ActivityType.SolidFood,
+    ActivityType.BabyMash,
+    ActivityType.VitaminsAndSupplements,
+    ActivityType.AwakeTime,
+    ActivityType.Activity,
+    ActivityType.BabyCare,
+    ActivityType.BabyToilet,
   ];
 
   public get order(): number {
@@ -202,6 +208,18 @@ export default class ActivityModel {
         return "Symptôme";
       case ActivityType.Note:
         return "Note";
+      case ActivityType.BabyMash:
+        return "Purée";
+      case ActivityType.VitaminsAndSupplements:
+        return "Vitamines et suppléments";
+      case ActivityType.AwakeTime:
+        return "Temps éveillé";
+      case ActivityType.Activity:
+        return "Activité";
+      case ActivityType.BabyCare:
+        return "Soins du bébé";
+      case ActivityType.BabyToilet:
+        return "Petit pot";
       default:
         return "_";
     }
@@ -271,6 +289,18 @@ export default class ActivityModel {
         return "Depuis le symptôme précédent:";
       case ActivityType.Note:
         return "Depuis la note précédente:";
+      case ActivityType.BabyMash:
+        return "Depuis la purée précédente:";
+      case ActivityType.VitaminsAndSupplements:
+        return "Depuis les vitamines et suppléments précédents:";
+      case ActivityType.AwakeTime:
+        return "Depuis le temps éveillé précédent:";
+      case ActivityType.Activity:
+        return "Depuis l'activité précédente:";
+      case ActivityType.BabyCare:
+        return "Depuis les soins du bébé précédents:";
+      case ActivityType.BabyToilet:
+        return "Depuis le petit pot précédent:";
       default:
         return "";
     }
@@ -479,9 +509,12 @@ export default class ActivityModel {
           SubActivityType.Cradle,
           SubActivityType.Bed,
           SubActivityType.Swing,
+          SubActivityType.Moise,
         ];
       case ActivityType.Play:
-        return [SubActivityType.PlayMat];
+        return [SubActivityType.PlayMat, SubActivityType.BellyTime];
+      case ActivityType.Activity:
+        return [SubActivityType.Pool, SubActivityType.Beach];
       default:
         return [];
     }
@@ -498,6 +531,8 @@ export default class ActivityModel {
       case ActivityType.MilkExtraction:
       case ActivityType.Play:
       case ActivityType.Sleep:
+      case ActivityType.AwakeTime:
+      case ActivityType.Activity:
         return true;
       default:
         return false;

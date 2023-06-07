@@ -30,5 +30,11 @@ enum ActivityType {
   Fart = 30,
   Note = 31,
   Symptom = 32,
+  BabyMash = 33,
+  VitaminsAndSupplements = 34,
+  AwakeTime = 35,
+  Activity = 36,
+  BabyCare = 37,
+  BabyToilet = 38,
 }
 export default ActivityType;

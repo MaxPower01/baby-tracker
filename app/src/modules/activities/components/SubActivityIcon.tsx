@@ -24,6 +24,46 @@ function PlayIcon() {
   return <ReactSVG src="/icons/play.svg" className="ActivityIcon" />;
 }
 
+function CradleIcon() {
+  return <ReactSVG src="/icons/030-baby-crib.svg" className="ActivityIcon" />;
+}
+
+function CribIcon() {
+  return <ReactSVG src="/icons/bassinet.svg" className="ActivityIcon" />;
+}
+
+function BedIcon() {
+  return <ReactSVG src="/icons/032-bed.svg" className="ActivityIcon" />;
+}
+
+function SwingIcon() {
+  return <ReactSVG src="/icons/029-swing.svg" className="ActivityIcon" />;
+}
+
+function MoiseIcon() {
+  return <ReactSVG src="/icons/moise.svg" className="ActivityIcon" />;
+}
+
+function PlayMatIcon() {
+  return <ReactSVG src="/icons/031-mat.svg" className="ActivityIcon" />;
+}
+
+function BellyTimeIcon() {
+  return <ReactSVG src="/icons/036-mat-1.svg" className="ActivityIcon" />;
+}
+
+function PoolIcon() {
+  return (
+    <ReactSVG src="/icons/037-swimming-pool.svg" className="ActivityIcon" />
+  );
+}
+
+function BeachIcon() {
+  return (
+    <ReactSVG src="/icons/038-beach-umbrella.svg" className="ActivityIcon" />
+  );
+}
+
 type Props = {
   subActivity: SubActivityModel;
   sx?: SxProps | undefined;
@@ -37,10 +77,15 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
           case SubActivityType.Meconium:
             return <MeconiumIcon />;
           case SubActivityType.Cradle:
+            return <CradleIcon />;
           case SubActivityType.Crib:
+            return <CribIcon />;
           case SubActivityType.Bed:
+            return <BedIcon />;
           case SubActivityType.Swing:
-            return <SleepIcon />;
+            return <SwingIcon />;
+          case SubActivityType.Moise:
+            return <MoiseIcon />;
           case SubActivityType.FormulaMilk:
           case SubActivityType.BreastMilk:
           case SubActivityType.AdaptedCowMilk:
@@ -50,7 +95,13 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
           case SubActivityType.SalineSolution:
             return <NasalHygieneIcon />;
           case SubActivityType.PlayMat:
-            return <PlayIcon />;
+            return <PlayMatIcon />;
+          case SubActivityType.BellyTime:
+            return <BellyTimeIcon />;
+          case SubActivityType.Pool:
+            return <PoolIcon />;
+          case SubActivityType.Beach:
+            return <BeachIcon />;
           default:
             return null;
         }

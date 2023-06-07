@@ -1,6 +1,7 @@
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { Box, SxProps } from "@mui/material";
+
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import { ReactSVG } from "react-svg";
 
 function BathIcon() {
@@ -36,7 +37,7 @@ function HiccupsIcon() {
 }
 
 function HospitalIcon() {
-  return <ReactSVG src="/icons/hospital-visit.svg" className="ActivityIcon" />;
+  return <ReactSVG src="/icons/035-stethoscope.svg" className="ActivityIcon" />;
 }
 
 function MedicalFollowUpIcon() {
@@ -123,6 +124,32 @@ function NoteIcon() {
   return <ReactSVG src="/icons/note.svg" className="ActivityIcon" />;
 }
 
+function BabyMashIcon() {
+  return <ReactSVG src="/icons/043-baby-food.svg" className="ActivityIcon" />;
+}
+
+function VitaminsAndSupplementsIcon() {
+  return <ReactSVG src="/icons/042-vitamins.svg" className="ActivityIcon" />;
+}
+
+function AwakeTimeIcon() {
+  return <ReactSVG src="/icons/040-sun.svg" className="ActivityIcon" />;
+}
+
+function ActivityActivityIcon() {
+  return <ReactSVG src="/icons/box.svg" className="ActivityIcon" />;
+}
+
+function BabyCareIcon() {
+  return (
+    <ReactSVG src="/icons/039-facial-treatment.svg" className="ActivityIcon" />
+  );
+}
+
+function BabyToiletIcon() {
+  return <ReactSVG src="/icons/044-potty.svg" className="ActivityIcon" />;
+}
+
 type Props = {
   activity: ActivityModel;
   sx?: SxProps | undefined;
@@ -195,6 +222,18 @@ export default function ActivityIcon({ activity, sx }: Props) {
             return <SymptomIcon />;
           case ActivityType.Note:
             return <NoteIcon />;
+          case ActivityType.BabyMash:
+            return <BabyMashIcon />;
+          case ActivityType.VitaminsAndSupplements:
+            return <VitaminsAndSupplementsIcon />;
+          case ActivityType.AwakeTime:
+            return <AwakeTimeIcon />;
+          case ActivityType.Activity:
+            return <ActivityActivityIcon />;
+          case ActivityType.BabyCare:
+            return <BabyCareIcon />;
+          case ActivityType.BabyToilet:
+            return <BabyToiletIcon />;
           default:
             return null;
         }

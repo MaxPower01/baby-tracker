@@ -26,6 +26,9 @@ export class SubActivityModel {
       case SubActivityType.Crib:
         this._name = "Bassinette";
         break;
+      case SubActivityType.Moise:
+        this._name = "Moïse";
+        break;
       case SubActivityType.Cradle:
         this._name = "Berceau";
         break;
@@ -55,6 +58,15 @@ export class SubActivityModel {
         break;
       case SubActivityType.PlayMat:
         this._name = "Tapis d'éveil";
+        break;
+      case SubActivityType.BellyTime:
+        this._name = "Temps sur le ventre";
+        break;
+      case SubActivityType.Pool:
+        this._name = "Piscine";
+        break;
+      case SubActivityType.Beach:
+        this._name = "Plage";
         break;
       default:
         this._name = "_";
