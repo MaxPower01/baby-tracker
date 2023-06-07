@@ -514,7 +514,12 @@ export default class ActivityModel {
       case ActivityType.Play:
         return [SubActivityType.PlayMat, SubActivityType.BellyTime];
       case ActivityType.Activity:
-        return [SubActivityType.Pool, SubActivityType.Beach];
+        return [
+          SubActivityType.Pool,
+          SubActivityType.Beach,
+          SubActivityType.PlayMat,
+          SubActivityType.BellyTime,
+        ];
       default:
         return [];
     }
