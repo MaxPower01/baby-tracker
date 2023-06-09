@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Grid,
+  InputLabel,
   MenuItem,
   Slide,
   Snackbar,
@@ -688,7 +689,7 @@ export default function EntryForm(props: EntryFormProps) {
           >
             <Stack
               direction={"row"}
-              justifyContent={"space-between"}
+              justifyContent={"center"}
               sx={{
                 width: "100%",
               }}
@@ -722,10 +723,15 @@ export default function EntryForm(props: EntryFormProps) {
                   slotProps={{
                     textField: {
                       sx: {
-                        flex: 1,
+                        flex:
+                          entry.activity?.hasDuration == true ? 1 : undefined,
                         "& input": {
                           width: "100%",
                           cursor: "pointer",
+                          textAlign:
+                            entry.activity?.hasDuration == true
+                              ? undefined
+                              : "center",
                         },
                         "& *:before": {
                           border: "none !important",
@@ -794,7 +800,7 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
             <Stack
               direction={"row"}
-              justifyContent={"space-between"}
+              justifyContent={"center"}
               sx={{
                 width: "100%",
               }}
@@ -822,10 +828,16 @@ export default function EntryForm(props: EntryFormProps) {
                   slotProps={{
                     textField: {
                       sx: {
-                        flex: 1,
+                        flex:
+                          entry.activity?.hasDuration == true ? 1 : undefined,
                         "& input": {
                           width: "100%",
                           cursor: "pointer",
+                          textAlign:
+                            entry.activity?.hasDuration == true
+                              ? undefined
+                              : "center",
+                          fontSize: "1.35rem",
                         },
                         "& *:before": {
                           border: "none !important",
@@ -873,6 +885,7 @@ export default function EntryForm(props: EntryFormProps) {
                             width: "100%",
                             cursor: "pointer",
                             textAlign: "right",
+                            fontSize: "1.35rem",
                           },
                           "& *:before": {
                             border: "none !important",
@@ -898,9 +911,7 @@ export default function EntryForm(props: EntryFormProps) {
 
           {entry.activity?.hasDuration == true && (
             <>
-              {/* <Typography variant="h6" textAlign={"center"}>
-                Durée
-              </Typography> */}
+              <InputLabel>Durée</InputLabel>
 
               <Box
                 onClick={(e) => {
