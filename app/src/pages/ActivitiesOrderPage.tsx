@@ -12,6 +12,7 @@ import {
   Draggable,
   Droppable,
   OnDragEndResponder,
+  OnDragStartResponder,
 } from "react-beautiful-dnd";
 import {
   selectActivities,
@@ -45,6 +46,13 @@ export default function ActivitiesOrderPage() {
   };
 
   const droppableId = "activities";
+
+  const onDragStart: OnDragStartResponder = (result) => {
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(100);
+    }
+  };
+
   const onDragEnd: OnDragEndResponder = (result) => {
     if (!result.destination) {
       return;
@@ -70,6 +78,12 @@ export default function ActivitiesOrderPage() {
   const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
     width: "100%",
     ...draggableStyle,
+    "& .Item": {
+      backgroundColor: isDragging ? theme.palette.action.hover : undefined,
+      "&:hover": {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
   });
 
   if (activities.length === 0) {
@@ -80,7 +94,7 @@ export default function ActivitiesOrderPage() {
   // See issue #2350 for more details: https://github.com/atlassian/react-beautiful-dnd/issues/2350
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <Droppable droppableId={droppableId}>
         {(provided, snapshot) => (
           <Stack
@@ -109,44 +123,46 @@ export default function ActivitiesOrderPage() {
                         provided.draggableProps.style
                       )}
                     >
-                      <Stack
-                        justifyContent={"flex-start"}
-                        alignItems={"center"}
-                        direction={"row"}
-                        sx={{
-                          width: "100%",
-                          padding: 1,
-                        }}
-                        spacing={2}
-                      >
-                        <DragHandleIcon
-                          sx={{
-                            opacity: 0.5,
-                          }}
-                        />
+                      <Box className="Item">
                         <Stack
-                          spacing={0}
-                          direction={"row"}
                           justifyContent={"flex-start"}
                           alignItems={"center"}
+                          direction={"row"}
+                          sx={{
+                            width: "100%",
+                            padding: 1,
+                          }}
+                          spacing={2}
                         >
-                          <ActivityIcon
-                            activity={activity}
+                          <DragHandleIcon
                             sx={{
-                              fontSize: "2em",
+                              opacity: 0.5,
                             }}
                           />
-
-                          <Typography
-                            variant={"body1"}
-                            sx={{
-                              marginLeft: 2,
-                            }}
+                          <Stack
+                            spacing={0}
+                            direction={"row"}
+                            justifyContent={"flex-start"}
+                            alignItems={"center"}
                           >
-                            {activity.name}
-                          </Typography>
+                            <ActivityIcon
+                              activity={activity}
+                              sx={{
+                                fontSize: "2em",
+                              }}
+                            />
+
+                            <Typography
+                              variant={"body1"}
+                              sx={{
+                                marginLeft: 2,
+                              }}
+                            >
+                              {activity.name}
+                            </Typography>
+                          </Stack>
                         </Stack>
-                      </Stack>
+                      </Box>
                     </Card>
                   )}
                 </Draggable>
