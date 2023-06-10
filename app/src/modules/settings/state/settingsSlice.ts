@@ -16,7 +16,7 @@ const key = LocalStorageKey.SettingsState;
 const defaultState: SettingsState = {
   groupEntriesBy: GroupEntriesBy.ThirtyMinutes,
   themeMode: ThemeMode.Dark,
-  useCompactMode: false,
+  useCompactMode: true,
 };
 
 const slice = createSlice({

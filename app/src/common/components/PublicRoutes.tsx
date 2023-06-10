@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import AuthenticationPage from "@/pages/AuthenticationPage";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import { getPath } from "@/utils/utils";
 
 export default function PublicRoutes() {
@@ -10,7 +10,7 @@ export default function PublicRoutes() {
       <Route path="" element={<AuthenticationPage />} />
       <Route path="*" element={<Navigate replace to="" />} />
       <Route
-        path={getPath({ page: PageName.Authentication })}
+        path={getPath({ page: PageId.Authentication })}
         element={<AuthenticationPage />}
       />
     </Routes>

@@ -26,7 +26,7 @@ import { useCallback, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Child from "@/modules/authentication/types/Child";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
 import { getPath } from "@/utils/utils";
@@ -124,7 +124,7 @@ export default function ChildWizard() {
         });
         navigate(
           getPath({
-            page: PageName.Home,
+            page: PageId.Home,
           })
         );
       });
@@ -208,7 +208,7 @@ export default function ChildWizard() {
               />
             </LocalizationProvider>
             <Button onClick={handleSubmit} variant="contained">
-              Ajouter l'enfant
+              Ajouter {name}
             </Button>
             <Button onClick={goToPreviousStep} variant="outlined">
               Précédent

@@ -22,8 +22,9 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SortIcon from "@mui/icons-material/Sort";
 import { functions } from "@/firebase";
 import { httpsCallable } from "firebase/functions";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -115,7 +116,7 @@ export default function MenuDrawer(props: {
                   <Button
                     variant="contained"
                     onClick={() =>
-                      navigate(getPath({ page: PageName.Authentication }))
+                      navigate(getPath({ page: PageId.Authentication }))
                     }
                   >
                     Se connecter
@@ -152,27 +153,7 @@ export default function MenuDrawer(props: {
                 }}
                 onClick={() => {
                   props.onClose();
-                  navigate(getPath({ page: PageName.Settings }));
-                }}
-              >
-                <SettingsIcon
-                  sx={{
-                    marginRight: 1,
-                  }}
-                />
-                <Typography variant="body1">Paramètres</Typography>
-              </Button>
-              <Button
-                variant="text"
-                fullWidth
-                sx={{
-                  color: theme.palette.text.primary,
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-                onClick={() => {
-                  props.onClose();
-                  navigate(getPath({ page: PageName.Children }));
+                  navigate(getPath({ page: PageId.Children }));
                 }}
               >
                 <ChildCareIcon
@@ -205,6 +186,55 @@ export default function MenuDrawer(props: {
                   <Typography variant="body1">Ajouter un parent</Typography>
                 </Button>
               )}
+              <Button
+                variant="text"
+                fullWidth
+                sx={{
+                  color: theme.palette.text.primary,
+                  textAlign: "left",
+                  justifyContent: "flex-start",
+                }}
+                onClick={() => {
+                  props.onClose();
+                  navigate(getPath({ page: PageId.ActivitiesOrder }));
+                }}
+              >
+                <SortIcon
+                  sx={{
+                    marginRight: 1,
+                  }}
+                />
+                <Typography variant="body1">Ordre des activités</Typography>
+              </Button>
+              <Button
+                variant="text"
+                fullWidth
+                sx={{
+                  color: theme.palette.text.primary,
+                  textAlign: "left",
+                  justifyContent: "flex-start",
+                }}
+                onClick={() => {
+                  props.onClose();
+                  navigate(getPath({ page: PageId.Settings }));
+                }}
+              >
+                <SettingsIcon
+                  sx={{
+                    marginRight: 1,
+                  }}
+                />
+                <Typography variant="body1">Paramètres</Typography>
+              </Button>
+            </Stack>
+            <Divider />
+            <Stack
+              sx={{
+                width: "100%",
+              }}
+              alignItems={"flex-start"}
+              spacing={1}
+            >
               <Button
                 variant="text"
                 fullWidth

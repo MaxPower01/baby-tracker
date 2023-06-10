@@ -19,7 +19,8 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
+import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
@@ -44,19 +45,11 @@ export default function NewEntryWidget(props: Props) {
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
+  const activities = useSelector(selectActivities);
   const allActivitiesWithLastEntry = useMemo(() => {
-    const activities = Object.values(ActivityType)
-      .map((type) => {
-        if (typeof type === "string") return null;
-        return new ActivityModel(type);
-      })
-      .filter((activity) => activity != null)
-      .sort((a, b) => {
-        if (a == null || b == null) return 0;
-        return a.order - b.order;
-      }) as ActivityModel[];
+    const _activities = activities.filter((activity) => activity != null);
 
-    return activities.map((activity) => {
+    return _activities.map((activity) => {
       const activityEntries = entries?.filter((entry: EntryModel) => {
         if (entry == null || entry.activity == null) return false;
         let isActivity = false;
@@ -93,7 +86,7 @@ export default function NewEntryWidget(props: Props) {
         lastEntryLabels,
       };
     });
-  }, [entries, now]);
+  }, [entries, now, activities]);
 
   const activityButtonWidth = useCompactMode ? "12em" : "11em";
   const activityButtonPaddingLeftRight = 2;
@@ -170,7 +163,7 @@ export default function NewEntryWidget(props: Props) {
       if (label.isInProgress) {
         navigate(
           getPath({
-            page: PageName.Entry,
+            page: PageId.Entry,
             id: lastEntry.id ?? "",
           })
         );
@@ -189,7 +182,7 @@ export default function NewEntryWidget(props: Props) {
     }
     navigate(
       getPath({
-        page: PageName.Entry,
+        page: PageId.Entry,
         params: urlParams,
       })
     );
@@ -327,6 +320,7 @@ export default function NewEntryWidget(props: Props) {
               >
                 <Typography
                   variant={textVariant}
+                  color={"text.secondary"}
                   sx={{
                     ...subtitleStyle,
                     // lineHeight: 1,

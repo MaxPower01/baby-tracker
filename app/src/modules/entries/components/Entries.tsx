@@ -81,7 +81,8 @@ export default function Entries(props: Props) {
         variant="body1"
         sx={{
           textAlign: "center",
-          opacity: 0.5,
+          color: theme.palette.text.secondary,
+          // opacity: 0.5,
           fontStyle: "italic",
         }}
       >

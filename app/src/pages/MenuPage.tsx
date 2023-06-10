@@ -16,7 +16,7 @@ import {
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import { resetAppState } from "@/app/state/appSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -122,7 +122,7 @@ export default function MenuPage() {
 
   const handleSignOutButtonClick = () => {
     auth.signOut().then(() => {
-      navigate(getPath({ page: PageName.Home }));
+      navigate(getPath({ page: PageId.Home }));
     });
   };
 
@@ -153,7 +153,7 @@ export default function MenuPage() {
               <Button
                 variant="contained"
                 onClick={() =>
-                  navigate(getPath({ page: PageName.Authentication }))
+                  navigate(getPath({ page: PageId.Authentication }))
                 }
               >
                 Se connecter

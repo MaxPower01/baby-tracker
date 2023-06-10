@@ -23,6 +23,7 @@ export default function ChildrenPage() {
           <Typography variant={"h4"}>Mes enfants</Typography>
           {children.map((child) => (
             <Stack
+              key={child.id}
               direction={"row"}
               justifyContent={"center"}
               alignItems={"center"}
@@ -45,9 +46,12 @@ export default function ChildrenPage() {
                 <Typography variant={"h6"}>{child.name}</Typography>
                 <Typography
                   variant={"body2"}
-                  sx={{
-                    opacity: 0.8,
-                  }}
+                  color={"text.secondary"}
+                  sx={
+                    {
+                      // opacity: 0.8,
+                    }
+                  }
                 >
                   {child.sex == "male" ? "Garçon" : "Fille"} •{" "}
                   {child.sex == "male" ? "Né" : "Née"} le{" "}

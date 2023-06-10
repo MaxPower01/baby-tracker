@@ -29,51 +29,6 @@ export default class ActivityModel {
     this._subTypes = v;
   }
 
-  private _typesOrder: ActivityType[] = [
-    ActivityType.BreastFeeding,
-    ActivityType.BottleFeeding,
-    ActivityType.Burp,
-    ActivityType.Diaper,
-    ActivityType.Poop,
-    ActivityType.Urine,
-    ActivityType.Sleep,
-    ActivityType.Walk,
-    ActivityType.Note,
-    ActivityType.Play,
-    ActivityType.Cry,
-    ActivityType.Regurgitation,
-    ActivityType.Vomit,
-    ActivityType.Fart,
-    ActivityType.MilkExtraction,
-    ActivityType.CarRide,
-    ActivityType.Hiccups,
-    ActivityType.Weight,
-    ActivityType.Size,
-    ActivityType.HeadCircumference,
-    ActivityType.Bath,
-    ActivityType.NasalHygiene,
-    ActivityType.NailCutting,
-    ActivityType.Temperature,
-    ActivityType.Teeth,
-    ActivityType.Symptom,
-    ActivityType.Medicine,
-    ActivityType.MedicalFollowUp,
-    ActivityType.Hospital,
-    ActivityType.Vaccine,
-    ActivityType.SolidFood,
-    ActivityType.BabyMash,
-    ActivityType.VitaminsAndSupplements,
-    ActivityType.AwakeTime,
-    ActivityType.Activity,
-    ActivityType.BabyCare,
-    ActivityType.BabyToilet,
-    ActivityType.BellyTime,
-  ];
-
-  public get order(): number {
-    return this._typesOrder.indexOf(this._type);
-  }
-
   private _name: string;
   public get name(): string {
     return this._name;
@@ -118,6 +73,14 @@ export default class ActivityModel {
     this._previousEntryLabelPrefix = v;
   }
 
+  private _order: number;
+  public get order(): number {
+    return this._order;
+  }
+  public set order(v: number) {
+    this._order = v;
+  }
+
   public constructor(type: ActivityType) {
     this._type = type;
     this._name = this.getName(type);
@@ -127,6 +90,7 @@ export default class ActivityModel {
     this._hasDuration = this.getHasDuration(type);
     this._hasVolume = this.getHasVolume(type);
     this._hasSides = this.getHasSides(type);
+    this._order = 0;
     switch (type) {
       case ActivityType.Bath:
         break;

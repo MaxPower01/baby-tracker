@@ -5,9 +5,10 @@ export default function SectionTitle(props: { title: string }) {
     <Typography
       variant="h6"
       textAlign="left"
+      color="text.secondary"
       sx={{
         width: "100%",
-        opacity: 0.6,
+        // opacity: 0.6,
         // fontStyle: "italic",
       }}
     >

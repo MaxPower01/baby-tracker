@@ -9,6 +9,7 @@ import {
   SelectChangeEvent,
   Stack,
   Switch,
+  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -26,13 +27,26 @@ import ThemeMode from "@/modules/theme/enums/ThemeMode";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
-function CustomStack(props: { children: React.ReactNode }) {
+function VerticalStack(props: { children: React.ReactNode }) {
   return (
     <Stack
       spacing={1}
       // direction={"row"}
       // alignItems={"center"}
       // justifyContent={"space-between"}
+      {...props}
+    />
+  );
+}
+
+function ItemDescription(props: { children: React.ReactNode }) {
+  return (
+    <Typography
+      variant={"body2"}
+      color={"text.secondary"}
+      sx={{
+        fontStyle: "italic",
+      }}
       {...props}
     />
   );
@@ -77,7 +91,7 @@ export default function SettingsPage() {
         }}
         spacing={4}
       >
-        <CustomStack>
+        {/* <VerticalStack>
           <InputLabel
             id="theme-select-label"
             sx={{
@@ -101,9 +115,9 @@ export default function SettingsPage() {
               <MenuItem value={ThemeMode.Light}>Clair</MenuItem>
             </Select>
           </FormControl>
-        </CustomStack>
+        </VerticalStack> */}
 
-        <CustomStack>
+        {/* <VerticalStack>
           <InputLabel id="group-entries-select-label">
             Grouper les entrées rapprochées
           </InputLabel>
@@ -126,19 +140,26 @@ export default function SettingsPage() {
               <MenuItem value={GroupEntriesBy.TwoHours}>2 heures</MenuItem>
             </Select>
           </FormControl>
-        </CustomStack>
+        </VerticalStack> */}
 
-        <CustomStack>
+        <VerticalStack>
           {/* <InputLabel id="group-entries-select-label">
-            Grouper les entrées rapprochées
+            Le mode compact permet d'afficher plus d'informations à la fois sur
+            l'écran. Si vous avez de la difficulté à lire les informations, vous
+            pouvez désactiver ce mode.
           </InputLabel> */}
+          <ItemDescription>
+            Désactivez cette option si vous trouvez que l'information affichée à
+            l'écran est trop petite.
+          </ItemDescription>
+
           <FormControl>
             <FormControlLabel
               control={
                 <Switch
                   checked={useCompactMode}
                   onChange={handleCompactModeSwitchChange}
-                  name="useCompactMode"
+                  name="compact-mode-switch"
                 />
               }
               label="Mode compact"
@@ -154,7 +175,7 @@ export default function SettingsPage() {
               sx={{}}
             />
           </FormControl>
-        </CustomStack>
+        </VerticalStack>
       </Stack>
     </Container>
   );

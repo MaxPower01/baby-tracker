@@ -22,7 +22,7 @@ import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuDrawer from "@/common/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import getPageTitle from "@/utils/getPageTitle";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
@@ -77,12 +77,12 @@ export default function BottomBar(props: Props) {
   const items: Array<BottomBarItem> = [
     {
       id: "home",
-      label: getPageTitle(getPath({ page: PageName.Home })),
-      onClick: () => navigate(getPath({ page: PageName.Home })),
+      label: getPageTitle(getPath({ page: PageId.Home })),
+      onClick: () => navigate(getPath({ page: PageId.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
       color: "default",
-      isCurrentPage: pageName === PageName.Home,
+      isCurrentPage: pageName === PageId.Home,
       // sx: {
       //   opacity: pageName === PageName.Home ? 1 : 0.6,
       //   fontWeight: pageName === PageName.Home ? "bold" : undefined,
@@ -90,12 +90,12 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "graphics",
-      label: getPageTitle(getPath({ page: PageName.Graphics })),
-      onClick: () => navigate(getPath({ page: PageName.Graphics })),
+      label: getPageTitle(getPath({ page: PageId.Graphics })),
+      onClick: () => navigate(getPath({ page: PageId.Graphics })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "default",
-      isCurrentPage: pageName === PageName.Graphics,
+      isCurrentPage: pageName === PageId.Graphics,
       // sx: {
       //   opacity: pageName === PageName.Graphics ? 1 : 0.6,
       //   fontWeight: pageName === PageName.Graphics ? "bold" : undefined,
@@ -121,12 +121,12 @@ export default function BottomBar(props: Props) {
     },
     {
       id: "entries",
-      onClick: () => navigate(getPath({ page: PageName.Entries })),
-      label: getPageTitle(getPath({ page: PageName.Entries })),
+      onClick: () => navigate(getPath({ page: PageId.Entries })),
+      label: getPageTitle(getPath({ page: PageId.Entries })),
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
       color: "default",
-      isCurrentPage: pageName === PageName.Entries,
+      isCurrentPage: pageName === PageId.Entries,
       // sx: {
       //   opacity: pageName === PageName.Calendar ? 1 : 0.6,
       //   fontWeight: pageName === PageName.Calendar ? "bold" : undefined,
@@ -147,7 +147,7 @@ export default function BottomBar(props: Props) {
     },
   ];
 
-  if (pageName === PageName.Entry) {
+  if (pageName === PageId.Entry) {
     return null;
   }
 
@@ -233,7 +233,7 @@ export default function BottomBar(props: Props) {
             handleActivityClick={(type: ActivityType) =>
               navigate(
                 getPath({
-                  page: PageName.Entry,
+                  page: PageId.Entry,
                   params: { activity: type.toString() },
                 })
               )

@@ -1,3 +1,4 @@
+import activitiesReducer from "@/modules/activities/state/activitiesSlice";
 import appReducer from "@/app/state/appSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import entriesReducer from "@/modules/entries/state/entriesSlice";
@@ -8,6 +9,7 @@ const reducer = {
   appReducer,
   entriesReducer,
   settingsReducer,
+  activitiesReducer,
 };
 
 const store = configureStore({

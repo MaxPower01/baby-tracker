@@ -37,7 +37,7 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import Section from "@/common/components/Section";
 import SectionStack from "@/common/components/SectionStack";
 import SectionTitle from "@/common/components/SectionTitle";
@@ -482,14 +482,14 @@ export default function EntryForm(props: EntryFormProps) {
       if (success) {
         navigate(
           getPath({
-            page: PageName.Home,
+            page: PageId.Home,
           })
         );
       }
     } else {
       navigate(
         getPath({
-          page: PageName.Home,
+          page: PageId.Home,
         })
       );
     }

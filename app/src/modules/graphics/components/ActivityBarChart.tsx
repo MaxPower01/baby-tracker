@@ -201,9 +201,12 @@ export default function ActivityBarChart(props: Props) {
       <Typography
         variant="body1"
         textAlign={"center"}
-        sx={{
-          opacity: 0.5,
-        }}
+        color="text.secondary"
+        sx={
+          {
+            // opacity: 0.5,
+          }
+        }
       >
         Aucune entrée n'a été enregistrée pour les dernières 48 heures pour
         l'acvitité sélectionnée.
@@ -216,9 +219,12 @@ export default function ActivityBarChart(props: Props) {
       <Typography
         variant="body1"
         textAlign={"center"}
-        sx={{
-          opacity: 0.5,
-        }}
+        color="text.secondary"
+        sx={
+          {
+            // opacity: 0.5,
+          }
+        }
       >
         Le type d'activité sélectionné ne permet pas de générer de graphique
         pour le moment.

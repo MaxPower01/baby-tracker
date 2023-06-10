@@ -1,6 +1,6 @@
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Exportation                                */
@@ -288,12 +288,12 @@ export function getPath({
   id,
   params,
 }: {
-  page: PageName;
+  page: PageId;
   id?: string | number;
   params?: Record<string, string>;
 }) {
   let path = "";
-  if (Object.values(PageName).includes(page)) {
+  if (Object.values(PageId).includes(page)) {
     path = `/${page}`;
   }
   if (typeof id !== "undefined") {
@@ -305,15 +305,15 @@ export function getPath({
   return path;
 }
 
-export function getPageName(pathname: string): PageName {
+export function getPageName(pathname: string): PageId {
   let page = pathname.substring(1).split("/")[0];
   if (page === "") {
-    page = PageName.Home;
+    page = PageId.Home;
   }
-  if (Object.values(PageName).includes(page as PageName)) {
-    return page as PageName;
+  if (Object.values(PageId).includes(page as PageId)) {
+    return page as PageId;
   }
-  return PageName.Home;
+  return PageId.Home;
 }
 
 /* -------------------------------------------------------------------------- */

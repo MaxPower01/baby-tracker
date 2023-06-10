@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import getPageTitle from "@/utils/getPageTitle";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useSelector } from "react-redux";
@@ -37,11 +37,11 @@ export default function TopBar(props: Props) {
   }, [pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
-    return pageName === PageName.Entry;
+    return pageName === PageId.Entry;
   }, [pageName]);
 
   const shouldRenderDeleteEntryButton = useMemo(() => {
-    return editingEntryId != null && pageName === PageName.Entry;
+    return editingEntryId != null && pageName === PageId.Entry;
   }, [pageName]);
 
   const handleBackButtonClick = (
@@ -55,7 +55,7 @@ export default function TopBar(props: Props) {
       if (!editingEntryId) return;
       // TODO: Implement
       // dispatch(removeEntry(editingEntryId));
-      navigate(getPath({ page: PageName.Home }));
+      navigate(getPath({ page: PageId.Home }));
     },
     [editingEntryId]
   );

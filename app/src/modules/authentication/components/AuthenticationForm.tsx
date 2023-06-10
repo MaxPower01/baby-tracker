@@ -1,7 +1,7 @@
 import { Button, Stack, Typography } from "@mui/material";
 
 import GoogleIcon from "@mui/icons-material/Google";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import { getPath } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -72,13 +72,13 @@ export default function AuthenticationForm() {
       if (isNewUser == true) {
         navigate(
           getPath({
-            page: PageName.Children,
+            page: PageId.Children,
           })
         );
       } else {
         navigate(
           getPath({
-            page: PageName.Home,
+            page: PageId.Home,
           })
         );
       }

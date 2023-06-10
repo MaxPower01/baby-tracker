@@ -24,7 +24,7 @@ import EntryBody from "@/modules/entries/components/EntryBody";
 import EntryHeader from "@/modules/entries/components/EntryHeader";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PageName from "@/common/enums/PageName";
+import PageId from "@/common/enums/PageId";
 import { getPath } from "@/utils/utils";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
@@ -122,7 +122,7 @@ export default function EntriesCard(props: Props) {
                 onClick={() => {
                   navigate(
                     getPath({
-                      page: PageName.Entry,
+                      page: PageId.Entry,
                       id: entry.id ?? "",
                     })
                   );

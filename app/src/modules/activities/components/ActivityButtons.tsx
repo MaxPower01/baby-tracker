@@ -1,19 +1,16 @@
 import ActivityButton from "@/modules/activities/components/ActivityButton";
-import ActivityType from "@/modules/activities/enums/ActivityType";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import { Box } from "@mui/material";
+import { selectActivities } from "@/modules/activities/state/activitiesSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
   onClick?: (type: ActivityType) => void;
 };
 
 export default function ActivityButtons({ onClick }: Props) {
-  const activities = Object.values(ActivityType)
-    .map((value) => {
-      const activityType = value as ActivityType;
-      return new ActivityModel(activityType);
-    })
-    .sort((a, b) => a.order - b.order);
+  const activities = useSelector(selectActivities);
   return (
     <Box
       sx={{
