@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import ChildInformation from "@/modules/children/components/ChildInformation";
 import Entries from "@/modules/entries/components/Entries";
 import LoadingIndicator from "@/common/components/LoadingIndicator";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
@@ -30,12 +31,15 @@ export default function HomePage() {
   return (
     <SectionStack>
       <Section>
+        <ChildInformation childId={user.selectedChild} />
+      </Section>
+      <Section>
         {/* <SectionTitle title="Ajouter une entrée" /> */}
         <MenuProvider>
           <NewEntryWidget />
         </MenuProvider>
       </Section>
-      <Section dividerPosition="top">
+      <Section dividerPosition={undefined}>
         {/* <SectionTitle title="Activité récente" /> */}
 
         <Entries />

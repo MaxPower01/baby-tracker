@@ -42,6 +42,9 @@ export default function ChildWizard() {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [birthDate, setBirthDate] = useState<Dayjs | null>(dayjs());
+  const [birthWeight, setBirthWeight] = useState<number | null>(null);
+  const [birthSize, setBirthSize] = useState<number | null>(null);
+  const [birthHeadSize, setBirthHeadSize] = useState<number | null>(null);
 
   const goToNextStep = () => {
     setStep((prevStep) => prevStep + 1);
