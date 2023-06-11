@@ -5,6 +5,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
+import ScaleIcon from "@mui/icons-material/Scale";
+import StraightenIcon from "@mui/icons-material/Straighten";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import { formatStopwatchTime } from "@/utils/utils";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
@@ -241,6 +243,68 @@ export default function EntryBody(props: Props) {
             </Box>
           </Stack>
         ))}
+
+      {entry.length > 0 && (
+        <Stack
+          spacing={useCompactMode ? 0.5 : 1}
+          direction={"row"}
+          alignItems={"center"}
+          sx={{}}
+        >
+          <StraightenIcon
+            sx={{
+              color: textColor,
+              fontSize: iconFontSize,
+            }}
+          />
+          <Box>
+            <Typography
+              variant={useCompactMode ? "caption" : "body1"}
+              sx={{
+                display: "inline",
+                color: textColor,
+                fontSize: undefined,
+                fontWeight: undefined,
+              }}
+            >
+              {`${Math.round((entry.length / 10) * 100) / 100} cm | ${
+                Math.round((entry.length / 10 / 2.54) * 100) / 100
+              } pouces`}
+            </Typography>
+          </Box>
+        </Stack>
+      )}
+
+      {entry.weight > 0 && (
+        <Stack
+          spacing={useCompactMode ? 0.5 : 1}
+          direction={"row"}
+          alignItems={"center"}
+          sx={{}}
+        >
+          <ScaleIcon
+            sx={{
+              color: textColor,
+              fontSize: iconFontSize,
+            }}
+          />
+          <Box>
+            <Typography
+              variant={useCompactMode ? "caption" : "body1"}
+              sx={{
+                display: "inline",
+                color: textColor,
+                fontSize: undefined,
+                fontWeight: undefined,
+              }}
+            >
+              {`${Math.round((entry.weight / 1000) * 100) / 100} kg | ${
+                Math.round((entry.weight / 1000 / 0.45359237) * 100) / 100
+              } lbs`}
+            </Typography>
+          </Box>
+        </Stack>
+      )}
 
       {entry.note && (
         <Typography

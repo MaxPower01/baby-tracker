@@ -19,6 +19,7 @@ import {
 import {
   LocalizationProvider,
   MobileDateTimePicker,
+  jaJP,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -71,12 +72,6 @@ export default function EntryForm(props: EntryFormProps) {
 
   const [hasPendingChanges, setHasPendingChanges] = useState(true); // To ensure that a new entry is saved even without any changes
   const [isSaving, setIsSaving] = useState(false);
-
-  const [note, setNote] = useState(
-    entryId == null
-      ? props.entry.note
-      : entries.find((e) => e.id === entryId)?.note ?? props.entry.note ?? ""
-  );
 
   const [volumeMenuAnchorEl, setVolumeMenuAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -309,6 +304,122 @@ export default function EntryForm(props: EntryFormProps) {
     [entry, anyStopwatchIsRunning]
   );
 
+  // Handle the notes
+
+  const [note, setNote] = useState(
+    entryId == null
+      ? props.entry.note
+      : entries.find((e) => e.id === entryId)?.note ?? props.entry.note ?? ""
+  );
+
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newNote = event.target.value;
+    setNote(newNote);
+    setHasPendingChanges(true);
+  };
+
+  // Handle length
+
+  // Length represents the length of the activity in millimeters
+  const [length, setLength] = useState(
+    entryId == null
+      ? props.entry.length
+      : entries.find((e) => e.id === entryId)?.length ?? props.entry.length ?? 0
+  );
+
+  const centimeters = useMemo(() => {
+    if (length == null || isNaN(length) || length === 0) return 0;
+    // Make sure that it's no more than 2 decimal places
+    return Math.round((length / 10) * 100) / 100;
+  }, [length]);
+
+  const inches = useMemo(() => {
+    if (length == null || isNaN(length) || length === 0) return 0;
+    // Make sure that it's no more than 2 decimal places
+    return Math.round((length / 25.4) * 100) / 100;
+  }, [length]);
+
+  const handleCentimetersChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let newCentimeters = 0;
+    try {
+      newCentimeters = parseFloat(event.target.value);
+    } catch (error) {
+      console.error("Error parsing centimeters: ", error);
+    }
+    setLength(newCentimeters * 10);
+    setHasPendingChanges(true);
+  };
+
+  const handleInchesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newInches = 0;
+    try {
+      newInches = parseFloat(event.target.value);
+    } catch (error) {
+      console.error("Error parsing inches: ", error);
+    }
+    setLength(newInches * 25.4);
+    setHasPendingChanges(true);
+  };
+
+  // Handle weight
+
+  // Represents the weight in grams
+  const [weight, setWeight] = useState(
+    entryId == null
+      ? props.entry.weight
+      : entries.find((e) => e.id === entryId)?.weight ?? props.entry.weight ?? 0
+  );
+
+  const kilograms = useMemo(() => {
+    if (weight == null || isNaN(weight) || weight === 0) return 0;
+    // Make sure that it's no more than 2 decimal places
+    return Math.round((weight / 1000) * 100) / 100;
+  }, [weight]);
+
+  const pounds = useMemo(() => {
+    if (weight == null || isNaN(weight) || weight === 0) return 0;
+    // Make sure that it's no more than 2 decimal places
+    return Math.round((weight / 453.592) * 100) / 100;
+  }, [weight]);
+
+  const handleWeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newWeight = 0;
+    try {
+      newWeight = parseFloat(event.target.value);
+    } catch (error) {
+      console.error("Error parsing weight: ", error);
+    }
+    console.log("newWeight: ", newWeight);
+    setWeight(newWeight);
+    setHasPendingChanges(true);
+  };
+
+  const handleKilogramsChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let newKilograms = 0;
+    try {
+      newKilograms = parseFloat(event.target.value);
+    } catch (error) {
+      console.error("Error parsing kilograms: ", error);
+    }
+    setWeight(newKilograms * 1000);
+    setHasPendingChanges(true);
+  };
+
+  const handlePoundsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newPounds = 0;
+    try {
+      newPounds = parseFloat(event.target.value);
+    } catch (error) {
+      console.error("Error parsing pounds: ", error);
+    }
+    setWeight(newPounds * 453.592);
+    setHasPendingChanges(true);
+  };
+
   // Handle volume
 
   const handleVolumeChange = (params: { side: string; newVolume: number }) => {
@@ -383,6 +494,9 @@ export default function EntryForm(props: EntryFormProps) {
         }
         if (!endDateWasEditedManually) entryToSave.setEndDate();
         entryToSave.note = note;
+        entryToSave.weight = weight;
+        entryToSave.length = length;
+        console.log("Saving entry: ", entryToSave);
         const id = await saveEntry(entryToSave);
         if (id != null) {
           setEntryId(id);
@@ -401,7 +515,16 @@ export default function EntryForm(props: EntryFormProps) {
         return false;
       }
     },
-    [entry, user, children, entryId, note]
+    [
+      entry,
+      user,
+      children,
+      entryId,
+      note,
+      weight,
+      length,
+      endDateWasEditedManually,
+    ]
   );
 
   const handleStopwatchChange = useCallback(
@@ -460,19 +583,6 @@ export default function EntryForm(props: EntryFormProps) {
     }
   }, []);
 
-  // Handle the notes
-
-  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // setEntry((prevEntry) => {
-    //   const newEntry = prevEntry.clone();
-    //   newEntry.note = event.target.value;
-    //   // save(newEntry);
-    //   return newEntry;
-    // });
-    setNote(event.target.value);
-    setHasPendingChanges(true);
-  };
-
   // Handle the form submission
 
   const handleSubmit = useCallback(async () => {
@@ -507,7 +617,7 @@ export default function EntryForm(props: EntryFormProps) {
   return (
     <>
       <SectionStack>
-        <Section>
+        <Section dividerPosition="bottom">
           {entry.activity != null && (
             <Stack justifyContent={"center"} alignItems={"center"}>
               <ActivityIcon
@@ -591,7 +701,7 @@ export default function EntryForm(props: EntryFormProps) {
         </Section>
 
         {entry.activity?.hasVolume == true && (
-          <Section dividerPosition="top">
+          <Section dividerPosition={undefined}>
             <SectionTitle title="Quantité" />
             <Box
               onClick={(e) => {
@@ -681,7 +791,7 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Section>
         )}
-        <Section dividerPosition="top">
+        <Section dividerPosition={undefined}>
           <Stack
             sx={{
               width: "100%",
@@ -713,9 +823,7 @@ export default function EntryForm(props: EntryFormProps) {
                   disabled={anyStopwatchIsRunning}
                   // disableFuture={true}
                   label={
-                    entry.activity?.hasDuration == true
-                      ? "Date de début"
-                      : "Date"
+                    entry.activity?.hasDuration == true ? "Date de début" : ""
                   }
                   sx={{
                     flex: 1,
@@ -838,6 +946,7 @@ export default function EntryForm(props: EntryFormProps) {
                               ? undefined
                               : "center",
                           fontSize: "1.35rem",
+                          fontWeight: 500,
                         },
                         "& *:before": {
                           border: "none !important",
@@ -886,6 +995,7 @@ export default function EntryForm(props: EntryFormProps) {
                             cursor: "pointer",
                             textAlign: "right",
                             fontSize: "1.35rem",
+                            fontWeight: 500,
                           },
                           "& *:before": {
                             border: "none !important",
@@ -1042,7 +1152,106 @@ export default function EntryForm(props: EntryFormProps) {
           )}
         </Section>
 
-        <Section dividerPosition="top">
+        {entry.activity?.hasLength == true && (
+          <Section dividerPosition={undefined}>
+            {/* <SectionTitle title="Longueur" /> */}
+            <Stack
+              direction={"row"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              spacing={2}
+            >
+              <TextField
+                label="Centimètres"
+                name="cm"
+                type="number"
+                value={centimeters}
+                onChange={handleCentimetersChange}
+                fullWidth
+                // disabled={anyStopwatchIsRunning}
+                onClick={(e) => {
+                  // if (anyStopwatchIsRunning) {
+                  //   setSnackbarMessage(
+                  //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  //   );
+                  //   setSnackbarSeverity("info");
+                  //   setSnackbarIsOpen(true);
+                  // }
+                }}
+              />
+              <TextField
+                label="Pouces"
+                name="inches"
+                type="number"
+                value={inches}
+                onChange={handleInchesChange}
+                fullWidth
+                // disabled={anyStopwatchIsRunning}
+                onClick={(e) => {
+                  // if (anyStopwatchIsRunning) {
+                  //   setSnackbarMessage(
+                  //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  //   );
+                  //   setSnackbarSeverity("info");
+                  //   setSnackbarIsOpen(true);
+                  // }
+                }}
+              />
+            </Stack>
+          </Section>
+        )}
+
+        {entry.activity?.hasWeight == true && (
+          <Section dividerPosition={undefined}>
+            {/* <SectionTitle title="Poids" /> */}
+            <Stack
+              direction={"row"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              spacing={2}
+            >
+              <TextField
+                label="Kg"
+                name="weight"
+                type="number"
+                value={kilograms}
+                onChange={handleKilogramsChange}
+                fullWidth
+                // disabled={anyStopwatchIsRunning}
+                onClick={(e) => {
+                  // if (anyStopwatchIsRunning) {
+                  //   setSnackbarMessage(
+                  //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  //   );
+                  //   setSnackbarSeverity("info");
+                  //   setSnackbarIsOpen(true);
+                  // }
+                }}
+              />
+
+              <TextField
+                label="Lbs"
+                name="weight"
+                type="number"
+                value={pounds}
+                onChange={handlePoundsChange}
+                fullWidth
+                // disabled={anyStopwatchIsRunning}
+                onClick={(e) => {
+                  // if (anyStopwatchIsRunning) {
+                  //   setSnackbarMessage(
+                  //     "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                  //   );
+                  //   setSnackbarSeverity("info");
+                  //   setSnackbarIsOpen(true);
+                  // }
+                }}
+              />
+            </Stack>
+          </Section>
+        )}
+
+        <Section dividerPosition={undefined}>
           <SectionTitle title="Notes" />
           <TextField
             label=""

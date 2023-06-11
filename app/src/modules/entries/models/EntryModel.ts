@@ -57,6 +57,9 @@ export default class EntryModel {
   }
 
   private _time = 0;
+  /**
+   * Returns the duration in milliseconds
+   */
   public get time(): number {
     return this._time;
   }
@@ -140,6 +143,9 @@ export default class EntryModel {
   }
 
   private _volume = 0;
+  /**
+   * Returns the volume in milliliters
+   */
   public get volume(): number {
     return this._volume;
   }
@@ -163,6 +169,28 @@ export default class EntryModel {
   public set rightVolume(v: number) {
     this._rightVolume = v;
     this.volume = this.leftVolume + this.rightVolume;
+  }
+
+  private _weight = 0;
+  /**
+   * Returns the weight in grams
+   */
+  public get weight(): number {
+    return this._weight;
+  }
+  public set weight(v: number) {
+    this._weight = v;
+  }
+
+  private _length = 0;
+  /**
+   * Returns the length in millimeters
+   */
+  public get length(): number {
+    return this._length;
+  }
+  public set length(v: number) {
+    this._length = v;
   }
 
   private _createdBy: { id: string; name: string } | null = null;
@@ -237,6 +265,8 @@ export default class EntryModel {
         params?.keepDates == true
           ? this.editedDate
           : this.editedDate?.toISOString(),
+      weight: this.weight,
+      length: this.length,
     };
   }
 
@@ -275,6 +305,8 @@ export default class EntryModel {
       entry.createdDate = new Date(json.createdDate);
     if (json.editedBy != null) entry.editedBy = json.editedBy;
     if (json.editedDate != null) entry.editedDate = new Date(json.editedDate);
+    if (json.weight != null) entry.weight = json.weight;
+    if (json.length != null) entry.length = json.length;
     return entry;
   }
 
@@ -370,39 +402,11 @@ export default class EntryModel {
     this.rightStopwatchLastUpdateTime = Date.now();
   }
 
-  // public get endDate(): Date {
-  //   if (this.time) {
-  //     if (this.lastStopwatchUpdateTime != null) {
-  //       const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
-  //       // const timeDate = this.startDate.add(this.time, "millisecond");
-  //       const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
-  //       if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
-  //         return lastStopwatchUpdateTimeDate.toDate();
-  //       }
-  //       return timeDate.toDate();
-  //     }
-  //     // return this.startDate.add(this.time, "millisecond");
-  //     return dayjs(this.startDate).add(this.time, "millisecond").toDate();
-  //   }
-  //   return this.startDate;
-  // }
-
   public setEndDate() {
     if (this.time) {
-      // if (this.lastStopwatchUpdateTime != null) {
-      //   const lastStopwatchUpdateTimeDate = dayjs(this.lastStopwatchUpdateTime);
-      //   // const timeDate = this.startDate.add(this.time, "millisecond");
-      //   const timeDate = dayjs(this.startDate).add(this.time, "millisecond");
-      //   if (lastStopwatchUpdateTimeDate.isAfter(timeDate)) {
-      //     this.endDate = lastStopwatchUpdateTimeDate.toDate();
-      //   } else {
-      //     this.endDate = timeDate.toDate();
-      //   }
-      // } else {
-        this.endDate = dayjs(this.startDate)
-          .add(this.time, "millisecond")
-          .toDate();
-      // }
+      this.endDate = dayjs(this.startDate)
+        .add(this.time, "millisecond")
+        .toDate();
     } else {
       this.endDate = this.startDate;
     }

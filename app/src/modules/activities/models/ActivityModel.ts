@@ -73,12 +73,28 @@ export default class ActivityModel {
     this._previousEntryLabelPrefix = v;
   }
 
-  private _order: number;
+  private _order = 0;
   public get order(): number {
     return this._order;
   }
   public set order(v: number) {
     this._order = v;
+  }
+
+  private _hasWeight = false;
+  public get hasWeight(): boolean {
+    return this._hasWeight;
+  }
+  public set hasWeight(v: boolean) {
+    this._hasWeight = v;
+  }
+
+  private _hasLength = false;
+  public get hasLength(): boolean {
+    return this._hasLength;
+  }
+  public set hasLength(v: boolean) {
+    this._hasLength = v;
   }
 
   public constructor(type: ActivityType) {
@@ -90,22 +106,26 @@ export default class ActivityModel {
     this._hasDuration = this.getHasDuration(type);
     this._hasVolume = this.getHasVolume(type);
     this._hasSides = this.getHasSides(type);
-    this._order = 0;
+    this._hasWeight = this.getHasWeight(type);
+    this._hasLength = this.getHasLength(type);
+  }
+
+  private getHasWeight(type: ActivityType): boolean {
     switch (type) {
-      case ActivityType.Bath:
-        break;
-      case ActivityType.BottleFeeding:
-        this._hasVolume = true;
-        break;
-      case ActivityType.BreastFeeding:
-        this._hasSides = true;
-        break;
-      case ActivityType.MilkExtraction:
-        this._hasVolume = true;
-        this._hasSides = true;
-        break;
+      case ActivityType.Weight:
+        return true;
       default:
-        break;
+        return false;
+    }
+  }
+
+  private getHasLength(type: ActivityType): boolean {
+    switch (type) {
+      case ActivityType.Size:
+      case ActivityType.HeadCircumference:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -552,6 +572,7 @@ export default class ActivityModel {
     if (json.hasVolume != null) activity.hasVolume = json.hasVolume;
     if (json.hasSides != null) activity.hasSides = json.hasSides;
     if (json.linkedTypes != null) activity.linkedTypes = json.linkedTypes;
+    if (json.subTypes != null) activity.subTypes = json.subTypes;
     return activity;
   }
 
