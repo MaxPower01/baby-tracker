@@ -323,7 +323,7 @@ export default function EntryBody(props: Props) {
           sx={{
             ...textStyle,
             opacity: 0.35,
-            fontStyle: "italic",
+            // fontStyle: "italic",
             fontWeight: 300,
           }}
         >

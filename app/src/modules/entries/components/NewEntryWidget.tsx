@@ -196,158 +196,175 @@ export default function NewEntryWidget(props: Props) {
   }, []);
 
   return (
-    <Box
+    <Stack
       sx={{
         width: "100%",
-        overflowX: "scroll",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-        "& .ActivityButton__Typography": {
-          fontSize: activityButtonTypographyFontSize,
-        },
       }}
     >
-      <Stack
-        // spacing={2}
-        direction={"row"}
-        justifyContent={"flex-start"}
-        alignItems={"flex-start"}
+      <Typography
+        variant={"body1"}
+        color={"text.secondary"}
+        gutterBottom
         sx={{
-          paddingTop: 0.5,
-          paddingBottom: 0.5,
-          "& .ActivityIcon": {
-            fontSize: "4em",
-          },
-          display: "grid",
-          gap: 0.5,
-          gridTemplateColumns: `${allActivitiesWithLastEntry
-            .map(() => "1fr")
-            .join(" ")}`,
+          textAlign: "center",
+          // fontStyle: "italic",
         }}
       >
-        {allActivitiesWithLastEntry.map(
-          ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
-            return (
-              <Box
-                key={activity.type}
-                sx={{
-                  ...boxStyle,
-                  order: isInProgress ? 0 : activity.order + 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    border: "1px solid",
-                    borderColor: isInProgress
-                      ? (theme.palette.primary.main as string)
-                      : "transparent",
-                    backgroundColor: isInProgress
-                      ? `${theme.palette.primary.main}20`
-                      : undefined,
-                    boxShadow: isInProgress
-                      ? `0 0 5px 0px ${theme.palette.primary.main}`
-                      : undefined,
-                    borderRadius: 1,
-                    flexGrow: 1,
-                    width: "100%",
-                  }}
-                >
-                  <ActivityButton
-                    activity={activity}
-                    showLabel
-                    sx={{
-                      ...activityButtonStyle,
-                    }}
-                    onClick={(e) => {
-                      handleActivityClick({
-                        event: e,
-                        activity: activity,
-                        startTimer: false,
-                        lastEntry: lastEntry,
-                        data: {
-                          title: "",
-                          isInProgress: isInProgress,
-                          subtitle: "",
-                        },
-                      });
-                    }}
-                  />
-                </Box>
-              </Box>
-            );
-          }
-        )}
-      </Stack>
-
-      <Stack
-        direction={"row"}
-        justifyContent={"flex-start"}
-        alignItems={"flex-start"}
+        Ajouter une activité
+      </Typography>
+      <Box
         sx={{
-          paddingTop: 0.5,
-          paddingBottom: 0.5,
-          "& .ActivityIcon": {
-            fontSize: "4em",
-          },
           width: "100%",
-          display: "grid",
-          gap: 0.5,
-          gridTemplateColumns: `${allActivitiesWithLastEntry
-            .map(() => "1fr")
-            .join(" ")}`,
+          overflowX: "scroll",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          "& .ActivityButton__Typography": {
+            fontSize: activityButtonTypographyFontSize,
+          },
         }}
       >
-        {allActivitiesWithLastEntry.map(
-          ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
-            return (
-              <Stack
-                key={activity.type}
-                sx={{
-                  marginTop: useCompactMode ? 0 : 0.5,
-                  fontSize: useCompactMode
-                    ? activityButtonFontSize
-                    : theme.typography.button.fontSize,
-                  width: `calc(${activityButtonWidth} + 1.5px + ${
-                    boxPadding * 2
-                  }px)`,
-                  paddingLeft: activityButtonPaddingLeftRight,
-                  paddingRight: activityButtonPaddingLeftRight,
-                  order: isInProgress ? 0 : activity.order + 1,
-                }}
-              >
-                <Typography
-                  variant={textVariant}
-                  color={"text.secondary"}
+        <Stack
+          // spacing={2}
+          direction={"row"}
+          justifyContent={"flex-start"}
+          alignItems={"flex-start"}
+          sx={{
+            paddingTop: 0.5,
+            paddingBottom: 0.5,
+            "& .ActivityIcon": {
+              fontSize: "4em",
+            },
+            display: "grid",
+            gap: 0.5,
+            gridTemplateColumns: `${allActivitiesWithLastEntry
+              .map(() => "1fr")
+              .join(" ")}`,
+          }}
+        >
+          {allActivitiesWithLastEntry.map(
+            ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
+              return (
+                <Box
+                  key={activity.type}
                   sx={{
-                    ...subtitleStyle,
-                    // lineHeight: 1,
-                    // whiteSpace: "pre",
+                    ...boxStyle,
+                    order: isInProgress ? 0 : activity.order + 1,
                   }}
                 >
-                  {lastEntryLabels.subtitle}
-                </Typography>
-                <Typography
-                  variant={textVariant}
+                  <Box
+                    sx={{
+                      border: "1px solid",
+                      borderColor: isInProgress
+                        ? (theme.palette.primary.main as string)
+                        : "transparent",
+                      backgroundColor: isInProgress
+                        ? `${theme.palette.primary.main}20`
+                        : undefined,
+                      boxShadow: isInProgress
+                        ? `0 0 5px 0px ${theme.palette.primary.main}`
+                        : undefined,
+                      borderRadius: 1,
+                      flexGrow: 1,
+                      width: "100%",
+                    }}
+                  >
+                    <ActivityButton
+                      activity={activity}
+                      showLabel
+                      sx={{
+                        ...activityButtonStyle,
+                      }}
+                      onClick={(e) => {
+                        handleActivityClick({
+                          event: e,
+                          activity: activity,
+                          startTimer: false,
+                          lastEntry: lastEntry,
+                          data: {
+                            title: "",
+                            isInProgress: isInProgress,
+                            subtitle: "",
+                          },
+                        });
+                      }}
+                    />
+                  </Box>
+                </Box>
+              );
+            }
+          )}
+        </Stack>
+
+        <Stack
+          direction={"row"}
+          justifyContent={"flex-start"}
+          alignItems={"flex-start"}
+          sx={{
+            paddingTop: 0.5,
+            paddingBottom: 0.5,
+            "& .ActivityIcon": {
+              fontSize: "4em",
+            },
+            width: "100%",
+            display: "grid",
+            gap: 0.5,
+            gridTemplateColumns: `${allActivitiesWithLastEntry
+              .map(() => "1fr")
+              .join(" ")}`,
+          }}
+        >
+          {allActivitiesWithLastEntry.map(
+            ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
+              return (
+                <Stack
+                  key={activity.type}
                   sx={{
-                    ...titleStyle,
-                    color: isInProgress
-                      ? theme.palette.primary.main
-                      : undefined,
-                    fontWeight: isInProgress ? "bold" : undefined,
-                    // whiteSpace: "pre",
-                    // lineHeight: 1,
+                    marginTop: useCompactMode ? 0 : 0.5,
+                    fontSize: useCompactMode
+                      ? activityButtonFontSize
+                      : theme.typography.button.fontSize,
+                    width: `calc(${activityButtonWidth} + 1.5px + ${
+                      boxPadding * 2
+                    }px)`,
+                    paddingLeft: activityButtonPaddingLeftRight,
+                    paddingRight: activityButtonPaddingLeftRight,
+                    order: isInProgress ? 0 : activity.order + 1,
                   }}
                 >
-                  {lastEntryLabels.title}
-                </Typography>
-              </Stack>
-            );
-          }
-        )}
-      </Stack>
-    </Box>
+                  <Typography
+                    variant={textVariant}
+                    color={"text.secondary"}
+                    sx={{
+                      ...subtitleStyle,
+                      // lineHeight: 1,
+                      // whiteSpace: "pre",
+                    }}
+                  >
+                    {lastEntryLabels.subtitle}
+                  </Typography>
+                  <Typography
+                    variant={textVariant}
+                    sx={{
+                      ...titleStyle,
+                      color: isInProgress
+                        ? theme.palette.primary.main
+                        : undefined,
+                      fontWeight: isInProgress ? "bold" : undefined,
+                      // whiteSpace: "pre",
+                      // lineHeight: 1,
+                    }}
+                  >
+                    {lastEntryLabels.title}
+                  </Typography>
+                </Stack>
+              );
+            }
+          )}
+        </Stack>
+      </Box>
+    </Stack>
   );
 }

@@ -41,8 +41,7 @@ export default function HomePage() {
       </Section>
       <Section dividerPosition={undefined}>
         {/* <SectionTitle title="Activité récente" /> */}
-
-        <Entries />
+        <Entries title="Résumé des dernières 48 heures" />
       </Section>
     </SectionStack>
   );

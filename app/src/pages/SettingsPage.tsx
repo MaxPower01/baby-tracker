@@ -44,9 +44,11 @@ function ItemDescription(props: { children: React.ReactNode }) {
     <Typography
       variant={"body2"}
       color={"text.secondary"}
-      sx={{
-        fontStyle: "italic",
-      }}
+      sx={
+        {
+          // fontStyle: "italic",
+        }
+      }
       {...props}
     />
   );

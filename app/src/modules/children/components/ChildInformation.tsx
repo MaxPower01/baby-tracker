@@ -22,6 +22,9 @@ export default function ChildInformation(props: Props) {
       const ageInHours = Math.floor(
         (new Date().getTime() - birthDate.getTime()) / (1000 * 3600)
       );
+
+      if (ageInHours === 0) return "quelques minutes";
+
       return `${ageInHours} heure${ageInHours > 1 ? "s" : ""}`;
     }
 
@@ -66,13 +69,13 @@ export default function ChildInformation(props: Props) {
           >
             <Avatar
               sx={{
-                width: 64,
-                height: 64,
+                width: 100,
+                height: 100,
               }}
             >
               {child.name?.split(" ").map((name) => name[0].toUpperCase())}
             </Avatar>
-            <Typography variant="h5">
+            <Typography variant="h6">
               {child.name} a {getAgeLabel(child.birthDate)}
             </Typography>
           </Stack>

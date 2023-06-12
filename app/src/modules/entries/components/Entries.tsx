@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 
 type Props = {
   fetchTimePeriod?: TimePeriod;
+  title?: string;
 };
 
 export default function Entries(props: Props) {
@@ -83,7 +84,7 @@ export default function Entries(props: Props) {
           textAlign: "center",
           color: theme.palette.text.secondary,
           // opacity: 0.5,
-          fontStyle: "italic",
+          // fontStyle: "italic",
         }}
       >
         Aucune entrée au cours des 24 dernières heures
@@ -93,64 +94,83 @@ export default function Entries(props: Props) {
 
   return (
     <Stack
-      spacing={4}
       sx={{
         width: "100%",
       }}
     >
-      {entriesByDate.years.map((yearEntries) => {
-        return yearEntries.months.map((monthEntries) => {
-          return monthEntries.days.map((dayEntries) => {
-            if (dayEntries.entries.length === 0) {
-              return null;
-            }
-            const firstEntry = dayEntries.entries[0];
-            const startDate = firstEntry.startDate;
-            const entriesByTime = groupEntriesByTime({
-              entries: dayEntries.entries,
-              timeUnit: "minute",
-              timeStep: 30,
-            });
-            return (
-              <Stack
-                key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
-                spacing={1}
-              >
-                <DateHeader
-                  sx={{
-                    position: topbarHeight != null ? "sticky" : undefined,
-                    top: topbarHeight != null ? topbarHeight : undefined,
-                    zIndex: 2,
-                    backgroundColor: theme.palette.background.default,
-                  }}
-                  startDate={startDate}
-                />
-
+      {props.title != null && (
+        <Typography
+          variant={"body1"}
+          color={"text.secondary"}
+          gutterBottom
+          sx={{
+            textAlign: "center",
+            // fontStyle: "italic",
+          }}
+        >
+          {props.title}
+        </Typography>
+      )}
+      <Stack
+        spacing={4}
+        sx={{
+          width: "100%",
+        }}
+      >
+        {entriesByDate.years.map((yearEntries) => {
+          return yearEntries.months.map((monthEntries) => {
+            return monthEntries.days.map((dayEntries) => {
+              if (dayEntries.entries.length === 0) {
+                return null;
+              }
+              const firstEntry = dayEntries.entries[0];
+              const startDate = firstEntry.startDate;
+              const entriesByTime = groupEntriesByTime({
+                entries: dayEntries.entries,
+                timeUnit: "minute",
+                timeStep: 30,
+              });
+              return (
                 <Stack
-                  spacing={useCompactMode ? 2 : 4}
-                  sx={{
-                    paddingTop: 1,
-                    paddingBottom: 1,
-                  }}
+                  key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
+                  spacing={1}
                 >
-                  {entriesByTime.map((timeEntries) => {
-                    return (
-                      <MenuProvider
-                        key={`${timeEntries.entries[0].startDate.toISOString()}`}
-                      >
-                        <EntriesCard
-                          entries={timeEntries.entries}
-                          allEntries={entries}
-                        />
-                      </MenuProvider>
-                    );
-                  })}
+                  <DateHeader
+                    sx={{
+                      position: topbarHeight != null ? "sticky" : undefined,
+                      top: topbarHeight != null ? topbarHeight : undefined,
+                      zIndex: 2,
+                      backgroundColor: theme.palette.background.default,
+                    }}
+                    startDate={startDate}
+                  />
+
+                  <Stack
+                    spacing={useCompactMode ? 2 : 4}
+                    sx={{
+                      paddingTop: 1,
+                      paddingBottom: 1,
+                    }}
+                  >
+                    {entriesByTime.map((timeEntries) => {
+                      return (
+                        <MenuProvider
+                          key={`${timeEntries.entries[0].startDate.toISOString()}`}
+                        >
+                          <EntriesCard
+                            entries={timeEntries.entries}
+                            allEntries={entries}
+                          />
+                        </MenuProvider>
+                      );
+                    })}
+                  </Stack>
                 </Stack>
-              </Stack>
-            );
+              );
+            });
           });
-        });
-      })}
+        })}
+      </Stack>
     </Stack>
   );
 }

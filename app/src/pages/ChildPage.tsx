@@ -60,10 +60,12 @@ export default function ChildPage() {
             variant={"body1"}
             textAlign={"center"}
             // color={"text.secondary"}
-            sx={{
-              fontStyle: "italic",
-              // opacity: 0.8,
-            }}
+            sx={
+              {
+                // fontStyle: "italic",
+                // opacity: 0.8,
+              }
+            }
           >
             Votre paretenaire utilise déjà l'application ?
           </Typography>
@@ -71,10 +73,12 @@ export default function ChildPage() {
             variant={"body1"}
             textAlign={"center"}
             color={"text.secondary"}
-            sx={{
-              fontStyle: "italic",
-              // opacity: 0.5,
-            }}
+            sx={
+              {
+                // fontStyle: "italic",
+                // opacity: 0.5,
+              }
+            }
           >
             Demandez-lui de vous ajouter en tant que parent, puis rafraichissez
             la page.
