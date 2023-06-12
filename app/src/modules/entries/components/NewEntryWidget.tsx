@@ -210,7 +210,7 @@ export default function NewEntryWidget(props: Props) {
           // fontStyle: "italic",
         }}
       >
-        Ajouter une activité
+        Ajouter une entrée
       </Typography>
       <Box
         sx={{
