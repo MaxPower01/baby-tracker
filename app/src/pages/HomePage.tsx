@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <SectionStack>
       <Section>
-        <ChildInformation childId={user.selectedChild} />
+        <ChildInformation />
       </Section>
       <Section>
         {/* <SectionTitle title="Ajouter une entrée" /> */}

@@ -23,7 +23,7 @@ import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
 export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
-  const { user, children } = useAuthentication();
+  const { user } = useAuthentication();
   const [entries, setEntries] = useState<EntryModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -99,7 +99,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       });
       return [...entries];
     },
-    [user, children]
+    [user]
   );
 
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       }
       await deleteDoc(doc(db, `children/${selectedChild}/entries`, entryId));
     },
-    [user, children]
+    [user]
   );
 
   const saveEntry = useCallback(
@@ -230,7 +230,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
         return id;
       }
     },
-    [user, children]
+    [user]
   );
 
   const context: EntriesContextValue = useMemo(

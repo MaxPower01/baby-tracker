@@ -28,6 +28,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import { functions } from "@/firebase";
 import { httpsCallable } from "firebase/functions";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useChildren from "@/modules/children/hooks/useChildren";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuDrawer(props: {
@@ -36,7 +37,8 @@ export default function MenuDrawer(props: {
 }) {
   const addParentFunction = httpsCallable(functions, "addParent");
   const navigate = useNavigate();
-  const { user, signOut, children } = useAuthentication();
+  const { user, signOut } = useAuthentication();
+  const { children } = useChildren();
   const theme = useTheme();
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
@@ -47,6 +49,7 @@ export default function MenuDrawer(props: {
   }, [user, children]);
 
   const selectedChildName = useMemo(() => {
+    if (children == null || isNullOrWhiteSpace(selectedChild)) return "";
     return children.find((child) => child.id === selectedChild)?.name ?? "";
   }, [selectedChild, children]);
 

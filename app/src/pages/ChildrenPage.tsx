@@ -3,10 +3,12 @@ import { Stack, Typography, useTheme } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { formatDateTime } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useChildren from "@/modules/children/hooks/useChildren";
 import { useMemo } from "react";
 
 export default function ChildrenPage() {
-  const { user, children } = useAuthentication();
+  const { user } = useAuthentication();
+  const { children } = useChildren();
   const theme = useTheme();
 
   return (
@@ -18,7 +20,7 @@ export default function ChildrenPage() {
         width: "100%",
       }}
     >
-      {children.length > 0 && (
+      {children != null && (children?.length ?? 0) > 0 && (
         <>
           <Typography variant={"h4"}>Mes enfants</Typography>
           {children.map((child) => (

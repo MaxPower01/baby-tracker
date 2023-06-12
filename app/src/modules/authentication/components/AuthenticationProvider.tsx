@@ -147,8 +147,6 @@ export default function AuthenticationProvider(
     return {
       user,
       setUser,
-      children,
-      setChildren,
       googleSignInWithPopup,
       signOut,
     };

@@ -1,77 +1,83 @@
 import { Avatar, Stack, Typography } from "@mui/material";
 import React, { useMemo } from "react";
 
+import LoadingIndicator from "@/common/components/LoadingIndicator";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useChildren from "@/modules/children/hooks/useChildren";
 
-type Props = {
-  childId: string;
-};
+type Props = {};
 
 export default function ChildInformation(props: Props) {
-  const { childId } = props;
-  const { children } = useAuthentication();
-  const child = useMemo(() => {
-    return children.find((child) => child.id === childId);
-  }, [children, childId]);
-  const ageInDays = useMemo(() => {
-    if (child?.birthDate) {
-      return Math.floor(
-        (new Date().getTime() - child.birthDate.getTime()) / (1000 * 3600 * 24)
+  const { user } = useAuthentication();
+  const { children } = useChildren();
+
+  const getAgeLabel = (birthDate: Date) => {
+    const ageInDays = Math.floor(
+      (new Date().getTime() - birthDate.getTime()) / (1000 * 3600 * 24)
+    );
+
+    // If the child is less than 1 day old, we display the age in hours
+
+    if (ageInDays < 1) {
+      const ageInHours = Math.floor(
+        (new Date().getTime() - birthDate.getTime()) / (1000 * 3600)
       );
+      return `${ageInHours} heure${ageInHours > 1 ? "s" : ""}`;
     }
-    return 0;
-  }, [child]);
 
-  const ageInWeeks = useMemo(() => {
-    if (child?.birthDate) {
-      return Math.floor(ageInDays / 7);
-    }
-    return 0;
-  }, [ageInDays]);
+    // If the child is less than 1 week old, we display the age in days
 
-  const ageInMonths = useMemo(() => {
-    if (child?.birthDate) {
-      return Math.floor(ageInDays / 30);
-    }
-    return 0;
-  }, [ageInDays]);
-
-  const ageInYears = useMemo(() => {
-    if (child?.birthDate) {
-      return Math.floor(ageInDays / 365);
-    }
-    return 0;
-  }, [ageInDays]);
-
-  const ageLabel = useMemo(() => {
-    if (ageInYears > 0) {
-      return `${ageInYears} an${ageInYears > 1 ? "s" : ""}`;
-    } else if (ageInMonths > 6) {
-      return `${ageInMonths} mois`;
-    } else if (ageInWeeks > 1) {
-      return `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
-    } else {
+    if (ageInDays < 7) {
       return `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
     }
-  }, [ageInDays, ageInMonths, ageInWeeks, ageInYears]);
 
-  if (child?.name == null || child?.birthDate == null) {
-    return null;
+    // If the child is less than 1 year old, we display the age in weeks and days
+
+    if (ageInDays < 365) {
+      const weeks = Math.floor(ageInDays / 7);
+      const days = ageInDays % 7;
+      if (days === 0) return `${weeks} semaine${weeks > 1 ? "s" : ""}`;
+      return `${weeks} semaine${weeks > 1 ? "s" : ""} et ${days} jour${
+        days > 1 ? "s" : ""
+      }`;
+    }
+
+    // If the child is more than 1 year old, we display the age in years and months
+
+    const years = Math.floor(ageInDays / 365);
+    const months = Math.floor((ageInDays % 365) / 30);
+    if (months === 0) return `${years} an${years > 1 ? "s" : ""}`;
+    return `${years} an${years > 1 ? "s" : ""} et ${months} mois`;
+  };
+
+  if (user == null || children == null) {
+    return <LoadingIndicator />;
   }
 
   return (
-    <Stack spacing={1} justifyContent={"center"} alignItems={"center"}>
-      <Avatar
-        sx={{
-          width: 64,
-          height: 64,
-        }}
-      >
-        {child.name?.split(" ").map((name) => name[0].toUpperCase())}
-      </Avatar>
-      <Typography variant="h5">
-        {child.name} a {ageLabel}
-      </Typography>
+    <Stack>
+      {children.map((child) => {
+        return (
+          <Stack
+            key={child.id}
+            spacing={1}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Avatar
+              sx={{
+                width: 64,
+                height: 64,
+              }}
+            >
+              {child.name?.split(" ").map((name) => name[0].toUpperCase())}
+            </Avatar>
+            <Typography variant="h5">
+              {child.name} a {getAgeLabel(child.birthDate)}
+            </Typography>
+          </Stack>
+        );
+      })}
     </Stack>
   );
 }
