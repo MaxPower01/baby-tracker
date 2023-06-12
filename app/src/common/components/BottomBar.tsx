@@ -57,10 +57,10 @@ type Props = {
 };
 
 export default function BottomBar(props: Props) {
-  const { user, children } = useAuthentication();
+  const { user } = useAuthentication();
   const selectedChild = useMemo(() => {
     return user?.selectedChild ?? "";
-  }, [user, children]);
+  }, [user]);
   const navigate = useNavigate();
 
   const { pathname } = useLocation();

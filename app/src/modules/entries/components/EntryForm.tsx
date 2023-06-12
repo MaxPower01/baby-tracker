@@ -109,7 +109,7 @@ export default function EntryForm(props: EntryFormProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  const { user, children } = useAuthentication();
+  const { user } = useAuthentication();
 
   useEffect(() => {
     if (entry.anyStopwatchIsRunning) {
@@ -515,16 +515,7 @@ export default function EntryForm(props: EntryFormProps) {
         return false;
       }
     },
-    [
-      entry,
-      user,
-      children,
-      entryId,
-      note,
-      weight,
-      length,
-      endDateWasEditedManually,
-    ]
+    [entry, user, entryId, note, weight, length, endDateWasEditedManually]
   );
 
   const handleStopwatchChange = useCallback(
@@ -603,16 +594,7 @@ export default function EntryForm(props: EntryFormProps) {
         })
       );
     }
-  }, [
-    entry,
-    user,
-    children,
-    entryId,
-    handleSave,
-    isSaving,
-    hasPendingChanges,
-    note,
-  ]);
+  }, [entry, user, entryId, handleSave, isSaving, hasPendingChanges, note]);
 
   return (
     <>

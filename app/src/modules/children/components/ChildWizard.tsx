@@ -35,7 +35,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ChildWizard() {
   const navigate = useNavigate();
-  const { user, setUser, setChildren } = useAuthentication();
+  const { user, setUser } = useAuthentication();
   const [step, setStep] = useState(1);
   const [sex, setSex] = useState("");
   const [sexError, setSexError] = useState("");
@@ -98,15 +98,6 @@ export default function ChildWizard() {
         selectedChild: docRef.id,
         children: arrayUnion(docRef.id),
       }).then(() => {
-        setChildren((prev) => [
-          ...prev,
-          {
-            id: docRef.id,
-            name: name,
-            birthDate: birthDate.toDate(),
-            sex: sex,
-          },
-        ]);
         setUser((prev) => {
           if (!prev) {
             return null;
@@ -132,7 +123,7 @@ export default function ChildWizard() {
         );
       });
     });
-  }, [user, name, birthDate, setChildren, navigate]);
+  }, [user, name, birthDate, navigate]);
 
   const renderStep = useCallback(() => {
     switch (step) {

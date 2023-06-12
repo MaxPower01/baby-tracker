@@ -15,10 +15,10 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import { useMemo } from "react";
 
 export default function PrivateRoutes() {
-  const { user, children } = useAuthentication();
+  const { user } = useAuthentication();
   const selectedChild = useMemo(() => {
     return user?.selectedChild ?? "";
-  }, [user, children]);
+  }, [user]);
   return (
     <Routes>
       <>
