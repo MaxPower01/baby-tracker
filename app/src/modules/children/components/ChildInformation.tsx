@@ -53,6 +53,9 @@ export default function ChildInformation(props: Props) {
     return `${years} an${years > 1 ? "s" : ""} et ${months} mois`;
   };
 
+  const avatarWidth = 100;
+  const avatarFontSize = avatarWidth / 2.5;
+
   if (user == null || children == null) {
     return <LoadingIndicator />;
   }
@@ -60,6 +63,12 @@ export default function ChildInformation(props: Props) {
   return (
     <Stack>
       {children.map((child) => {
+        let avatarBackgroundColor = "#62CB5C";
+        if (child.sex == "female") {
+          avatarBackgroundColor = "#EE64EC";
+        } else if (child.sex == "male") {
+          avatarBackgroundColor = "#4F89E8";
+        }
         return (
           <Stack
             key={child.id}
@@ -69,14 +78,16 @@ export default function ChildInformation(props: Props) {
           >
             <Avatar
               sx={{
-                width: 100,
-                height: 100,
+                width: avatarWidth,
+                height: avatarWidth,
+                fontSize: avatarFontSize,
+                backgroundColor: avatarBackgroundColor,
               }}
             >
-              {child.name?.split(" ").map((name) => name[0].toUpperCase())}
+              {child.name.split(" ").map((name) => name[0].toUpperCase())}
             </Avatar>
             <Typography variant="h6">
-              {child.name} a {getAgeLabel(child.birthDate)}
+              {child.name.split(" ")[0]} a {getAgeLabel(child.birthDate)}
             </Typography>
           </Stack>
         );

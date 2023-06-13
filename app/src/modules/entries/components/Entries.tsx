@@ -87,7 +87,7 @@ export default function Entries(props: Props) {
           // fontStyle: "italic",
         }}
       >
-        Aucune entrée au cours des 24 dernières heures
+        Aucune entrée au cours des 48 dernières heures
       </Typography>
     );
   }
