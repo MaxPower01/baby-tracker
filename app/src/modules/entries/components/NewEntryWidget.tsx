@@ -1,5 +1,6 @@
 import {
   Box,
+  Card,
   MenuItem,
   Stack,
   SxProps,
@@ -115,9 +116,9 @@ export default function NewEntryWidget(props: Props) {
     // width: "100%",
     // flex: 1,
     width: activityButtonWidth,
-    backgroundColor: theme.customPalette.background?.almostTransparent,
+    // backgroundColor: theme.customPalette.background?.almostTransparent,
     border: "1px solid",
-    borderColor: theme.customPalette.background?.almostTransparent,
+    borderColor: "transparent",
     flexGrow: 1,
     height: "100%",
     fontSize: activityButtonFontSize,
@@ -201,17 +202,18 @@ export default function NewEntryWidget(props: Props) {
         width: "100%",
       }}
     >
-      <Typography
+      {/* <Typography
         variant={"body1"}
         color={"text.secondary"}
         gutterBottom
         sx={{
           textAlign: "center",
+          opacity: 0.8,
           // fontStyle: "italic",
         }}
       >
         Ajouter une entrée
-      </Typography>
+      </Typography> */}
       <Box
         sx={{
           width: "100%",
@@ -254,14 +256,14 @@ export default function NewEntryWidget(props: Props) {
                     order: isInProgress ? 0 : activity.order + 1,
                   }}
                 >
-                  <Box
+                  <Card
                     sx={{
                       border: "1px solid",
                       borderColor: isInProgress
                         ? (theme.palette.primary.main as string)
                         : "transparent",
                       backgroundColor: isInProgress
-                        ? `${theme.palette.primary.main}20`
+                        ? `${theme.palette.primary.main}30`
                         : undefined,
                       boxShadow: isInProgress
                         ? `0 0 5px 0px ${theme.palette.primary.main}`
@@ -291,7 +293,7 @@ export default function NewEntryWidget(props: Props) {
                         });
                       }}
                     />
-                  </Box>
+                  </Card>
                 </Box>
               );
             }
@@ -326,7 +328,7 @@ export default function NewEntryWidget(props: Props) {
                     fontSize: useCompactMode
                       ? activityButtonFontSize
                       : theme.typography.button.fontSize,
-                    width: `calc(${activityButtonWidth} + 1.5px + ${
+                    width: `calc(${activityButtonWidth} + 1.6px + ${
                       boxPadding * 2
                     }px)`,
                     paddingLeft: activityButtonPaddingLeftRight,
