@@ -13,8 +13,11 @@ export default function ChildInformation(props: Props) {
 
   const getAgeLabel = (birthDate: Date) => {
     const ageInDays = Math.floor(
-      (new Date().getTime() - birthDate.getTime()) / (1000 * 3600 * 24)
+      (new Date().getTime() - new Date(birthDate).setHours(0, 0, 0, 0)) /
+        (1000 * 3600 * 24)
     );
+
+    const ageInWeeks = Math.floor(ageInDays / 7);
 
     // If the child is less than 1 day old, we display the age in hours
 
@@ -34,15 +37,24 @@ export default function ChildInformation(props: Props) {
       return `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
     }
 
-    // If the child is less than 1 year old, we display the age in weeks and days
+    // If the child is less than 1 month old, we display the age in weeks and days
+
+    if (ageInWeeks < 4) {
+      const days = ageInDays % 7;
+      if (days === 0)
+        return `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
+      return `${ageInWeeks} semaine${
+        ageInWeeks > 1 ? "s" : ""
+      } et ${days} jour${days > 1 ? "s" : ""}`;
+    }
+
+    // If the child is less than 1 year old, we display the age in months and weeks
 
     if (ageInDays < 365) {
-      const weeks = Math.floor(ageInDays / 7);
-      const days = ageInDays % 7;
-      if (days === 0) return `${weeks} semaine${weeks > 1 ? "s" : ""}`;
-      return `${weeks} semaine${weeks > 1 ? "s" : ""} et ${days} jour${
-        days > 1 ? "s" : ""
-      }`;
+      const months = Math.floor(ageInDays / 30);
+      const weeks = Math.floor((ageInDays % 30) / 7);
+      if (weeks === 0) return `${months} mois`;
+      return `${months} mois et ${weeks} semaine${weeks > 1 ? "s" : ""}`;
     }
 
     // If the child is more than 1 year old, we display the age in years and months
