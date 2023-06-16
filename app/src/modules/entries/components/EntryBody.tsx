@@ -146,7 +146,7 @@ export default function EntryBody(props: Props) {
                 key={`${entry.id}-${entry.activity.type}-${subActivity.type}`}
                 subActivity={subActivity}
                 size={"small"}
-                isSelected={true}
+                isFilled={true}
                 textColor={textColor}
               />
             );
@@ -163,7 +163,7 @@ export default function EntryBody(props: Props) {
                 key={`${entry.id}-${entry.activity.type}-${linkedActivity.type}`}
                 activity={linkedActivity}
                 size={"small"}
-                isSelected={true}
+                isFilled={true}
                 textColor={textColor}
               />
             );

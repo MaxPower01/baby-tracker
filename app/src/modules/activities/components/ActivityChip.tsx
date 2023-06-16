@@ -3,6 +3,7 @@ import { Chip, Typography, useTheme } from "@mui/material";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
+import CheckIcon from "@mui/icons-material/Check";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useSelector } from "react-redux";
 
@@ -10,6 +11,7 @@ type Props = {
   activity: ActivityModel;
   onClick?: (type: ActivityType) => void;
   isSelected?: boolean;
+  isFilled?: boolean;
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
@@ -20,6 +22,7 @@ export default function ActivityChip({
   activity,
   onClick,
   isSelected,
+  isFilled,
   size,
   textColor,
   isDisabled,
@@ -43,18 +46,35 @@ export default function ActivityChip({
       }
       sx={{
         border: "1px solid",
-        borderColor: theme.palette.divider,
+        borderColor: isSelected
+          ? theme.palette.primary.main
+          : theme.palette.divider,
+        backgroundColor: isSelected
+          ? `${theme.palette.primary.main}30`
+          : undefined,
       }}
       icon={
-        <ActivityIcon
-          activity={activity}
-          sx={{
-            marginRight: size === "small" ? -0.5 : -1,
-            marginLeft: 0.5,
-            fontSize: useCompactMode ? "1.15em" : "1.35em",
-            color: textColor,
-          }}
-        />
+        <>
+          {isSelected == true && (
+            <CheckIcon
+              sx={{
+                marginRight: 0,
+                marginLeft: 0.5,
+                fontSize: useCompactMode ? "1.15em" : "1.35em",
+                color: theme.palette.primary.main,
+              }}
+            />
+          )}
+          <ActivityIcon
+            activity={activity}
+            sx={{
+              marginRight: size === "small" ? -0.5 : -1,
+              marginLeft: 0.5,
+              fontSize: useCompactMode ? "1.15em" : "1.35em",
+              color: textColor,
+            }}
+          />
+        </>
       }
       disabled={isDisabled}
       onClick={(e) => {
@@ -65,7 +85,7 @@ export default function ActivityChip({
       }}
       // color={isSelectable ? "primary" : undefined}
       size={size}
-      variant={isSelected ? "filled" : "outlined"}
+      variant={isSelected || isFilled ? "filled" : "outlined"}
     />
   );
 }
