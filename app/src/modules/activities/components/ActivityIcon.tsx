@@ -13,7 +13,9 @@ function BottleFeedingIcon() {
 }
 
 function BreastFeedingIcon() {
-  return <ReactSVG src="/icons/breast-feeding.svg" className="ActivityIcon" />;
+  return (
+    <ReactSVG src="/icons/breast-feeding-2.svg" className="ActivityIcon" />
+  );
 }
 
 function BurpIcon() {
