@@ -40,8 +40,8 @@ export default function HomePage() {
         </MenuProvider>
       </Section>
       <Section dividerPosition={undefined}>
-        {/* <SectionTitle title="Activité récente" /> */}
-        <Entries />
+        {/* <SectionTitle title="Activité des dernières 48 heures" /> */}
+        <Entries title={"Activité des dernières 48 heures"} />
       </Section>
     </SectionStack>
   );

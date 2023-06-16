@@ -157,9 +157,15 @@ export function groupEntriesByTime(params: {
 export function formatStopwatchTime(
   time: number,
   showLetters = false,
-  showSeconds = true
+  showSeconds = true,
+  hideHoursIfZero = false
 ) {
-  return formatStopwatchesTime([time], showLetters, showSeconds);
+  return formatStopwatchesTime(
+    [time],
+    showLetters,
+    showSeconds,
+    hideHoursIfZero
+  );
 }
 
 /**
@@ -170,7 +176,8 @@ export function formatStopwatchTime(
 export function formatStopwatchesTime(
   time: number[],
   showLetters = false,
-  showSeconds = true
+  showSeconds = true,
+  hideHoursIfZero = false
 ) {
   const totalTime = Math.floor(time.reduce((a, b) => a + b, 0));
   if (totalTime === 0) {
@@ -212,7 +219,7 @@ export function formatStopwatchesTime(
     } else {
       result += `${hours.toString().padStart(2, "0")}`;
     }
-  } else if (!showLetters) {
+  } else if (!showLetters && hideHoursIfZero != true) {
     result += `00`;
   }
   if (minutes > 0) {
@@ -237,6 +244,8 @@ export function formatStopwatchesTime(
     result = result.replace(/^(..)(.+)/, "$1:$2");
     result = result.replace(/(.+)(..)$/, "$1:$2");
   }
+
+  result = result.replace(/::/g, ":");
 
   return result;
 }

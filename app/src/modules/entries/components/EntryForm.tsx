@@ -127,14 +127,7 @@ export default function EntryForm(props: EntryFormProps) {
     if (entry.id) dispatch(updateEditingEntryId(entry.id));
   }, [entry]);
 
-  // const save = useCallback(
-  //   (entry: EntryModel) => {
-  //     dispatch(updateEntry({ id: entry.id, entry: entry.serialize() }));
-  //   },
-  //   [dispatch, entry]
-  // );
-
-  // Handle the date and time
+  // Handle date and time
 
   const handleStartTimeChange = (newStartTime: Dayjs | null) => {
     if (newStartTime == null) return;
@@ -192,7 +185,7 @@ export default function EntryForm(props: EntryFormProps) {
     setHasPendingChanges(true);
   };
 
-  // Handle the sub-activities
+  // Handle linked/sub activities
 
   const toggleLinkedActivity = (subActivity: ActivityModel) => {
     setEntry((prevEntry) => {
@@ -254,7 +247,7 @@ export default function EntryForm(props: EntryFormProps) {
     });
   }, [entry]);
 
-  // Handle the stopwatches
+  // Handle stopwatches
 
   const anyStopwatchIsRunning = useMemo(() => {
     return entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
@@ -304,7 +297,7 @@ export default function EntryForm(props: EntryFormProps) {
     [entry, anyStopwatchIsRunning]
   );
 
-  // Handle the notes
+  // Handle notes
 
   const [note, setNote] = useState(
     entryId == null
@@ -318,26 +311,26 @@ export default function EntryForm(props: EntryFormProps) {
     setHasPendingChanges(true);
   };
 
-  // Handle length
+  // Handle size
 
-  // Length represents the length of the activity in millimeters
-  const [length, setLength] = useState(
+  // Represents the size in millimeters
+  const [size, setSize] = useState(
     entryId == null
       ? props.entry.length
       : entries.find((e) => e.id === entryId)?.length ?? props.entry.length ?? 0
   );
 
   const centimeters = useMemo(() => {
-    if (length == null || isNaN(length) || length === 0) return 0;
+    if (size == null || isNaN(size) || size === 0) return 0;
     // Make sure that it's no more than 2 decimal places
-    return Math.round((length / 10) * 100) / 100;
-  }, [length]);
+    return Math.round((size / 10) * 100) / 100;
+  }, [size]);
 
   const inches = useMemo(() => {
-    if (length == null || isNaN(length) || length === 0) return 0;
+    if (size == null || isNaN(size) || size === 0) return 0;
     // Make sure that it's no more than 2 decimal places
-    return Math.round((length / 25.4) * 100) / 100;
-  }, [length]);
+    return Math.round((size / 25.4) * 100) / 100;
+  }, [size]);
 
   const handleCentimetersChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -348,7 +341,7 @@ export default function EntryForm(props: EntryFormProps) {
     } catch (error) {
       console.error("Error parsing centimeters: ", error);
     }
-    setLength(newCentimeters * 10);
+    setSize(newCentimeters * 10);
     setHasPendingChanges(true);
   };
 
@@ -359,7 +352,7 @@ export default function EntryForm(props: EntryFormProps) {
     } catch (error) {
       console.error("Error parsing inches: ", error);
     }
-    setLength(newInches * 25.4);
+    setSize(newInches * 25.4);
     setHasPendingChanges(true);
   };
 
@@ -495,7 +488,7 @@ export default function EntryForm(props: EntryFormProps) {
         if (!endDateWasEditedManually) entryToSave.setEndDate();
         entryToSave.note = note;
         entryToSave.weight = weight;
-        entryToSave.length = length;
+        entryToSave.length = size;
         console.log("Saving entry: ", entryToSave);
         const id = await saveEntry(entryToSave);
         if (id != null) {
@@ -515,7 +508,7 @@ export default function EntryForm(props: EntryFormProps) {
         return false;
       }
     },
-    [entry, user, entryId, note, weight, length, endDateWasEditedManually]
+    [entry, user, entryId, note, weight, size, endDateWasEditedManually]
   );
 
   const handleStopwatchChange = useCallback(
@@ -574,7 +567,7 @@ export default function EntryForm(props: EntryFormProps) {
     }
   }, []);
 
-  // Handle the form submission
+  // Handle form submission
 
   const handleSubmit = useCallback(async () => {
     if (isSaving) return;

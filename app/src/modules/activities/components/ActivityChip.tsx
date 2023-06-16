@@ -13,6 +13,7 @@ type Props = {
   size?: "small" | "medium";
   textColor?: string;
   isDisabled?: boolean;
+  overrideText?: string;
 };
 
 export default function ActivityChip({
@@ -22,6 +23,7 @@ export default function ActivityChip({
   size,
   textColor,
   isDisabled,
+  overrideText,
 }: Props) {
   const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
@@ -36,7 +38,7 @@ export default function ActivityChip({
           fontWeight={useCompactMode ? 500 : 600}
           color={textColor}
         >
-          {activity.name}
+          {overrideText ?? activity.name}
         </Typography>
       }
       sx={{

@@ -2,6 +2,7 @@ import { Avatar, Stack, Typography } from "@mui/material";
 import React, { useMemo } from "react";
 
 import LoadingIndicator from "@/common/components/LoadingIndicator";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useChildren from "@/modules/children/hooks/useChildren";
 
@@ -11,13 +12,18 @@ export default function ChildInformation(props: Props) {
   const { user } = useAuthentication();
   const { children } = useChildren();
 
-  const getAgeLabel = (birthDate: Date) => {
+  const getAgeLabels = (birthDate: Date) => {
+    const now = new Date();
     const ageInDays = Math.floor(
-      (new Date().getTime() - new Date(birthDate).setHours(0, 0, 0, 0)) /
-        (1000 * 3600 * 24)
+      (now.setHours(0, 0, 0, 0) - new Date(birthDate).setHours(0, 0, 0, 0)) /
+        (1000 * 3600 * 24) +
+        0
     );
 
-    const ageInWeeks = Math.floor(ageInDays / 7);
+    const weekDays = 7;
+    const monthDays = weekDays * 4;
+
+    const ageInWeeks = Math.floor(ageInDays / weekDays);
 
     // If the child is less than 1 day old, we display the age in hours
 
@@ -26,43 +32,118 @@ export default function ChildInformation(props: Props) {
         (new Date().getTime() - birthDate.getTime()) / (1000 * 3600)
       );
 
-      if (ageInHours === 0) return "quelques minutes";
+      if (ageInHours === 0) {
+        return {
+          current: `quelques minutes`,
+          next: ``,
+        };
+      }
 
-      return `${ageInHours} heure${ageInHours > 1 ? "s" : ""}`;
+      return {
+        current: `${ageInHours} heure${ageInHours > 1 ? "s" : ""}`,
+        next: `1 jour dans ${24 - ageInHours} heure${
+          24 - ageInHours > 1 ? "s" : ""
+        }`,
+      };
     }
 
     // If the child is less than 1 week old, we display the age in days
 
-    if (ageInDays < 7) {
-      return `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
+    if (ageInDays < weekDays) {
+      return {
+        current: `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`,
+        next: `1 semaine dans ${weekDays - ageInDays} jour${
+          weekDays - ageInDays > 1 ? "s" : ""
+        }`,
+      };
     }
 
     // If the child is less than 1 month old, we display the age in weeks and days
 
-    if (ageInWeeks < 4) {
-      const days = ageInDays % 7;
-      if (days === 0)
-        return `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
-      return `${ageInWeeks} semaine${
-        ageInWeeks > 1 ? "s" : ""
-      } et ${days} jour${days > 1 ? "s" : ""}`;
+    if (ageInDays < monthDays) {
+      const days = ageInDays % weekDays;
+      const nextAgeInWeeks = ageInWeeks + 1;
+      const next =
+        nextAgeInWeeks === 4
+          ? `1 mois dans 1 semaine`
+          : `${nextAgeInWeeks} semaine${nextAgeInWeeks > 1 ? "s" : ""} dans ${
+              weekDays - days
+            } jour${weekDays - days > 1 ? "s" : ""}`;
+
+      if (days === 0) {
+        return {
+          current: `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`,
+          next: next,
+        };
+      }
+      return {
+        current: `${ageInWeeks} semaine${
+          ageInWeeks > 1 ? "s" : ""
+        } et ${days} jour${days > 1 ? "s" : ""}`,
+        next: next,
+      };
     }
 
     // If the child is less than 1 year old, we display the age in months and weeks
 
     if (ageInDays < 365) {
-      const months = Math.floor(ageInDays / 30);
-      const weeks = Math.floor((ageInDays % 30) / 7);
-      if (weeks === 0) return `${months} mois`;
-      return `${months} mois et ${weeks} semaine${weeks > 1 ? "s" : ""}`;
+      const ageInMonths = Math.floor(ageInDays / monthDays);
+      const weeks = Math.floor((ageInDays % monthDays) / weekDays);
+      const nextAgeInMonths = ageInMonths + 1;
+      const nextAgeInWeeks = weeks + 1;
+      const remainingWeeks = 52 - ageInWeeks;
+      let next = "";
+
+      if (nextAgeInMonths === 12) {
+        next = `1 an dans ${remainingWeeks} semaine${
+          remainingWeeks > 1 ? "s" : ""
+        }`;
+      } else if (weeks === 3) {
+        const remainingDays = monthDays - (ageInDays % monthDays);
+        if (remainingDays === weekDays) {
+          next = `${nextAgeInMonths} mois dans 1 semaine`;
+        } else {
+          next = `${nextAgeInMonths} mois dans ${remainingDays} jour${
+            remainingDays > 1 ? "s" : ""
+          }`;
+        }
+      } else {
+        const remainingDays = weekDays - (ageInDays % weekDays);
+        next = `${ageInMonths} mois et ${nextAgeInWeeks} semaine${
+          nextAgeInWeeks > 1 ? "s" : ""
+        } dans ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
+      }
+
+      if (weeks === 0) {
+        return {
+          current: `${ageInMonths} mois`,
+          next: next,
+        };
+      }
+
+      return {
+        current: `${ageInMonths} mois et ${weeks} semaine${
+          weeks > 1 ? "s" : ""
+        }`,
+        next: next,
+      };
     }
 
     // If the child is more than 1 year old, we display the age in years and months
 
     const years = Math.floor(ageInDays / 365);
     const months = Math.floor((ageInDays % 365) / 30);
-    if (months === 0) return `${years} an${years > 1 ? "s" : ""}`;
-    return `${years} an${years > 1 ? "s" : ""} et ${months} mois`;
+    if (months === 0) {
+      return {
+        current: `${years} an${years > 1 ? "s" : ""}`,
+        next: "",
+      };
+    }
+
+    return {
+      current: `${years} an${years > 1 ? "s" : ""} et ${months} mois`,
+      next: "",
+    };
   };
 
   const avatarWidth = 100;
@@ -81,6 +162,7 @@ export default function ChildInformation(props: Props) {
         } else if (child.sex == "male") {
           avatarBackgroundColor = "#4F89E8";
         }
+        const ageLabels = getAgeLabels(child.birthDate);
         return (
           <Stack
             key={child.id}
@@ -98,9 +180,20 @@ export default function ChildInformation(props: Props) {
             >
               {child.name.split(" ").map((name) => name[0].toUpperCase())}
             </Avatar>
-            <Typography variant="h6">
-              {child.name.split(" ")[0]} a {getAgeLabel(child.birthDate)}
-            </Typography>
+            <Stack>
+              <Typography variant="h6" textAlign={"center"}>
+                {child.name.split(" ")[0]} a {ageLabels.current}
+              </Typography>
+              {!isNullOrWhiteSpace(ageLabels.next) && (
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  textAlign={"center"}
+                >
+                  {ageLabels.next}
+                </Typography>
+              )}
+            </Stack>
           </Stack>
         );
       })}

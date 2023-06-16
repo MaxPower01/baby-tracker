@@ -215,7 +215,7 @@ export default function Stopwatch(props: Props) {
               disabled={inputsAreReadOnly}
             >
               <Typography variant="h6">
-                {formatStopwatchTime(time, false, true)}
+                {formatStopwatchTime(time, false, true, false)}
               </Typography>
             </Button>
           </Stack>
