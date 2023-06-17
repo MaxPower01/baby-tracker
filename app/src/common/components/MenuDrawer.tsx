@@ -14,7 +14,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { getPath, isNullOrWhiteSpace } from "@/utils/utils";
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -26,7 +25,9 @@ import PageId from "@/common/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SortIcon from "@mui/icons-material/Sort";
 import { functions } from "@/firebase";
+import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useChildren from "@/modules/children/hooks/useChildren";
 import { useNavigate } from "react-router-dom";
@@ -164,7 +165,7 @@ export default function MenuDrawer(props: {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Enfants</Typography>
+                <Typography variant="body1">Mes enfants</Typography>
               </Button>
               {!isNullOrWhiteSpace(selectedChild) && (
                 <Button
@@ -186,7 +187,9 @@ export default function MenuDrawer(props: {
                       marginRight: 1,
                     }}
                   />
-                  <Typography variant="body1">Ajouter un parent</Typography>
+                  <Typography variant="body1">
+                    Ajouter un utilisateur
+                  </Typography>
                 </Button>
               )}
               <Button
@@ -199,7 +202,7 @@ export default function MenuDrawer(props: {
                 }}
                 onClick={() => {
                   props.onClose();
-                  navigate(getPath({ page: PageId.ActivitiesOrder }));
+                  navigate(getPath({ page: PageId.Activities }));
                 }}
               >
                 <SortIcon
@@ -207,7 +210,7 @@ export default function MenuDrawer(props: {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Ordre des activités</Typography>
+                <Typography variant="body1">Modifier les activités</Typography>
               </Button>
               <Button
                 variant="text"

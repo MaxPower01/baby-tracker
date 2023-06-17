@@ -1,25 +1,48 @@
-import { Box, Divider, Stack, SxProps } from "@mui/material";
+import { Box, Button, Divider, Stack, SxProps, useTheme } from "@mui/material";
 
 export default function Section(props: {
   children: React.ReactNode;
   dividerPosition?: "top" | "bottom";
   sx?: SxProps;
+  onClick?: () => void;
 }) {
+  const { children, dividerPosition, sx, onClick } = props;
+  const theme = useTheme();
   return (
     <>
-      {props.dividerPosition === "top" && <Divider sx={{ width: "100%" }} />}
+      {dividerPosition === "top" && <Divider sx={{ width: "100%" }} />}
 
-      <Box
-        // elevation={0}
-        component={"section"}
-        sx={{ width: "100%", paddingTop: 2, paddingBottom: 2, ...props.sx }}
-      >
-        <Stack alignItems="center" spacing={2}>
-          {props.children}
-        </Stack>
-      </Box>
+      {onClick != null ? (
+        <Button
+          // elevation={0}
+          onClick={() => onClick()}
+          component={"section"}
+          sx={{
+            width: "100%",
+            paddingTop: 2,
+            paddingBottom: 2,
+            ...sx,
+            textTransform: "none",
+            color: theme.palette.text.primary,
+          }}
+        >
+          <Stack alignItems="center" spacing={2}>
+            {children}
+          </Stack>
+        </Button>
+      ) : (
+        <Box
+          // elevation={0}
+          component={"section"}
+          sx={{ width: "100%", paddingTop: 2, paddingBottom: 2, ...sx }}
+        >
+          <Stack alignItems="center" spacing={2}>
+            {children}
+          </Stack>
+        </Box>
+      )}
 
-      {props.dividerPosition === "bottom" && <Divider sx={{ width: "100%" }} />}
+      {dividerPosition === "bottom" && <Divider sx={{ width: "100%" }} />}
     </>
   );
 }

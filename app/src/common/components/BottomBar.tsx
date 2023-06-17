@@ -9,7 +9,6 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { getPageName, getPath, isNullOrWhiteSpace } from "@/utils/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
@@ -23,7 +22,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import MenuDrawer from "@/common/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import PageId from "@/common/enums/PageId";
+import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
+import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 
 const FloatingActionButton = styled(Fab)({
@@ -147,7 +149,7 @@ export default function BottomBar(props: Props) {
     },
   ];
 
-  if (pageName === PageId.Entry) {
+  if (pageName === PageId.Entry || pageName === PageId.Child) {
     return null;
   }
 

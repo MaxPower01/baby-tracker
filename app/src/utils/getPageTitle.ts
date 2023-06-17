@@ -1,5 +1,5 @@
 import PageId from "@/common/enums/PageId";
-import { getPageName } from "./utils";
+import getPageName from "./getPageName";
 
 export default function getPageTitle(pathname: string) {
   const pageName = getPageName(pathname);
@@ -22,8 +22,14 @@ export default function getPageTitle(pathname: string) {
       return "Enfants";
     case PageId.Settings:
       return "Paramètres";
-    case PageId.ActivitiesOrder:
-      return "Ordre des activités";
+    case PageId.Activities:
+      return "Activités";
+    case PageId.Child:
+      const childId = pathname.substring(1).split("/")[1];
+      if (childId) {
+        return "Modifier un enfant";
+      }
+      return "Ajouter un enfant";
     default:
       return "";
   }

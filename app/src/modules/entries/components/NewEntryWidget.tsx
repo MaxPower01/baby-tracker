@@ -7,11 +7,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  formatStopwatchTime,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/utils/utils";
+import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
 import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
@@ -21,6 +17,7 @@ import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageId from "@/common/enums/PageId";
+import getPath from "@/utils/getPath";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";

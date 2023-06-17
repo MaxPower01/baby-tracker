@@ -27,9 +27,10 @@ import { useCallback, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Child from "@/modules/authentication/types/Child";
 import PageId from "@/common/enums/PageId";
+import Sex from "@/common/enums/Sex";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
-import { getPath } from "@/utils/utils";
+import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
@@ -142,11 +143,10 @@ export default function ChildWizard() {
                   },
                 }}
                 onChange={handleSexChange}
-                autoFocus
                 error={sexError !== ""}
               >
-                <MenuItem value="male">Garçon</MenuItem>
-                <MenuItem value="female">Fille</MenuItem>
+                <MenuItem value={Sex.male}>Garçon</MenuItem>
+                <MenuItem value={Sex.female}>Fille</MenuItem>
               </Select>
               <FormHelperText error={sexError !== ""}>
                 {sexError !== "" ? sexError : ""}
@@ -166,7 +166,6 @@ export default function ChildWizard() {
                 label="Nom"
                 value={name}
                 onChange={handleNameChange}
-                autoFocus
                 helperText={nameError}
                 error={nameError !== ""}
               />

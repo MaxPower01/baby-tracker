@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { getPath, isNullOrWhiteSpace } from "@/utils/utils";
 
-import ActivitiesOrderPage from "@/pages/ActivitiesOrderPage";
+import ActivitiesPage from "@/pages/ActivitiesPage";
 import AuthenticationPage from "@/pages/AuthenticationPage";
 import ChildPage from "@/pages/ChildPage";
 import ChildrenPage from "@/pages/ChildrenPage";
@@ -11,6 +10,8 @@ import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
 import PageId from "@/common/enums/PageId";
 import SettingsPage from "@/pages/SettingsPage";
+import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import { useMemo } from "react";
 
@@ -33,10 +34,7 @@ export default function PrivateRoutes() {
               path={getPath({ page: PageId.Children })}
               element={<ChildrenPage />}
             />
-            <Route
-              path={getPath({ page: PageId.Child })}
-              element={<ChildPage />}
-            />
+
             <Route path="" element={<HomePage />} />
             <Route path="*" element={<Navigate replace to="" />} />
             <Route
@@ -60,13 +58,18 @@ export default function PrivateRoutes() {
               element={<SettingsPage />}
             />
             <Route
-              path={getPath({ page: PageId.ActivitiesOrder })}
-              element={<ActivitiesOrderPage />}
+              path={getPath({ page: PageId.Activities })}
+              element={<ActivitiesPage />}
             />
             <Route path={getPath({ page: PageId.Entry })}>
               <Route path="" element={<EntryPage />} />
               <Route path="*" element={<Navigate replace to="" />} />
               <Route path=":entryId" element={<EntryPage />} />
+            </Route>
+            <Route path={getPath({ page: PageId.Child })}>
+              <Route path="" element={<ChildPage />} />
+              <Route path="*" element={<Navigate replace to="" />} />
+              <Route path=":childId" element={<ChildPage />} />
             </Route>
           </>
         )}

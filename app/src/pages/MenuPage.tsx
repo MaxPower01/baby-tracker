@@ -8,7 +8,7 @@ import {
   query,
   writeBatch,
 } from "firebase/firestore";
-import { exportToJSONFile, getPath, isNullOrWhiteSpace } from "@/utils/utils";
+import { exportToJSONFile, isNullOrWhiteSpace } from "@/utils/utils";
 import {
   resetEntriesState,
   selectEntries,
@@ -17,6 +17,7 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageId from "@/common/enums/PageId";
+import getPath from "@/utils/getPath";
 import { resetAppState } from "@/app/state/appSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";

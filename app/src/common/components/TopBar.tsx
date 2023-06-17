@@ -6,14 +6,15 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { getPageName, getPath } from "@/utils/utils";
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import PageId from "@/common/enums/PageId";
+import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
+import getPath from "@/utils/getPath";
 import { selectEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useSelector } from "react-redux";
 
@@ -37,7 +38,7 @@ export default function TopBar(props: Props) {
   }, [pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
-    return pageName === PageId.Entry;
+    return pageName === PageId.Entry || pageName === PageId.Child;
   }, [pageName]);
 
   const shouldRenderDeleteEntryButton = useMemo(() => {

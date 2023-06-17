@@ -1,6 +1,10 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, SxProps } from "@mui/material";
 
-export default function LoadingIndicator() {
+type Props = {
+  size?: string | number;
+};
+
+export default function LoadingIndicator(props: Props) {
   return (
     <Box
       sx={{
@@ -8,7 +12,7 @@ export default function LoadingIndicator() {
         justifyContent: "center",
       }}
     >
-      <CircularProgress />
+      <CircularProgress size={props.size} />
     </Box>
   );
 }

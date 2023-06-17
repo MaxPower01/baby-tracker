@@ -1,6 +1,5 @@
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageId from "@/common/enums/PageId";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Exportation                                */
@@ -286,43 +285,6 @@ export function isValidActivityType(type: any) {
     return Object.values(ActivityType).includes(parseInt(type));
   }
   return false;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 Navigation                                 */
-/* -------------------------------------------------------------------------- */
-
-export function getPath({
-  page,
-  id,
-  params,
-}: {
-  page: PageId;
-  id?: string | number;
-  params?: Record<string, string>;
-}) {
-  let path = "";
-  if (Object.values(PageId).includes(page)) {
-    path = `/${page}`;
-  }
-  if (typeof id !== "undefined") {
-    path += `/${id}`;
-  }
-  if (params) {
-    path += `?${new URLSearchParams(params).toString()}`;
-  }
-  return path;
-}
-
-export function getPageName(pathname: string): PageId {
-  let page = pathname.substring(1).split("/")[0];
-  if (page === "") {
-    page = PageId.Home;
-  }
-  if (Object.values(PageId).includes(page as PageId)) {
-    return page as PageId;
-  }
-  return PageId.Home;
 }
 
 /* -------------------------------------------------------------------------- */

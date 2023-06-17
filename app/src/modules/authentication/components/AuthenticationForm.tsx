@@ -2,7 +2,7 @@ import { Button, Stack, Typography } from "@mui/material";
 
 import GoogleIcon from "@mui/icons-material/Google";
 import PageId from "@/common/enums/PageId";
-import { getPath } from "@/utils/utils";
+import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";

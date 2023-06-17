@@ -44,7 +44,6 @@ export default function ActivityPicker({
           },
         }}
         onChange={handleActivityTypeChange}
-        autoFocus
         // error={sexError !== ""}
       >
         {Object.values(ActivityType).map((activityType) => {

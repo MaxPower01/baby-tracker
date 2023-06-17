@@ -7,6 +7,6 @@ enum PageId {
   Children = "children",
   Child = "child",
   Settings = "settings",
-  ActivitiesOrder = "activitiesOrder",
+  Activities = "activities",
 }
 export default PageId;

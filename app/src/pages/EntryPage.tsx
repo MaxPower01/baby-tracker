@@ -46,7 +46,6 @@ export default function EntryPage() {
     <MenuProvider>
       <EntryForm
         entry={entry}
-        isEditing={existingEntry != null}
         shouldStartTimer={shouldStartTimerParam as any}
       />
     </MenuProvider>

@@ -22,11 +22,7 @@ import {
   jaJP,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import {
-  formatStopwatchesTime,
-  getPath,
-  isNullOrWhiteSpace,
-} from "@/utils/utils";
+import { formatStopwatchesTime, isNullOrWhiteSpace } from "@/utils/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -36,6 +32,7 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EntryModel from "@/modules/entries/models/EntryModel";
+import LoadingIndicator from "@/common/components/LoadingIndicator";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import PageId from "@/common/enums/PageId";
@@ -48,6 +45,7 @@ import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import VolumeInput from "@/modules/volume/components/VolumeInput";
 import VolumeMenu from "@mui/material/Menu";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
+import getPath from "@/utils/getPath";
 import { updateEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -56,7 +54,6 @@ import useMenu from "@/modules/menu/hooks/useMenu";
 
 type EntryFormProps = {
   entry: EntryModel;
-  isEditing?: boolean;
   shouldStartTimer?: "left" | "right";
 };
 
@@ -376,18 +373,6 @@ export default function EntryForm(props: EntryFormProps) {
     // Make sure that it's no more than 2 decimal places
     return Math.round((weight / 453.592) * 100) / 100;
   }, [weight]);
-
-  const handleWeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let newWeight = 0;
-    try {
-      newWeight = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing weight: ", error);
-    }
-    console.log("newWeight: ", newWeight);
-    setWeight(newWeight);
-    setHasPendingChanges(true);
-  };
 
   const handleKilogramsChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -1253,10 +1238,11 @@ export default function EntryForm(props: EntryFormProps) {
 
       <AppBar
         position="fixed"
+        component={"footer"}
         sx={{
           top: "auto",
           bottom: 0,
-          backgroundColor: "background.paper",
+          backgroundColor: "background.default",
         }}
         color="transparent"
       >
@@ -1275,17 +1261,17 @@ export default function EntryForm(props: EntryFormProps) {
                 onClick={handleSubmit}
                 fullWidth
                 size="large"
+                disabled={isSaving}
+                sx={{
+                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                }}
               >
-                Enregistrer
+                {isSaving == true ? (
+                  <LoadingIndicator size={theme.typography.button.fontSize} />
+                ) : (
+                  "Enretistrer"
+                )}
               </Button>
-              {/* <Button
-                variant="outlined"
-                fullWidth
-                size="large"
-                onClick={() => navigate(getPath({ page: PageName.Home }))}
-              >
-                Retour à l'accueil
-              </Button> */}
             </Stack>
           </Toolbar>
         </Container>

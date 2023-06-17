@@ -27,7 +27,7 @@ import React from "react";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
-export default function ActivitiesOrderPage() {
+export default function ActivitiesPage() {
   const initialActivities = useSelector(selectActivities);
 
   const [activities, setActivities] = React.useState(initialActivities);
