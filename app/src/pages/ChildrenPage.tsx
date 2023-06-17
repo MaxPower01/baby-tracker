@@ -72,7 +72,7 @@ export default function ChildrenPage() {
                   >
                     <Typography variant={"h6"}>{child.name}</Typography>
                     <Typography
-                      variant={"body1"}
+                      variant={"body2"}
                       color={"text.secondary"}
                       sx={
                         {
