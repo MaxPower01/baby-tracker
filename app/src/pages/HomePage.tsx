@@ -47,13 +47,11 @@ export default function HomePage() {
         <ChildInformation />
       </Section>
       <Section>
-        {/* <SectionTitle title="Ajouter une entrée" /> */}
         <MenuProvider>
           <NewEntryWidget />
         </MenuProvider>
       </Section>
-      <Section dividerPosition={undefined}>
-        {/* <SectionTitle title="Activité des dernières 48 heures" /> */}
+      <Section>
         <Entries />
       </Section>
     </SectionStack>

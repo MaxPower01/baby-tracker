@@ -577,7 +577,7 @@ export default function EntryForm(props: EntryFormProps) {
   return (
     <>
       <SectionStack>
-        <Section dividerPosition="bottom">
+        <Section>
           {entry.activity != null && (
             <Stack justifyContent={"center"} alignItems={"center"}>
               <ActivityIcon
@@ -1269,7 +1269,7 @@ export default function EntryForm(props: EntryFormProps) {
                 {isSaving == true ? (
                   <LoadingIndicator size={theme.typography.button.fontSize} />
                 ) : (
-                  "Enretistrer"
+                  "Enregistrer"
                 )}
               </Button>
             </Stack>

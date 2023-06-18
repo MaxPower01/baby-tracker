@@ -1,5 +1,8 @@
 import {
   Box,
+  Card,
+  CardActionArea,
+  CardContent,
   CircularProgress,
   Grid,
   Stack,
@@ -14,11 +17,14 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import ActivityChip from "@/modules/activities/components/ActivityChip";
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityType from "@/modules/activities/enums/ActivityType";
+import CheckIcon from "@mui/icons-material/Check";
 import DateHeader from "@/common/components/DateHeader";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import TimePeriod from "@/common/enums/TimePeriod";
+import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -69,7 +75,11 @@ export default function Entries(props: Props) {
 
   const theme = useTheme();
 
-  const [topbarHeight, setTopbarHeight] = useState<number | null>(null);
+  const [topHeight, setTopHeight] = useState<{
+    topbarHeight: number;
+    filterChipsHeight: number;
+    totalHeight: number;
+  } | null>(null);
 
   useEffect(() => {
     if (props.fetchTimePeriod != null) {
@@ -87,11 +97,24 @@ export default function Entries(props: Props) {
       });
     }
     function handleResize() {
-      const element = document.getElementById("topbar");
-      const height = element?.clientHeight;
-      if (height != null) {
-        setTopbarHeight(height - 1);
+      const result = {
+        topbarHeight: 0,
+        filterChipsHeight: 0,
+        totalHeight: 0,
+      };
+      const topbar = document.getElementById("topbar");
+      let topbarHeight = topbar?.clientHeight;
+      if (topbarHeight != null) {
+        topbarHeight -= 1;
       }
+      result.topbarHeight = topbarHeight ?? 0;
+      const filterChips = document.getElementsByClassName("EntriesFilterChips");
+      if (filterChips.length > 0) {
+        const filterChipsHeight = filterChips[0].clientHeight - 1;
+        result.filterChipsHeight = filterChipsHeight;
+      }
+      result.totalHeight = result.topbarHeight + result.filterChipsHeight;
+      setTopHeight(result);
     }
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -175,7 +198,20 @@ export default function Entries(props: Props) {
         </Typography>
       )}
       {allActivityTypes.length > 0 && (
-        <Stack spacing={1}>
+        <Stack
+          spacing={1}
+          className="EntriesFilterChips"
+          sx={{
+            position: topHeight != null ? "sticky" : undefined,
+            top: topHeight != null ? topHeight.topbarHeight : undefined,
+            zIndex: 2,
+            backgroundColor: theme.palette.background.default,
+            paddingTop: 1,
+            paddingBottom: 1,
+            paddingLeft: 0,
+            paddingRight: 0,
+          }}
+        >
           <Box
             sx={{
               width: "100%",
@@ -214,7 +250,7 @@ export default function Entries(props: Props) {
                       (linkedActivity) => linkedActivity.type === activity.type
                     )
                 );
-                let overrideText = `${activityEntries.length}X`;
+                let text = `${activityEntries.length}X`;
                 const time = !activity.hasDuration
                   ? null
                   : activityEntries
@@ -225,27 +261,83 @@ export default function Entries(props: Props) {
                       )
                       .reduce((acc, entry) => acc + entry.time, 0);
                 if (time != null && time > 0) {
-                  overrideText += ` • ${formatStopwatchTime(
+                  const timeText = formatStopwatchTime(
                     time,
                     undefined,
                     undefined,
                     true
-                  )}`;
+                  );
+                  text += ` • ${removeLeadingCharacters(timeText, "0")}`;
                 }
+                const isSelected = selectedActivityTypes.includes(
+                  activity.type
+                );
                 return (
-                  <ActivityChip
-                    key={activity.type}
-                    activity={activity}
-                    overrideText={overrideText}
-                    onClick={handleActivityClick}
-                    isSelected={selectedActivityTypes.includes(activity.type)}
-                  />
+                  <Card
+                    sx={{
+                      border: "1px solid",
+                      borderColor: isSelected
+                        ? (theme.palette.primary.main as string)
+                        : "transparent",
+                      backgroundColor: isSelected
+                        ? `${theme.palette.primary.main}30`
+                        : undefined,
+                    }}
+                  >
+                    <CardActionArea
+                      onClick={() => handleActivityClick(activity.type)}
+                    >
+                      <CardContent
+                        sx={{
+                          paddingTop: 0.5,
+                          paddingBottom: 0.5,
+                          paddingLeft: 1,
+                          paddingRight: 1,
+                        }}
+                      >
+                        <Stack
+                          direction={"row"}
+                          spacing={0.5}
+                          justifyContent={"flex-start"}
+                          alignItems={"center"}
+                        >
+                          <ActivityIcon
+                            activity={activity}
+                            sx={{ fontSize: "1.5em" }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color={isSelected ? "text.main" : "text.secondary"}
+                          >
+                            {text}
+                          </Typography>
+                          {isSelected && (
+                            <CheckIcon
+                              sx={{
+                                fontSize: "1.55em",
+                                color: theme.palette.primary.main,
+                              }}
+                            />
+                          )}
+                        </Stack>
+                        {/* <ActivityChip
+                          key={activity.type}
+                          activity={activity}
+                          overrideText={overrideText}
+                          onClick={handleActivityClick}
+                          isSelected={selectedActivityTypes.includes(
+                            activity.type
+                          )}
+                        /> */}
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
                 );
               })}
             </Stack>
           </Box>
 
-          {selectedActivityTypes.length > 0 &&
+          {/* {selectedActivityTypes.length > 0 &&
             (() => {
               let label = "";
               if (selectedActivityTypes.length > 1) {
@@ -270,7 +362,7 @@ export default function Entries(props: Props) {
                   {label}
                 </Typography>
               );
-            })()}
+            })()} */}
         </Stack>
       )}
 
@@ -300,8 +392,9 @@ export default function Entries(props: Props) {
                 >
                   <DateHeader
                     sx={{
-                      position: topbarHeight != null ? "sticky" : undefined,
-                      top: topbarHeight != null ? topbarHeight : undefined,
+                      position: topHeight != null ? "sticky" : undefined,
+                      top:
+                        topHeight != null ? topHeight.totalHeight : undefined,
                       zIndex: 2,
                       backgroundColor: theme.palette.background.default,
                     }}

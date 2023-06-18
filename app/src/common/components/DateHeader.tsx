@@ -26,15 +26,18 @@ export default function DateHeader(props: Props) {
         ...sx,
       }}
     >
-      <Button
+      <Box
         sx={{
-          padding: 1,
+          paddingTop: 1,
+          paddingBottom: 1,
+          paddingLeft: 0,
+          paddingRight: 0,
           borderRadius: 0,
           textTransform: "none",
           color: theme.palette.text.primary,
         }}
-        fullWidth
-        variant="text"
+        // fullWidth
+        // variant="text"
       >
         <Stack
           direction={"row"}
@@ -49,8 +52,8 @@ export default function DateHeader(props: Props) {
             sx={{
               // background: theme.customPalette.background.avatar,
               background: theme.palette.divider,
-              minWidth: useCompactMode ? "2.75em" : "3.25em",
-              minHeight: useCompactMode ? "2.75em" : "3.25em",
+              minWidth: useCompactMode ? "2.5em" : "3.25em",
+              minHeight: useCompactMode ? "2.5em" : "3.25em",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -89,7 +92,7 @@ export default function DateHeader(props: Props) {
               )}
             </Typography>
             <Typography
-              variant={useCompactMode ? "caption" : "body1"}
+              variant={useCompactMode ? "body2" : "body1"}
               textAlign={"left"}
               sx={{
                 opacity: 0.5,
@@ -105,7 +108,7 @@ export default function DateHeader(props: Props) {
             </Typography>
           </Stack>
         </Stack>
-      </Button>
+      </Box>
     </Box>
   );
 }

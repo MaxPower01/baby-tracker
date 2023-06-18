@@ -112,7 +112,10 @@ export default function EntriesCard(props: Props) {
               (e) =>
                 e.id != null &&
                 e.id != entry.id &&
-                e.activity?.type == entry.activity?.type &&
+                e.activity != null &&
+                entry.activity != null &&
+                (e.activity?.type == entry.activity?.type ||
+                  e.activity.linkedTypes.includes(entry.activity.type)) &&
                 e.startDate.getTime() < entry.startDate.getTime()
             );
 
@@ -152,13 +155,13 @@ export default function EntriesCard(props: Props) {
                       <Box
                         sx={{
                           position: "absolute",
-                          top: "4.75em",
+                          top: useCompactMode ? "3em" : "4.75em",
                           left: "calc(2.25em - 2px)",
                           height: "100%",
                           opacity: 0.5,
-                          paddingTop: 1,
-                          paddingBottom: 1,
-                          display: useCompactMode ? "none" : undefined,
+                          paddingTop: useCompactMode ? 2 : 1,
+                          paddingBottom: useCompactMode ? 2 : 1,
+                          // display: useCompactMode ? "none" : undefined,
                         }}
                       >
                         <Box
@@ -278,7 +281,7 @@ export default function EntriesCard(props: Props) {
                 </CardContent>
               </CardActionArea>
 
-              {nextEntryExists && useCompactMode && (
+              {/* {nextEntryExists && useCompactMode && (
                 <Divider
                   sx={{
                     marginLeft: 2,
@@ -286,7 +289,7 @@ export default function EntriesCard(props: Props) {
                     opacity: 0.5,
                   }}
                 />
-              )}
+              )} */}
             </Box>
           );
         })}

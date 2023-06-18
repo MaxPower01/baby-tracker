@@ -231,8 +231,8 @@ export default function NewEntryWidget(props: Props) {
           justifyContent={"flex-start"}
           alignItems={"flex-start"}
           sx={{
-            paddingTop: 0.5,
-            paddingBottom: 0.5,
+            // paddingTop: 0.5,
+            // paddingBottom: 0.5,
             "& .ActivityIcon": {
               fontSize: "4em",
             },
@@ -302,8 +302,8 @@ export default function NewEntryWidget(props: Props) {
           justifyContent={"flex-start"}
           alignItems={"flex-start"}
           sx={{
-            paddingTop: 0.5,
-            paddingBottom: 0.5,
+            // paddingTop: 0.5,
+            // paddingBottom: 0.5,
             "& .ActivityIcon": {
               fontSize: "4em",
             },
@@ -338,7 +338,7 @@ export default function NewEntryWidget(props: Props) {
                     color={"text.secondary"}
                     sx={{
                       ...subtitleStyle,
-                      // lineHeight: 1,
+                      // lineHeight: 1.2,
                       // whiteSpace: "pre",
                     }}
                   >

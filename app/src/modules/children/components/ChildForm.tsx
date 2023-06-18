@@ -433,7 +433,7 @@ export default function ChildForm(props: Props) {
                 {isSaving == true ? (
                   <LoadingIndicator size={theme.typography.button.fontSize} />
                 ) : (
-                  "Enretistrer"
+                  "Enregistrer"
                 )}
               </Button>
             </Stack>

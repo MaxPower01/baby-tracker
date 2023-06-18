@@ -59,7 +59,7 @@ export default function ActivityChip({
             <CheckIcon
               sx={{
                 marginRight: 0,
-                marginLeft: 0.5,
+                marginLeft: 1,
                 fontSize: useCompactMode ? "1.15em" : "1.35em",
                 color: theme.palette.primary.main,
               }}
@@ -83,7 +83,6 @@ export default function ActivityChip({
           onClick(activity.type);
         }
       }}
-      // color={isSelectable ? "primary" : undefined}
       size={size}
       variant={isSelected || isFilled ? "filled" : "outlined"}
     />
