@@ -282,6 +282,7 @@ export default function Entries(props: Props) {
                       backgroundColor: isSelected
                         ? `${theme.palette.primary.main}30`
                         : undefined,
+                      flexShrink: 0,
                     }}
                   >
                     <CardActionArea
@@ -292,7 +293,7 @@ export default function Entries(props: Props) {
                           paddingTop: 0.5,
                           paddingBottom: 0.5,
                           paddingLeft: 1,
-                          paddingRight: 1,
+                          paddingRight: 1.5,
                         }}
                       >
                         <Stack
