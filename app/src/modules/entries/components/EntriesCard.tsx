@@ -159,8 +159,8 @@ export default function EntriesCard(props: Props) {
                           left: "calc(2.25em - 2px)",
                           height: "100%",
                           opacity: 0.5,
-                          paddingTop: useCompactMode ? 2 : 1,
-                          paddingBottom: useCompactMode ? 2 : 1,
+                          paddingTop: useCompactMode ? 2.5 : 1,
+                          paddingBottom: useCompactMode ? 2.5 : 1,
                           // display: useCompactMode ? "none" : undefined,
                         }}
                       >
