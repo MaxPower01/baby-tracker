@@ -66,14 +66,50 @@ export default function Entries(props: Props) {
     }>
   >([]);
 
-  const handleActivityClick = (
-    activityType: ActivityType,
-    year: number,
-    month: number,
-    day: number
-  ) => {
+  const handleActivityClick = (params: {
+    activityType: ActivityType;
+    year: number;
+    month: number;
+    day: number;
+    preventMultipleSelection?: boolean;
+  }) => {
+    const { activityType, year, month, day, preventMultipleSelection } = params;
     setSelectedActivityTypes((prevSelectedActivityTypes) => {
       let newSelectedActivityTypes = [...prevSelectedActivityTypes];
+      if (preventMultipleSelection) {
+        newSelectedActivityTypes = newSelectedActivityTypes.filter(
+          (selectedActivityType) => {
+            if (
+              selectedActivityType.year === year &&
+              selectedActivityType.month === month &&
+              selectedActivityType.day === day
+            ) {
+              return activityType === selectedActivityType.activityType;
+            }
+            return true;
+          }
+        );
+        if (
+          !newSelectedActivityTypes.some(
+            (selectedActivityType) =>
+              selectedActivityType.activityType === activityType &&
+              selectedActivityType.year === year &&
+              selectedActivityType.month === month &&
+              selectedActivityType.day === day
+          )
+        ) {
+          newSelectedActivityTypes = [
+            ...newSelectedActivityTypes,
+            {
+              activityType,
+              year,
+              month,
+              day,
+            },
+          ];
+        }
+        return newSelectedActivityTypes;
+      }
       if (
         newSelectedActivityTypes.some(
           (selectedActivityType) =>
@@ -531,12 +567,12 @@ export default function Entries(props: Props) {
                             >
                               <CardActionArea
                                 onClick={() =>
-                                  handleActivityClick(
-                                    activity.type,
-                                    yearEntries.year,
-                                    monthEntries.monthIndex,
-                                    dayEntries.dayNumber
-                                  )
+                                  handleActivityClick({
+                                    activityType: activity.type,
+                                    year: yearEntries.year,
+                                    month: monthEntries.monthIndex,
+                                    day: dayEntries.dayNumber,
+                                  })
                                 }
                               >
                                 <CardContent
@@ -600,6 +636,15 @@ export default function Entries(props: Props) {
                           <EntriesCard
                             entries={timeEntries.entries}
                             allEntries={entries}
+                            onFilterEntriesButtonClick={(e, activityType) => {
+                              handleActivityClick({
+                                activityType: activityType,
+                                year: yearEntries.year,
+                                month: monthEntries.monthIndex,
+                                day: dayEntries.dayNumber,
+                                preventMultipleSelection: true,
+                              });
+                            }}
                           />
                         </MenuProvider>
                       );

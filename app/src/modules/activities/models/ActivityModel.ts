@@ -73,6 +73,22 @@ export default class ActivityModel {
     this._previousEntryLabelPrefix = v;
   }
 
+  private _addNewEntryLabel: string;
+  public get addNewEntryLabel(): string {
+    return this._addNewEntryLabel;
+  }
+  public set addNewEntryLabel(v: string) {
+    this._addNewEntryLabel = v;
+  }
+
+  private _filterEntriesLabel: string;
+  public get filterEntriesLabel(): string {
+    return this._filterEntriesLabel;
+  }
+  public set filterEntriesLabel(v: string) {
+    this._filterEntriesLabel = v;
+  }
+
   private _order = 0;
   public get order(): number {
     return this._order;
@@ -101,6 +117,8 @@ export default class ActivityModel {
     this._type = type;
     this._name = this.getName(type);
     this._previousEntryLabelPrefix = this.getPreviousEntryLabelPrefix(type);
+    this._addNewEntryLabel = this.getAddNewEntryLabel(type);
+    this._filterEntriesLabel = this.getFilterEntriesLabel(type);
     this._linkedTypes = this.getLinkedTypes(type);
     this._subTypes = this.getSubTypes(type);
     this._hasDuration = this.getHasDuration(type);
@@ -290,6 +308,172 @@ export default class ActivityModel {
         return "Depuis le petit pot précédent:";
       case ActivityType.BellyTime:
         return "Depuis le temps sur le ventre précédent:";
+      default:
+        return "";
+    }
+  }
+
+  getAddNewEntryLabel(type: ActivityType): string {
+    switch (type) {
+      case ActivityType.Bath:
+        return "Ajouter un bain";
+      case ActivityType.BottleFeeding:
+        return "Ajouter un biberon";
+      case ActivityType.BreastFeeding:
+        return "Ajouter un allaitement";
+      case ActivityType.Burp:
+        return "Ajouter un rot";
+      case ActivityType.CarRide:
+        return "Ajouter un trajet en voiture";
+      case ActivityType.Cry:
+        return "Ajouter des pleurs";
+      case ActivityType.Diaper:
+        return "Ajouter une couche";
+      case ActivityType.Hiccups:
+        return "Ajouter un hoquet";
+      case ActivityType.Hospital:
+        return "Ajouter une visite à l'hôpital";
+      case ActivityType.HeadCircumference:
+        return "Ajouter un tour de tête";
+      case ActivityType.MedicalFollowUp:
+        return "Ajouter un suivi médical";
+      case ActivityType.Medicine:
+        return "Ajouter un médicament";
+      case ActivityType.MilkExtraction:
+        return "Ajouter une extraction de lait";
+      case ActivityType.NailCutting:
+        return "Ajouter une coupe d'ongles";
+      case ActivityType.NasalHygiene:
+        return "Ajouter une hygiène nasale";
+      case ActivityType.Play:
+        return "Ajouter un jeu";
+      case ActivityType.Poop:
+        return "Ajouter un caca";
+      case ActivityType.Size:
+        return "Ajouter une taille";
+      case ActivityType.Sleep:
+        return "Ajouter un sommeil";
+      case ActivityType.SolidFood:
+        return "Ajouter une nourriture solide";
+      case ActivityType.Regurgitation:
+        return "Ajouter une régurgitation";
+      case ActivityType.Temperature:
+        return "Ajouter une température";
+      case ActivityType.Teeth:
+        return "Ajouter une dent";
+      case ActivityType.Urine:
+        return "Ajouter un pipi";
+      case ActivityType.Vaccine:
+        return "Ajouter un vaccin";
+      case ActivityType.Vomit:
+        return "Ajouter un vomi";
+      case ActivityType.Walk:
+        return "Ajouter une marche";
+      case ActivityType.Weight:
+        return "Ajouter un poids";
+      case ActivityType.Fart:
+        return "Ajouter un pet";
+      case ActivityType.Symptom:
+        return "Ajouter un symptôme";
+      case ActivityType.Note:
+        return "Ajouter une note";
+      case ActivityType.BabyMash:
+        return "Ajouter une purée";
+      case ActivityType.VitaminsAndSupplements:
+        return "Ajouter des vitamines et suppléments";
+      case ActivityType.AwakeTime:
+        return "Ajouter un temps éveillé";
+      case ActivityType.Activity:
+        return "Ajouter une activité";
+      case ActivityType.BabyCare:
+        return "Ajouter des soins du bébé";
+      case ActivityType.BabyToilet:
+        return "Ajouter un petit pot";
+      case ActivityType.BellyTime:
+        return "Ajouter un temps sur le ventre";
+      default:
+        return "";
+    }
+  }
+
+  getFilterEntriesLabel(type: ActivityType): string {
+    switch (type) {
+      case ActivityType.Bath:
+        return "Afficher seulement les bains";
+      case ActivityType.BottleFeeding:
+        return "Afficher seulement les biberons";
+      case ActivityType.BreastFeeding:
+        return "Afficher seulement les allaitements";
+      case ActivityType.Burp:
+        return "Afficher seulement les rots";
+      case ActivityType.CarRide:
+        return "Afficher seulement les trajets en voiture";
+      case ActivityType.Cry:
+        return "Afficher seulement les pleurs";
+      case ActivityType.Diaper:
+        return "Afficher seulement les couches";
+      case ActivityType.Hiccups:
+        return "Afficher seulement les hoquets";
+      case ActivityType.Hospital:
+        return "Afficher seulement les visites à l'hôpital";
+      case ActivityType.HeadCircumference:
+        return "Afficher seulement les tours de tête";
+      case ActivityType.MedicalFollowUp:
+        return "Afficher seulement les suivis médicaux";
+      case ActivityType.Medicine:
+        return "Afficher seulement les médicaments";
+      case ActivityType.MilkExtraction:
+        return "Afficher seulement les extractions de lait";
+      case ActivityType.NailCutting:
+        return "Afficher seulement les coupes d'ongles";
+      case ActivityType.NasalHygiene:
+        return "Afficher seulement les hygiènes nasales";
+      case ActivityType.Play:
+        return "Afficher seulement les jeux";
+      case ActivityType.Poop:
+        return "Afficher seulement les cacas";
+      case ActivityType.Size:
+        return "Afficher seulement les tailles";
+      case ActivityType.Sleep:
+        return "Afficher seulement les sommeils";
+      case ActivityType.SolidFood:
+        return "Afficher seulement les nourritures solides";
+      case ActivityType.Regurgitation:
+        return "Afficher seulement les régurgitations";
+      case ActivityType.Temperature:
+        return "Afficher seulement les températures";
+      case ActivityType.Teeth:
+        return "Afficher seulement les dents";
+      case ActivityType.Urine:
+        return "Afficher seulement les pipis";
+      case ActivityType.Vaccine:
+        return "Afficher seulement les vaccins";
+      case ActivityType.Vomit:
+        return "Afficher seulement les vomis";
+      case ActivityType.Walk:
+        return "Afficher seulement les marches";
+      case ActivityType.Weight:
+        return "Afficher seulement les poids";
+      case ActivityType.Fart:
+        return "Afficher seulement les pets";
+      case ActivityType.Symptom:
+        return "Afficher seulement les symptômes";
+      case ActivityType.Note:
+        return "Afficher seulement les notes";
+      case ActivityType.BabyMash:
+        return "Afficher seulement les purées";
+      case ActivityType.VitaminsAndSupplements:
+        return "Afficher seulement les vitamines et suppléments";
+      case ActivityType.AwakeTime:
+        return "Afficher seulement les temps éveillés";
+      case ActivityType.Activity:
+        return "Afficher seulement les activités";
+      case ActivityType.BabyCare:
+        return "Afficher seulement les soins du bébé";
+      case ActivityType.BabyToilet:
+        return "Afficher seulement les petits pots";
+      case ActivityType.BellyTime:
+        return "Afficher seulement les temps sur le ventre";
       default:
         return "";
     }

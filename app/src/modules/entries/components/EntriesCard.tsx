@@ -19,10 +19,13 @@ import {
 import { useCallback, useState } from "react";
 
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EntryBody from "@/modules/entries/components/EntryBody";
 import EntryHeader from "@/modules/entries/components/EntryHeader";
 import EntryModel from "@/modules/entries/models/EntryModel";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PageId from "@/common/enums/PageId";
 import getPath from "@/utils/getPath";
@@ -36,6 +39,10 @@ import { useSelector } from "react-redux";
 type Props = {
   entries: EntryModel[];
   allEntries: EntryModel[];
+  onFilterEntriesButtonClick?: (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    activityType: ActivityType
+  ) => void;
 };
 
 export default function EntriesCard(props: Props) {
@@ -46,7 +53,7 @@ export default function EntriesCard(props: Props) {
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
   const dispatch = useAppDispatch();
-  const [menuEntryId, setMenuEntryId] = useState<string | null>(null);
+  const [menuEntry, setMenuEntry] = useState<EntryModel | null>(null);
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
   const { deleteEntry } = useEntries();
@@ -55,16 +62,38 @@ export default function EntriesCard(props: Props) {
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     closeMenu(e);
-    if (!menuEntryId) return;
+    if (!menuEntry) return;
     setDialogOpened(true);
   };
 
+  const handleAddEntryButtonClick = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    closeMenu(e);
+    if (menuEntry?.activity == null) return;
+    navigate(
+      getPath({
+        page: PageId.Entry,
+        params: { activity: menuEntry.activity.type.toString() },
+      })
+    );
+  };
+
+  const handleFilterEntriesButtonClick = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    closeMenu(e);
+    if (menuEntry?.activity == null) return;
+    if (props.onFilterEntriesButtonClick)
+      props.onFilterEntriesButtonClick(e, menuEntry.activity.type);
+  };
+
   const handleDeleteEntry = useCallback(() => {
-    if (!menuEntryId) return;
-    deleteEntry(menuEntryId).then(() => {
+    if (menuEntry?.id == null) return;
+    deleteEntry(menuEntry.id).then(() => {
       handleDialogClose();
     });
-  }, [menuEntryId]);
+  }, [menuEntry]);
 
   return (
     <>
@@ -242,7 +271,7 @@ export default function EntriesCard(props: Props) {
                           }}
                           onClick={(event) => {
                             event.stopPropagation();
-                            setMenuEntryId(entry.id);
+                            setMenuEntry(entry);
                             openMenu(event);
                           }}
                           size="large"
@@ -294,7 +323,38 @@ export default function EntriesCard(props: Props) {
           );
         })}
       </Card>
+
       <Menu>
+        <MenuItem onClick={(e) => handleAddEntryButtonClick(e)}>
+          <Stack direction={"row"} spacing={1}>
+            {menuEntry?.activity == null ? (
+              <>
+                <AddIcon />
+                <Typography>Ajouter une entrée</Typography>
+              </>
+            ) : (
+              <>
+                <AddIcon />
+                <Typography>{menuEntry.activity.addNewEntryLabel}</Typography>
+              </>
+            )}
+          </Stack>
+        </MenuItem>
+        <MenuItem onClick={(e) => handleFilterEntriesButtonClick(e)}>
+          <Stack direction={"row"} spacing={1}>
+            {menuEntry?.activity == null ? (
+              <>
+                <FilterListIcon />
+                <Typography>Afficher toutes les entrées de ce type</Typography>
+              </>
+            ) : (
+              <>
+                <FilterListIcon />
+                <Typography>{menuEntry.activity.filterEntriesLabel}</Typography>
+              </>
+            )}
+          </Stack>
+        </MenuItem>
         <MenuItem onClick={(e) => handleDeleteButtonClick(e)}>
           <Stack direction={"row"} spacing={1}>
             <DeleteIcon />
@@ -302,6 +362,7 @@ export default function EntriesCard(props: Props) {
           </Stack>
         </MenuItem>
       </Menu>
+
       <Dialog
         open={dialogOpened}
         onClose={handleDialogClose}

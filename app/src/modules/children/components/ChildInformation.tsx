@@ -12,7 +12,7 @@ export default function ChildInformation(props: Props) {
   const { user } = useAuthentication();
   const { children } = useChildren();
 
-  const getAgeLabels = (birthDate: Date) => {
+  const getAgeLabels = (birthDate: Date, sex: string) => {
     const now = new Date();
     const ageInDays = Math.floor(
       (now.setHours(0, 0, 0, 0) - new Date(birthDate).setHours(0, 0, 0, 0)) /
@@ -24,6 +24,9 @@ export default function ChildInformation(props: Props) {
     const monthDays = weekDays * 4;
 
     const ageInWeeks = Math.floor(ageInDays / weekDays);
+
+    const nextLabelPrefix =
+      sex == "male" ? "Il aura" : sex == "female" ? "Elle aura" : "";
 
     // If the child is less than 1 day old, we display the age in hours
 
@@ -41,7 +44,7 @@ export default function ChildInformation(props: Props) {
 
       return {
         current: `${ageInHours} heure${ageInHours > 1 ? "s" : ""}`,
-        next: `1 jour dans ${24 - ageInHours} heure${
+        next: `${nextLabelPrefix} 1 jour dans ${24 - ageInHours} heure${
           24 - ageInHours > 1 ? "s" : ""
         }`,
       };
@@ -52,7 +55,7 @@ export default function ChildInformation(props: Props) {
     if (ageInDays < weekDays) {
       return {
         current: `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`,
-        next: `1 semaine dans ${weekDays - ageInDays} jour${
+        next: `${nextLabelPrefix} 1 semaine dans ${weekDays - ageInDays} jour${
           weekDays - ageInDays > 1 ? "s" : ""
         }`,
       };
@@ -65,22 +68,22 @@ export default function ChildInformation(props: Props) {
       const nextAgeInWeeks = ageInWeeks + 1;
       const next =
         nextAgeInWeeks === 4
-          ? `1 mois dans 1 semaine`
-          : `${nextAgeInWeeks} semaine${nextAgeInWeeks > 1 ? "s" : ""} dans ${
-              weekDays - days
-            } jour${weekDays - days > 1 ? "s" : ""}`;
+          ? `${nextLabelPrefix} 1 mois dans 1 semaine`
+          : `${nextLabelPrefix} ${nextAgeInWeeks} semaine${
+              nextAgeInWeeks > 1 ? "s" : ""
+            } dans ${weekDays - days} jour${weekDays - days > 1 ? "s" : ""}`;
 
       if (days === 0) {
         return {
           current: `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`,
-          next: next,
+          next: `${nextLabelPrefix} ${next}`,
         };
       }
       return {
         current: `${ageInWeeks} semaine${
           ageInWeeks > 1 ? "s" : ""
         } et ${days} jour${days > 1 ? "s" : ""}`,
-        next: next,
+        next: `${nextLabelPrefix} ${next}`,
       };
     }
 
@@ -95,21 +98,21 @@ export default function ChildInformation(props: Props) {
       let next = "";
 
       if (nextAgeInMonths === 12) {
-        next = `1 an dans ${remainingWeeks} semaine${
+        next = `${nextLabelPrefix} 1 an dans ${remainingWeeks} semaine${
           remainingWeeks > 1 ? "s" : ""
         }`;
       } else if (weeks === 3) {
         const remainingDays = monthDays - (ageInDays % monthDays);
         if (remainingDays === weekDays) {
-          next = `${nextAgeInMonths} mois dans 1 semaine`;
+          next = `${nextLabelPrefix} ${nextAgeInMonths} mois dans 1 semaine`;
         } else {
-          next = `${nextAgeInMonths} mois dans ${remainingDays} jour${
+          next = `${nextLabelPrefix} ${nextAgeInMonths} mois dans ${remainingDays} jour${
             remainingDays > 1 ? "s" : ""
           }`;
         }
       } else {
         const remainingDays = weekDays - (ageInDays % weekDays);
-        next = `${ageInMonths} mois et ${nextAgeInWeeks} semaine${
+        next = `${nextLabelPrefix} ${ageInMonths} mois et ${nextAgeInWeeks} semaine${
           nextAgeInWeeks > 1 ? "s" : ""
         } dans ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
       }
@@ -117,7 +120,7 @@ export default function ChildInformation(props: Props) {
       if (weeks === 0) {
         return {
           current: `${ageInMonths} mois`,
-          next: next,
+          next: `${next}`,
         };
       }
 
@@ -125,7 +128,7 @@ export default function ChildInformation(props: Props) {
         current: `${ageInMonths} mois et ${weeks} semaine${
           weeks > 1 ? "s" : ""
         }`,
-        next: next,
+        next: `${next}`,
       };
     }
 
@@ -162,7 +165,7 @@ export default function ChildInformation(props: Props) {
         } else if (child.sex == "male") {
           avatarBackgroundColor = "#4F89E8";
         }
-        const ageLabels = getAgeLabels(child.birthDate);
+        const ageLabels = getAgeLabels(child.birthDate, child.sex);
         return (
           <Stack
             key={child.id}
