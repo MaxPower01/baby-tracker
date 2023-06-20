@@ -65,6 +65,9 @@ export class SubActivityModel {
       case SubActivityType.Beach:
         this._name = "Plage";
         break;
+      case SubActivityType.CarSeat:
+        this._name = "Siège d'auto";
+        break;
       default:
         this._name = "_";
         break;

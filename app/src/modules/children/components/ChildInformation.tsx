@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography } from "@mui/material";
+import { Avatar, Stack, SxProps, Typography } from "@mui/material";
 import React, { useMemo } from "react";
 
 import LoadingIndicator from "@/common/components/LoadingIndicator";
@@ -6,7 +6,9 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useChildren from "@/modules/children/hooks/useChildren";
 
-type Props = {};
+type Props = {
+  sx?: SxProps;
+};
 
 export default function ChildInformation(props: Props) {
   const { user } = useAuthentication();
@@ -157,7 +159,11 @@ export default function ChildInformation(props: Props) {
   }
 
   return (
-    <Stack>
+    <Stack
+      sx={{
+        ...props.sx,
+      }}
+    >
       {children.map((child) => {
         let avatarBackgroundColor = "#62CB5C";
         if (child.sex == "female") {
