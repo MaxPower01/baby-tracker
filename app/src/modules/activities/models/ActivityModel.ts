@@ -685,6 +685,7 @@ export default class ActivityModel {
           SubActivityType.Bed,
           SubActivityType.Swing,
           SubActivityType.Moise,
+          SubActivityType.CarSeat,
         ];
       case ActivityType.Play:
         return [SubActivityType.PlayMat];

@@ -60,6 +60,10 @@ function BeachIcon() {
   );
 }
 
+function CarSeatIcon() {
+  return <ReactSVG src="/icons/car-seat.svg" className="ActivityIcon" />;
+}
+
 type Props = {
   subActivity: SubActivityModel;
   sx?: SxProps | undefined;
@@ -96,6 +100,8 @@ export default function ActivityIcon({ subActivity, sx }: Props) {
             return <PoolIcon />;
           case SubActivityType.Beach:
             return <BeachIcon />;
+          case SubActivityType.CarSeat:
+            return <CarSeatIcon />;
           default:
             return null;
         }

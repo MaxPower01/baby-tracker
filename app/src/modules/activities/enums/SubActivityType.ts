@@ -14,5 +14,6 @@ enum SubActivityType {
   Moise = 13,
   Pool = 15,
   Beach = 16,
+  CarSeat = 17,
 }
 export default SubActivityType;
