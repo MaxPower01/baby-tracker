@@ -1,4 +1,4 @@
-import { Chip, Typography, useTheme } from "@mui/material";
+import { Chip, Stack, Typography, useTheme } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
 import SubActivityIcon from "@/modules/activities/components/SubActivityIcon";
@@ -33,15 +33,31 @@ export default function SubActivityChip({
     <Chip
       key={`${subActivity.type}-${subActivity.type}`}
       label={
-        <Typography
-          variant={
-            useCompactMode ? "caption" : size == "small" ? "body2" : "body1"
-          }
-          fontWeight={useCompactMode ? 500 : 600}
-          color={textColor}
+        <Stack
+          direction={"row"}
+          justifyContent={"flex-start"}
+          alignItems={"center"}
         >
-          {subActivity.name}
-        </Typography>
+          <Typography
+            variant={
+              useCompactMode ? "caption" : size == "small" ? "body2" : "body1"
+            }
+            fontWeight={useCompactMode ? 500 : 600}
+            color={textColor}
+          >
+            {subActivity.name}
+          </Typography>
+          {isSelected == true && (
+            <CheckIcon
+              sx={{
+                marginRight: 0,
+                marginLeft: 1,
+                fontSize: useCompactMode ? "1.15em" : "1.35em",
+                color: theme.palette.primary.main,
+              }}
+            />
+          )}
+        </Stack>
       }
       sx={{
         border: "1px solid",
@@ -54,7 +70,7 @@ export default function SubActivityChip({
       }}
       icon={
         <>
-          {isSelected == true && (
+          {/* {isSelected == true && (
             <CheckIcon
               sx={{
                 marginRight: 0,
@@ -63,7 +79,7 @@ export default function SubActivityChip({
                 color: theme.palette.primary.main,
               }}
             />
-          )}
+          )} */}
           <SubActivityIcon
             subActivity={subActivity}
             sx={{

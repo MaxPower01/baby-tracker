@@ -58,18 +58,52 @@ export default function Entries(props: Props) {
   }, [entries]);
 
   const [selectedActivityTypes, setSelectedActivityTypes] = useState<
-    ActivityType[]
+    Array<{
+      activityType: ActivityType;
+      year: number;
+      month: number;
+      day: number;
+    }>
   >([]);
 
-  const handleActivityClick = (activityType: ActivityType) => {
+  const handleActivityClick = (
+    activityType: ActivityType,
+    year: number,
+    month: number,
+    day: number
+  ) => {
     setSelectedActivityTypes((prevSelectedActivityTypes) => {
       let newSelectedActivityTypes = [...prevSelectedActivityTypes];
-      if (newSelectedActivityTypes.includes(activityType)) {
-        return newSelectedActivityTypes.filter(
-          (selectedActivityType) => selectedActivityType !== activityType
-        );
+      if (
+        newSelectedActivityTypes.some(
+          (selectedActivityType) =>
+            selectedActivityType.activityType === activityType &&
+            selectedActivityType.year === year &&
+            selectedActivityType.month === month &&
+            selectedActivityType.day === day
+        )
+      ) {
+        return newSelectedActivityTypes.filter((selectedActivityType) => {
+          if (
+            selectedActivityType.activityType === activityType &&
+            selectedActivityType.year === year &&
+            selectedActivityType.month === month &&
+            selectedActivityType.day === day
+          ) {
+            return false;
+          }
+          return true;
+        });
       }
-      return [...newSelectedActivityTypes, activityType];
+      return [
+        ...newSelectedActivityTypes,
+        {
+          activityType,
+          year,
+          month,
+          day,
+        },
+      ];
     });
   };
 
@@ -121,32 +155,32 @@ export default function Entries(props: Props) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filteredEntries = useMemo(() => {
-    if (entries == null) {
-      return null;
-    }
-    return entries.filter((entry) => {
-      if (selectedActivityTypes.length === 0) {
-        return true;
-      }
-      if (entry.activity == null) {
-        return false;
-      }
-      return (
-        selectedActivityTypes.includes(entry.activity.type) ||
-        entry.linkedActivities.some((linkedActivity) =>
-          selectedActivityTypes.includes(linkedActivity.type)
-        )
-      );
-    });
-  }, [entries, selectedActivityTypes]);
+  // const filteredEntries = useMemo(() => {
+  //   if (entries == null) {
+  //     return null;
+  //   }
+  //   return entries.filter((entry) => {
+  //     if (selectedActivityTypes.length === 0) {
+  //       return true;
+  //     }
+  //     if (entry.activity == null) {
+  //       return false;
+  //     }
+  //     return (
+  //       selectedActivityTypes.includes(entry.activity.type) ||
+  //       entry.linkedActivities.some((linkedActivity) =>
+  //         selectedActivityTypes.includes(linkedActivity.type)
+  //       )
+  //     );
+  //   });
+  // }, [entries, selectedActivityTypes]);
 
   const entriesByDate = useMemo(() => {
-    if (isLoading || !filteredEntries) {
+    if (isLoading || !entries) {
       return null;
     }
-    return groupEntriesByDate(filteredEntries);
-  }, [filteredEntries]);
+    return groupEntriesByDate(entries);
+  }, [entries]);
 
   if (isLoading) {
     return (
@@ -197,7 +231,7 @@ export default function Entries(props: Props) {
           {props.title}
         </Typography>
       )}
-      {allActivityTypes.length > 0 && (
+      {/* {allActivityTypes.length > 0 && (
         <Stack
           spacing={1}
           className="EntriesFilterChips"
@@ -228,13 +262,6 @@ export default function Entries(props: Props) {
               justifyContent={"flex-start"}
               alignItems={"flex-start"}
               spacing={1}
-              // sx={{
-              //   display: "grid",
-              //   gap: 0.5,
-              //   gridTemplateColumns: `${allActivityTypes
-              //     .map(() => "1fr")
-              //     .join(" ")}`,
-              // }}
             >
               {activities.map((activity) => {
                 const hasAtLeastOneEntry = allActivityTypes.some(
@@ -321,15 +348,6 @@ export default function Entries(props: Props) {
                             />
                           )}
                         </Stack>
-                        {/* <ActivityChip
-                          key={activity.type}
-                          activity={activity}
-                          overrideText={overrideText}
-                          onClick={handleActivityClick}
-                          isSelected={selectedActivityTypes.includes(
-                            activity.type
-                          )}
-                        /> */}
                       </CardContent>
                     </CardActionArea>
                   </Card>
@@ -337,35 +355,8 @@ export default function Entries(props: Props) {
               })}
             </Stack>
           </Box>
-
-          {/* {selectedActivityTypes.length > 0 &&
-            (() => {
-              let label = "";
-              if (selectedActivityTypes.length > 1) {
-                label = `
-                ${selectedActivityTypes.length} types d'entrées sont sélectionnés
-                `;
-              } else {
-                label = `
-                  Un type d'entrée est sélectionné
-                `;
-              }
-              return (
-                <Typography
-                  variant={"body2"}
-                  color={"text.secondary"}
-                  fontStyle={"italic"}
-                  sx={{
-                    textAlign: "center",
-                    // fontStyle: "italic",
-                  }}
-                >
-                  {label}
-                </Typography>
-              );
-            })()} */}
         </Stack>
-      )}
+      )} */}
 
       <Stack
         spacing={4}
@@ -381,8 +372,65 @@ export default function Entries(props: Props) {
               }
               const firstEntry = dayEntries.entries[0];
               const startDate = firstEntry.startDate;
+
+              const activityTypes = dayEntries.entries
+                .map((entry) => entry.activity?.type)
+                .filter(
+                  (activityType) => activityType != null
+                ) as ActivityType[];
+              const linkedActivityTypes = dayEntries.entries
+                .map((entry) =>
+                  entry.linkedActivities.map((activity) => activity.type)
+                )
+                .flat();
+              const allActivityTypes =
+                [...activityTypes, ...linkedActivityTypes].filter(
+                  (activityType, index, self) =>
+                    self.indexOf(activityType) === index
+                ) ?? [];
+              const shouldFilter =
+                selectedActivityTypes.length > 0 &&
+                selectedActivityTypes.some(
+                  (selectedActivityType) =>
+                    selectedActivityType.year === yearEntries.year &&
+                    selectedActivityType.month === monthEntries.monthIndex &&
+                    selectedActivityType.day === dayEntries.dayNumber
+                );
+              const filteredEntries = dayEntries.entries.filter((entry) => {
+                if (!shouldFilter) {
+                  return true;
+                }
+                if (entry.activity == null) {
+                  return false;
+                }
+                return (
+                  // selectedActivityTypes.includes(entry.activity.type) ||
+                  selectedActivityTypes.some(
+                    (selectedActivityType) =>
+                      selectedActivityType.activityType ===
+                        entry.activity?.type &&
+                      selectedActivityType.year === yearEntries.year &&
+                      selectedActivityType.month === monthEntries.monthIndex &&
+                      selectedActivityType.day === dayEntries.dayNumber
+                  ) ||
+                  // entry.linkedActivities.some((linkedActivity) =>
+                  //   selectedActivityTypes.includes(linkedActivity.type)
+                  // )
+                  entry.linkedActivities.some((linkedActivity) =>
+                    selectedActivityTypes.some(
+                      (selectedActivityType) =>
+                        selectedActivityType.activityType ===
+                          linkedActivity.type &&
+                        selectedActivityType.year === yearEntries.year &&
+                        selectedActivityType.month ===
+                          monthEntries.monthIndex &&
+                        selectedActivityType.day === dayEntries.dayNumber
+                    )
+                  )
+                );
+              });
               const entriesByTime = groupEntriesByTime({
-                entries: dayEntries.entries,
+                entries: filteredEntries,
                 timeUnit: "minute",
                 timeStep: 30,
               });
@@ -391,7 +439,7 @@ export default function Entries(props: Props) {
                   key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
                   spacing={1}
                 >
-                  <DateHeader
+                  <Stack
                     sx={{
                       position: topHeight != null ? "sticky" : undefined,
                       top:
@@ -399,8 +447,143 @@ export default function Entries(props: Props) {
                       zIndex: 2,
                       backgroundColor: theme.palette.background.default,
                     }}
-                    startDate={startDate}
-                  />
+                  >
+                    <DateHeader startDate={startDate} />
+                    <Box
+                      sx={{
+                        width: "100%",
+                        overflowX: "scroll",
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                        "&::-webkit-scrollbar": {
+                          display: "none",
+                        },
+                        paddingBottom: 1,
+                      }}
+                    >
+                      <Stack
+                        direction={"row"}
+                        justifyContent={"flex-start"}
+                        alignItems={"flex-start"}
+                        spacing={1}
+                      >
+                        {activities.map((activity) => {
+                          const hasAtLeastOneEntry = allActivityTypes.some(
+                            (activityType) => activityType === activity.type
+                          );
+                          if (!hasAtLeastOneEntry) {
+                            return null;
+                          }
+                          const activityEntries = dayEntries.entries.filter(
+                            (entry) =>
+                              entry.activity?.type === activity.type ||
+                              entry.linkedActivities.some(
+                                (linkedActivity) =>
+                                  linkedActivity.type === activity.type
+                              )
+                          );
+                          let text = `${activityEntries.length}X`;
+                          const time = !activity.hasDuration
+                            ? null
+                            : activityEntries
+                                .filter(
+                                  (entry) =>
+                                    entry.activity?.type === activity.type &&
+                                    entry.time > 0
+                                )
+                                .reduce((acc, entry) => acc + entry.time, 0);
+                          if (time != null && time > 0) {
+                            const timeText = formatStopwatchTime(
+                              time,
+                              undefined,
+                              undefined,
+                              true
+                            );
+                            text += ` • ${removeLeadingCharacters(
+                              timeText,
+                              "0"
+                            )}`;
+                          }
+                          // const isSelected = selectedActivityTypes.includes(
+                          //   activity.type
+                          // );
+                          const isSelected = selectedActivityTypes.some(
+                            (selectedActivityType) =>
+                              selectedActivityType.activityType ===
+                                activity.type &&
+                              selectedActivityType.year === yearEntries.year &&
+                              selectedActivityType.month ===
+                                monthEntries.monthIndex &&
+                              selectedActivityType.day === dayEntries.dayNumber
+                          );
+                          return (
+                            <Card
+                              sx={{
+                                border: "1px solid",
+                                borderColor: isSelected
+                                  ? (theme.palette.primary.main as string)
+                                  : "transparent",
+                                backgroundColor: isSelected
+                                  ? `${theme.palette.primary.main}30`
+                                  : undefined,
+                                flexShrink: 0,
+                              }}
+                            >
+                              <CardActionArea
+                                onClick={() =>
+                                  handleActivityClick(
+                                    activity.type,
+                                    yearEntries.year,
+                                    monthEntries.monthIndex,
+                                    dayEntries.dayNumber
+                                  )
+                                }
+                              >
+                                <CardContent
+                                  sx={{
+                                    paddingTop: 0.5,
+                                    paddingBottom: 0.5,
+                                    paddingLeft: 1,
+                                    paddingRight: 1.5,
+                                  }}
+                                >
+                                  <Stack
+                                    direction={"row"}
+                                    spacing={0.5}
+                                    justifyContent={"flex-start"}
+                                    alignItems={"center"}
+                                  >
+                                    <ActivityIcon
+                                      activity={activity}
+                                      sx={{ fontSize: "1.5em" }}
+                                    />
+                                    <Typography
+                                      variant="body2"
+                                      color={
+                                        isSelected
+                                          ? "text.main"
+                                          : "text.secondary"
+                                      }
+                                    >
+                                      {text}
+                                    </Typography>
+                                    {isSelected && (
+                                      <CheckIcon
+                                        sx={{
+                                          fontSize: "1.55em",
+                                          color: theme.palette.primary.main,
+                                        }}
+                                      />
+                                    )}
+                                  </Stack>
+                                </CardContent>
+                              </CardActionArea>
+                            </Card>
+                          );
+                        })}
+                      </Stack>
+                    </Box>
+                  </Stack>
 
                   <Stack
                     spacing={useCompactMode ? 2 : 4}
