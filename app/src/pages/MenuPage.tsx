@@ -8,7 +8,6 @@ import {
   query,
   writeBatch,
 } from "firebase/firestore";
-import { exportToJSONFile, isNullOrWhiteSpace } from "@/utils/utils";
 import {
   resetEntriesState,
   selectEntries,
@@ -17,7 +16,9 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageId from "@/common/enums/PageId";
+import exportToFile from "@/utils/exportToFile";
 import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetAppState } from "@/app/state/appSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -47,7 +48,7 @@ export default function MenuPage() {
     const data = {
       entries: entries.map((entry) => entry.serialize()),
     };
-    exportToJSONFile(data);
+    exportToFile(data);
   }, [entries, isLoadingEntries]);
 
   const handleSaveLocalDataToCloud = useCallback(() => {
@@ -91,7 +92,7 @@ export default function MenuPage() {
     const data = {
       entries: entries.map((entry) => entry.serialize()),
     };
-    exportToJSONFile(data);
+    exportToFile(data);
   }, [user, selectedChild]);
 
   // const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {

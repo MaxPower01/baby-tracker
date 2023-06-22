@@ -31,7 +31,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const getDateFor = (timePeriod: TimePeriod) => {
     const now = new Date();
     switch (timePeriod) {
-      case TimePeriod.LastWeek:
+      case TimePeriod.Week:
         return new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -39,7 +39,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.LastMonth:
+      case TimePeriod.Month:
         return new Date(
           now.getFullYear(),
           now.getMonth() - 1,
@@ -47,7 +47,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.LastDay:
+      case TimePeriod.Day:
         return new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -55,7 +55,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.LastTwoDays:
+      case TimePeriod.TwoDays:
       default:
         return new Date(
           now.getFullYear(),
@@ -104,7 +104,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     getEntries({
-      timePeriod: TimePeriod.LastTwoDays,
+      timePeriod: TimePeriod.TwoDays,
     }).then((fetchedEntries) => {
       setEntries((prevEntries) => {
         if (prevEntries.length === 0) {
@@ -127,9 +127,7 @@ export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
       return;
     }
     const now = new Date();
-    const endAtTimestamp = Timestamp.fromDate(
-      getDateFor(TimePeriod.LastTwoDays)
-    );
+    const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriod.TwoDays));
     const q = query(
       collection(db, `children/${selectedChild}/entries`),
       where("startDate", ">=", endAtTimestamp),

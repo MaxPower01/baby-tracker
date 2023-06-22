@@ -2,6 +2,7 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import { DocumentData } from "firebase/firestore";
 import { SubActivityModel } from "@/modules/activities/models/SubActivityModel";
 import dayjs from "dayjs";
+import { v4 } from "uuid";
 
 export default class EntryModel {
   private _id: string | null = null;
@@ -409,6 +410,22 @@ export default class EntryModel {
         .toDate();
     } else {
       this.endDate = this.startDate;
+    }
+  }
+
+  public static createMock(params: { startDate?: Date }): EntryModel {
+    const result = new EntryModel();
+    try {
+      result.id = v4();
+      const { startDate } = params;
+      if (startDate) {
+        result.startDate = startDate;
+      }
+      // const activityType = ActivityModel.createMock();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      return result;
     }
   }
 }

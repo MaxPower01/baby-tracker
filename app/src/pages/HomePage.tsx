@@ -53,21 +53,6 @@ export default function HomePage() {
             zIndex: 1,
           }}
         />
-        {/* <svg
-          viewBox="0 0 500 100"
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            zIndex: -1,
-          }}
-        >
-          <path
-            d="M 0 50 C 150 150 300 0 500 80 L 500 0 L 0 0"
-            fill="rgb(57, 27, 112)"
-          ></path>
-        </svg> */}
       </Section>
       <Section>
         <MenuProvider>
