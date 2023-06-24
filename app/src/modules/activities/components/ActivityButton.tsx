@@ -46,7 +46,7 @@ export default function ActivityButton({
         justifyContent: "flex-start",
         alignItems: "center",
         ...sx,
-        color: theme.palette.text.primary,
+        color: theme.customPalette.text.primary,
       }}
     >
       <Stack

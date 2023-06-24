@@ -1,4 +1,4 @@
-import { Avatar, Stack, SxProps, Typography } from "@mui/material";
+import { Avatar, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
 import LoadingIndicator from "@/common/components/LoadingIndicator";
@@ -13,6 +13,7 @@ type Props = {
 export default function ChildInformation(props: Props) {
   const { user } = useAuthentication();
   const { children } = useChildren();
+  const theme = useTheme();
 
   const getAgeLabels = (birthDate: Date, sex: string) => {
     const now = new Date();
@@ -196,7 +197,7 @@ export default function ChildInformation(props: Props) {
               {!isNullOrWhiteSpace(ageLabels.next) && (
                 <Typography
                   variant="body1"
-                  color="text.secondary"
+                  color={theme.customPalette.text.secondary}
                   textAlign={"center"}
                 >
                   {ageLabels.next}

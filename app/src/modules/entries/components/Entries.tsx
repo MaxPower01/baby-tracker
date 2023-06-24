@@ -237,7 +237,7 @@ export default function Entries(props: Props) {
         variant="body1"
         sx={{
           textAlign: "center",
-          color: theme.palette.text.secondary,
+          color: theme.customPalette.text.secondary,
           // opacity: 0.5,
           // fontStyle: "italic",
         }}
@@ -257,7 +257,7 @@ export default function Entries(props: Props) {
       {props.title != null && (
         <Typography
           variant={"h6"}
-          color={"text.secondary"}
+          color={theme.customPalette.text.secondary}
           gutterBottom
           sx={{
             textAlign: "center",
@@ -371,7 +371,7 @@ export default function Entries(props: Props) {
                           />
                           <Typography
                             variant="body2"
-                            color={isSelected ? "text.main" : "text.secondary"}
+                            color={isSelected ? "text.main" : {theme.customPalette.text.secondary}}
                           >
                             {text}
                           </Typography>
@@ -552,8 +552,8 @@ export default function Entries(props: Props) {
                                 monthEntries.monthIndex &&
                               selectedActivityType.day === dayEntries.dayNumber
                           );
-                          return (
-                            <Card
+                          return (                                                             
+                                                                                                                   <Card
                               sx={{
                                 border: "1px solid",
                                 borderColor: isSelected
@@ -598,7 +598,7 @@ export default function Entries(props: Props) {
                                       color={
                                         isSelected
                                           ? "text.main"
-                                          : "text.secondary"
+                                          : theme.customPalette.text.secondary
                                       }
                                     >
                                       {text}

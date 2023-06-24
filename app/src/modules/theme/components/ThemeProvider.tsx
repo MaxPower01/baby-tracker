@@ -9,24 +9,26 @@ import { selectThemeMode } from "@/modules/settings/state/settingsSlice";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSelector } from "react-redux";
 
+type CustomPalette = {
+  background: {
+    avatar: string;
+    almostTransparent: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+};
+
 declare module "@mui/material/styles" {
   interface Theme {
-    customPalette: {
-      background: {
-        avatar: string;
-        almostTransparent: string;
-      };
-    };
+    customPalette: CustomPalette;
   }
 
   // allow configuration using `createTheme`
   interface ThemeOptions {
-    customPalette?: {
-      background?: {
-        avatar?: string;
-        almostTransparent?: string;
-      };
-    };
+    customPalette?: CustomPalette;
   }
 }
 
@@ -75,9 +77,6 @@ export default function ThemeProvider(props: ThemeProviderProps) {
             default: themeMode === "dark" ? "#1E212A" : "#fff",
             paper: themeMode === "dark" ? "#222530" : "#fff",
           },
-          // primary: {
-          //   main: mode === "dark" ? "#3F6588" : "#3f51b5",
-          // },
         },
         customPalette: {
           background: {
@@ -87,6 +86,11 @@ export default function ThemeProvider(props: ThemeProviderProps) {
               themeMode === "dark"
                 ? "hsl(0 0% 100% / 0.035)"
                 : "hsl(0 0% 0% / 0.035)",
+          },
+          text: {
+            primary: themeMode === "dark" ? "#ffffff" : "#000000",
+            secondary: themeMode === "dark" ? "#ffffff70" : "#00000070",
+            tertiary: themeMode === "dark" ? "#ffffff40" : "#00000040",
           },
         },
         shape: {

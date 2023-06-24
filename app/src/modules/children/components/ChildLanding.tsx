@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
 import React from "react";
 import { ReactSVG } from "react-svg";
@@ -8,6 +8,7 @@ type Props = {
 };
 
 export default function ChildLanding({ setShowWizard }: Props) {
+  const theme = useTheme();
   return (
     <Stack spacing={4}>
       <Stack
@@ -57,7 +58,7 @@ export default function ChildLanding({ setShowWizard }: Props) {
         <Typography
           variant={"body1"}
           textAlign={"center"}
-          // color={"text.secondary"}
+          // color={theme.customPalette.text.secondary}
           sx={
             {
               // fontStyle: "italic",
@@ -70,7 +71,7 @@ export default function ChildLanding({ setShowWizard }: Props) {
         <Typography
           variant={"body1"}
           textAlign={"center"}
-          color={"text.secondary"}
+          color={theme.customPalette.text.secondary}
           sx={
             {
               // fontStyle: "italic",

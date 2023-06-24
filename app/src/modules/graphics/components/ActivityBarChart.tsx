@@ -111,7 +111,7 @@ export default function ActivityBarChart(props: Props) {
     // Apply text color to x-axis tick labels using CSS and opacity
     chart
       .selectAll(".x-axis text")
-      .style("fill", theme.palette.text.primary)
+      .style("fill", theme.customPalette.text.primary)
       .style("display", "none");
     // .style("opacity", 0.5); // Set the desired text color
 
@@ -125,7 +125,9 @@ export default function ActivityBarChart(props: Props) {
     chart.append("g").attr("class", "y-axis").call(yAxis);
 
     // Apply text color to y-axis tick labels using CSS
-    chart.selectAll(".y-axis text").style("fill", theme.palette.text.primary);
+    chart
+      .selectAll(".y-axis text")
+      .style("fill", theme.customPalette.text.primary);
     // .style("opacity", 0.5); // Set the desired text color
   };
 
@@ -201,7 +203,7 @@ export default function ActivityBarChart(props: Props) {
       <Typography
         variant="body1"
         textAlign={"center"}
-        color="text.secondary"
+        color={theme.customPalette.text.secondary}
         sx={
           {
             // opacity: 0.5,
@@ -219,7 +221,7 @@ export default function ActivityBarChart(props: Props) {
       <Typography
         variant="body1"
         textAlign={"center"}
-        color="text.secondary"
+        color={theme.customPalette.text.secondary}
         sx={
           {
             // opacity: 0.5,

@@ -23,7 +23,7 @@ export default function Section(props: {
             paddingBottom: 2,
             ...sx,
             textTransform: "none",
-            color: theme.palette.text.primary,
+            color: theme.customPalette.text.primary,
           }}
         >
           <Stack alignItems="center" spacing={2}>

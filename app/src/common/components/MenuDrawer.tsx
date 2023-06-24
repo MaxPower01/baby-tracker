@@ -151,7 +151,7 @@ export default function MenuDrawer(props: {
                 variant="text"
                 fullWidth
                 sx={{
-                  color: theme.palette.text.primary,
+                  color: theme.customPalette.text.primary,
                   textAlign: "left",
                   justifyContent: "flex-start",
                 }}
@@ -172,7 +172,7 @@ export default function MenuDrawer(props: {
                   variant="text"
                   fullWidth
                   sx={{
-                    color: theme.palette.text.primary,
+                    color: theme.customPalette.text.primary,
                     textAlign: "left",
                     justifyContent: "flex-start",
                   }}
@@ -196,7 +196,7 @@ export default function MenuDrawer(props: {
                 variant="text"
                 fullWidth
                 sx={{
-                  color: theme.palette.text.primary,
+                  color: theme.customPalette.text.primary,
                   textAlign: "left",
                   justifyContent: "flex-start",
                 }}
@@ -216,7 +216,7 @@ export default function MenuDrawer(props: {
                 variant="text"
                 fullWidth
                 sx={{
-                  color: theme.palette.text.primary,
+                  color: theme.customPalette.text.primary,
                   textAlign: "left",
                   justifyContent: "flex-start",
                 }}
@@ -245,7 +245,7 @@ export default function MenuDrawer(props: {
                 variant="text"
                 fullWidth
                 sx={{
-                  color: theme.palette.text.primary,
+                  color: theme.customPalette.text.primary,
                   textAlign: "left",
                   justifyContent: "flex-start",
                 }}

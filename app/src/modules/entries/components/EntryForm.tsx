@@ -683,7 +683,7 @@ export default function EntryForm(props: EntryFormProps) {
                   textAlign="center"
                   variant="h4"
                   textTransform={"none"}
-                  color={theme.palette.text.primary}
+                  color={theme.customPalette.text.primary}
                 >
                   {volumeLabel}
                 </Typography>
@@ -1003,7 +1003,7 @@ export default function EntryForm(props: EntryFormProps) {
                     textAlign="center"
                     variant="h4"
                     textTransform={"none"}
-                    color={theme.palette.text.primary}
+                    color={theme.customPalette.text.primary}
                   >
                     {stopWatchTimeLabel}
                   </Typography>

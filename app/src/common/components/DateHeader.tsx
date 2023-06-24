@@ -34,7 +34,7 @@ export default function DateHeader(props: Props) {
           paddingRight: 0,
           borderRadius: 0,
           textTransform: "none",
-          color: theme.palette.text.primary,
+          color: theme.customPalette.text.primary,
         }}
         // fullWidth
         // variant="text"

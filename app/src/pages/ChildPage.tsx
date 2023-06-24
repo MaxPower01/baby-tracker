@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 
 import ChildForm from "@/modules/children/components/ChildForm";
@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 export default function ChildPage() {
   const { childId } = useParams();
   const { children, isLoading } = useChildren();
+  const theme = useTheme();
   const child = useMemo(
     () => children?.find((child) => child.id === childId),
     [children, childId]
@@ -26,7 +27,7 @@ export default function ChildPage() {
       return (
         <Typography
           variant={"body1"}
-          color={"text.secondary"}
+          color={theme.customPalette.text.secondary}
           textAlign={"center"}
         >
           Une erreur est survenue. Veuillez réessayer plus tard.

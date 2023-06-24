@@ -201,7 +201,7 @@ export default function NewEntryWidget(props: Props) {
     >
       {/* <Typography
         variant={"body1"}
-        color={"text.secondary"}
+        color={theme.customPalette.text.secondary}
         gutterBottom
         sx={{
           textAlign: "center",
@@ -335,7 +335,7 @@ export default function NewEntryWidget(props: Props) {
                 >
                   <Typography
                     variant={textVariant}
-                    color={"text.secondary"}
+                    color={theme.customPalette.text.secondary}
                     sx={{
                       ...subtitleStyle,
                       // lineHeight: 1.2,

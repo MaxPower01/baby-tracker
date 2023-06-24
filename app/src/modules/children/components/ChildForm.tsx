@@ -242,7 +242,10 @@ export default function ChildForm(props: Props) {
       <Stack spacing={3}>
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Nom
             </Typography>
             <TextField
@@ -257,7 +260,10 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Sexe
             </Typography>
             <Stack>
@@ -280,7 +286,10 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Date de naissance
             </Typography>
             <LocalizationProvider
@@ -307,7 +316,10 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Poids à la naissance
             </Typography>
             <Stack
@@ -339,7 +351,10 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Taille à la naissance
             </Typography>
             <Stack
@@ -370,7 +385,10 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography variant="body1" color={"text.secondary"}>
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.secondary}
+            >
               Tour de tête à la naissance
             </Typography>
             <Stack

@@ -73,7 +73,7 @@ export default function ChildrenPage() {
                     <Typography variant={"h6"}>{child.name}</Typography>
                     <Typography
                       variant={"body2"}
-                      color={"text.secondary"}
+                      color={theme.customPalette.text.secondary}
                       sx={
                         {
                           // opacity: 0.8,

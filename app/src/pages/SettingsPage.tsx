@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -28,6 +29,7 @@ import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 function VerticalStack(props: { children: React.ReactNode }) {
+  const theme = useTheme();
   return (
     <Stack
       spacing={1}
@@ -40,10 +42,11 @@ function VerticalStack(props: { children: React.ReactNode }) {
 }
 
 function ItemDescription(props: { children: React.ReactNode }) {
+  const theme = useTheme();
   return (
     <Typography
       variant={"body2"}
-      color={"text.secondary"}
+      color={theme.customPalette.text.secondary}
       sx={
         {
           // fontStyle: "italic",
