@@ -7,6 +7,7 @@ import {
 } from "firebase/firestore";
 import {
   User,
+  deleteUser,
   getAdditionalUserInfo,
   onAuthStateChanged,
   signInWithPopup,
@@ -96,6 +97,10 @@ export default function AuthenticationProvider(
         // const token = credential?.accessToken;
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
+        if (isNewUser && window.location.hostname !== "localhost") {
+          await deleteUser(result.user);
+          return reject("New users are not allowed to sign up right now");
+        }
         user = result.user;
       } catch (error: any) {
         return reject(error);

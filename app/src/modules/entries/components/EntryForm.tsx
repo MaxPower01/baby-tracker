@@ -7,6 +7,8 @@ import {
   Container,
   Divider,
   Grid,
+  ImageList,
+  ImageListItem,
   InputLabel,
   MenuItem,
   Slide,
@@ -23,6 +25,7 @@ import {
   jaJP,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -49,6 +52,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import formatStopwatchesTime from "@/utils/formatStopwatchesTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { storage } from "@/firebase";
 import { updateEditingEntryId } from "@/modules/entries/state/entriesSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
@@ -137,6 +141,12 @@ export default function EntryForm(props: EntryFormProps) {
         .hour(newStartTime.hour())
         .minute(newStartTime.minute());
       newEntry.startDate = newEntryStartDate.toDate();
+      if (newEntry.anyStopwatchIsRunning) return newEntry;
+      if (newEntry.activity?.hasSides == true) return newEntry;
+      if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
+        return newEntry;
+      const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
+      newEntry.leftTime = diff;
       return newEntry;
     });
     setHasPendingChanges(true);
@@ -171,6 +181,12 @@ export default function EntryForm(props: EntryFormProps) {
         .month(newStartDate.month())
         .date(newStartDate.date());
       newEntry.startDate = newEntryStartDate.toDate();
+      if (newEntry.anyStopwatchIsRunning) return newEntry;
+      if (newEntry.activity?.hasSides == true) return newEntry;
+      if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
+        return newEntry;
+      const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
+      newEntry.leftTime = diff;
       return newEntry;
     });
     setHasPendingChanges(true);
@@ -343,6 +359,68 @@ export default function EntryForm(props: EntryFormProps) {
     setHasPendingChanges(true);
   };
 
+  // Handle images upload
+
+  const [imageURLs, setImageURLs] = useState<string[]>(
+    entryId == null
+      ? props.entry.imageURLs
+      : entries.find((e) => e.id === entryId)?.imageURLs ??
+          props.entry.imageURLs ??
+          []
+  );
+  const [imageLoading, setImageLoading] = useState(false);
+
+  const handleImageChange = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (imageLoading) return;
+      if (event.target.files == null || event.target.files.length === 0) return;
+      const image = event.target.files[0];
+      await handleImageUpload(image);
+      setHasPendingChanges(true);
+    },
+    [imageLoading]
+  );
+
+  const handleImageUpload = async (image: File) => {
+    if (image == null || user == null) return;
+    const storageRef = ref(storage, `user/${user.uid}/images/${image.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    setImageLoading(true);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Progress function ...
+        // const progress = Math.round(
+        //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        // );
+        // setImageUploadProgress(progress);
+      },
+      (error) => {
+        // Error function ...
+        console.error(error);
+        setImageLoading(false);
+      },
+      () => {
+        // Complete function ...
+        getDownloadURL(uploadTask.snapshot.ref)
+          .then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setImageURLs((prevImageUrls) => {
+              const newImageUrls = [...prevImageUrls, downloadURL];
+              return newImageUrls;
+            });
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error(error);
+          })
+          .finally(() => {
+            setImageLoading(false);
+          });
+      }
+    );
+  };
+
   // Handle size
 
   // Represents the size in millimeters
@@ -509,7 +587,7 @@ export default function EntryForm(props: EntryFormProps) {
         entryToSave.note = note;
         entryToSave.weight = weight;
         entryToSave.length = size;
-        console.log("Saving entry: ", entryToSave);
+        entryToSave.imageURLs = imageURLs;
         const id = await saveEntry(entryToSave);
         if (id != null) {
           setEntryId(id);
@@ -528,7 +606,16 @@ export default function EntryForm(props: EntryFormProps) {
         return false;
       }
     },
-    [entry, user, entryId, note, weight, size, endDateWasEditedManually]
+    [
+      entry,
+      user,
+      entryId,
+      note,
+      weight,
+      size,
+      endDateWasEditedManually,
+      imageURLs,
+    ]
   );
 
   const handleStopwatchChange = useCallback(
@@ -1406,6 +1493,46 @@ export default function EntryForm(props: EntryFormProps) {
               // }
             }}
           />
+        </Section>
+
+        <Section dividerPosition={undefined}>
+          <SectionTitle title="Images" />
+          {(imageURLs?.length ?? 0) > 0 && (
+            <ImageList>
+              {imageURLs.map((imageURL, index) => {
+                return (
+                  <ImageListItem key={`${index}-${imageURL}`}>
+                    <img src={`${imageURL}`} loading="lazy" />
+                  </ImageListItem>
+                );
+              })}
+            </ImageList>
+          )}
+          <input
+            id="entry-form-image-upload"
+            type="file"
+            accept="image/*"
+            multiple={true}
+            onChange={async (e) => await handleImageChange(e)}
+            style={{ display: "none" }}
+          />
+          <label htmlFor="entry-form-image-upload">
+            <Button
+              variant="outlined"
+              onClick={() => {
+                if (document && document.getElementById) {
+                  const input = document.getElementById(
+                    "entry-form-image-upload"
+                  );
+                  if (input) {
+                    input.click();
+                  }
+                }
+              }}
+            >
+              Ajouter une image
+            </Button>
+          </label>
         </Section>
       </SectionStack>
 

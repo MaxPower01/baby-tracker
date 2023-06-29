@@ -226,6 +226,14 @@ export default class EntryModel {
     this._editedDate = v;
   }
 
+  private _imageURLs: string[] = [];
+  public get imageURLs(): string[] {
+    return this._imageURLs;
+  }
+  public set imageURLs(v: string[]) {
+    this._imageURLs = v;
+  }
+
   public constructor() {}
 
   /**
@@ -268,6 +276,7 @@ export default class EntryModel {
           : this.editedDate?.toISOString(),
       weight: this.weight,
       length: this.length,
+      imageURLs: this.imageURLs,
     };
   }
 
@@ -308,6 +317,7 @@ export default class EntryModel {
     if (json.editedDate != null) entry.editedDate = new Date(json.editedDate);
     if (json.weight != null) entry.weight = json.weight;
     if (json.length != null) entry.length = json.length;
+    if (json.imageURLs != null) entry.imageURLs = json.imageURLs;
     return entry;
   }
 

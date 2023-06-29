@@ -1,4 +1,13 @@
-import { Box, Grid, Stack, SxProps, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Grid,
+  ImageList,
+  ImageListItem,
+  Stack,
+  SxProps,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -311,6 +320,18 @@ export default function EntryBody(props: Props) {
         >
           {entry.note}
         </Typography>
+      )}
+
+      {(entry.imageURLs?.length ?? 0) > 0 && (
+        <ImageList>
+          {entry.imageURLs.map((imageURL, index) => {
+            return (
+              <ImageListItem key={`${index}-${imageURL}`}>
+                <img src={`${imageURL}`} loading="lazy" />
+              </ImageListItem>
+            );
+          })}
+        </ImageList>
       )}
 
       {timeElapsedSincePreviousEntryLabel != null && (
