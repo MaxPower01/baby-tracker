@@ -1,7 +1,3 @@
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import ActivityButtons from "@/modules/activities/components/ActivityButtons";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Container,
@@ -12,11 +8,21 @@ import {
   Typography,
 } from "@mui/material";
 
+import ActivityButtons from "@/modules/activities/components/ActivityButtons";
+import ActivityType from "@/modules/activities/enums/ActivityType";
+import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CloseIcon from "@mui/icons-material/Close";
+import PageId from "@/common/enums/PageId";
+import SettingsIcon from "@mui/icons-material/Settings";
+import getPath from "@/utils/getPath";
+import { useNavigate } from "react-router-dom";
+
 export default function ActivitiesDrawer(props: {
   isOpen: boolean;
   onClose: () => void;
   handleActivityClick: (type: ActivityType) => void;
 }) {
+  const navigate = useNavigate();
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -38,6 +44,14 @@ export default function ActivitiesDrawer(props: {
           <Toolbar>
             <Typography variant="h6">Ajouter une entrée</Typography>
             <Box sx={{ flexGrow: 1 }} />
+            <IconButton
+              onClick={() => {
+                navigate(getPath({ page: PageId.Activities }));
+                props.onClose();
+              }}
+            >
+              <SettingsIcon />
+            </IconButton>
             <IconButton onClick={() => props.onClose()}>
               <CloseIcon />
             </IconButton>

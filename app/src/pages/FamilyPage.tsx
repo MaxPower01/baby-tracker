@@ -16,7 +16,7 @@ import useChildren from "@/modules/children/hooks/useChildren";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ChildrenPage() {
+export default function FamilyPage() {
   const { user } = useAuthentication();
   const { children } = useChildren();
   const theme = useTheme();

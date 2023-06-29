@@ -1,5 +1,6 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
+import ChildCareIcon from "@mui/icons-material/ChildCare";
 import React from "react";
 import { ReactSVG } from "react-svg";
 
@@ -30,7 +31,11 @@ export default function ChildLanding({ setShowWizard }: Props) {
           <Typography variant={"h4"} textAlign={"center"} fontWeight={"bold"}>
             Ajoutez votre enfant
           </Typography>
-          <Typography variant={"body1"} textAlign={"center"}>
+          <Typography
+            variant={"body1"}
+            textAlign={"center"}
+            color={theme.customPalette.text.primary}
+          >
             La première étape pour utiliser l'application est d'ajouter un
             enfant à votre compte.
           </Typography>
@@ -51,12 +56,15 @@ export default function ChildLanding({ setShowWizard }: Props) {
             setShowWizard(true);
           }}
         >
-          Ajouter mon enfant
+          <Stack direction={"row"} spacing={1}>
+            <ChildCareIcon />
+            <Typography>Ajouter mon enfant</Typography>
+          </Stack>
         </Button>
       </Stack>
       <Stack>
         <Typography
-          variant={"body1"}
+          variant={"body2"}
           textAlign={"center"}
           // color={theme.customPalette.text.secondary}
           sx={
@@ -69,7 +77,7 @@ export default function ChildLanding({ setShowWizard }: Props) {
           Votre paretenaire utilise déjà l'application ?
         </Typography>
         <Typography
-          variant={"body1"}
+          variant={"body2"}
           textAlign={"center"}
           color={theme.customPalette.text.secondary}
           sx={

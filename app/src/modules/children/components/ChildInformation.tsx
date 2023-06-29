@@ -56,11 +56,18 @@ export default function ChildInformation(props: Props) {
     // If the child is less than 1 week old, we display the age in days
 
     if (ageInDays < weekDays) {
+      const remainingDays = weekDays - ageInDays;
+
+      const nextLabelSuffix =
+        remainingDays === 1
+          ? "demain"
+          : `dans ${weekDays - ageInDays} jour${
+              weekDays - ageInDays > 1 ? "s" : ""
+            }`;
+
       return {
         current: `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`,
-        next: `${nextLabelPrefix} 1 semaine dans ${weekDays - ageInDays} jour${
-          weekDays - ageInDays > 1 ? "s" : ""
-        }`,
+        next: `${nextLabelPrefix} 1 semaine ${nextLabelSuffix}`,
       };
     }
 
@@ -69,12 +76,16 @@ export default function ChildInformation(props: Props) {
     if (ageInDays < monthDays) {
       const days = ageInDays % weekDays;
       const nextAgeInWeeks = ageInWeeks + 1;
+      const remainingDays = weekDays - days;
+      const nextLabelSuffixIfLessThanFourWeeks = `dans ${remainingDays} jour${
+        remainingDays > 1 ? "s" : ""
+      }`;
       const next =
         nextAgeInWeeks === 4
           ? `${nextLabelPrefix} 1 mois dans 1 semaine`
           : `${nextLabelPrefix} ${nextAgeInWeeks} semaine${
               nextAgeInWeeks > 1 ? "s" : ""
-            } dans ${weekDays - days} jour${weekDays - days > 1 ? "s" : ""}`;
+            } ${nextLabelSuffixIfLessThanFourWeeks}`;
 
       if (days === 0) {
         return {
@@ -109,15 +120,21 @@ export default function ChildInformation(props: Props) {
         if (remainingDays === weekDays) {
           next = `${nextLabelPrefix} ${nextAgeInMonths} mois dans 1 semaine`;
         } else {
-          next = `${nextLabelPrefix} ${nextAgeInMonths} mois dans ${remainingDays} jour${
-            remainingDays > 1 ? "s" : ""
-          }`;
+          const nextLabelSuffix =
+            remainingDays === 1
+              ? "demain"
+              : `dans ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
+          next = `${nextLabelPrefix} ${nextAgeInMonths} mois ${nextLabelSuffix}`;
         }
       } else {
         const remainingDays = weekDays - (ageInDays % weekDays);
+        const nextLabelSuffix =
+          remainingDays === 1
+            ? "demain"
+            : `dans ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
         next = `${nextLabelPrefix} ${ageInMonths} mois et ${nextAgeInWeeks} semaine${
           nextAgeInWeeks > 1 ? "s" : ""
-        } dans ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
+        } ${nextLabelSuffix}`;
       }
 
       if (weeks === 0) {

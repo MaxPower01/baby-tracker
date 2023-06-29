@@ -225,7 +225,7 @@ export default function EntriesCard(props: Props) {
                           flexShrink: 0,
                           zIndex: 1,
                           borderColor: entryHasStopwatchRunning
-                            ? theme.palette.primary.main
+                            ? `${theme.palette.primary.main}50`
                             : "transparent",
                           boxShadow: entryHasStopwatchRunning
                             ? `0 0 5px 0px ${theme.palette.primary.main}`

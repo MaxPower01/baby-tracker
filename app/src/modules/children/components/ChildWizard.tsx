@@ -26,6 +26,7 @@ import { useCallback, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Child from "@/modules/authentication/types/Child";
+import ChildForm from "@/modules/children/components/ChildForm";
 import PageId from "@/common/enums/PageId";
 import Sex from "@/common/enums/Sex";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";

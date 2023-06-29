@@ -18,8 +18,8 @@ export default function getPageTitle(pathname: string) {
       return "Ajouter une entrée";
     case PageId.Authentication:
       return "Connexion";
-    case PageId.Children:
-      return "Enfants";
+    case PageId.Family:
+      return "Ma famille";
     case PageId.Settings:
       return "Paramètres";
     case PageId.Activities:

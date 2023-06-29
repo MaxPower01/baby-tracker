@@ -72,7 +72,7 @@ export default function AuthenticationForm() {
       if (isNewUser == true) {
         navigate(
           getPath({
-            page: PageId.Children,
+            page: PageId.Family,
           })
         );
       } else {

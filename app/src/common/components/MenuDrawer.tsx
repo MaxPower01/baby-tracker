@@ -18,10 +18,12 @@ import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import PageId from "@/common/enums/PageId";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SortIcon from "@mui/icons-material/Sort";
 import { functions } from "@/firebase";
@@ -81,6 +83,9 @@ export default function MenuDrawer(props: {
     handleDialogClose();
   }, [selectedChild, user, addParentFunction, email]);
 
+  const avatarWidth = 100;
+  const avatarFontSize = avatarWidth / 2.5;
+
   return (
     <>
       <SwipeableDrawer
@@ -128,7 +133,14 @@ export default function MenuDrawer(props: {
                 </>
               ) : (
                 <>
-                  <Avatar>
+                  <Avatar
+                    sx={{
+                      width: avatarWidth,
+                      height: avatarWidth,
+                      fontSize: avatarFontSize,
+                    }}
+                    src={user?.photoURL ?? undefined}
+                  >
                     {user.displayName
                       ?.split(" ")
                       .map((name) => name[0].toUpperCase())}
@@ -157,15 +169,15 @@ export default function MenuDrawer(props: {
                 }}
                 onClick={() => {
                   props.onClose();
-                  navigate(getPath({ page: PageId.Children }));
+                  navigate(getPath({ page: PageId.Family }));
                 }}
               >
-                <ChildCareIcon
+                <PeopleAltIcon
                   sx={{
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Mes enfants</Typography>
+                <Typography variant="body1">Ma famille</Typography>
               </Button>
               {!isNullOrWhiteSpace(selectedChild) && (
                 <Button
@@ -182,14 +194,12 @@ export default function MenuDrawer(props: {
                     setDialogOpened(true);
                   }}
                 >
-                  <EscalatorWarningIcon
+                  <PersonAddIcon
                     sx={{
                       marginRight: 1,
                     }}
                   />
-                  <Typography variant="body1">
-                    Ajouter un utilisateur
-                  </Typography>
+                  <Typography variant="body1">Inviter quelqu'un</Typography>
                 </Button>
               )}
               <Button
@@ -210,7 +220,9 @@ export default function MenuDrawer(props: {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Modifier les activités</Typography>
+                <Typography variant="body1">
+                  Modifier l'ordre des activités
+                </Typography>
               </Button>
               <Button
                 variant="text"

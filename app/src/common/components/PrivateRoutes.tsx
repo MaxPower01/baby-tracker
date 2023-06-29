@@ -3,9 +3,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ActivitiesPage from "@/pages/ActivitiesPage";
 import AuthenticationPage from "@/pages/AuthenticationPage";
 import ChildPage from "@/pages/ChildPage";
-import ChildrenPage from "@/pages/ChildrenPage";
 import EntriesPage from "@/pages/EntriesPage";
 import EntryPage from "@/pages/EntryPage";
+import FamilyPage from "@/pages/FamilyPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
 import PageId from "@/common/enums/PageId";
@@ -31,8 +31,8 @@ export default function PrivateRoutes() {
         {isNullOrWhiteSpace(selectedChild) == false && (
           <>
             <Route
-              path={getPath({ page: PageId.Children })}
-              element={<ChildrenPage />}
+              path={getPath({ page: PageId.Family })}
+              element={<FamilyPage />}
             />
 
             <Route path="" element={<HomePage />} />

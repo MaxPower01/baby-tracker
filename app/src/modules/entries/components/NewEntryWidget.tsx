@@ -257,7 +257,7 @@ export default function NewEntryWidget(props: Props) {
                     sx={{
                       border: "1px solid",
                       borderColor: isInProgress
-                        ? (theme.palette.primary.main as string)
+                        ? (`${theme.palette.primary.main}50` as string)
                         : "transparent",
                       backgroundColor: isInProgress
                         ? `${theme.palette.primary.main}30`
@@ -338,7 +338,7 @@ export default function NewEntryWidget(props: Props) {
                     color={theme.customPalette.text.secondary}
                     sx={{
                       ...subtitleStyle,
-                      // lineHeight: 1.2,
+                      lineHeight: 1.4,
                       // whiteSpace: "pre",
                     }}
                   >
@@ -353,7 +353,7 @@ export default function NewEntryWidget(props: Props) {
                         : undefined,
                       fontWeight: isInProgress ? "bold" : undefined,
                       // whiteSpace: "pre",
-                      // lineHeight: 1,
+                      lineHeight: 1.4,
                     }}
                   >
                     {lastEntryLabels.title}

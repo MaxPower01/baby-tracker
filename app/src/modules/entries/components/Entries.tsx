@@ -472,7 +472,7 @@ export default function Entries(props: Props) {
               });
               return (
                 <Stack
-                  key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}`}
+                  key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}-${dayEntries.entries[0].id}`}
                   spacing={1}
                 >
                   <Stack
@@ -552,8 +552,9 @@ export default function Entries(props: Props) {
                                 monthEntries.monthIndex &&
                               selectedActivityType.day === dayEntries.dayNumber
                           );
-                          return (                                                             
-                                                                                                                   <Card
+                          return (
+                            <Card
+                              key={`${yearEntries.year}-${monthEntries.monthIndex}-${dayEntries.dayNumber}-${activity.type}-${dayEntries.entries[0].id}-2`}
                               sx={{
                                 border: "1px solid",
                                 borderColor: isSelected

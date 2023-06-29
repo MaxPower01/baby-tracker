@@ -4,7 +4,7 @@ enum PageId {
   Entries = "entries",
   Entry = "entry",
   Authentication = "authentication",
-  Children = "children",
+  Family = "family",
   Child = "child",
   Settings = "settings",
   Activities = "activities",

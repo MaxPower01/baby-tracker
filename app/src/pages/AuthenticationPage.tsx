@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 export default function AuthenticationPage() {
   return (
     <Stack
-      spacing={2}
+      spacing={4}
       justifyContent={"center"}
       alignItems={"center"}
       sx={{
@@ -15,19 +15,21 @@ export default function AuthenticationPage() {
         marginTop: 4,
       }}
     >
-      <Box
-        sx={{
-          fontSize: "10em",
-        }}
-      >
-        <ReactSVG src="/favicon.svg" className="ActivityIcon" />
-      </Box>
-      <Typography variant={"h4"} textAlign={"center"}>
-        Journal de bébé
-      </Typography>
-      <Typography variant={"body1"} textAlign={"center"}>
-        Connectez-vous pour commencer à utiliser l'application
-      </Typography>
+      <Stack spacing={2}>
+        <Box
+          sx={{
+            fontSize: "12em",
+          }}
+        >
+          <ReactSVG src="/favicon.svg" className="ActivityIcon" />
+        </Box>
+        <Typography variant={"h4"} textAlign={"center"} fontWeight={600}>
+          Journal de bébé
+        </Typography>
+        <Typography variant={"body1"} textAlign={"center"}>
+          Connectez-vous pour commencer
+        </Typography>
+      </Stack>
 
       <AuthenticationForm />
     </Stack>
