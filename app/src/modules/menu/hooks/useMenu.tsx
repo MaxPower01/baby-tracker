@@ -1,6 +1,6 @@
 import MenuContext from "@/modules/menu/components/MenuContext";
-import { Menu as MuiMenu } from "@mui/material";
 import { MenuProps } from "@mui/material/Menu";
+import { Menu as MuiMenu } from "@mui/material";
 import React from "react";
 
 // Wrapping the Menu component in a hook allows us to use the context.
@@ -11,7 +11,17 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
   // Retrieve the context.
   const { menuProps } = React.useContext(MenuContext);
   // Spread the props to the Menu component.
-  return <MuiMenu {...menuProps} {...props} />;
+  return (
+    <MuiMenu
+      {...menuProps}
+      {...props}
+      slotProps={{
+        backdrop: {
+          sx: { backgroundColor: "#00000080" },
+        },
+      }}
+    />
+  );
 };
 
 export default function useMenu() {

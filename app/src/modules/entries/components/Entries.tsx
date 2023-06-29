@@ -9,11 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  formatStopwatchTime,
-  groupEntriesByDate,
-  groupEntriesByTime,
-} from "@/utils/utils";
+import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
 import ActivityChip from "@/modules/activities/components/ActivityChip";
@@ -24,6 +20,7 @@ import DateHeader from "@/common/components/DateHeader";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import TimePeriod from "@/common/enums/TimePeriod";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";

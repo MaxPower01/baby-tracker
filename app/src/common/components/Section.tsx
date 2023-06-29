@@ -19,8 +19,8 @@ export default function Section(props: {
           component={"section"}
           sx={{
             width: "100%",
-            paddingTop: 2,
-            paddingBottom: 2,
+            // paddingTop: 2,
+            // paddingBottom: 2,
             ...sx,
             textTransform: "none",
             color: theme.customPalette.text.primary,
@@ -34,7 +34,12 @@ export default function Section(props: {
         <Box
           // elevation={0}
           component={"section"}
-          sx={{ width: "100%", paddingTop: 2, paddingBottom: 2, ...sx }}
+          sx={{
+            width: "100%",
+            // paddingTop: 2,
+            //  paddingBottom: 2,
+            ...sx,
+          }}
         >
           <Stack alignItems="center" spacing={2}>
             {children}

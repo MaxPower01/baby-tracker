@@ -1,8 +1,8 @@
-import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
-
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import SubActivityType from "@/modules/activities/enums/SubActivityType";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 
 export default class ActivityModel {
   private _type: ActivityType;
@@ -494,9 +494,7 @@ export default class ActivityModel {
     if (now == null) now = new Date();
     let result = "";
     const time =
-      lastEntry.time > 0
-        ? formatStopwatchTime(lastEntry.time, true, lastEntry.time < 1000 * 60)
-        : null;
+      lastEntry.time > 0 ? formatStopwatchTime(lastEntry.time, false) : null;
 
     if (lastEntry.activity?.type == ActivityType.BreastFeeding) {
       if (lastEntry.leftTime > 0 && lastEntry.rightTime == 0) {

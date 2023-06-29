@@ -1,13 +1,17 @@
-import React from "react";
-import { Stack } from "@mui/material";
+import { Stack, SxProps } from "@mui/material";
 
-export default function SectionStack(props: React.PropsWithChildren<{}>) {
+import React from "react";
+
+export default function SectionStack(
+  props: React.PropsWithChildren<{ sx?: SxProps }>
+) {
   return (
     <Stack
-      spacing={0}
+      spacing={2}
       alignItems="center"
       sx={{
         width: "100%",
+        ...props.sx,
       }}
     >
       {props.children}

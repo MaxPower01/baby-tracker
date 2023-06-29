@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   MenuItem,
   Stack,
@@ -7,7 +8,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
 import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
@@ -17,7 +17,9 @@ import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import PageId from "@/common/enums/PageId";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
@@ -123,15 +125,9 @@ export default function NewEntryWidget(props: Props) {
   const subtitleStyle: SxProps = {
     opacity: 0.6,
     textAlign: "center",
-    // fontStyle: "italic",
-    // marginTop: 1,
-    // fontWeight: "bold",
   };
   const titleStyle: SxProps = {
     textAlign: "center",
-    // fontWeight: "bold",
-    // opacity: 0.8,
-    // marginTop: 1,
   };
 
   const textVariant = useCompactMode ? "caption" : "body2";
@@ -199,18 +195,6 @@ export default function NewEntryWidget(props: Props) {
         width: "100%",
       }}
     >
-      {/* <Typography
-        variant={"body1"}
-        color={theme.customPalette.text.secondary}
-        gutterBottom
-        sx={{
-          textAlign: "center",
-          opacity: 0.8,
-          // fontStyle: "italic",
-        }}
-      >
-        Ajouter une entrée
-      </Typography> */}
       <Box
         sx={{
           width: "100%",
@@ -318,8 +302,17 @@ export default function NewEntryWidget(props: Props) {
           {allActivitiesWithLastEntry.map(
             ({ activity, lastEntry, isInProgress, lastEntryLabels }) => {
               return (
-                <Stack
+                <Button
                   key={activity.type}
+                  variant="text"
+                  onClick={() =>
+                    navigate(
+                      getPath({
+                        page: PageId.Entry,
+                        id: lastEntry?.id ?? "",
+                      })
+                    )
+                  }
                   sx={{
                     marginTop: useCompactMode ? 0 : 0.5,
                     fontSize: useCompactMode
@@ -331,34 +324,51 @@ export default function NewEntryWidget(props: Props) {
                     paddingLeft: activityButtonPaddingLeftRight,
                     paddingRight: activityButtonPaddingLeftRight,
                     order: isInProgress ? 0 : activity.order + 1,
+                    // paddingTop: 0.5,
                   }}
                 >
-                  <Typography
-                    variant={textVariant}
-                    color={theme.customPalette.text.secondary}
+                  <Stack
                     sx={{
-                      ...subtitleStyle,
-                      lineHeight: 1.4,
-                      // whiteSpace: "pre",
+                      overflow: "hidden",
                     }}
                   >
-                    {lastEntryLabels.subtitle}
-                  </Typography>
-                  <Typography
-                    variant={textVariant}
-                    sx={{
-                      ...titleStyle,
-                      color: isInProgress
-                        ? theme.palette.primary.main
-                        : undefined,
-                      fontWeight: isInProgress ? "bold" : undefined,
-                      // whiteSpace: "pre",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {lastEntryLabels.title}
-                  </Typography>
-                </Stack>
+                    <Typography
+                      variant={textVariant}
+                      color={theme.customPalette.text.secondary}
+                      sx={{
+                        ...subtitleStyle,
+                        lineHeight: 1.4,
+                        textTransform: "none",
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {lastEntryLabels.subtitle}
+                    </Typography>
+                    <Typography
+                      variant={textVariant}
+                      color={
+                        isInProgress
+                          ? theme.palette.primary.main
+                          : theme.customPalette.text.primary
+                      }
+                      sx={{
+                        ...titleStyle,
+                        fontWeight: isInProgress ? "bold" : undefined,
+                        textTransform: "none",
+                        lineHeight: 1.4,
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {lastEntryLabels.title}
+                    </Typography>
+                  </Stack>
+                </Button>
               );
             }
           )}

@@ -13,13 +13,14 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { formatStopwatchTime, isNullOrWhiteSpace } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 
 // import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
@@ -155,11 +156,39 @@ export default function Stopwatch(props: Props) {
           // direction={"row"}
           alignItems={"center"}
           justifyContent={"space-between"}
-          spacing={2}
+          spacing={1}
           sx={{
             width: "100%",
           }}
         >
+          <Stack
+            direction={"row"}
+            spacing={0}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Button
+              id={props.editButtonId}
+              variant={inputsAreReadOnly ? "text" : "text"}
+              onClick={() => {
+                if (!inputsAreReadOnly) {
+                  setDrawerIsOpen(true);
+                }
+              }}
+              // disabled={inputsAreReadOnly}
+            >
+              <Typography
+                variant="h5"
+                color={
+                  inputsAreReadOnly
+                    ? theme.customPalette.text.primary
+                    : undefined
+                }
+              >
+                {formatStopwatchTime(time, false, true)}
+              </Typography>
+            </Button>
+          </Stack>
           <Button
             id={props.playPauseButtonId}
             onClick={handleStartStop}
@@ -200,25 +229,6 @@ export default function Stopwatch(props: Props) {
               )}
             </Stack>
           </Button>
-          <Stack
-            direction={"row"}
-            spacing={0}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Button
-              id={props.editButtonId}
-              variant="outlined"
-              onClick={() => {
-                setDrawerIsOpen(true);
-              }}
-              disabled={inputsAreReadOnly}
-            >
-              <Typography variant="h6">
-                {formatStopwatchTime(time, false, true, false)}
-              </Typography>
-            </Button>
-          </Stack>
         </Stack>
       </Stack>
 

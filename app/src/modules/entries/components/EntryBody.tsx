@@ -8,7 +8,7 @@ import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
-import { formatStopwatchTime } from "@/utils/utils";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useSelector } from "react-redux";
 
@@ -42,11 +42,7 @@ export default function EntryBody(props: Props) {
     const diff = entry.startDate.getTime() - previousEntry.endDate.getTime();
     const duration =
       previousEntry.time > 0
-        ? formatStopwatchTime(
-            previousEntry.time,
-            true,
-            previousEntry.time < 1000 * 60
-          )
+        ? formatStopwatchTime(previousEntry.time, false)
         : null;
     return {
       prefix: entry.activity.previousEntryLabelPrefix,
@@ -63,17 +59,17 @@ export default function EntryBody(props: Props) {
     }
     if (entry?.activity?.hasSides) {
       if (entry.leftTime && entry.rightTime) {
-        let leftLabel = `(G) ${formatStopwatchTime(
+        let leftLabel = `${formatStopwatchTime(
           entry.getTime({
             side: "left",
             upToDate: true,
           }),
-          true
-        )}`;
-        let rightLabel = `(D) ${formatStopwatchTime(
+          false
+        )} • Gauche`;
+        let rightLabel = `${formatStopwatchTime(
           entry.getTime({ side: "right", upToDate: true }),
-          true
-        )}`;
+          false
+        )} • Droite`;
         // if (entry.leftStopwatchIsRunning) leftLabel += " (en cours)";
         // if (entry.rightStopwatchIsRunning) rightLabel += " (en cours)";
         result.push(leftLabel);
@@ -81,7 +77,7 @@ export default function EntryBody(props: Props) {
       } else {
         let label = `${formatStopwatchTime(
           entry.getTime({ upToDate: true }),
-          true
+          false
         )}`;
         // if (entry.leftStopwatchIsRunning) label += " (en cours)";
         result.push(label);
@@ -89,7 +85,7 @@ export default function EntryBody(props: Props) {
     } else {
       let label = `${formatStopwatchTime(
         entry.getTime({ upToDate: true }),
-        true
+        false
       )}`;
       // if (entry.leftStopwatchIsRunning) label += " (en cours)";
       result.push(label);
