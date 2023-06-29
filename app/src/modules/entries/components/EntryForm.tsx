@@ -797,107 +797,6 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
-        {entry.activity?.hasDuration == true && (
-          <Section>
-            <Stack
-              direction={"row"}
-              spacing={4}
-              sx={{
-                width: "100%",
-              }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  width: "100%",
-                }}
-                onClick={(e) => {
-                  if (entry.rightStopwatchIsRunning) {
-                    setSnackbarMessage(
-                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                    );
-                    setSnackbarSeverity("info");
-                    setSnackbarIsOpen(true);
-                  }
-                }}
-              >
-                <Stopwatch
-                  playPauseButtonId={leftStopwatchPlayPauseButtonId}
-                  editButtonId={leftStopwatchEditButtonId}
-                  label={entry.activity?.hasSides ? "Gauche" : undefined}
-                  sx={{ flex: 1, width: "100%" }}
-                  time={entry.leftTime}
-                  isRunning={entry.leftStopwatchIsRunning}
-                  lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
-                  buttonIsDisabled={entry.rightStopwatchIsRunning}
-                  // inputsAreDisabled={anyStopwatchIsRunning}
-                  inputsAreReadOnly={anyStopwatchIsRunning}
-                  onChange={(params) =>
-                    handleStopwatchChange({
-                      ...params,
-                      side: "left",
-                    })
-                  }
-                />
-              </Box>
-              {entry.activity?.hasSides && (
-                <Box
-                  sx={{
-                    flex: 1,
-                    width: "100%",
-                  }}
-                  onClick={(e) => {
-                    if (entry.leftStopwatchIsRunning) {
-                      setSnackbarMessage(
-                        "Certaines modifications sont désactivées pendant que le chronomètre tourne."
-                      );
-                      setSnackbarSeverity("info");
-                      setSnackbarIsOpen(true);
-                    }
-                  }}
-                >
-                  <Stopwatch
-                    playPauseButtonId={rightStopwatchPlayPauseButtonId}
-                    editButtonId={rightStopwatchEditButtonId}
-                    label="Droite"
-                    sx={{ flex: 1, width: "100%" }}
-                    time={entry.rightTime}
-                    isRunning={entry.rightStopwatchIsRunning}
-                    lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
-                    buttonIsDisabled={entry.leftStopwatchIsRunning}
-                    // inputsAreDisabled={anyStopwatchIsRunning}
-                    inputsAreReadOnly={anyStopwatchIsRunning}
-                    onChange={(params) =>
-                      handleStopwatchChange({
-                        ...params,
-                        side: "right",
-                      })
-                    }
-                  />
-                </Box>
-              )}
-              <StopwatchMenu>
-                <MenuItem
-                  onClick={(e) => {
-                    closeStopwatchMenu(e);
-                    triggerEditOnLeftStopwatch(e);
-                  }}
-                >
-                  Modifier le côté gauche
-                </MenuItem>
-                <MenuItem
-                  onClick={(e) => {
-                    closeStopwatchMenu(e);
-                    triggerEditOnRightStopwatch(e);
-                  }}
-                >
-                  Modifier le côté droit
-                </MenuItem>
-              </StopwatchMenu>
-            </Stack>
-          </Section>
-        )}
-
         <Section dividerPosition={undefined}>
           <Stack
             sx={{
@@ -1284,6 +1183,107 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Stack>
         </Section>
+
+        {entry.activity?.hasDuration == true && (
+          <Section>
+            <Stack
+              direction={"row"}
+              spacing={4}
+              sx={{
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  flex: 1,
+                  width: "100%",
+                }}
+                onClick={(e) => {
+                  if (entry.rightStopwatchIsRunning) {
+                    setSnackbarMessage(
+                      "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                    );
+                    setSnackbarSeverity("info");
+                    setSnackbarIsOpen(true);
+                  }
+                }}
+              >
+                <Stopwatch
+                  playPauseButtonId={leftStopwatchPlayPauseButtonId}
+                  editButtonId={leftStopwatchEditButtonId}
+                  label={entry.activity?.hasSides ? "Gauche" : undefined}
+                  sx={{ flex: 1, width: "100%" }}
+                  time={entry.leftTime}
+                  isRunning={entry.leftStopwatchIsRunning}
+                  lastUpdateTime={entry.leftStopwatchLastUpdateTime ?? null}
+                  buttonIsDisabled={entry.rightStopwatchIsRunning}
+                  // inputsAreDisabled={anyStopwatchIsRunning}
+                  inputsAreReadOnly={anyStopwatchIsRunning}
+                  onChange={(params) =>
+                    handleStopwatchChange({
+                      ...params,
+                      side: "left",
+                    })
+                  }
+                />
+              </Box>
+              {entry.activity?.hasSides && (
+                <Box
+                  sx={{
+                    flex: 1,
+                    width: "100%",
+                  }}
+                  onClick={(e) => {
+                    if (entry.leftStopwatchIsRunning) {
+                      setSnackbarMessage(
+                        "Certaines modifications sont désactivées pendant que le chronomètre tourne."
+                      );
+                      setSnackbarSeverity("info");
+                      setSnackbarIsOpen(true);
+                    }
+                  }}
+                >
+                  <Stopwatch
+                    playPauseButtonId={rightStopwatchPlayPauseButtonId}
+                    editButtonId={rightStopwatchEditButtonId}
+                    label="Droite"
+                    sx={{ flex: 1, width: "100%" }}
+                    time={entry.rightTime}
+                    isRunning={entry.rightStopwatchIsRunning}
+                    lastUpdateTime={entry.rightStopwatchLastUpdateTime ?? null}
+                    buttonIsDisabled={entry.leftStopwatchIsRunning}
+                    // inputsAreDisabled={anyStopwatchIsRunning}
+                    inputsAreReadOnly={anyStopwatchIsRunning}
+                    onChange={(params) =>
+                      handleStopwatchChange({
+                        ...params,
+                        side: "right",
+                      })
+                    }
+                  />
+                </Box>
+              )}
+              <StopwatchMenu>
+                <MenuItem
+                  onClick={(e) => {
+                    closeStopwatchMenu(e);
+                    triggerEditOnLeftStopwatch(e);
+                  }}
+                >
+                  Modifier le côté gauche
+                </MenuItem>
+                <MenuItem
+                  onClick={(e) => {
+                    closeStopwatchMenu(e);
+                    triggerEditOnRightStopwatch(e);
+                  }}
+                >
+                  Modifier le côté droit
+                </MenuItem>
+              </StopwatchMenu>
+            </Stack>
+          </Section>
+        )}
 
         {entry.activity?.hasLength == true && (
           <Section dividerPosition={undefined}>
