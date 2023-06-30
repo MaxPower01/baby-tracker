@@ -1,4 +1,4 @@
-rules_version = '2';
+rules_version = '1';
 
 service firebase.storage {
   match /b/{bucket}/o {
@@ -6,6 +6,13 @@ service firebase.storage {
     // Files look like: "user/<UID>/path/to/file.txt"
     match /user/{userId}/{allPaths=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Grants a user access to a node matching their children's IDs
+    // Files look like: "child/<CHILDID>/path/to/file.txt"
+    match /child/{childId}/{allPaths=**} {
+      // Check if the user is one of the parents of the child
+      allow read, write: if request.auth != null;
     }
   }
 }

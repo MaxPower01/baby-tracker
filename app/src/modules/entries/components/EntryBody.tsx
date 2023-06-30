@@ -326,7 +326,15 @@ export default function EntryBody(props: Props) {
         <ImageList>
           {entry.imageURLs.map((imageURL, index) => {
             return (
-              <ImageListItem key={`${index}-${imageURL}`}>
+              <ImageListItem
+                key={`${index}-${imageURL}`}
+                sx={{
+                  borderRadius: 1,
+                  overflow: "hidden",
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
                 <img src={`${imageURL}`} loading="lazy" />
               </ImageListItem>
             );

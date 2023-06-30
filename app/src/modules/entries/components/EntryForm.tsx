@@ -382,8 +382,12 @@ export default function EntryForm(props: EntryFormProps) {
   );
 
   const handleImageUpload = async (image: File) => {
-    if (image == null || user == null) return;
-    const storageRef = ref(storage, `user/${user.uid}/images/${image.name}`);
+    const selectedChild = user?.selectedChild ?? "";
+    if (image == null || isNullOrWhiteSpace(selectedChild)) return;
+    const storageRef = ref(
+      storage,
+      `child/${selectedChild}/images/${image.name}`
+    );
     const uploadTask = uploadBytesResumable(storageRef, image);
     setImageLoading(true);
     uploadTask.on(
@@ -1501,7 +1505,15 @@ export default function EntryForm(props: EntryFormProps) {
             <ImageList>
               {imageURLs.map((imageURL, index) => {
                 return (
-                  <ImageListItem key={`${index}-${imageURL}`}>
+                  <ImageListItem
+                    key={`${index}-${imageURL}`}
+                    sx={{
+                      borderRadius: 1,
+                      overflow: "hidden",
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
                     <img src={`${imageURL}`} loading="lazy" />
                   </ImageListItem>
                 );
