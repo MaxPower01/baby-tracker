@@ -234,6 +234,22 @@ export default class EntryModel {
     this._imageURLs = v;
   }
 
+  private _poopValue = 0;
+  public get poopValue(): number {
+    return this._poopValue;
+  }
+  public set poopValue(v: number) {
+    this._poopValue = v;
+  }
+
+  private _urineValue = 0;
+  public get urineValue(): number {
+    return this._urineValue;
+  }
+  public set urineValue(v: number) {
+    this._urineValue = v;
+  }
+
   public constructor() {}
 
   /**
@@ -277,6 +293,8 @@ export default class EntryModel {
       weight: this.weight,
       length: this.length,
       imageURLs: this.imageURLs,
+      poopValue: this.poopValue,
+      urineValue: this.urineValue,
     };
   }
 
@@ -318,6 +336,8 @@ export default class EntryModel {
     if (json.weight != null) entry.weight = json.weight;
     if (json.length != null) entry.length = json.length;
     if (json.imageURLs != null) entry.imageURLs = json.imageURLs;
+    if (json.poopValue != null) entry.poopValue = json.poopValue;
+    if (json.urineValue != null) entry.urineValue = json.urineValue;
     return entry;
   }
 

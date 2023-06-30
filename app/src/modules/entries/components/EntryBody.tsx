@@ -12,13 +12,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { isNullOrWhiteSpace } from "@/utils/utils";
+import poopMarks from "@/utils/poopMarks";
 import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
+import urineMarks from "@/utils/urineMarks";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -163,6 +167,22 @@ export default function EntryBody(props: Props) {
         <Grid justifyContent="flex-start" gap={1} container>
           {entry.linkedActivities.map((linkedActivity) => {
             if (entry.activity == null) return null;
+            let text = linkedActivity.name;
+            if (linkedActivity.type == ActivityType.Poop) {
+              if (entry.poopValue > 0) {
+                const suffix =
+                  poopMarks.find((m) => m.value == entry.poopValue)?.label ??
+                  "";
+                if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
+              }
+            } else if (linkedActivity.type == ActivityType.Urine) {
+              if (entry.urineValue > 0) {
+                const suffix =
+                  urineMarks.find((m) => m.value == entry.urineValue)?.label ??
+                  "";
+                if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
+              }
+            }
             return (
               <ActivityChip
                 key={`${entry.id}-${entry.activity.type}-${linkedActivity.type}`}
@@ -170,6 +190,7 @@ export default function EntryBody(props: Props) {
                 size={"small"}
                 isFilled={true}
                 textColor={textColor}
+                overrideText={text}
               />
             );
           })}

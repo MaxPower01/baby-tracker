@@ -10,8 +10,11 @@ import {
   ImageList,
   ImageListItem,
   InputLabel,
+  LinearProgress,
+  LinearProgressProps,
   MenuItem,
   Slide,
+  Slider,
   Snackbar,
   Stack,
   TextField,
@@ -32,6 +35,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EntryModel from "@/modules/entries/models/EntryModel";
@@ -52,12 +56,31 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import formatStopwatchesTime from "@/utils/formatStopwatchesTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import poopMarks from "@/utils/poopMarks";
 import { storage } from "@/firebase";
 import { updateEditingEntryId } from "@/modules/entries/state/entriesSlice";
+import urineMarks from "@/utils/urineMarks";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
+
+function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
 
 type EntryFormProps = {
   entry: EntryModel;
@@ -233,28 +256,134 @@ export default function EntryForm(props: EntryFormProps) {
     return formatStopwatchTime(time, true, false);
   }, [entry.endDate]);
 
+  // Handle poop/pee quantity if it's a diaper entry
+
+  const [poopValue, setPoopValue] = useState(
+    entryId == null
+      ? props.entry.poopValue
+      : entries.find((e) => e.id === entryId)?.poopValue ?? 0
+  );
+
+  const [urineValue, setUrineValue] = useState(
+    entryId == null
+      ? props.entry.urineValue
+      : entries.find((e) => e.id === entryId)?.urineValue ?? 0
+  );
+
+  const poopLabel = useMemo(() => {
+    return poopMarks.find((m) => m.value === poopValue)?.label ?? "";
+  }, [poopValue]);
+
+  const handlePoopChange = useCallback(
+    (event: any, newValue: number | number[]) => {
+      if (typeof newValue === "number") {
+        setPoopValue(newValue);
+        if (newValue > 0) {
+          if (
+            !entry.linkedActivities
+              .map((a) => a.type)
+              .includes(ActivityType.Poop)
+          ) {
+            toggleLinkedActivity(new ActivityModel(ActivityType.Poop));
+          }
+        }
+        if (newValue === 0) {
+          if (
+            entry.linkedActivities
+              .map((a) => a.type)
+              .includes(ActivityType.Poop)
+          ) {
+            toggleLinkedActivity(new ActivityModel(ActivityType.Poop));
+          }
+        }
+      }
+    },
+    [entry.linkedActivities]
+  );
+
+  const urineLabel = useMemo(() => {
+    return urineMarks.find((m) => m.value === urineValue)?.label ?? "";
+  }, [urineValue]);
+
+  const handleUrineChange = useCallback(
+    (event: any, newValue: number | number[]) => {
+      if (typeof newValue === "number") {
+        setUrineValue(newValue);
+        if (newValue > 0) {
+          if (
+            !entry.linkedActivities
+              .map((a) => a.type)
+              .includes(ActivityType.Urine)
+          ) {
+            toggleLinkedActivity(new ActivityModel(ActivityType.Urine));
+          }
+        }
+        if (newValue === 0) {
+          if (
+            entry.linkedActivities
+              .map((a) => a.type)
+              .includes(ActivityType.Urine)
+          ) {
+            toggleLinkedActivity(new ActivityModel(ActivityType.Urine));
+          }
+        }
+      }
+    },
+    [entry.linkedActivities]
+  );
+
   // Handle linked/sub activities
 
-  const toggleLinkedActivity = (subActivity: ActivityModel) => {
-    setEntry((prevEntry) => {
-      const newEntry = prevEntry.clone();
-      if (
-        newEntry.linkedActivities.map((a) => a.type).includes(subActivity.type)
-      ) {
+  const toggleLinkedActivity = useCallback(
+    (subActivity: ActivityModel) => {
+      let poopLinkedActivityWasToggledOn = false;
+      let urineLinkedActivityWasToggledOn = false;
+      let poopLinkedActivityWasToggledOff = false;
+      let urineLinkedActivityWasToggledOff = false;
+      setEntry((prevEntry) => {
+        const newEntry = prevEntry.clone();
+        if (
+          newEntry.linkedActivities
+            .map((a) => a.type)
+            .includes(subActivity.type)
+        ) {
+          newEntry.linkedActivities = newEntry.linkedActivities.filter(
+            (a) => a.type !== subActivity.type
+          );
+          if (subActivity.type == ActivityType.Poop) {
+            poopLinkedActivityWasToggledOff = true;
+          }
+          if (subActivity.type == ActivityType.Urine) {
+            urineLinkedActivityWasToggledOff = true;
+          }
+        } else {
+          newEntry.linkedActivities.push(subActivity);
+          if (subActivity.type == ActivityType.Poop) {
+            poopLinkedActivityWasToggledOn = true;
+          }
+          if (subActivity.type == ActivityType.Urine) {
+            urineLinkedActivityWasToggledOn = true;
+          }
+        }
         newEntry.linkedActivities = newEntry.linkedActivities.filter(
-          (a) => a.type !== subActivity.type
+          (a, index, self) => self.findIndex((b) => b.type === a.type) === index
         );
-      } else {
-        newEntry.linkedActivities.push(subActivity);
+        // save(newEntry);
+        return newEntry;
+      });
+      if (poopValue == 0 && poopLinkedActivityWasToggledOn) {
+        setPoopValue(50);
+      } else if (urineValue == 0 && urineLinkedActivityWasToggledOn) {
+        setUrineValue(50);
+      } else if (poopValue > 0 && poopLinkedActivityWasToggledOff) {
+        setPoopValue(0);
+      } else if (urineValue > 0 && urineLinkedActivityWasToggledOff) {
+        setUrineValue(0);
       }
-      newEntry.linkedActivities = newEntry.linkedActivities.filter(
-        (a, index, self) => self.findIndex((b) => b.type === a.type) === index
-      );
-      // save(newEntry);
-      return newEntry;
-    });
-    setHasPendingChanges(true);
-  };
+      setHasPendingChanges(true);
+    },
+    [poopValue, urineValue]
+  );
 
   const toggleSubActivity = (subActivity: SubActivityModel) => {
     setEntry((prevEntry) => {
@@ -368,20 +497,21 @@ export default function EntryForm(props: EntryFormProps) {
           props.entry.imageURLs ??
           []
   );
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imageIsUploading, setImageIsUploading] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
-  const handleImageChange = useCallback(
+  const handleImageInputClick = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (imageLoading) return;
+      if (imageIsUploading) return;
       if (event.target.files == null || event.target.files.length === 0) return;
       const image = event.target.files[0];
-      await handleImageUpload(image);
+      await uploadImage(image);
       setHasPendingChanges(true);
     },
-    [imageLoading]
+    [imageIsUploading]
   );
 
-  const handleImageUpload = async (image: File) => {
+  const uploadImage = async (image: File) => {
     const selectedChild = user?.selectedChild ?? "";
     if (image == null || isNullOrWhiteSpace(selectedChild)) return;
     const storageRef = ref(
@@ -389,20 +519,21 @@ export default function EntryForm(props: EntryFormProps) {
       `child/${selectedChild}/images/${image.name}`
     );
     const uploadTask = uploadBytesResumable(storageRef, image);
-    setImageLoading(true);
+    setImageUploadProgress(0);
+    setImageIsUploading(true);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         // Progress function ...
-        // const progress = Math.round(
-        //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        // );
-        // setImageUploadProgress(progress);
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setImageUploadProgress(progress);
       },
       (error) => {
         // Error function ...
         console.error(error);
-        setImageLoading(false);
+        setImageIsUploading(false);
       },
       () => {
         // Complete function ...
@@ -415,11 +546,11 @@ export default function EntryForm(props: EntryFormProps) {
             });
           })
           .catch((error) => {
-            // Handle any errors
             console.error(error);
           })
           .finally(() => {
-            setImageLoading(false);
+            setImageIsUploading(false);
+            setImageUploadProgress(0);
           });
       }
     );
@@ -592,6 +723,8 @@ export default function EntryForm(props: EntryFormProps) {
         entryToSave.weight = weight;
         entryToSave.length = size;
         entryToSave.imageURLs = imageURLs;
+        entryToSave.poopValue = poopValue;
+        entryToSave.urineValue = urineValue;
         const id = await saveEntry(entryToSave);
         if (id != null) {
           setEntryId(id);
@@ -619,6 +752,8 @@ export default function EntryForm(props: EntryFormProps) {
       size,
       endDateWasEditedManually,
       imageURLs,
+      poopValue,
+      urineValue,
     ]
   );
 
@@ -1475,6 +1610,101 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
+        {entry.activity?.type == ActivityType.Diaper && (
+          <Stack
+            spacing={1}
+            sx={{
+              width: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                paddingLeft: 1,
+                paddingRight: 1,
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"flex-start"}
+                alignItems={"center"}
+                spacing={1}
+              >
+                <ActivityIcon
+                  activity={new ActivityModel(ActivityType.Poop)}
+                  sx={{
+                    fontSize: "2rem",
+                  }}
+                />
+                <Typography
+                  id="poop-slider"
+                  textAlign={"center"}
+                  variant="body1"
+                  color={
+                    poopValue == 0
+                      ? theme.customPalette.text.secondary
+                      : theme.customPalette.text.primary
+                  }
+                >
+                  {poopLabel}
+                </Typography>
+              </Stack>
+              <Slider
+                value={poopValue}
+                onChange={handlePoopChange}
+                min={0}
+                max={100}
+                step={25}
+                valueLabelDisplay="off"
+                aria-labelledby="poop-slider"
+              />
+            </Box>
+
+            <Box
+              sx={{
+                width: "100%",
+                paddingLeft: 1,
+                paddingRight: 1,
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"flex-start"}
+                alignItems={"center"}
+                spacing={1}
+              >
+                <ActivityIcon
+                  activity={new ActivityModel(ActivityType.Urine)}
+                  sx={{
+                    fontSize: "2rem",
+                  }}
+                />
+                <Typography
+                  id="poop-slider"
+                  textAlign={"center"}
+                  variant="body1"
+                  color={
+                    urineValue == 0
+                      ? theme.customPalette.text.secondary
+                      : theme.customPalette.text.primary
+                  }
+                >
+                  {urineLabel}
+                </Typography>
+              </Stack>
+              <Slider
+                value={urineValue}
+                onChange={handleUrineChange}
+                min={0}
+                max={100}
+                step={25}
+                valueLabelDisplay="off"
+                aria-labelledby="urine-slider"
+              />
+            </Box>
+          </Stack>
+        )}
+
         <Section dividerPosition={undefined}>
           <SectionTitle title="Notes" />
           <TextField
@@ -1520,12 +1750,17 @@ export default function EntryForm(props: EntryFormProps) {
               })}
             </ImageList>
           )}
+          {imageIsUploading && (
+            <Box sx={{ width: "100%" }}>
+              <LinearProgressWithLabel value={imageUploadProgress} />
+            </Box>
+          )}
           <input
             id="entry-form-image-upload"
             type="file"
             accept="image/*"
             multiple={true}
-            onChange={async (e) => await handleImageChange(e)}
+            onChange={async (e) => await handleImageInputClick(e)}
             style={{ display: "none" }}
           />
           <label htmlFor="entry-form-image-upload">
