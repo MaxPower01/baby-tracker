@@ -5,10 +5,10 @@ import React from "react";
 import { ReactSVG } from "react-svg";
 
 type Props = {
-  setShowWizard: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function ChildLanding({ setShowWizard }: Props) {
+export default function ChildLanding({ setShowForm }: Props) {
   const theme = useTheme();
   return (
     <Stack spacing={4}>
@@ -53,7 +53,7 @@ export default function ChildLanding({ setShowWizard }: Props) {
           color={"primary"}
           size="large"
           onClick={() => {
-            setShowWizard(true);
+            setShowForm(true);
           }}
         >
           <Stack direction={"row"} spacing={1}>

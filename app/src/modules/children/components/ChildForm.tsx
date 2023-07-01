@@ -1,11 +1,14 @@
 import {
   AppBar,
+  Avatar,
   Box,
   Button,
   Container,
   FormControl,
   FormHelperText,
   InputLabel,
+  LinearProgress,
+  LinearProgressProps,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -21,27 +24,102 @@ import {
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
 import React, { useCallback, useMemo, useState } from "react";
+import {
+  Timestamp,
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import dayjs, { Dayjs } from "dayjs";
+import { db, storage } from "@/firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import Child from "@/modules/authentication/types/Child";
 import LoadingIndicator from "@/common/components/LoadingIndicator";
 import PageId from "@/common/enums/PageId";
+import { ReactSVG } from "react-svg";
 import Sex from "@/common/enums/Sex";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
+import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useChidlren from "@/modules/children/hooks/useChildren";
 
+function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
+type ItemLabelProps = {
+  label: string;
+  icon?: string;
+};
+
+function ItemLabel(props: ItemLabelProps) {
+  const theme = useTheme();
+  return (
+    <Stack
+      spacing={1}
+      direction={"row"}
+      justifyContent={"flex-start"}
+      alignItems={"center"}
+    >
+      {props.icon != null && (
+        <Box
+          sx={{
+            fontSize: "1.5rem",
+          }}
+        >
+          <ReactSVG src={`/icons/${props.icon}.svg`} className="Icon" />
+        </Box>
+      )}
+      <Typography variant="body1" color={theme.customPalette.text.secondary}>
+        {props.label}
+      </Typography>
+    </Stack>
+  );
+}
+
 type Props = {
-  child: Child;
+  child?: Child;
 };
 
 export default function ChildForm(props: Props) {
   const theme = useTheme();
   const navigate = useNavigate();
+  const avatarWidth = 100;
+  const avatarFontSize = avatarWidth / 2.5;
+  const { user, setUser } = useAuthentication();
 
-  const [child, setChild] = useState<Child>(props.child);
+  const initialChild: Child = props.child ?? {
+    id: "",
+    name: "",
+    birthDate: new Date(),
+    parents: [],
+    sex: "",
+    birthHeadCircumference: 0,
+    birthSize: 0,
+    birthWeight: 0,
+    avatar: "",
+  };
+
+  const [child, setChild] = useState<Child>(initialChild);
 
   const { saveChild } = useChidlren();
 
@@ -54,12 +132,94 @@ export default function ChildForm(props: Props) {
     setNameError("");
   };
 
+  const initials = useMemo(() => {
+    try {
+      return isNullOrWhiteSpace(name)
+        ? null
+        : name
+            .split(" ")
+            .slice(0, 2)
+            .map((name) => (name ? name[0].toUpperCase() : ""));
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }, [name]);
+
+  const [avatar, setAvatar] = useState(child.avatar);
+  const [imageIsUploading, setImageIsUploading] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
+
+  const uploadImage = useCallback(
+    async (image: File) => {
+      const selectedChild = user?.selectedChild ?? "";
+      if (image == null || isNullOrWhiteSpace(selectedChild)) return;
+      const storageRef = ref(
+        storage,
+        `child/${selectedChild}/images/${image.name}`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      setImageUploadProgress(0);
+      setImageIsUploading(true);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Progress function ...
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setImageUploadProgress(progress);
+        },
+        (error) => {
+          // Error function ...
+          console.error(error);
+          setImageIsUploading(false);
+        },
+        () => {
+          // Complete function ...
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              setAvatar(downloadURL);
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+            .finally(() => {
+              setImageIsUploading(false);
+              setImageUploadProgress(0);
+            });
+        }
+      );
+    },
+    [user]
+  );
+
+  const handleImageInputClick = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (imageIsUploading) return;
+      if (event.target.files == null || event.target.files.length === 0) return;
+      const image = event.target.files[0];
+      await uploadImage(image);
+    },
+    [imageIsUploading, user, uploadImage]
+  );
+
   const [sex, setSex] = useState(child.sex);
   const [sexError, setSexError] = useState("");
   const handleSexChange = (event: SelectChangeEvent<string>) => {
     setSex(event.target.value);
     setSexError("");
   };
+
+  let avatarBackgroundColor = useMemo(() => {
+    if (sex == "female") {
+      return "#EE64EC";
+    } else if (sex == "male") {
+      return "#4F89E8";
+    }
+    return theme.palette.divider;
+  }, [sex]);
 
   const [birthDate, setBirthDate] = useState<Dayjs>(dayjs(child.birthDate));
   const handleBirthDateChange = (date: Dayjs | null) => {
@@ -72,14 +232,12 @@ export default function ChildForm(props: Props) {
 
   const kilograms = useMemo(() => {
     if (weight == null || isNaN(weight) || weight === 0) return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((weight / 1000) * 100) / 100;
+    return Math.round((weight / 1000) * 100) / 100; // 2 decimal places
   }, [weight]);
 
   const pounds = useMemo(() => {
     if (weight == null || isNaN(weight) || weight === 0) return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((weight / 453.592) * 100) / 100;
+    return Math.round((weight / 453.592) * 100) / 100; // 2 decimal places
   }, [weight]);
 
   const handleKilogramsChange = (
@@ -111,14 +269,12 @@ export default function ChildForm(props: Props) {
 
   const sizeInCentimeters = useMemo(() => {
     if (size == null || isNaN(size) || size === 0) return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((size / 10) * 100) / 100;
+    return Math.round((size / 10) * 100) / 100; // 2 decimal places
   }, [size]);
 
   const sizeInInches = useMemo(() => {
     if (size == null || isNaN(size) || size === 0) return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((size / 25.4) * 100) / 100;
+    return Math.round((size / 25.4) * 100) / 100; // 2 decimal places
   }, [size]);
 
   const handleSizeInCentimetersChange = (
@@ -151,8 +307,7 @@ export default function ChildForm(props: Props) {
       headCircumference === 0
     )
       return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((headCircumference / 10) * 100) / 100;
+    return Math.round((headCircumference / 10) * 100) / 100; // 2 decimal places
   }, [headCircumference]);
 
   const headCircumferenceInInches = useMemo(() => {
@@ -162,8 +317,7 @@ export default function ChildForm(props: Props) {
       headCircumference === 0
     )
       return 0;
-    // Make sure that it's no more than 2 decimal places
-    return Math.round((headCircumference / 25.4) * 100) / 100;
+    return Math.round((headCircumference / 25.4) * 100) / 100; // 2 decimal places
   }, [headCircumference]);
 
   const handleHeadCircumferenceInCentimetersChange = (
@@ -190,11 +344,7 @@ export default function ChildForm(props: Props) {
     setHeadCircumference(newInches * 25.4);
   };
 
-  const handleSubmit = useCallback(async () => {
-    if (!child || !saveChild || isSaving) {
-      return;
-    }
-    console.log("Saving child: ", child);
+  const save = useCallback(async () => {
     const newChild = Object.assign({}, child);
     newChild.name = name;
     newChild.birthDate = birthDate.toDate();
@@ -203,6 +353,7 @@ export default function ChildForm(props: Props) {
     newChild.birthWeight = weight == 0 ? 0 : Math.round(weight * 100) / 100;
     newChild.birthHeadCircumference =
       headCircumference == 0 ? 0 : Math.round(headCircumference * 100) / 100;
+    newChild.avatar = avatar;
     setIsSaving(true);
     saveChild(newChild)
       .then((savedChild) => {
@@ -235,19 +386,163 @@ export default function ChildForm(props: Props) {
     size,
     weight,
     headCircumference,
+    avatar,
+    user,
+  ]);
+
+  const create = useCallback(async () => {
+    if (!user) {
+      return;
+    }
+    setIsSaving(true);
+    const newChild: Child = {
+      id: "",
+      name: name,
+      birthDate: birthDate.toDate(),
+      parents: [user.uid],
+      sex,
+      avatar,
+      birthHeadCircumference: headCircumference,
+      birthSize: size,
+      birthWeight: weight,
+    };
+    const { id, birthDate: newBirthDate, ...childData } = newChild;
+    addDoc(collection(db, "children"), {
+      birthDate: Timestamp.fromDate(newBirthDate),
+      ...childData,
+    })
+      .then((docRef) => {
+        const userRef = doc(db, "users", user.uid);
+        updateDoc(userRef, {
+          selectedChild: docRef.id,
+          children: arrayUnion(docRef.id),
+        }).then(() => {
+          setUser((prev) => {
+            if (!prev) {
+              return null;
+            }
+            return {
+              ...prev,
+              selectedChild: docRef.id,
+              children: [
+                ...prev.children,
+                {
+                  id: docRef.id,
+                  name: name,
+                  birthDate: birthDate.toDate(),
+                  sex: sex,
+                },
+              ] as Child[],
+            };
+          });
+          navigate(
+            getPath({
+              page: PageId.Home,
+            })
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error creating child: ", error);
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
+  }, [
+    saveChild,
+    child,
+    isSaving,
+    name,
+    birthDate,
+    sex,
+    size,
+    weight,
+    headCircumference,
+    user,
+  ]);
+
+  const handleSubmit = useCallback(async () => {
+    if (!child || !saveChild || isSaving) {
+      return;
+    }
+
+    if (isNullOrWhiteSpace(child.id)) {
+      await create();
+    } else {
+      await save();
+    }
+  }, [
+    saveChild,
+    child,
+    isSaving,
+    name,
+    birthDate,
+    sex,
+    size,
+    weight,
+    headCircumference,
+    save,
+    create,
   ]);
 
   return (
     <>
-      <Stack spacing={3}>
+      <Stack spacing={4}>
+        <Stack justifyContent={"center"} alignItems={"center"} spacing={1}>
+          <Avatar
+            sx={{
+              width: avatarWidth,
+              height: avatarWidth,
+              fontSize: avatarFontSize,
+              backgroundColor: avatarBackgroundColor,
+              border: isNullOrWhiteSpace(avatar) ? "2px solid" : null,
+              borderColor: isNullOrWhiteSpace(avatar)
+                ? theme.palette.divider
+                : null,
+            }}
+            src={avatar}
+          >
+            {initials}
+          </Avatar>
+          {imageIsUploading && (
+            <Box sx={{ width: "100%" }}>
+              <LinearProgressWithLabel value={imageUploadProgress} />
+            </Box>
+          )}
+          {!isNullOrWhiteSpace(user?.selectedChild) && (
+            <>
+              <input
+                id="child-form-image-upload"
+                type="file"
+                accept="image/*"
+                multiple={true}
+                onChange={async (e) => await handleImageInputClick(e)}
+                style={{ display: "none" }}
+              />
+              <label htmlFor="child-form-image-upload">
+                <Button
+                  variant="text"
+                  onClick={() => {
+                    if (document && document.getElementById) {
+                      const input = document.getElementById(
+                        "child-form-image-upload"
+                      );
+                      if (input) {
+                        input.click();
+                      }
+                    }
+                  }}
+                >
+                  Définir la photo de profil
+                </Button>
+              </label>
+            </>
+          )}
+        </Stack>
+
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Nom
-            </Typography>
+            <ItemLabel label="Nom" icon="user" />
             <TextField
               id="name"
               value={name}
@@ -260,12 +555,7 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Sexe
-            </Typography>
+            <ItemLabel label="Sexe" icon="gender-symbols" />
             <Stack>
               <Select
                 id="sex"
@@ -286,12 +576,7 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Date de naissance
-            </Typography>
+            <ItemLabel label="Date de naissance" icon="calendar" />
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
               adapterLocale={dayjsLocaleFrCa as any}
@@ -316,12 +601,7 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Poids à la naissance
-            </Typography>
+            <ItemLabel label="Poids à la naissance" icon="weight" />
             <Stack
               direction={"row"}
               justifyContent={"center"}
@@ -351,12 +631,7 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Taille à la naissance
-            </Typography>
+            <ItemLabel label="Taille à la naissance" icon="size" />
             <Stack
               direction={"row"}
               justifyContent={"center"}
@@ -385,12 +660,7 @@ export default function ChildForm(props: Props) {
 
         <FormControl fullWidth variant="standard">
           <Stack spacing={1.5}>
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.secondary}
-            >
-              Tour de tête à la naissance
-            </Typography>
+            <ItemLabel label="Tour de tête à la naissance" icon="size" />
             <Stack
               direction={"row"}
               justifyContent={"center"}
@@ -425,6 +695,7 @@ export default function ChildForm(props: Props) {
           top: "auto",
           bottom: 0,
           backgroundColor: "background.default",
+          zIndex: (theme) => theme.zIndex.appBar + 1,
         }}
         color="transparent"
       >
@@ -450,6 +721,8 @@ export default function ChildForm(props: Props) {
               >
                 {isSaving == true ? (
                   <LoadingIndicator size={theme.typography.button.fontSize} />
+                ) : isNullOrWhiteSpace(child.id) == true ? (
+                  "Enregistrer"
                 ) : (
                   "Enregistrer"
                 )}

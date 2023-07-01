@@ -7,4 +7,5 @@ export default interface Child {
   birthWeight?: number;
   birthSize?: number;
   birthHeadCircumference?: number;
+  avatar?: string;
 }

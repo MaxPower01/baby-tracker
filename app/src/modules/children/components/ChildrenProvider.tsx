@@ -70,6 +70,7 @@ export default function ChildrenProvider(props: React.PropsWithChildren<{}>) {
               birthHeadCircumference: doc.data().birthHeadCircumference,
               birthSize: doc.data().birthSize,
               birthWeight: doc.data().birthWeight,
+              avatar: doc.data().avatar,
             };
             newChildren.push(child);
           }
@@ -98,6 +99,7 @@ export default function ChildrenProvider(props: React.PropsWithChildren<{}>) {
             birthHeadCircumference: change.doc.data().birthHeadCircumference,
             birthSize: change.doc.data().birthSize,
             birthWeight: change.doc.data().birthWeight,
+            avatar: change.doc.data().avatar,
           };
           if (child.parents?.includes(user.uid)) {
             if (change.type === "added") {

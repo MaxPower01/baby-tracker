@@ -18,21 +18,8 @@ main {
 	flex-grow: 1;
 }
 
-.ActivityIcon {
-	padding: 0.1em;
-
-	&>div {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		svg {
-			width: 1em;
-			height: 1em;
-		}
-	}
-}
-
+.ActivityIcon,
+.Icon,
 .Sticker {
 	padding: 0.1em;
 

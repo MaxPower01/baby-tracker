@@ -17,7 +17,7 @@ export default function ChildPage() {
     () => children?.find((child) => child.id === childId),
     [children, childId]
   );
-  const [showWizard, setShowWizard] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   if (childId != null) {
     if (isLoading) {
@@ -35,9 +35,11 @@ export default function ChildPage() {
       );
     }
     return <ChildForm child={child} />;
-  } else if (showWizard) {
-    return <ChildWizard />;
-  } else {
-    return <ChildLanding setShowWizard={setShowWizard} />;
   }
+
+  if (showForm) {
+    return <ChildForm />;
+  }
+
+  return <ChildLanding setShowForm={setShowForm} />;
 }

@@ -204,6 +204,7 @@ export default function ChildInformation(props: Props) {
                 fontSize: avatarFontSize,
                 backgroundColor: avatarBackgroundColor,
               }}
+              src={child.avatar}
             >
               {child.name.split(" ").map((name) => name[0].toUpperCase())}
             </Avatar>

@@ -500,6 +500,54 @@ export default function EntryForm(props: EntryFormProps) {
   const [imageIsUploading, setImageIsUploading] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
+  const uploadImage = useCallback(
+    async (image: File) => {
+      const selectedChild = user?.selectedChild ?? "";
+      if (image == null || isNullOrWhiteSpace(selectedChild)) return;
+      const storageRef = ref(
+        storage,
+        `child/${selectedChild}/images/${image.name}`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      setImageUploadProgress(0);
+      setImageIsUploading(true);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Progress function ...
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setImageUploadProgress(progress);
+        },
+        (error) => {
+          // Error function ...
+          console.error(error);
+          setImageIsUploading(false);
+        },
+        () => {
+          // Complete function ...
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              setImageURLs((prevImageUrls) => {
+                const newImageUrls = [...prevImageUrls, downloadURL];
+                return newImageUrls;
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+            .finally(() => {
+              setImageIsUploading(false);
+              setImageUploadProgress(0);
+            });
+        }
+      );
+    },
+    [user]
+  );
+
   const handleImageInputClick = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (imageIsUploading) return;
@@ -508,53 +556,8 @@ export default function EntryForm(props: EntryFormProps) {
       await uploadImage(image);
       setHasPendingChanges(true);
     },
-    [imageIsUploading]
+    [imageIsUploading, user, uploadImage]
   );
-
-  const uploadImage = async (image: File) => {
-    const selectedChild = user?.selectedChild ?? "";
-    if (image == null || isNullOrWhiteSpace(selectedChild)) return;
-    const storageRef = ref(
-      storage,
-      `child/${selectedChild}/images/${image.name}`
-    );
-    const uploadTask = uploadBytesResumable(storageRef, image);
-    setImageUploadProgress(0);
-    setImageIsUploading(true);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Progress function ...
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setImageUploadProgress(progress);
-      },
-      (error) => {
-        // Error function ...
-        console.error(error);
-        setImageIsUploading(false);
-      },
-      () => {
-        // Complete function ...
-        getDownloadURL(uploadTask.snapshot.ref)
-          .then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            setImageURLs((prevImageUrls) => {
-              const newImageUrls = [...prevImageUrls, downloadURL];
-              return newImageUrls;
-            });
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-          .finally(() => {
-            setImageIsUploading(false);
-            setImageUploadProgress(0);
-          });
-      }
-    );
-  };
 
   // Handle size
 
@@ -1790,6 +1793,7 @@ export default function EntryForm(props: EntryFormProps) {
           top: "auto",
           bottom: 0,
           backgroundColor: "background.default",
+          zIndex: (theme) => theme.zIndex.appBar + 1,
         }}
         color="transparent"
       >
