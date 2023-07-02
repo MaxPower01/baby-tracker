@@ -156,7 +156,7 @@ export default function ChildForm(props: Props) {
       if (image == null || isNullOrWhiteSpace(selectedChild)) return;
       const storageRef = ref(
         storage,
-        `child/${selectedChild}/images/${image.name}`
+        `child/${selectedChild}/images/profile-pictures/${image.name}`
       );
       const uploadTask = uploadBytesResumable(storageRef, image);
       setImageUploadProgress(0);
