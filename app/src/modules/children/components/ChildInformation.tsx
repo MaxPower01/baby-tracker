@@ -202,9 +202,11 @@ export default function ChildInformation(props: Props) {
                 width: avatarWidth,
                 height: avatarWidth,
                 fontSize: avatarFontSize,
-                backgroundColor: avatarBackgroundColor,
+                backgroundColor: isNullOrWhiteSpace(child.avatar)
+                  ? avatarBackgroundColor
+                  : theme.palette.divider,
                 border: "2px solid",
-                borderColor: theme.palette.divider,
+                borderColor: "transparent",
               }}
               src={child.avatar}
             >
