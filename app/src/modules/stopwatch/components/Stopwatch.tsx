@@ -10,10 +10,12 @@ import {
   Divider,
   IconButton,
   InputAdornment,
+  MenuItem,
   Stack,
   SwipeableDrawer,
   SxProps,
   TextField,
+  TextFieldVariants,
   Toolbar,
   Typography,
   useTheme,
@@ -55,6 +57,7 @@ export default function Stopwatch(props: Props) {
   const theme = useTheme();
 
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const [drawerTime, setDrawerTime] = useState(time);
 
   useEffect(() => {
     if (isRunning) {
@@ -131,20 +134,27 @@ export default function Stopwatch(props: Props) {
     "& *:after": {
       border: "none !important",
     },
+    flex: 1,
     // transform: "translateX(-0.5em)",
   };
 
-  const textFieldVariant = "standard";
+  const textFieldVariant: TextFieldVariants = "outlined";
 
   const inputStyle: SxProps = {
     "& input": {
-      textAlign: "center",
-      fontSize: "2em",
+      // textAlign: "center",
+      // fontSize: "2em",
       fontWeight: "bold",
       // width: "2em",
       // maxWidth: "5em",
       color: theme.palette.primary.main,
     },
+  };
+
+  const selectStyle: SxProps = {
+    fontWeight: "bold",
+    color: theme.customPalette.text.primary,
+    fontSize: "1.25em",
   };
 
   const playPauseButtonFontSize = "3.5em";
@@ -177,6 +187,7 @@ export default function Stopwatch(props: Props) {
               variant={inputsAreReadOnly ? "text" : "text"}
               onClick={() => {
                 if (!inputsAreReadOnly) {
+                  setDrawerTime(time);
                   setDrawerIsOpen(true);
                 }
               }}
@@ -242,119 +253,182 @@ export default function Stopwatch(props: Props) {
         onClose={() => setDrawerIsOpen(false)}
         aria-labelledby="stopwatch-dialog-title"
         aria-describedby="stopwatch-dialog-description"
+        fullWidth
       >
         <DialogTitle id="stopwatch-dialog-title">Modifier la durée</DialogTitle>
-        <DialogContent>
-          <Container maxWidth={CSSBreakpoint.Small}>
-            <Box
+        <DialogContent
+          sx={{
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              maxHeight: "70vh",
+              width: "100%",
+            }}
+          >
+            <Stack
+              direction={"row"}
+              spacing={2}
+              justifyContent={"center"}
+              alignItems={"center"}
               sx={{
-                maxHeight: "70vh",
+                marginTop: 2,
+                marginBottom: 2,
+                width: "100%",
               }}
             >
-              <Stack
-                direction={"row"}
-                spacing={2}
-                justifyContent={"center"}
-                alignItems={"center"}
+              <TextField
+                variant={textFieldVariant}
+                type="number"
+                select
+                label="Heures"
+                name="hours"
+                placeholder="00"
+                value={hours}
+                onChange={handleInputChange}
                 sx={{
-                  marginTop: 2,
-                  marginBottom: 2,
+                  ...textfieldStyle,
+                }}
+                SelectProps={{
+                  sx: {
+                    ...selectStyle,
+                  },
+                }}
+                InputProps={{
+                  // endAdornment: (
+                  //   <InputAdornment position="end">h</InputAdornment>
+                  // ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
                 }}
               >
-                <TextField
-                  variant={textFieldVariant}
-                  type="number"
-                  name="hours"
-                  placeholder="00"
-                  value={hours}
-                  onChange={handleInputChange}
-                  sx={{
-                    ...textfieldStyle,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">heures</InputAdornment>
-                    ),
-                    onFocus: (event) => {
-                      if (inputsAreReadOnly) {
-                        event.target.blur();
-                      } else {
-                        event.target.select();
-                      }
-                    },
-                    readOnly: inputsAreReadOnly,
-                    "aria-valuemin": 0,
-                    "aria-colcount": 2,
-                    sx: {
-                      ...inputStyle,
-                    },
-                  }}
-                />
-                <TextField
-                  variant={textFieldVariant}
-                  type="number"
-                  name="minutes"
-                  placeholder="00"
-                  value={minutes}
-                  sx={{
-                    ...textfieldStyle,
-                  }}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">minutes</InputAdornment>
-                    ),
-                    onFocus: (event) => {
-                      if (inputsAreReadOnly) {
-                        event.target.blur();
-                      } else {
-                        event.target.select();
-                      }
-                    },
-                    readOnly: inputsAreReadOnly,
-                    "aria-valuemin": 0,
-                    "aria-valuemax": 59,
-                    "aria-colcount": 2,
-                    sx: {
-                      ...inputStyle,
-                    },
-                  }}
-                />
-                <TextField
-                  variant={textFieldVariant}
-                  type="number"
-                  name="seconds"
-                  placeholder="00"
-                  sx={{
-                    ...textfieldStyle,
-                  }}
-                  value={seconds}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">secondes</InputAdornment>
-                    ),
-                    onFocus: (event) => {
-                      if (inputsAreReadOnly) {
-                        event.target.blur();
-                      } else {
-                        event.target.select();
-                      }
-                    },
-                    readOnly: inputsAreReadOnly,
-                    "aria-valuemin": 0,
-                    "aria-valuemax": 59,
-                    "aria-colcount": 2,
-                    sx: {
-                      ...inputStyle,
-                    },
-                  }}
-                />
-              </Stack>
-            </Box>
-          </Container>
+                {Array.from(Array(100).keys()).map((value) => {
+                  return (
+                    <MenuItem key={`${value}-hours`} value={value}>
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+              <TextField
+                variant={textFieldVariant}
+                type="number"
+                name="minutes"
+                placeholder="00"
+                select
+                label="Minutes"
+                value={minutes}
+                sx={{
+                  ...textfieldStyle,
+                }}
+                onChange={handleInputChange}
+                SelectProps={{
+                  sx: {
+                    ...selectStyle,
+                  },
+                }}
+                InputProps={{
+                  // endAdornment: (
+                  //   <InputAdornment position="end">min</InputAdornment>
+                  // ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-valuemax": 59,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
+                }}
+              >
+                {Array.from(Array(60).keys()).map((value) => {
+                  return (
+                    <MenuItem key={`${value}-minutes`} value={value}>
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+              <TextField
+                select
+                variant={textFieldVariant}
+                type="number"
+                name="seconds"
+                label="Secondes"
+                placeholder="00"
+                sx={{
+                  ...textfieldStyle,
+                }}
+                value={seconds}
+                onChange={handleInputChange}
+                SelectProps={{
+                  sx: {
+                    ...selectStyle,
+                  },
+                }}
+                InputProps={{
+                  // endAdornment: (
+                  //   <InputAdornment position="end">s</InputAdornment>
+                  // ),
+                  onFocus: (event) => {
+                    if (inputsAreReadOnly) {
+                      event.target.blur();
+                    } else {
+                      event.target.select();
+                    }
+                  },
+                  readOnly: inputsAreReadOnly,
+                  "aria-valuemin": 0,
+                  "aria-valuemax": 59,
+                  "aria-colcount": 2,
+                  sx: {
+                    ...inputStyle,
+                  },
+                }}
+              >
+                {Array.from(Array(60).keys()).map((value) => {
+                  return (
+                    <MenuItem key={`${value}-seconds`} value={value}>
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Stack>
+          </Box>
         </DialogContent>
         <DialogActions>
+          <Button
+            onClick={() => {
+              onChange({
+                time: drawerTime,
+                isRunning: false,
+                isStartStop: false,
+                lastUpdateTime: Date.now(),
+              });
+              setDrawerIsOpen(false);
+            }}
+          >
+            Annuler
+          </Button>
           <Button onClick={() => setDrawerIsOpen(false)} variant="contained">
             Sauvegarder
           </Button>

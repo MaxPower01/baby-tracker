@@ -1135,7 +1135,7 @@ export default function EntryForm(props: EntryFormProps) {
                       position: "relative",
                     }}
                   >
-                    <Typography
+                    {/* <Typography
                       textAlign="center"
                       variant="body1"
                       fontWeight={600}
@@ -1154,7 +1154,7 @@ export default function EntryForm(props: EntryFormProps) {
                       }}
                     >
                       {startTimeLabel}
-                    </Typography>
+                    </Typography> */}
 
                     <LocalizationProvider
                       dateAdapter={AdapterDayjs}
@@ -1167,6 +1167,7 @@ export default function EntryForm(props: EntryFormProps) {
                         sx={{
                           flex: 1,
                         }}
+                        format="HH:mm"
                         slotProps={{
                           textField: {
                             sx: {
@@ -1175,7 +1176,7 @@ export default function EntryForm(props: EntryFormProps) {
                               //     ? 1
                               //     : undefined,
                               "& input": {
-                                opacity: "0 !important",
+                                // opacity: "0 !important",
                                 // width: "100%",
                                 padding: 0,
                                 paddingRight: 1,
@@ -1252,7 +1253,7 @@ export default function EntryForm(props: EntryFormProps) {
                         >
                           <Typography
                             textAlign="center"
-                            variant="body1"
+                            variant="h6"
                             fontWeight={600}
                             textTransform={"none"}
                             color={
@@ -1341,7 +1342,7 @@ export default function EntryForm(props: EntryFormProps) {
                           position: "relative",
                         }}
                       >
-                        <Typography
+                        {/* <Typography
                           textAlign="center"
                           variant="body1"
                           fontWeight={600}
@@ -1360,7 +1361,7 @@ export default function EntryForm(props: EntryFormProps) {
                           }}
                         >
                           {endTimeLabel}
-                        </Typography>
+                        </Typography> */}
 
                         <LocalizationProvider
                           dateAdapter={AdapterDayjs}
@@ -1375,6 +1376,7 @@ export default function EntryForm(props: EntryFormProps) {
                             // sx={{
                             //   flex: 1,
                             // }}
+                            format="HH:mm"
                             slotProps={{
                               textField: {
                                 sx: {
@@ -1386,7 +1388,7 @@ export default function EntryForm(props: EntryFormProps) {
                                   // },
                                   "& input": {
                                     // width: "100%",
-                                    opacity: "0 !important",
+                                    // opacity: "0 !important",
                                     padding: 0,
                                     paddingRight: 1,
                                     cursor: "pointer",

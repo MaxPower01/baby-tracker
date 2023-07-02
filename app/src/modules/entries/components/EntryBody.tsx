@@ -3,6 +3,7 @@ import {
   Grid,
   ImageList,
   ImageListItem,
+  LinearProgress,
   Slider,
   Stack,
   SxProps,
@@ -235,63 +236,11 @@ export default function EntryBody(props: Props) {
         activityTypesThatDisplayPoopAndUrineSliders.includes(
           entry.activity.type
         ) &&
-        entry.urineValue > 0 && (
-          <Box
-            sx={{
-              paddingLeft: 1,
-              paddingRight: 1,
-              width: "100%",
-            }}
-          >
-            <Stack
-              direction={"row"}
-              justifyContent={"flex-start"}
-              alignItems={"center"}
-              spacing={1}
-              sx={{
-                width: "100%",
-              }}
-            >
-              <ActivityIcon
-                activity={new ActivityModel(ActivityType.Urine)}
-                sx={{
-                  fontSize: "1.25rem",
-                }}
-              />
-              <Typography
-                id="poop-slider-entry-body"
-                textAlign={"center"}
-                variant="caption"
-                color={
-                  entry.urineValue == 0
-                    ? theme.customPalette.text.secondary
-                    : theme.customPalette.text.primary
-                }
-              >
-                {urineLabel}
-              </Typography>
-            </Stack>
-            <Slider
-              value={entry.urineValue}
-              min={0}
-              max={100}
-              step={1}
-              valueLabelDisplay="off"
-              aria-labelledby="urine-slider-entry-body"
-              disabled={true}
-            />
-          </Box>
-        )}
-
-      {entry.activity != null &&
-        activityTypesThatDisplayPoopAndUrineSliders.includes(
-          entry.activity.type
-        ) &&
         entry.poopValue > 0 && (
           <Box
             sx={{
-              paddingLeft: 1,
-              paddingRight: 1,
+              // paddingLeft: 1,
+              // paddingRight: 1,
               width: "100%",
             }}
           >
@@ -323,16 +272,68 @@ export default function EntryBody(props: Props) {
                 {poopLabel}
               </Typography>
             </Stack>
-            <Slider
+            <LinearProgress
+              variant="determinate"
               value={entry.poopValue}
-              min={0}
-              max={100}
-              step={1}
-              valueLabelDisplay="off"
-              aria-labelledby="poop-slider-entry-body"
-              disabled={true}
+              color="inherit"
+              sx={{
+                width: "80%",
+                opacity: 0.5,
+              }}
             />
           </Box>
+        )}
+
+      {entry.activity != null &&
+        activityTypesThatDisplayPoopAndUrineSliders.includes(
+          entry.activity.type
+        ) &&
+        entry.urineValue > 0 && (
+          <Stack
+            sx={{
+              // paddingLeft: 1,
+              // paddingRight: 1,
+              width: "100%",
+            }}
+            spacing={0.5}
+          >
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-start"}
+              alignItems={"center"}
+              spacing={1}
+              sx={{
+                width: "100%",
+              }}
+            >
+              <ActivityIcon
+                activity={new ActivityModel(ActivityType.Urine)}
+                sx={{
+                  fontSize: "1.25rem",
+                }}
+              />
+              <Typography
+                textAlign={"center"}
+                variant="caption"
+                color={
+                  entry.urineValue == 0
+                    ? theme.customPalette.text.secondary
+                    : theme.customPalette.text.primary
+                }
+              >
+                {urineLabel}
+              </Typography>
+            </Stack>
+            <LinearProgress
+              variant="determinate"
+              value={entry.urineValue}
+              color="inherit"
+              sx={{
+                width: "80%",
+                opacity: 0.5,
+              }}
+            />
+          </Stack>
         )}
 
       {volumeLabels?.length > 0 &&
