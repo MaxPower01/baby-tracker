@@ -169,9 +169,6 @@ export default function ChildInformation(props: Props) {
     };
   };
 
-  const avatarWidth = 150;
-  const avatarFontSize = avatarWidth / 2.5;
-
   if (user == null || children == null) {
     return <LoadingIndicator />;
   }
@@ -190,6 +187,8 @@ export default function ChildInformation(props: Props) {
           avatarBackgroundColor = "#4F89E8";
         }
         const ageLabels = getAgeLabels(child.birthDate, child.sex);
+        const avatarWidth = isNullOrWhiteSpace(child.avatar) ? 100 : 150;
+        const avatarFontSize = avatarWidth / 2.5;
         return (
           <Stack
             key={child.id}
