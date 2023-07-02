@@ -1,23 +1,23 @@
 const urineMarks = [
   {
     value: 0,
-    label: "Aucun",
+    label: "Aucun pipi",
   },
   {
     value: 25,
-    label: "À peine une goûte..",
+    label: "Un peu de pipi",
   },
   {
     value: 50,
-    label: "Ih la la!",
+    label: "Pipi",
   },
   {
     value: 75,
-    label: "Wash! J'ai les mains toutes mouillées!",
+    label: "Beaucoup de pipi",
   },
   {
     value: 100,
-    label: "OMG! C'est une inondation!",
+    label: "Une tonne de pipi!",
   },
 ];
 

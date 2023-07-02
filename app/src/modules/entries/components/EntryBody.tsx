@@ -3,6 +3,7 @@ import {
   Grid,
   ImageList,
   ImageListItem,
+  Slider,
   Stack,
   SxProps,
   Typography,
@@ -12,6 +13,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ActivityChip from "@/modules/activities/components/ActivityChip";
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
@@ -49,6 +52,12 @@ export default function EntryBody(props: Props) {
     opacity: 0.8,
     color: textColor,
   };
+
+  const activityTypesThatDisplayPoopAndUrineSliders = [
+    ActivityType.Diaper,
+    ActivityType.Urine,
+    ActivityType.Poop,
+  ];
 
   const timeElapsedSincePreviousEntryLabel = useMemo(() => {
     if (!entry || !entry.activity || !previousEntry) return null;
@@ -139,11 +148,28 @@ export default function EntryBody(props: Props) {
     return () => clearInterval(intervalId);
   }, [entry]);
 
+  const urineLabel = useMemo(() => {
+    if (entry.urineValue === 0) return urineMarks[0].label ?? "";
+    return (
+      urineMarks.find((m) => m.value === Math.ceil(entry.urineValue / 25) * 25)
+        ?.label ?? ""
+    );
+  }, [entry.urineValue]);
+
+  const poopLabel = useMemo(() => {
+    if (entry.poopValue === 0) return poopMarks[0].label ?? "";
+    return (
+      poopMarks.find((m) => m.value === Math.ceil(entry.poopValue / 25) * 25)
+        ?.label ?? ""
+    );
+  }, [entry.poopValue]);
+
   return (
     <Stack
       spacing={useCompactMode ? 0.5 : 1}
       sx={{
         ...sx,
+        width: "100%",
       }}
     >
       {entry.subActivities.length > 0 && (
@@ -168,19 +194,27 @@ export default function EntryBody(props: Props) {
           {entry.linkedActivities.map((linkedActivity) => {
             if (entry.activity == null) return null;
             let text = linkedActivity.name;
-            if (linkedActivity.type == ActivityType.Poop) {
-              if (entry.poopValue > 0) {
-                const suffix =
-                  poopMarks.find((m) => m.value == entry.poopValue)?.label ??
-                  "";
-                if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
-              }
-            } else if (linkedActivity.type == ActivityType.Urine) {
-              if (entry.urineValue > 0) {
-                const suffix =
-                  urineMarks.find((m) => m.value == entry.urineValue)?.label ??
-                  "";
-                if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
+            if (
+              activityTypesThatDisplayPoopAndUrineSliders.includes(
+                entry.activity.type
+              )
+            ) {
+              if (linkedActivity.type == ActivityType.Poop) {
+                if (entry.poopValue > 0) {
+                  return null;
+                  // const suffix =
+                  //   poopMarks.find((m) => m.value == entry.poopValue)?.label ??
+                  //   "";
+                  // if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
+                }
+              } else if (linkedActivity.type == ActivityType.Urine) {
+                if (entry.urineValue > 0) {
+                  return null;
+                  // const suffix =
+                  //   urineMarks.find((m) => m.value == entry.urineValue)?.label ??
+                  //   "";
+                  // if (!isNullOrWhiteSpace(suffix)) text = `${text} – ${suffix}`;
+                }
               }
             }
             return (
@@ -196,6 +230,119 @@ export default function EntryBody(props: Props) {
           })}
         </Grid>
       )}
+
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"flex-start"}
+        sx={{
+          width: "100%",
+        }}
+      >
+        {entry.activity != null &&
+          activityTypesThatDisplayPoopAndUrineSliders.includes(
+            entry.activity.type
+          ) &&
+          entry.urineValue > 0 && (
+            <Box
+              sx={{
+                paddingLeft: 1,
+                paddingRight: 1,
+                flex: 1,
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"flex-start"}
+                alignItems={"center"}
+                spacing={1}
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <ActivityIcon
+                  activity={new ActivityModel(ActivityType.Urine)}
+                  sx={{
+                    fontSize: "1.25rem",
+                  }}
+                />
+                <Typography
+                  id="poop-slider-entry-body"
+                  textAlign={"center"}
+                  variant="caption"
+                  color={
+                    entry.urineValue == 0
+                      ? theme.customPalette.text.secondary
+                      : theme.customPalette.text.primary
+                  }
+                >
+                  {urineLabel}
+                </Typography>
+              </Stack>
+              <Slider
+                value={entry.urineValue}
+                min={0}
+                max={100}
+                step={1}
+                valueLabelDisplay="off"
+                aria-labelledby="urine-slider-entry-body"
+                disabled={true}
+              />
+            </Box>
+          )}
+
+        {entry.activity != null &&
+          activityTypesThatDisplayPoopAndUrineSliders.includes(
+            entry.activity.type
+          ) &&
+          entry.poopValue > 0 && (
+            <Box
+              sx={{
+                paddingLeft: 1,
+                paddingRight: 1,
+                flex: 1,
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"flex-start"}
+                alignItems={"center"}
+                spacing={1}
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <ActivityIcon
+                  activity={new ActivityModel(ActivityType.Poop)}
+                  sx={{
+                    fontSize: "1.25rem",
+                  }}
+                />
+                <Typography
+                  id="poop-slider-entry-body"
+                  textAlign={"center"}
+                  variant="caption"
+                  color={
+                    entry.poopValue == 0
+                      ? theme.customPalette.text.secondary
+                      : theme.customPalette.text.primary
+                  }
+                >
+                  {poopLabel}
+                </Typography>
+              </Stack>
+              <Slider
+                value={entry.poopValue}
+                min={0}
+                max={100}
+                step={1}
+                valueLabelDisplay="off"
+                aria-labelledby="poop-slider-entry-body"
+                disabled={true}
+              />
+            </Box>
+          )}
+      </Stack>
 
       {volumeLabels?.length > 0 &&
         volumeLabels.map((label, labelIndex) => (

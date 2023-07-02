@@ -271,7 +271,11 @@ export default function EntryForm(props: EntryFormProps) {
   );
 
   const poopLabel = useMemo(() => {
-    return poopMarks.find((m) => m.value === poopValue)?.label ?? "";
+    if (poopValue === 0) return poopMarks[0].label ?? "";
+    return (
+      poopMarks.find((m) => m.value === Math.ceil(poopValue / 25) * 25)
+        ?.label ?? ""
+    );
   }, [poopValue]);
 
   const handlePoopChange = useCallback(
@@ -302,7 +306,11 @@ export default function EntryForm(props: EntryFormProps) {
   );
 
   const urineLabel = useMemo(() => {
-    return urineMarks.find((m) => m.value === urineValue)?.label ?? "";
+    if (urineValue === 0) return urineMarks[0].label ?? "";
+    return (
+      urineMarks.find((m) => m.value === Math.ceil(urineValue / 25) * 25)
+        ?.label ?? ""
+    );
   }, [urineValue]);
 
   const handleUrineChange = useCallback(
@@ -1657,7 +1665,7 @@ export default function EntryForm(props: EntryFormProps) {
                 onChange={handlePoopChange}
                 min={0}
                 max={100}
-                step={25}
+                step={1}
                 valueLabelDisplay="off"
                 aria-labelledby="poop-slider"
               />
@@ -1700,7 +1708,7 @@ export default function EntryForm(props: EntryFormProps) {
                 onChange={handleUrineChange}
                 min={0}
                 max={100}
-                step={25}
+                step={1}
                 valueLabelDisplay="off"
                 aria-labelledby="urine-slider"
               />

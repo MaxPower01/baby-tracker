@@ -1,23 +1,23 @@
 const poopMarks = [
   {
     value: 0,
-    label: "Aucun",
+    label: "Aucun caca",
   },
   {
     value: 25,
-    label: "À peine une trace de break..",
+    label: "Un peu de caca",
   },
   {
     value: 50,
-    label: "Oh boy!",
+    label: "Caca",
   },
   {
     value: 75,
-    label: "Ark! Je me suis mis le doigt dedans!",
+    label: "Beaucoup de caca",
   },
   {
     value: 100,
-    label: "WTF!? Ça déborde de partout!",
+    label: "Une tonne de caca!",
   },
 ];
 

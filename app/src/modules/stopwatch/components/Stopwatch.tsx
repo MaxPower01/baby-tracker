@@ -2,6 +2,11 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   IconButton,
   InputAdornment,
@@ -232,150 +237,129 @@ export default function Stopwatch(props: Props) {
         </Stack>
       </Stack>
 
-      <SwipeableDrawer
-        anchor="bottom"
+      <Dialog
         open={drawerIsOpen}
-        onOpen={() => {}}
         onClose={() => setDrawerIsOpen(false)}
-        disableSwipeToOpen={true}
+        aria-labelledby="stopwatch-dialog-title"
+        aria-describedby="stopwatch-dialog-description"
       >
-        <Box
-          sx={{
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            backgroundColor: "inherit",
-            backgroundImage: "inherit",
-          }}
-        >
-          <Container maxWidth={CSSBreakpoint.Small} disableGutters>
-            <Toolbar>
-              <Typography variant="h6">
-                Modifier la durée
-                {!isNullOrWhiteSpace(props.label) && ` (${props.label})`}
-              </Typography>
-              <Box sx={{ flexGrow: 1 }} />
-              <IconButton onClick={() => setDrawerIsOpen(false)}>
-                <CloseIcon />
-              </IconButton>
-            </Toolbar>
-            <Divider
+        <DialogTitle id="stopwatch-dialog-title">Modifier la durée</DialogTitle>
+        <DialogContent>
+          <Container maxWidth={CSSBreakpoint.Small}>
+            <Box
               sx={{
-                marginLeft: 2,
-                marginRight: 2,
-              }}
-            />
-          </Container>
-        </Box>
-        <Container maxWidth={CSSBreakpoint.Small}>
-          <Box
-            sx={{
-              maxHeight: "70vh",
-            }}
-          >
-            <Stack
-              direction={"row"}
-              spacing={2}
-              justifyContent={"center"}
-              alignItems={"center"}
-              sx={{
-                marginTop: 2,
-                marginBottom: 2,
+                maxHeight: "70vh",
               }}
             >
-              <TextField
-                variant={textFieldVariant}
-                type="number"
-                name="hours"
-                placeholder="00"
-                value={hours}
-                onChange={handleInputChange}
+              <Stack
+                direction={"row"}
+                spacing={2}
+                justifyContent={"center"}
+                alignItems={"center"}
                 sx={{
-                  ...textfieldStyle,
+                  marginTop: 2,
+                  marginBottom: 2,
                 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">heures</InputAdornment>
-                  ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
-                  "aria-valuemin": 0,
-                  "aria-colcount": 2,
-                  sx: {
-                    ...inputStyle,
-                  },
-                }}
-              />
-              <TextField
-                variant={textFieldVariant}
-                type="number"
-                name="minutes"
-                placeholder="00"
-                value={minutes}
-                sx={{
-                  ...textfieldStyle,
-                }}
-                onChange={handleInputChange}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">minutes</InputAdornment>
-                  ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
-                  "aria-valuemin": 0,
-                  "aria-valuemax": 59,
-                  "aria-colcount": 2,
-                  sx: {
-                    ...inputStyle,
-                  },
-                }}
-              />
-              <TextField
-                variant={textFieldVariant}
-                type="number"
-                name="seconds"
-                placeholder="00"
-                sx={{
-                  ...textfieldStyle,
-                }}
-                value={seconds}
-                onChange={handleInputChange}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">secondes</InputAdornment>
-                  ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
-                  "aria-valuemin": 0,
-                  "aria-valuemax": 59,
-                  "aria-colcount": 2,
-                  sx: {
-                    ...inputStyle,
-                  },
-                }}
-              />
-            </Stack>
-          </Box>
-        </Container>
-      </SwipeableDrawer>
+              >
+                <TextField
+                  variant={textFieldVariant}
+                  type="number"
+                  name="hours"
+                  placeholder="00"
+                  value={hours}
+                  onChange={handleInputChange}
+                  sx={{
+                    ...textfieldStyle,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">heures</InputAdornment>
+                    ),
+                    onFocus: (event) => {
+                      if (inputsAreReadOnly) {
+                        event.target.blur();
+                      } else {
+                        event.target.select();
+                      }
+                    },
+                    readOnly: inputsAreReadOnly,
+                    "aria-valuemin": 0,
+                    "aria-colcount": 2,
+                    sx: {
+                      ...inputStyle,
+                    },
+                  }}
+                />
+                <TextField
+                  variant={textFieldVariant}
+                  type="number"
+                  name="minutes"
+                  placeholder="00"
+                  value={minutes}
+                  sx={{
+                    ...textfieldStyle,
+                  }}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">minutes</InputAdornment>
+                    ),
+                    onFocus: (event) => {
+                      if (inputsAreReadOnly) {
+                        event.target.blur();
+                      } else {
+                        event.target.select();
+                      }
+                    },
+                    readOnly: inputsAreReadOnly,
+                    "aria-valuemin": 0,
+                    "aria-valuemax": 59,
+                    "aria-colcount": 2,
+                    sx: {
+                      ...inputStyle,
+                    },
+                  }}
+                />
+                <TextField
+                  variant={textFieldVariant}
+                  type="number"
+                  name="seconds"
+                  placeholder="00"
+                  sx={{
+                    ...textfieldStyle,
+                  }}
+                  value={seconds}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">secondes</InputAdornment>
+                    ),
+                    onFocus: (event) => {
+                      if (inputsAreReadOnly) {
+                        event.target.blur();
+                      } else {
+                        event.target.select();
+                      }
+                    },
+                    readOnly: inputsAreReadOnly,
+                    "aria-valuemin": 0,
+                    "aria-valuemax": 59,
+                    "aria-colcount": 2,
+                    sx: {
+                      ...inputStyle,
+                    },
+                  }}
+                />
+              </Stack>
+            </Box>
+          </Container>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDrawerIsOpen(false)} variant="contained">
+            Sauvegarder
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

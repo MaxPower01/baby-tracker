@@ -281,15 +281,15 @@ export default function MenuDrawer(props: {
       <Dialog
         open={dialogOpened}
         onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-labelledby="add-parent-dialog-title"
+        aria-describedby="add-parent-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle id="add-parent-dialog-title">
           Ajouter un parent
           {!isNullOrWhiteSpace(selectedChild) && " pour " + selectedChildName}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="add-parent-dialog-description">
             Entrez l'adresse email du parent à ajouter. Il pourra ensuite
             accéder aux données de l'enfant et ajouter des entrées.
           </DialogContentText>
