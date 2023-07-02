@@ -169,7 +169,7 @@ export default function ChildInformation(props: Props) {
     };
   };
 
-  const avatarWidth = 100;
+  const avatarWidth = 150;
   const avatarFontSize = avatarWidth / 2.5;
 
   if (user == null || children == null) {
@@ -203,6 +203,8 @@ export default function ChildInformation(props: Props) {
                 height: avatarWidth,
                 fontSize: avatarFontSize,
                 backgroundColor: avatarBackgroundColor,
+                border: "2px solid",
+                borderColor: theme.palette.divider,
               }}
               src={child.avatar}
             >
