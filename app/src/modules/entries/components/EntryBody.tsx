@@ -231,118 +231,109 @@ export default function EntryBody(props: Props) {
         </Grid>
       )}
 
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        justifyContent={"flex-start"}
-        sx={{
-          width: "100%",
-        }}
-      >
-        {entry.activity != null &&
-          activityTypesThatDisplayPoopAndUrineSliders.includes(
-            entry.activity.type
-          ) &&
-          entry.urineValue > 0 && (
-            <Box
+      {entry.activity != null &&
+        activityTypesThatDisplayPoopAndUrineSliders.includes(
+          entry.activity.type
+        ) &&
+        entry.urineValue > 0 && (
+          <Box
+            sx={{
+              paddingLeft: 1,
+              paddingRight: 1,
+              width: "100%",
+            }}
+          >
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-start"}
+              alignItems={"center"}
+              spacing={1}
               sx={{
-                paddingLeft: 1,
-                paddingRight: 1,
-                flex: 1,
+                width: "100%",
               }}
             >
-              <Stack
-                direction={"row"}
-                justifyContent={"flex-start"}
-                alignItems={"center"}
-                spacing={1}
+              <ActivityIcon
+                activity={new ActivityModel(ActivityType.Urine)}
                 sx={{
-                  width: "100%",
+                  fontSize: "1.25rem",
                 }}
-              >
-                <ActivityIcon
-                  activity={new ActivityModel(ActivityType.Urine)}
-                  sx={{
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <Typography
-                  id="poop-slider-entry-body"
-                  textAlign={"center"}
-                  variant="caption"
-                  color={
-                    entry.urineValue == 0
-                      ? theme.customPalette.text.secondary
-                      : theme.customPalette.text.primary
-                  }
-                >
-                  {urineLabel}
-                </Typography>
-              </Stack>
-              <Slider
-                value={entry.urineValue}
-                min={0}
-                max={100}
-                step={1}
-                valueLabelDisplay="off"
-                aria-labelledby="urine-slider-entry-body"
-                disabled={true}
               />
-            </Box>
-          )}
+              <Typography
+                id="poop-slider-entry-body"
+                textAlign={"center"}
+                variant="caption"
+                color={
+                  entry.urineValue == 0
+                    ? theme.customPalette.text.secondary
+                    : theme.customPalette.text.primary
+                }
+              >
+                {urineLabel}
+              </Typography>
+            </Stack>
+            <Slider
+              value={entry.urineValue}
+              min={0}
+              max={100}
+              step={1}
+              valueLabelDisplay="off"
+              aria-labelledby="urine-slider-entry-body"
+              disabled={true}
+            />
+          </Box>
+        )}
 
-        {entry.activity != null &&
-          activityTypesThatDisplayPoopAndUrineSliders.includes(
-            entry.activity.type
-          ) &&
-          entry.poopValue > 0 && (
-            <Box
+      {entry.activity != null &&
+        activityTypesThatDisplayPoopAndUrineSliders.includes(
+          entry.activity.type
+        ) &&
+        entry.poopValue > 0 && (
+          <Box
+            sx={{
+              paddingLeft: 1,
+              paddingRight: 1,
+              width: "100%",
+            }}
+          >
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-start"}
+              alignItems={"center"}
+              spacing={1}
               sx={{
-                paddingLeft: 1,
-                paddingRight: 1,
-                flex: 1,
+                width: "100%",
               }}
             >
-              <Stack
-                direction={"row"}
-                justifyContent={"flex-start"}
-                alignItems={"center"}
-                spacing={1}
+              <ActivityIcon
+                activity={new ActivityModel(ActivityType.Poop)}
                 sx={{
-                  width: "100%",
+                  fontSize: "1.25rem",
                 }}
-              >
-                <ActivityIcon
-                  activity={new ActivityModel(ActivityType.Poop)}
-                  sx={{
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <Typography
-                  id="poop-slider-entry-body"
-                  textAlign={"center"}
-                  variant="caption"
-                  color={
-                    entry.poopValue == 0
-                      ? theme.customPalette.text.secondary
-                      : theme.customPalette.text.primary
-                  }
-                >
-                  {poopLabel}
-                </Typography>
-              </Stack>
-              <Slider
-                value={entry.poopValue}
-                min={0}
-                max={100}
-                step={1}
-                valueLabelDisplay="off"
-                aria-labelledby="poop-slider-entry-body"
-                disabled={true}
               />
-            </Box>
-          )}
-      </Stack>
+              <Typography
+                id="poop-slider-entry-body"
+                textAlign={"center"}
+                variant="caption"
+                color={
+                  entry.poopValue == 0
+                    ? theme.customPalette.text.secondary
+                    : theme.customPalette.text.primary
+                }
+              >
+                {poopLabel}
+              </Typography>
+            </Stack>
+            <Slider
+              value={entry.poopValue}
+              min={0}
+              max={100}
+              step={1}
+              valueLabelDisplay="off"
+              aria-labelledby="poop-slider-entry-body"
+              disabled={true}
+            />
+          </Box>
+        )}
 
       {volumeLabels?.length > 0 &&
         volumeLabels.map((label, labelIndex) => (
