@@ -7,7 +7,6 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { upperCaseFirst } from "@/utils/utils";
 import { useSelector } from "react-redux";
 
@@ -18,7 +17,6 @@ type Props = {
 
 export default function DateHeader(props: Props) {
   const { startDate, sx } = props;
-  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
   return (
     <Box
@@ -43,7 +41,7 @@ export default function DateHeader(props: Props) {
           direction={"row"}
           justifyContent={"flex-start"}
           alignItems={"center"}
-          spacing={useCompactMode ? 1 : 2}
+          spacing={1}
           sx={{
             width: "100%",
           }}
@@ -52,19 +50,15 @@ export default function DateHeader(props: Props) {
             sx={{
               // background: theme.customPalette.background.avatar,
               background: theme.palette.divider,
-              minWidth: useCompactMode ? "2.5em" : "3.25em",
-              minHeight: useCompactMode ? "2.5em" : "3.25em",
+              minWidth: "2.5em",
+              minHeight: "2.5em",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: useCompactMode ? 0.75 : 1,
+              borderRadius: 0.75,
             }}
           >
-            <Typography
-              textAlign={"center"}
-              fontWeight={600}
-              variant={useCompactMode ? "h6" : "h5"}
-            >
+            <Typography textAlign={"center"} fontWeight={600} variant={"h6"}>
               {startDate.toLocaleDateString("fr-CA", {
                 day: "numeric",
               })}
@@ -78,7 +72,7 @@ export default function DateHeader(props: Props) {
             }}
           >
             <Typography
-              variant={useCompactMode ? "body1" : "h6"}
+              variant={"body1"}
               textAlign={"left"}
               fontWeight={600}
               sx={{
@@ -92,7 +86,7 @@ export default function DateHeader(props: Props) {
               )}
             </Typography>
             <Typography
-              variant={useCompactMode ? "body2" : "body1"}
+              variant={"body2"}
               textAlign={"left"}
               sx={{
                 opacity: 0.5,

@@ -16,7 +16,6 @@ const key = LocalStorageKey.SettingsState;
 const defaultState: SettingsState = {
   groupEntriesBy: GroupEntriesBy.ThirtyMinutes,
   themeMode: ThemeMode.Dark,
-  useCompactMode: true,
 };
 
 const slice = createSlice({
@@ -31,23 +30,15 @@ const slice = createSlice({
       state.themeMode = action.payload;
       setLocalState(key, state);
     },
-    updateUseCompactMode: (state, action: PayloadAction<boolean>) => {
-      state.useCompactMode = action.payload;
-      setLocalState(key, state);
-    },
   },
 });
 
-export const { updateGroupEntriesBy, updateThemeMode, updateUseCompactMode } =
-  slice.actions;
+export const { updateGroupEntriesBy, updateThemeMode } = slice.actions;
 
 export const selectGroupEntriesBy = (state: RootState) =>
   state.settingsReducer.groupEntriesBy;
 
 export const selectThemeMode = (state: RootState) =>
   state.settingsReducer.themeMode;
-
-export const selectUseCompactMode = (state: RootState) =>
-  state.settingsReducer.useCompactMode;
 
 export default slice.reducer;

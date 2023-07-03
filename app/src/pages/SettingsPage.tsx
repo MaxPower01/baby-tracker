@@ -16,10 +16,8 @@ import React, { useState } from "react";
 import {
   selectGroupEntriesBy,
   selectThemeMode,
-  selectUseCompactMode,
   updateGroupEntriesBy,
   updateThemeMode,
-  updateUseCompactMode,
 } from "@/modules/settings/state/settingsSlice";
 
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
@@ -76,16 +74,6 @@ export default function SettingsPage() {
     const newValue = event.target.value as GroupEntriesBy;
     setGroupEntries(newValue);
     dispatch(updateGroupEntriesBy(newValue));
-  };
-
-  const initialUseCompactMode = useSelector(selectUseCompactMode);
-  const [useCompactMode, setUseCompactMode] = useState(initialUseCompactMode);
-  const handleCompactModeSwitchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newValue = event.target.checked;
-    setUseCompactMode(newValue);
-    dispatch(updateUseCompactMode(newValue));
   };
 
   return (
@@ -146,41 +134,6 @@ export default function SettingsPage() {
             </Select>
           </FormControl>
         </VerticalStack> */}
-
-        <VerticalStack>
-          {/* <InputLabel id="group-entries-select-label">
-            Le mode compact permet d'afficher plus d'informations à la fois sur
-            l'écran. Si vous avez de la difficulté à lire les informations, vous
-            pouvez désactiver ce mode.
-          </InputLabel> */}
-          <ItemDescription>
-            Désactivez cette option si vous trouvez que l'information affichée à
-            l'écran est trop petite.
-          </ItemDescription>
-
-          <FormControl>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={useCompactMode}
-                  onChange={handleCompactModeSwitchChange}
-                  name="compact-mode-switch"
-                />
-              }
-              label="Mode compact"
-              labelPlacement="start"
-              slotProps={{
-                typography: {
-                  sx: {
-                    flexGrow: 1,
-                    marginLeft: -2,
-                  },
-                },
-              }}
-              sx={{}}
-            />
-          </FormControl>
-        </VerticalStack>
       </Stack>
     </Container>
   );

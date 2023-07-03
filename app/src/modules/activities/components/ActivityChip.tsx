@@ -4,7 +4,6 @@ import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -28,7 +27,6 @@ export default function ActivityChip({
   isDisabled,
   overrideText,
 }: Props) {
-  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
   return (
     <Chip
@@ -39,13 +37,7 @@ export default function ActivityChip({
           justifyContent={"flex-start"}
           alignItems={"center"}
         >
-          <Typography
-            variant={
-              useCompactMode ? "caption" : size == "small" ? "body2" : "body1"
-            }
-            fontWeight={useCompactMode ? 500 : 600}
-            color={textColor}
-          >
+          <Typography variant={"caption"} fontWeight={500} color={textColor}>
             {overrideText ?? activity.name}
           </Typography>
           {isSelected == true && (
@@ -53,7 +45,7 @@ export default function ActivityChip({
               sx={{
                 marginRight: 0,
                 marginLeft: 1,
-                fontSize: useCompactMode ? "1.15em" : "1.35em",
+                fontSize: "1.15em",
                 color: theme.palette.primary.main,
               }}
             />
@@ -76,7 +68,7 @@ export default function ActivityChip({
               sx={{
                 marginRight: 0,
                 marginLeft: 1,
-                fontSize: useCompactMode ? "1.15em" : "1.35em",
+                fontSize: "1.15em" : "1.35em",
                 color: theme.palette.primary.main,
               }}
             />
@@ -86,7 +78,7 @@ export default function ActivityChip({
             sx={{
               marginRight: size === "small" ? -0.5 : -1,
               marginLeft: 0.5,
-              fontSize: useCompactMode ? "1.15em" : "1.35em",
+              fontSize: "1.15em",
               color: textColor,
             }}
           />

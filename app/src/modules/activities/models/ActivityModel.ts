@@ -602,6 +602,8 @@ export default class ActivityModel {
           ActivityType.Burp,
           ActivityType.Regurgitation,
           ActivityType.Vomit,
+          ActivityType.Cry,
+          ActivityType.Fart,
         ];
       case ActivityType.Hiccups:
         return [

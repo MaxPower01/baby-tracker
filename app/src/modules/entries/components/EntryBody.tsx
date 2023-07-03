@@ -25,7 +25,6 @@ import SubActivityChip from "@/modules/activities/components/SubActivityChip";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import poopMarks from "@/utils/poopMarks";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import urineMarks from "@/utils/urineMarks";
 import { useSelector } from "react-redux";
 
@@ -36,7 +35,6 @@ type Props = {
 };
 
 export default function EntryBody(props: Props) {
-  const useCompactMode = useSelector(selectUseCompactMode);
   const theme = useTheme();
   const { entry, sx, previousEntry } = props;
   if (!entry) return null;
@@ -167,7 +165,7 @@ export default function EntryBody(props: Props) {
 
   return (
     <Stack
-      spacing={useCompactMode ? 0.5 : 1}
+      spacing={0.5}
       sx={{
         ...sx,
         width: "100%",
@@ -340,7 +338,7 @@ export default function EntryBody(props: Props) {
         volumeLabels.map((label, labelIndex) => (
           <Stack
             key={labelIndex}
-            spacing={useCompactMode ? 0.5 : 1}
+            spacing={0.5}
             direction={"row"}
             alignItems={"center"}
             sx={{}}
@@ -353,7 +351,7 @@ export default function EntryBody(props: Props) {
             />
             <Box>
               <Typography
-                variant={useCompactMode ? "caption" : "body1"}
+                variant={"caption"}
                 sx={{
                   display: "inline",
                   color: textColor,
@@ -371,7 +369,7 @@ export default function EntryBody(props: Props) {
         timeLabels.map((label, labelIndex) => (
           <Stack
             key={labelIndex}
-            spacing={useCompactMode ? 0.5 : 1}
+            spacing={0.5}
             direction={"row"}
             alignItems={"center"}
             sx={{}}
@@ -384,23 +382,11 @@ export default function EntryBody(props: Props) {
             />
             <Box>
               <Typography
-                variant={
-                  hasStopwatchRunning
-                    ? useCompactMode
-                      ? "body1"
-                      : "h6"
-                    : useCompactMode
-                    ? "caption"
-                    : "body1"
-                }
+                variant={hasStopwatchRunning ? "body1" : "caption"}
                 sx={{
                   display: "inline",
                   color: textColor,
-                  fontWeight: hasStopwatchRunning
-                    ? useCompactMode
-                      ? 600
-                      : "bold"
-                    : undefined,
+                  fontWeight: hasStopwatchRunning ? 600 : undefined,
                 }}
               >
                 {label}
@@ -410,12 +396,7 @@ export default function EntryBody(props: Props) {
         ))}
 
       {entry.length > 0 && (
-        <Stack
-          spacing={useCompactMode ? 0.5 : 1}
-          direction={"row"}
-          alignItems={"center"}
-          sx={{}}
-        >
+        <Stack spacing={0.5} direction={"row"} alignItems={"center"} sx={{}}>
           <StraightenIcon
             sx={{
               color: textColor,
@@ -424,7 +405,7 @@ export default function EntryBody(props: Props) {
           />
           <Box>
             <Typography
-              variant={useCompactMode ? "caption" : "body1"}
+              variant={"caption"}
               sx={{
                 display: "inline",
                 color: textColor,
@@ -441,12 +422,7 @@ export default function EntryBody(props: Props) {
       )}
 
       {entry.weight > 0 && (
-        <Stack
-          spacing={useCompactMode ? 0.5 : 1}
-          direction={"row"}
-          alignItems={"center"}
-          sx={{}}
-        >
+        <Stack spacing={0.5} direction={"row"} alignItems={"center"} sx={{}}>
           <ScaleIcon
             sx={{
               color: textColor,
@@ -455,7 +431,7 @@ export default function EntryBody(props: Props) {
           />
           <Box>
             <Typography
-              variant={useCompactMode ? "caption" : "body1"}
+              variant={"caption"}
               sx={{
                 display: "inline",
                 color: textColor,
@@ -473,7 +449,7 @@ export default function EntryBody(props: Props) {
 
       {entry.note && (
         <Typography
-          variant={useCompactMode ? "caption" : "body1"}
+          variant={"caption"}
           sx={{
             ...textStyle,
           }}
@@ -504,7 +480,7 @@ export default function EntryBody(props: Props) {
 
       {timeElapsedSincePreviousEntryLabel != null && (
         <Typography
-          variant={useCompactMode ? "caption" : "body2"}
+          variant={"caption"}
           sx={{
             ...textStyle,
             opacity: 0.35,

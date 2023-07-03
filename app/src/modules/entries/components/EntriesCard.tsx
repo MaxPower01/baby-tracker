@@ -29,7 +29,6 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PageId from "@/common/enums/PageId";
 import getPath from "@/utils/getPath";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
@@ -48,7 +47,6 @@ type Props = {
 export default function EntriesCard(props: Props) {
   const navigate = useNavigate();
   const { entries, allEntries } = props;
-  const useCompactMode = useSelector(selectUseCompactMode);
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -100,11 +98,11 @@ export default function EntriesCard(props: Props) {
       <Card
         sx={
           {
-            // backgroundColor: useCompactMode ? "transparent" : undefined,
-            // backgroundImage: useCompactMode ? "none" : undefined,
-            // border: useCompactMode ? "1px solid" : undefined,
-            // borderColor: useCompactMode ? theme.palette.divider : undefined,
-            // boxShadow: useCompactMode ? "none" : undefined,
+            // backgroundColor: "transparent" : undefined,
+            // backgroundImage: "none" : undefined,
+            // border: "1px solid" : undefined,
+            // borderColor: theme.palette.divider : undefined,
+            // boxShadow: "none" : undefined,
           }
         }
       >
@@ -144,7 +142,9 @@ export default function EntriesCard(props: Props) {
                 e.activity != null &&
                 entry.activity != null &&
                 (e.activity.type == entry.activity.type ||
-                  e.linkedActivities.map(a => a.type).includes(entry.activity.type)) &&
+                  e.linkedActivities
+                    .map((a) => a.type)
+                    .includes(entry.activity.type)) &&
                 e.startDate.getTime() < entry.startDate.getTime()
             );
 
@@ -167,16 +167,16 @@ export default function EntriesCard(props: Props) {
               >
                 <CardContent
                   sx={{
-                    paddingTop: useCompactMode ? 1 : 4,
-                    paddingBottom: useCompactMode ? 1 : 4,
+                    paddingTop: 1,
+                    paddingBottom: 1,
                     // borderBottom:
-                    //   nextEntryExists && useCompactMode ? "1px solid" : undefined,
+                    //   nextEntryExists && "1px solid" : undefined,
                     // borderColor: theme.palette.divider,
                   }}
                 >
                   <Stack
                     sx={{
-                      fontSize: useCompactMode ? "0.65em" : "0.8em",
+                      fontSize: "0.65em",
                       position: "relative",
                     }}
                   >
@@ -184,13 +184,13 @@ export default function EntriesCard(props: Props) {
                       <Box
                         sx={{
                           position: "absolute",
-                          top: useCompactMode ? "3em" : "4.75em",
+                          top: "3em",
                           left: "calc(2.25em - 2px)",
                           height: "100%",
                           opacity: 0.5,
-                          paddingTop: useCompactMode ? 2.5 : 1,
-                          paddingBottom: useCompactMode ? 2.5 : 1,
-                          // display: useCompactMode ? "none" : undefined,
+                          paddingTop: 2.5,
+                          paddingBottom: 2.5,
+                          // display: "none" : undefined,
                         }}
                       >
                         <Box
@@ -302,7 +302,7 @@ export default function EntriesCard(props: Props) {
                         entry={entry}
                         previousEntry={previousEntry}
                         sx={{
-                          paddingTop: useCompactMode ? 0 : 1,
+                          paddingTop: 0,
                         }}
                       />
                     </Stack>
@@ -310,7 +310,7 @@ export default function EntriesCard(props: Props) {
                 </CardContent>
               </CardActionArea>
 
-              {/* {nextEntryExists && useCompactMode && (
+              {/* {nextEntryExists && (
                 <Divider
                   sx={{
                     marginLeft: 2,

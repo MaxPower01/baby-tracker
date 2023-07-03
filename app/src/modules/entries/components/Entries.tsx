@@ -23,7 +23,6 @@ import TimePeriod from "@/common/enums/TimePeriod";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { useSelector } from "react-redux";
 
@@ -35,7 +34,6 @@ type Props = {
 export default function Entries(props: Props) {
   const { entries, setEntries, isLoading, getEntries } = useEntries();
   const activities = useSelector(selectActivities);
-  const useCompactMode = useSelector(selectUseCompactMode);
 
   const allActivityTypes = useMemo(() => {
     if (entries == null) {
@@ -620,7 +618,7 @@ export default function Entries(props: Props) {
                   </Stack>
 
                   <Stack
-                    spacing={useCompactMode ? 2 : 4}
+                    spacing={2}
                     sx={{
                       paddingTop: 1,
                       paddingBottom: 1,

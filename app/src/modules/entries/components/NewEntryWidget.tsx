@@ -21,7 +21,6 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import useMenu from "@/modules/menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +40,6 @@ export default function NewEntryWidget(props: Props) {
   // const burpActivity = new ActivityModel(ActivityType.Burp);
   // const regurgitationActivity = new ActivityModel(ActivityType.Regurgitation);
   // const vomitActivity = new ActivityModel(ActivityType.Vomit);
-  const useCompactMode = useSelector(selectUseCompactMode);
   const { Menu, openMenu, closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
@@ -88,11 +86,11 @@ export default function NewEntryWidget(props: Props) {
     });
   }, [entries, now, activities]);
 
-  const activityButtonWidth = useCompactMode ? "12em" : "11em";
+  const activityButtonWidth = "12em";
   const activityButtonPaddingLeftRight = 2;
-  const activityButtonFontSize = useCompactMode ? "0.7em" : undefined;
+  const activityButtonFontSize = "0.7em";
   const boxPadding = 4;
-  const activityButtonTypographyFontSize = useCompactMode ? "1em" : undefined;
+  const activityButtonTypographyFontSize = "1em";
 
   const boxStyle: SxProps = {
     borderRadius: 1,
@@ -108,8 +106,8 @@ export default function NewEntryWidget(props: Props) {
     padding: `${boxPadding}px`,
   };
   const activityButtonStyle: SxProps = {
-    paddingTop: useCompactMode ? 0.5 : 1,
-    paddingBottom: useCompactMode ? 0.5 : 1,
+    paddingTop: 0.5,
+    paddingBottom: 0.5,
     paddingLeft: activityButtonPaddingLeftRight,
     paddingRight: activityButtonPaddingLeftRight,
     // width: "100%",
@@ -130,7 +128,7 @@ export default function NewEntryWidget(props: Props) {
     textAlign: "center",
   };
 
-  const textVariant = useCompactMode ? "caption" : "body2";
+  const textVariant = "caption";
   const navigate = useNavigate();
   const handleActivityClick = (params: {
     event: React.MouseEvent<HTMLElement, MouseEvent>;
@@ -314,10 +312,8 @@ export default function NewEntryWidget(props: Props) {
                     )
                   }
                   sx={{
-                    marginTop: useCompactMode ? 0 : 0.5,
-                    fontSize: useCompactMode
-                      ? activityButtonFontSize
-                      : theme.typography.button.fontSize,
+                    marginTop: 0,
+                    fontSize: activityButtonFontSize,
                     width: `calc(${activityButtonWidth} + 1.6px + ${
                       boxPadding * 2
                     }px)`,

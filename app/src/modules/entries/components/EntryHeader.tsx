@@ -2,7 +2,6 @@ import { Box, Stack, Typography } from "@mui/material";
 
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import { selectUseCompactMode } from "@/modules/settings/state/settingsSlice";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -14,7 +13,6 @@ type Props = {
 
 export default function EntryHeader(props: Props) {
   const { entry } = props;
-  const useCompactMode = useSelector(selectUseCompactMode);
   if (!entry) return null;
   const {
     time,
@@ -89,9 +87,9 @@ export default function EntryHeader(props: Props) {
           <ActivityIcon activity={entry.activity} />
         </Box>
       )}
-      <Stack spacing={useCompactMode ? 0.25 : 0}>
+      <Stack spacing={0.25}>
         <Typography
-          variant={useCompactMode ? "caption" : "body2"}
+          variant={"caption"}
           sx={{
             lineHeight: 1,
             opacity: 0.6,
@@ -101,8 +99,8 @@ export default function EntryHeader(props: Props) {
           {subtitle}
         </Typography>
         <Typography
-          variant={useCompactMode ? "body1" : "h6"}
-          fontWeight={useCompactMode ? 600 : "bold"}
+          variant={"body1"}
+          fontWeight={600}
           sx={{
             color: props.textColor,
           }}
