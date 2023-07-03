@@ -143,8 +143,8 @@ export default function EntriesCard(props: Props) {
                 e.id != entry.id &&
                 e.activity != null &&
                 entry.activity != null &&
-                (e.activity?.type == entry.activity?.type ||
-                  e.activity.linkedTypes.includes(entry.activity.type)) &&
+                (e.activity.type == entry.activity.type ||
+                  e.linkedActivities.map(a => a.type).includes(entry.activity.type)) &&
                 e.startDate.getTime() < entry.startDate.getTime()
             );
 
