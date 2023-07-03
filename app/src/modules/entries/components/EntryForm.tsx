@@ -166,6 +166,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.startDate = newEntryStartDate.toDate();
       if (newEntry.anyStopwatchIsRunning) return newEntry;
       if (newEntry.activity?.hasSides == true) return newEntry;
+      if (!newEntry.activity?.hasDuration) return newEntry;
       if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
         return newEntry;
       const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
@@ -185,6 +186,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.endDate = newEntryEndDate.toDate();
       if (newEntry.anyStopwatchIsRunning) return newEntry;
       if (newEntry.activity?.hasSides == true) return newEntry;
+      if (!newEntry.activity?.hasDuration) return newEntry;
       if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
         return newEntry;
       const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
@@ -206,6 +208,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.startDate = newEntryStartDate.toDate();
       if (newEntry.anyStopwatchIsRunning) return newEntry;
       if (newEntry.activity?.hasSides == true) return newEntry;
+      if (!newEntry.activity?.hasDuration) return newEntry;
       if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
         return newEntry;
       const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
@@ -226,6 +229,7 @@ export default function EntryForm(props: EntryFormProps) {
       newEntry.endDate = newEntryEndDate.toDate();
       if (newEntry.anyStopwatchIsRunning) return newEntry;
       if (newEntry.activity?.hasSides == true) return newEntry;
+      if (!newEntry.activity?.hasDuration) return newEntry;
       if (newEntry.endDate.getTime() < newEntry.startDate.getTime())
         return newEntry;
       const diff = newEntry.endDate.getTime() - newEntry.startDate.getTime();
