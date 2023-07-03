@@ -121,7 +121,6 @@ export default function NewEntryWidget(props: Props) {
     fontSize: activityButtonFontSize,
   };
   const subtitleStyle: SxProps = {
-    opacity: 0.6,
     textAlign: "center",
   };
   const titleStyle: SxProps = {

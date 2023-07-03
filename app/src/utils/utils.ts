@@ -184,11 +184,13 @@ export function setLocalState<T>(key: string, value: T) {
   }
 }
 
-export function getInitialState<T>(key: string, defaultValue: T): T {
+export function getInitialState<T>(
+  key: string,
+  defaultValue: T,
+  parser?: (value: T) => T
+): T {
   const localState = getLocalState(key, defaultValue);
-  // TODO:
-  // Check if the local state is valid. If not, use the default state
-  // and save it to local storage.
+  if (parser) return parser(localState);
   return localState;
 }
 

@@ -89,8 +89,8 @@ export default function ThemeProvider(props: ThemeProviderProps) {
           },
           text: {
             primary: themeMode === "dark" ? "#ffffff" : "#000000",
-            secondary: themeMode === "dark" ? "#ffffff70" : "#00000070",
-            tertiary: themeMode === "dark" ? "#ffffff40" : "#00000040",
+            secondary: themeMode === "dark" ? "#ffffff80" : "#00000080",
+            tertiary: themeMode === "dark" ? "#ffffff50" : "#00000050",
           },
         },
         shape: {
