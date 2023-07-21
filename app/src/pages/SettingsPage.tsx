@@ -235,7 +235,7 @@ export default function SettingsPage() {
           </FormControl>
         </VerticalStack>
 
-        <VerticalStack>
+        {/* <VerticalStack>
           <ItemLabel label={"Unité de poids"} />
           <FormControl>
             <Select
@@ -247,7 +247,7 @@ export default function SettingsPage() {
               <MenuItem value={WeightUnit.Pound}>Livre</MenuItem>
             </Select>
           </FormControl>
-        </VerticalStack>
+        </VerticalStack> */}
       </Stack>
     </Container>
   );
