@@ -10,6 +10,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {
+  selectShowPoopQuantityInHomePage,
+  selectShowUrineQuantityInHomePage,
+} from "@/modules/settings/state/settingsSlice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -52,6 +56,13 @@ export default function EntryBody(props: Props) {
     color: textColor,
   };
 
+  const showPoopQuantityInHomePage = useSelector(
+    selectShowPoopQuantityInHomePage
+  );
+  const showUrineQuantityInHomePage = useSelector(
+    selectShowUrineQuantityInHomePage
+  );
+
   const activityTypesThatDisplayPoopAndUrineSliders = [
     ActivityType.Diaper,
     ActivityType.Urine,
@@ -74,7 +85,11 @@ export default function EntryBody(props: Props) {
 
   const computeTimeLabels = useCallback(() => {
     let result: string[] = [];
-    if (!entry.time) {
+    if (
+      !entry.time ||
+      entry.time == 0 ||
+      entry.activity?.hasDuration !== true
+    ) {
       setTimeLabels(result);
       return;
     }
@@ -234,7 +249,8 @@ export default function EntryBody(props: Props) {
         activityTypesThatDisplayPoopAndUrineSliders.includes(
           entry.activity.type
         ) &&
-        entry.poopValue > 0 && (
+        entry.poopValue > 0 &&
+        showPoopQuantityInHomePage && (
           <Box
             sx={{
               // paddingLeft: 1,
@@ -286,7 +302,8 @@ export default function EntryBody(props: Props) {
         activityTypesThatDisplayPoopAndUrineSliders.includes(
           entry.activity.type
         ) &&
-        entry.urineValue > 0 && (
+        entry.urineValue > 0 &&
+        showUrineQuantityInHomePage && (
           <Stack
             sx={{
               // paddingLeft: 1,

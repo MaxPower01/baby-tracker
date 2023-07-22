@@ -8,4 +8,6 @@ export default interface SettingsState {
   groupEntriesBy: GroupEntriesBy;
   groupEntriesInterval: GroupEntriesInterval;
   weightUnit: WeightUnit;
+  showPoopQuantityInHomePage: boolean;
+  showUrineQuantityInHomePage: boolean;
 }

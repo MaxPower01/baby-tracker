@@ -96,8 +96,10 @@ export default function EntriesCard(props: Props) {
   return (
     <>
       <Card
+        elevation={0}
         sx={
           {
+            // backgroundColor: "transparent",
             // backgroundColor: "transparent" : undefined,
             // backgroundImage: "none" : undefined,
             // border: "1px solid" : undefined,

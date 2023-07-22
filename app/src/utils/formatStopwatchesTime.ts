@@ -68,7 +68,7 @@ export default function formatStopwatchesTime(
   }
   if (minutes > 0) {
     if (showLetters) {
-      result += `${minutes.toString()} m `;
+      result += `${minutes.toString()} min `;
     } else {
       result += `${minutes.toString().padStart(2, "0")}`;
     }
@@ -95,17 +95,35 @@ export default function formatStopwatchesTime(
 
   if (showLetters) {
     const containsHours = result.includes("h");
-    const containsMinutes = result.includes("m");
+    const containsMinutes = result.includes("min");
     const containsSeconds = result.includes("s");
 
     if (containsHours && containsMinutes) {
       if (containsSeconds) {
+        // Remove trailing "s"
         result = result.replace(/s/g, "").trim();
       } else {
-        result = result.replace(/m/g, "").trim();
+        // Remove trailing "min"
+        result = result.replace(/min/g, "").trim();
       }
     } else if (containsMinutes && containsSeconds) {
+      // Remove trailing "s"
       result = result.replace(/s/g, "").trim();
+    }
+
+    if (containsMinutes && !containsSeconds) {
+      const lastWord = result.split(" ").pop();
+      if (lastWord && lastWord.length === 1) {
+        try {
+          const lastWordAsNumber = parseInt(lastWord);
+          if (!isNaN(lastWordAsNumber)) {
+            // Replace last instance of lastWord with "0<lastWord>"
+            result = result.replace(new RegExp(`${lastWord}$`), `0${lastWord}`);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
 
     const lastWord = result.split(" ").pop();
@@ -113,18 +131,25 @@ export default function formatStopwatchesTime(
       try {
         const lastWordAsNumber = parseInt(lastWord);
         if (!isNaN(lastWordAsNumber)) {
-          result = result.replace(lastWord, `0${lastWord}`);
+          // Replace last instance of lastWord with "0<lastWord>"
+          result = result.replace(new RegExp(`${lastWord}$`), `0${lastWord}`);
         }
       } catch (error) {
         console.error(error);
       }
     }
+
+    if (containsHours) {
+      // Remove leading zero
+      result = result.replace(/^(0)(.+)/, "$2");
+    }
   } else {
     const containsHours = result.match(/:/g)?.length === 2;
     if (containsHours) {
-      result = result.replace(/^0/, ""); // Remove leading zero
+      // Remove leading zero
+      result = result.replace(/^(0)(.+)/, "$2");
     }
   }
 
-  return result;
+  return result.trim();
 }

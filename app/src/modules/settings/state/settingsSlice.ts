@@ -20,6 +20,8 @@ const defaultState: SettingsState = {
   groupEntriesInterval: GroupEntriesInterval.BetweenEndsAndBeginnings,
   themeMode: ThemeMode.Dark,
   weightUnit: WeightUnit.Pound,
+  showPoopQuantityInHomePage: true,
+  showUrineQuantityInHomePage: true,
 };
 
 const parser = (state: SettingsState) => {
@@ -34,6 +36,13 @@ const parser = (state: SettingsState) => {
   }
   if (!state.weightUnit) {
     state.weightUnit = defaultState.weightUnit;
+  }
+  if (state.showPoopQuantityInHomePage === undefined) {
+    state.showPoopQuantityInHomePage = defaultState.showPoopQuantityInHomePage;
+  }
+  if (state.showUrineQuantityInHomePage === undefined) {
+    state.showUrineQuantityInHomePage =
+      defaultState.showUrineQuantityInHomePage;
   }
   return state;
 };
@@ -61,6 +70,20 @@ const slice = createSlice({
       state.themeMode = action.payload;
       setLocalState(key, state);
     },
+    updateShowPoopQuantityInHomePage: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.showPoopQuantityInHomePage = action.payload;
+      setLocalState(key, state);
+    },
+    updateShowUrineQuantityInHomePage: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.showUrineQuantityInHomePage = action.payload;
+      setLocalState(key, state);
+    },
   },
 });
 
@@ -69,6 +92,8 @@ export const {
   updateThemeMode,
   updateGroupEntriesInterval,
   updateWeightUnit,
+  updateShowPoopQuantityInHomePage,
+  updateShowUrineQuantityInHomePage,
 } = slice.actions;
 
 export const selectGroupEntriesBy = (state: RootState) =>
@@ -82,5 +107,11 @@ export const selectWeightUnit = (state: RootState) =>
 
 export const selectThemeMode = (state: RootState) =>
   state.settingsReducer.themeMode;
+
+export const selectShowPoopQuantityInHomePage = (state: RootState) =>
+  state.settingsReducer.showPoopQuantityInHomePage;
+
+export const selectShowUrineQuantityInHomePage = (state: RootState) =>
+  state.settingsReducer.showUrineQuantityInHomePage;
 
 export default slice.reducer;

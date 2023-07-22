@@ -303,7 +303,7 @@ export default function Stopwatch(props: Props) {
                     if (inputsAreReadOnly) {
                       event.target.blur();
                     } else {
-                      event.target.select();
+                      // event.target.select();
                     }
                   },
                   readOnly: inputsAreReadOnly,
@@ -347,7 +347,7 @@ export default function Stopwatch(props: Props) {
                     if (inputsAreReadOnly) {
                       event.target.blur();
                     } else {
-                      event.target.select();
+                      // event.target.select();
                     }
                   },
                   readOnly: inputsAreReadOnly,
@@ -392,7 +392,7 @@ export default function Stopwatch(props: Props) {
                     if (inputsAreReadOnly) {
                       event.target.blur();
                     } else {
-                      event.target.select();
+                      // event.target.select();
                     }
                   },
                   readOnly: inputsAreReadOnly,

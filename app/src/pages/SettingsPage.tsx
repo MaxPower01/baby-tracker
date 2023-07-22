@@ -20,14 +20,21 @@ import React, { useState } from "react";
 import {
   selectGroupEntriesBy,
   selectGroupEntriesInterval,
+  selectShowPoopQuantityInHomePage,
+  selectShowUrineQuantityInHomePage,
   selectThemeMode,
   selectWeightUnit,
   updateGroupEntriesBy,
   updateGroupEntriesInterval,
+  updateShowPoopQuantityInHomePage,
+  updateShowUrineQuantityInHomePage,
   updateThemeMode,
   updateWeightUnit,
 } from "@/modules/settings/state/settingsSlice";
 
+import ActivityIcon from "@/modules/activities/components/ActivityIcon";
+import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityType from "@/modules/activities/enums/ActivityType";
 import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import GroupEntriesBy from "@/modules/settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/modules/settings/enums/GroupEntriesInterval";
@@ -140,6 +147,30 @@ export default function SettingsPage() {
     dispatch(updateWeightUnit(newValue));
   };
 
+  const initialShowPoopQuantityInHomePage = useSelector(
+    selectShowPoopQuantityInHomePage
+  );
+  const [showPoopQuantityInHomePage, setShowPoopQuantityInHomePage] =
+    useState<boolean>(initialShowPoopQuantityInHomePage);
+
+  const handleShowPoopQuantityInHomePageChange = (checked: boolean) => {
+    const newValue = checked;
+    setShowPoopQuantityInHomePage(newValue);
+    dispatch(updateShowPoopQuantityInHomePage(newValue));
+  };
+
+  const initialShowUrineQuantityInHomePage = useSelector(
+    selectShowUrineQuantityInHomePage
+  );
+  const [showUrineQuantityInHomePage, setShowUrineQuantityInHomePage] =
+    useState<boolean>(initialShowUrineQuantityInHomePage);
+
+  const handleShowUrineQuantityInHomePageChange = (checked: boolean) => {
+    const newValue = checked;
+    setShowUrineQuantityInHomePage(newValue);
+    dispatch(updateShowUrineQuantityInHomePage(newValue));
+  };
+
   return (
     <Container maxWidth={CSSBreakpoint.ExtraSmall}>
       <Stack
@@ -248,6 +279,60 @@ export default function SettingsPage() {
             </Select>
           </FormControl>
         </VerticalStack> */}
+
+        <VerticalStack>
+          <ItemLabel
+            label={
+              "Afficher les quantités de pipi et de caca sur la page d'accueil"
+            }
+          />
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Stack direction={"row"} alignItems={"center"} spacing={1}>
+              <ActivityIcon
+                activity={new ActivityModel(ActivityType.Poop)}
+                sx={{
+                  fontSize: "1.5rem",
+                }}
+              />
+              <Typography variant={"body1"}>Caca</Typography>
+            </Stack>
+            <FormControl>
+              <Switch
+                checked={showPoopQuantityInHomePage}
+                onChange={(event, checked) => {
+                  handleShowPoopQuantityInHomePageChange(checked);
+                }}
+              />
+            </FormControl>
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Stack direction={"row"} alignItems={"center"} spacing={1}>
+              <ActivityIcon
+                activity={new ActivityModel(ActivityType.Urine)}
+                sx={{
+                  fontSize: "1.5rem",
+                }}
+              />
+              <Typography variant={"body1"}>Pipi</Typography>
+            </Stack>
+            <FormControl>
+              <Switch
+                checked={showUrineQuantityInHomePage}
+                onChange={(event, checked) => {
+                  handleShowUrineQuantityInHomePageChange(checked);
+                }}
+              />
+            </FormControl>
+          </Stack>
+        </VerticalStack>
       </Stack>
     </Container>
   );
