@@ -41,6 +41,7 @@ import GroupEntriesInterval from "@/modules/settings/enums/GroupEntriesInterval"
 import { ReactSVG } from "react-svg";
 import ThemeMode from "@/modules/theme/enums/ThemeMode";
 import WeightUnit from "@/modules/settings/enums/WeightUnit";
+import isDevelopment from "@/utils/isDevelopment";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 

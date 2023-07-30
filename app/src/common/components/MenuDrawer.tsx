@@ -21,6 +21,8 @@ import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import GetAppIcon from "@mui/icons-material/GetApp";
 import PageId from "@/common/enums/PageId";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -29,6 +31,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import { functions } from "@/firebase";
 import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
+import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useChildren from "@/modules/children/hooks/useChildren";
@@ -97,7 +100,7 @@ export default function MenuDrawer(props: {
       >
         <Container maxWidth={CSSBreakpoint.Small}>
           <Stack
-            spacing={4}
+            spacing={2}
             sx={{
               paddingTop: 2,
               paddingBottom: 2,
@@ -243,6 +246,51 @@ export default function MenuDrawer(props: {
                   }}
                 />
                 <Typography variant="body1">Paramètres</Typography>
+              </Button>
+            </Stack>
+            <Divider />
+            <Stack
+              sx={{
+                width: "100%",
+              }}
+              alignItems={"flex-start"}
+              spacing={1}
+            >
+              {isDevelopment() && (
+                <Button
+                  variant="text"
+                  fullWidth
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                    textAlign: "left",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <FileUploadIcon
+                    sx={{
+                      marginRight: 1,
+                    }}
+                  />
+                  <Typography variant="body1">Importer des entrées</Typography>
+                </Button>
+              )}
+              <Button
+                variant="text"
+                fullWidth
+                sx={{
+                  color: theme.customPalette.text.primary,
+                  textAlign: "left",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <GetAppIcon
+                  sx={{
+                    marginRight: 1,
+                  }}
+                />
+                <Typography variant="body1">
+                  Exporter les entrées récentes
+                </Typography>
               </Button>
             </Stack>
             <Divider />

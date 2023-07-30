@@ -103,7 +103,7 @@ type Props = {
 export default function ChildForm(props: Props) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const avatarWidth = 100;
+  const avatarWidth = 150;
   const avatarFontSize = avatarWidth / 2.5;
   const { user, setUser } = useAuthentication();
 

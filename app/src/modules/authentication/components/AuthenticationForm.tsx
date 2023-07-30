@@ -1,93 +1,59 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
 import GoogleIcon from "@mui/icons-material/Google";
+import LoadingIndicator from "@/common/components/LoadingIndicator";
 import PageId from "@/common/enums/PageId";
 import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";
 
 export default function AuthenticationForm() {
+  const [isAuthenticating, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { getEntries } = useEntries();
+  const theme = useTheme();
   const { googleSignInWithPopup } = useAuthentication();
-  // const handleGoogleSignIn = async () => {
-  //   let user: User | undefined;
-  //   let isNewUser: boolean | undefined;
-  //   try {
-  //     const result = await signInWithPopup(auth, googleAuthProvider);
-  //     // const credential = GoogleAuthProvider.credentialFromResult(result);
-  //     // const token = credential?.accessToken;
-  //     const additionalUserInfo = getAdditionalUserInfo(result);
-  //     isNewUser = additionalUserInfo?.isNewUser;
-  //     user = result.user;
-  //   } catch (error: any) {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     const email = error.customData.email;
-  //     const credential = GoogleAuthProvider.credentialFromError(error);
-  //     console.error(errorCode, errorMessage, email, credential);
-  //   }
-  //   if (!user) return;
-  //   try {
-  //     const userRef = doc(db, "users", user.uid);
-  //     const data: WithFieldValue<DocumentData> = {
-  //       uid: user.uid,
-  //       email: user.email,
-  //       displayName: user.displayName,
-  //       photoURL: user.photoURL,
-  //       emailVerified: user.emailVerified,
-  //       phoneNumber: user.phoneNumber,
-  //       providerId: user.providerId,
-  //       creationTime: user.metadata.creationTime,
-  //       lastSignInTime: user.metadata.lastSignInTime,
-  //     };
-  //     if (isNewUser) {
-  //       data.selectedChild = "";
-  //       data.children = [];
-  //     }
-  //     await setDoc(userRef, data, { merge: true });
-  //     getDoc(userRef)
-  //       .then((docSnap) => {
-  //         getEntries(docSnap.data() as CustomUser).then(() => {});
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //     navigate(
-  //       getPath({
-  //         page: PageName.Home,
-  //       })
-  //     );
-  //   } catch (error: any) {
-  //     console.error(error);
-  //   }
-  // };
-
   const handleGoogleSignIn = () => {
-    googleSignInWithPopup().then(({ user, isNewUser }) => {
-      if (isNewUser == true) {
-        navigate(
-          getPath({
-            page: PageId.Family,
-          })
-        );
-      } else {
-        navigate(
-          getPath({
-            page: PageId.Home,
-          })
-        );
-      }
-    });
+    setIsLoading(true);
+    googleSignInWithPopup()
+      .then(({ user, isNewUser }) => {
+        if (isNewUser == true) {
+          navigate(
+            getPath({
+              page: PageId.Family,
+            })
+          );
+        } else {
+          navigate(
+            getPath({
+              page: PageId.Home,
+            })
+          );
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
     <Stack spacing={2}>
-      <Button variant="contained" onClick={handleGoogleSignIn} fullWidth>
+      <Button
+        disabled={isAuthenticating}
+        variant="contained"
+        onClick={handleGoogleSignIn}
+        fullWidth
+        sx={{
+          minHeight: `calc(${theme.typography.button.fontSize} * 2.5)`,
+        }}
+      >
         <Stack
           direction="row"
           spacing={1}
@@ -96,6 +62,24 @@ export default function AuthenticationForm() {
         >
           <GoogleIcon />
           <Typography variant="button">Continuer avec Google</Typography>
+          <Box
+            sx={{
+              display: isAuthenticating ? "flex" : "none",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <LoadingIndicator
+              size={`calc(${theme.typography.button.fontSize} * 2)`}
+            />
+          </Box>
         </Stack>
       </Button>
     </Stack>

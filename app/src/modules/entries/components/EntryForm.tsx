@@ -1831,11 +1831,25 @@ export default function EntryForm(props: EntryFormProps) {
                   height: `calc(${theme.typography.button.fontSize} * 2.5)`,
                 }}
               >
-                {isSaving == true ? (
-                  <LoadingIndicator size={theme.typography.button.fontSize} />
-                ) : (
-                  "Enregistrer"
-                )}
+                <Typography variant="button">Enregistrer</Typography>
+                <Box
+                  sx={{
+                    display: isSaving ? "flex" : "none",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LoadingIndicator
+                    size={`calc(${theme.typography.button.fontSize} * 2)`}
+                  />
+                </Box>
               </Button>
             </Stack>
           </Toolbar>
