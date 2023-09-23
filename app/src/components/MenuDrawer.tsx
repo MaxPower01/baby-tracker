@@ -17,13 +17,13 @@ import {
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";

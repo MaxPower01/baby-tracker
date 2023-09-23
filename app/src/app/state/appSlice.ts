@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import AppState from "@/app/types/AppState";
-import LocalStorageKey from "@/common/enums/LocalStorageKey";
+import LocalStorageKey from "@/enums/LocalStorageKey";
 import StoreReducerName from "@/modules/store/enums/StoreReducerName";
 
 const key = LocalStorageKey.AppState;

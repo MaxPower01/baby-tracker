@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import { formatDateTime } from "@/utils/utils";
 import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";

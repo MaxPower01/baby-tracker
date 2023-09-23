@@ -4,7 +4,7 @@ import { getInitialState, setLocalState } from "@/utils/utils";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import EntriesState from "@/modules/entries/types/EntriesState";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import LocalStorageKey from "@/common/enums/LocalStorageKey";
+import LocalStorageKey from "@/enums/LocalStorageKey";
 import { RootState } from "@/modules/store/store";
 import StoreReducerName from "@/modules/store/enums/StoreReducerName";
 

@@ -15,11 +15,13 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
     <MuiMenu
       {...menuProps}
       {...props}
-      slotProps={{
-        backdrop: {
-          sx: { backgroundColor: "#00000080" },
-        },
-      }}
+      slotProps={
+        {
+          // backdrop: {
+          //   sx: { backgroundColor: "#00000080" },
+          // },
+        }
+      }
     />
   );
 };

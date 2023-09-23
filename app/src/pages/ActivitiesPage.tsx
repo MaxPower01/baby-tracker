@@ -22,7 +22,7 @@ import {
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
-import LoadingIndicator from "@/common/components/LoadingIndicator";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import React from "react";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";

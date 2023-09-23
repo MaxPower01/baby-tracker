@@ -10,9 +10,9 @@ import {
 
 import ActivityButtons from "@/modules/activities/components/ActivityButtons";
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
 import getPath from "@/utils/getPath";
 import { useNavigate } from "react-router-dom";

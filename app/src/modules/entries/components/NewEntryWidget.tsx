@@ -16,7 +16,7 @@ import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import ChildForm from "@/modules/children/components/ChildForm";
 import ChildLanding from "@/modules/children/components/ChildLanding";
 import ChildWizard from "@/modules/children/components/ChildWizard";
-import LoadingIndicator from "@/common/components/LoadingIndicator";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
 import useChildren from "@/modules/children/hooks/useChildren";
 import { useParams } from "react-router-dom";

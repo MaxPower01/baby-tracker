@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import AuthenticationPage from "@/pages/AuthenticationPage";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 
 export default function PublicRoutes() {

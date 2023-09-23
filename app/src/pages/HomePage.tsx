@@ -10,20 +10,20 @@ import {
   Typography,
 } from "@mui/material";
 
-import ChildInformation from "@/modules/children/components/ChildInformation";
 import Entries from "@/modules/entries/components/Entries";
-import LoadingIndicator from "@/common/components/LoadingIndicator";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
-import PageId from "@/common/enums/PageId";
-import Section from "@/common/components/Section";
-import SectionStack from "@/common/components/SectionStack";
-import SectionTitle from "@/common/components/SectionTitle";
+import PageId from "@/enums/PageId";
+import Section from "@/components/Section";
+import SectionStack from "@/components/SectionStack";
+import SectionTitle from "@/components/SectionTitle";
 import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import BabyWidget from "@/components/BabyWidget";
 
 export default function HomePage() {
   const { user } = useAuthentication();
@@ -48,7 +48,7 @@ export default function HomePage() {
           position: "relative",
         }}
       >
-        <ChildInformation
+        <BabyWidget
           sx={{
             zIndex: 1,
           }}

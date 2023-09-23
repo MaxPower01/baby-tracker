@@ -8,7 +8,7 @@ import EntryPage from "@/pages/EntryPage";
 import FamilyPage from "@/pages/FamilyPage";
 import GraphicsPage from "@/pages/GraphicsPage";
 import HomePage from "@/pages/HomePage";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import SettingsPage from "@/pages/SettingsPage";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";

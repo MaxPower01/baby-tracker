@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import EntriesContext from "@/modules/entries/components/EntriesContext";
 import EntriesContextValue from "@/modules/entries/types/EntriesContextValue";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import TimePeriod from "@/common/enums/TimePeriod";
+import TimePeriod from "@/enums/TimePeriod";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";

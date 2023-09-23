@@ -1,8 +1,8 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
 import GoogleIcon from "@mui/icons-material/Google";
-import LoadingIndicator from "@/common/components/LoadingIndicator";
-import PageId from "@/common/enums/PageId";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import PageId from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import useEntries from "@/modules/entries/hooks/useEntries";

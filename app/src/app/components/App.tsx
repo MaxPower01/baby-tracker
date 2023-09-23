@@ -1,8 +1,8 @@
-import BottomBar from "@/common/components/BottomBar";
-import PrivateRoutes from "@/common/components/PrivateRoutes";
-import PublicRoutes from "@/common/components/PublicRoutes";
-import TopBar from "@/common/components/TopBar";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import BottomBar from "@/components/BottomBar";
+import PrivateRoutes from "@/components/PrivateRoutes";
+import PublicRoutes from "@/components/PublicRoutes";
+import TopBar from "@/components/TopBar";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
 import MenuProvider from "@/modules/menu/components/MenuProvider";
 import { Container } from "@mui/material";

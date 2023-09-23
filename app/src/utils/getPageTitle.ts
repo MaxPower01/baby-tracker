@@ -1,4 +1,4 @@
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import getPageName from "./getPageName";
 
 export default function getPageTitle(pathname: string) {

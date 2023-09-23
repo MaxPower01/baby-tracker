@@ -27,7 +27,7 @@ import EntryHeader from "@/modules/entries/components/EntryHeader";
 import EntryModel from "@/modules/entries/models/EntryModel";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
 import useEntries from "@/modules/entries/hooks/useEntries";

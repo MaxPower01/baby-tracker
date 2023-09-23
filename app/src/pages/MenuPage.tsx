@@ -15,7 +15,7 @@ import {
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EntryModel from "@/modules/entries/models/EntryModel";
-import PageId from "@/common/enums/PageId";
+import PageId from "@/enums/PageId";
 import exportToFile from "@/utils/exportToFile";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";

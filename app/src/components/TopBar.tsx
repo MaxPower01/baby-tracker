@@ -10,8 +10,8 @@ import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
-import PageId from "@/common/enums/PageId";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import PageId from "@/enums/PageId";
 import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";

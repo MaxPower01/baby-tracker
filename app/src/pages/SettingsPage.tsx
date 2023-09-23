@@ -35,7 +35,7 @@ import {
 import ActivityIcon from "@/modules/activities/components/ActivityIcon";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityType from "@/modules/activities/enums/ActivityType";
-import CSSBreakpoint from "@/common/enums/CSSBreakpoint";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
 import GroupEntriesBy from "@/modules/settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/modules/settings/enums/GroupEntriesInterval";
 import { ReactSVG } from "react-svg";
