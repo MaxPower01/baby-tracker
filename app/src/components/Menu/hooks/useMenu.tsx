@@ -1,4 +1,4 @@
-import MenuContext from "@/modules/menu/components/MenuContext";
+import MenuContext from "@/components/Menu/MenuContext";
 import { MenuProps } from "@mui/material/Menu";
 import { Menu as MuiMenu } from "@mui/material";
 import React from "react";

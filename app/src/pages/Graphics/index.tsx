@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 
-import ActivityBarChart from "@/modules/graphics/components/ActivityBarChart";
+import ActivityGraphic from "@/pages/Graphics/components/ActivityGraphic";
 import ActivityModel from "@/modules/activities/models/ActivityModel";
 import ActivityPicker from "@/modules/activities/components/ActivityPicker";
 import ActivityType from "@/modules/activities/enums/ActivityType";
@@ -31,7 +31,7 @@ export default function GraphicsPage() {
       />
 
       {activityType != null ? (
-        <ActivityBarChart activityType={activityType} />
+        <ActivityGraphic activityType={activityType} />
       ) : null}
     </Stack>
   );

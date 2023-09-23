@@ -17,7 +17,7 @@ type Props = {
   activityType: ActivityType;
 };
 
-export default function ActivityBarChart(props: Props) {
+export default function ActivityGraphic(props: Props) {
   const { entries, isLoading } = useEntries();
   const activityEntries = useMemo(() => {
     return entries.filter((entry) => {

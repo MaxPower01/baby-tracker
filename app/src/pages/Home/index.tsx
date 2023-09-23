@@ -10,9 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 
+import BabyWidget from "@/components/BabyWidget";
 import Entries from "@/modules/entries/components/Entries";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import MenuProvider from "@/modules/menu/components/MenuProvider";
+import MenuProvider from "@/components/Menu/MenuProvider";
 import NewEntryWidget from "@/modules/entries/components/NewEntryWidget";
 import PageId from "@/enums/PageId";
 import Section from "@/components/Section";
@@ -23,7 +24,6 @@ import useAuthentication from "@/modules/authentication/hooks/useAuthentication"
 import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import BabyWidget from "@/components/BabyWidget";
 
 export default function HomePage() {
   const { user } = useAuthentication();

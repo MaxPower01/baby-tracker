@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import AuthenticationPage from "@/pages/AuthenticationPage";
+import AuthenticationPage from "@/pages/Authentication";
 import PageId from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 

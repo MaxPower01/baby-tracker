@@ -18,7 +18,7 @@ import ActivityType from "@/modules/activities/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
 import DateHeader from "@/components/DateHeader";
 import EntriesCard from "@/modules/entries/components/EntriesCard";
-import MenuProvider from "@/modules/menu/components/MenuProvider";
+import MenuProvider from "@/components/Menu/MenuProvider";
 import TimePeriod from "@/enums/TimePeriod";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";

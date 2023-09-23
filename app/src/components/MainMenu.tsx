@@ -27,7 +27,7 @@ import useEntries from "@/modules/entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function MenuPage() {
+export default function MainMenu() {
   // const { Menu, openMenu, closeMenu } = useMenu();
   const { entries, isLoading: isLoadingEntries } = useEntries();
   const dispatch = useAppDispatch();

@@ -22,7 +22,7 @@ import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectActivities } from "@/modules/activities/state/activitiesSlice";
 import useEntries from "@/modules/entries/hooks/useEntries";
-import useMenu from "@/modules/menu/hooks/useMenu";
+import useMenu from "@/components/Menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

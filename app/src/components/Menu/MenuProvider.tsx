@@ -1,4 +1,4 @@
-import MenuContext from "@/modules/menu/components/MenuContext";
+import MenuContext from "@/components/Menu/MenuContext";
 import React from "react";
 
 export default function MenuProvider(props: React.PropsWithChildren<{}>) {

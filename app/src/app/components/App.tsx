@@ -1,11 +1,11 @@
 import BottomBar from "@/components/BottomBar";
+import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { Container } from "@mui/material";
+import MenuProvider from "@/components/Menu/MenuProvider";
 import PrivateRoutes from "@/components/PrivateRoutes";
 import PublicRoutes from "@/components/PublicRoutes";
 import TopBar from "@/components/TopBar";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import MenuProvider from "@/modules/menu/components/MenuProvider";
-import { Container } from "@mui/material";
 
 export default function App() {
   const { user } = useAuthentication();

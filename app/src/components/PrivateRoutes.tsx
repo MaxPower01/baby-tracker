@@ -1,15 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import ActivitiesPage from "@/pages/ActivitiesPage";
-import AuthenticationPage from "@/pages/AuthenticationPage";
-import ChildPage from "@/pages/ChildPage";
-import EntriesPage from "@/pages/EntriesPage";
-import EntryPage from "@/pages/EntryPage";
-import FamilyPage from "@/pages/FamilyPage";
-import GraphicsPage from "@/pages/GraphicsPage";
-import HomePage from "@/pages/HomePage";
+import ActivitiesPage from "@/pages/Activities";
+import AuthenticationPage from "@/pages/Authentication";
+import ChildPage from "@/pages/Baby";
+import EntriesPage from "@/pages/Entries";
+import EntryPage from "@/pages/Entry";
+import FamilyPage from "@/pages/Family";
+import GraphicsPage from "@/pages/Graphics";
+import HomePage from "@/pages/Home";
 import PageId from "@/enums/PageId";
-import SettingsPage from "@/pages/SettingsPage";
+import SettingsPage from "@/pages/Settings";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
