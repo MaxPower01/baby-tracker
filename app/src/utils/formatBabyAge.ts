@@ -29,8 +29,9 @@ export default function formatBabyAge(
         if (reminderMonths === 0) {
           return `${ageInYears} an${ageInYears > 1 ? "s" : ""}`;
         } else {
-          return `${ageInYears} an${
-            ageInYears > 1 ? "s" : ""
+          const adjustedAgeInYears = ageInYears - 1;
+          return `${adjustedAgeInYears} an${
+            adjustedAgeInYears > 1 ? "s" : ""
           } et ${reminderMonths} mois`;
         }
       case "months":
@@ -38,7 +39,8 @@ export default function formatBabyAge(
         if (reminderWeeks === 0) {
           return `${ageInMonths} mois`;
         } else {
-          return `${ageInMonths} mois et ${reminderWeeks} semaine${
+          const adjustedAgeInMonths = ageInMonths - 1;
+          return `${adjustedAgeInMonths} mois et ${reminderWeeks} semaine${
             reminderWeeks > 1 ? "s" : ""
           }`;
         }
@@ -47,8 +49,9 @@ export default function formatBabyAge(
         if (reminderDays === 0) {
           return `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
         } else {
-          return `${ageInWeeks} semaine${
-            ageInWeeks > 1 ? "s" : ""
+          const adjustedAgeInWeeks = ageInWeeks - 1;
+          return `${adjustedAgeInWeeks} semaine${
+            adjustedAgeInWeeks > 1 ? "s" : ""
           } et ${reminderDays} jour${reminderDays > 1 ? "s" : ""}`;
         }
       case "days":
