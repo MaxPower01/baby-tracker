@@ -122,8 +122,9 @@ export default function formatBabyAge(
             }`;
           }
         }
+        return monthsResult;
       case "weeks":
-        if (ageInDays === 0) return "moins d'un jour";
+        if (ageInDays === 0) return "moins d'une semaine";
         let weeksResult = `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
         const remainingDays = ageInDays - ageInWeeks * 7;
         if (remainingDays > 0) {
@@ -135,7 +136,8 @@ export default function formatBabyAge(
       case "days":
       default:
         if (ageInDays === 0) return "moins d'un jour";
-        return `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
+        let daysResult = `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
+        return daysResult;
     }
   } catch (error) {
     console.error("Error in formatBabyAge: ", error);
