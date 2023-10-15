@@ -1,4 +1,4 @@
-import EntryModel from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/pages/Entries/models/EntryModel";
 import TimePeriod from "@/enums/TimePeriod";
 
 /**

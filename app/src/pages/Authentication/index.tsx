@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 
-import AuthenticationForm from "@/modules/authentication/components/AuthenticationForm";
+import AuthenticationForm from "@/pages/Authentication/components/AuthenticationForm";
 import { ReactSVG } from "react-svg";
 
 export default function AuthenticationPage() {

@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material";
 
 import ActivityGraphic from "@/pages/Graphics/components/ActivityGraphic";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import ActivityPicker from "@/modules/activities/components/ActivityPicker";
-import ActivityType from "@/modules/activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activities/models/ActivityModel";
+import ActivityPicker from "@/pages/Activities/components/ActivityPicker";
+import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { useState } from "react";
 
 export default function GraphicsPage() {

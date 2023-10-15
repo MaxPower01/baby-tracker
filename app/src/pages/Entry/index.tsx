@@ -1,13 +1,13 @@
 import { useParams, useSearchParams } from "react-router-dom";
 
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import EntryForm from "@/modules/entries/components/EntryForm";
-import EntryModel from "@/modules/entries/models/EntryModel";
+import ActivityModel from "@/pages/Activities/models/ActivityModel";
+import ActivityType from "@/pages/Activities/enums/ActivityType";
+import EntryForm from "@/pages/Entries/components/EntryForm";
+import EntryModel from "@/pages/Entries/models/EntryModel";
 import MenuProvider from "@/components/Menu/MenuProvider";
-import { RootState } from "@/modules/store/store";
+import { RootState } from "@/store/store";
 import { isValidActivityType } from "@/utils/utils";
-import { selectEntry } from "@/modules/entries/state/entriesSlice";
+import { selectEntry } from "@/pages/Entries/state/entriesSlice";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 

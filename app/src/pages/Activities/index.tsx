@@ -17,14 +17,14 @@ import {
 import {
   selectActivities,
   updateActivitiesOrder,
-} from "@/modules/activities/state/activitiesSlice";
+} from "@/pages/Activities/state/activitiesSlice";
 
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
+import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import React from "react";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 export default function ActivitiesPage() {

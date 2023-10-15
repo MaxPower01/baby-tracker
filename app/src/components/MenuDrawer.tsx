@@ -33,8 +33,8 @@ import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import useChildren from "@/modules/children/hooks/useChildren";
+import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import useChildren from "@/pages/Baby/hooks/useChildren";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuDrawer(props: {

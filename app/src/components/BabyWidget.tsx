@@ -4,8 +4,8 @@ import React, { useMemo } from "react";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
-import useChildren from "@/modules/children/hooks/useChildren";
+import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import useChildren from "@/pages/Baby/hooks/useChildren";
 
 type Props = {
   sx?: SxProps;

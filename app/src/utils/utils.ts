@@ -1,5 +1,5 @@
-import ActivityType from "@/modules/activities/enums/ActivityType";
-import EntryModel from "@/modules/entries/models/EntryModel";
+import ActivityType from "@/pages/Activities/enums/ActivityType";
+import EntryModel from "@/pages/Entries/models/EntryModel";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Entries                                  */

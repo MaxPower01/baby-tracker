@@ -30,19 +30,19 @@ import {
   updateShowUrineQuantityInHomePage,
   updateThemeMode,
   updateWeightUnit,
-} from "@/modules/settings/state/settingsSlice";
+} from "@/pages/Settings/state/settingsSlice";
 
-import ActivityIcon from "@/modules/activities/components/ActivityIcon";
-import ActivityModel from "@/modules/activities/models/ActivityModel";
-import ActivityType from "@/modules/activities/enums/ActivityType";
+import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import ActivityModel from "@/pages/Activities/models/ActivityModel";
+import ActivityType from "@/pages/Activities/enums/ActivityType";
 import CSSBreakpoint from "@/enums/CSSBreakpoint";
-import GroupEntriesBy from "@/modules/settings/enums/GroupEntriesBy";
-import GroupEntriesInterval from "@/modules/settings/enums/GroupEntriesInterval";
+import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
+import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { ReactSVG } from "react-svg";
-import ThemeMode from "@/modules/theme/enums/ThemeMode";
-import WeightUnit from "@/modules/settings/enums/WeightUnit";
+import ThemeMode from "@/theme/enums/ThemeMode";
+import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 import isDevelopment from "@/utils/isDevelopment";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
+import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 type VerticalStackProps = {

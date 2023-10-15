@@ -12,7 +12,7 @@ import PageId from "@/enums/PageId";
 import SettingsPage from "@/pages/Settings";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
 import { useMemo } from "react";
 
 export default function PrivateRoutes() {

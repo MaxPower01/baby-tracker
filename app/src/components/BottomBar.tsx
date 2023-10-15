@@ -12,8 +12,8 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import ActivitiesDrawer from "@/modules/activities/components/ActivitiesDrawer";
-import ActivityType from "@/modules/activities/enums/ActivityType";
+import ActivitiesDrawer from "@/pages/Activities/components/ActivitiesDrawer";
+import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CSSBreakpoint from "@/enums/CSSBreakpoint";
@@ -26,7 +26,7 @@ import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",

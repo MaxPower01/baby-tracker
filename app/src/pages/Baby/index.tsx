@@ -1,12 +1,12 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 
-import ChildForm from "@/modules/children/components/ChildForm";
-import ChildLanding from "@/modules/children/components/ChildLanding";
-import ChildWizard from "@/modules/children/components/ChildWizard";
+import ChildForm from "@/pages/Baby/components/ChildForm";
+import ChildLanding from "@/pages/Baby/components/ChildLanding";
+import ChildWizard from "@/pages/Baby/components/ChildWizard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
-import useChildren from "@/modules/children/hooks/useChildren";
+import useChildren from "@/pages/Baby/hooks/useChildren";
 import { useParams } from "react-router-dom";
 
 export default function ChildPage() {

@@ -11,19 +11,19 @@ import {
 import {
   resetEntriesState,
   selectEntries,
-} from "@/modules/entries/state/entriesSlice";
+} from "@/pages/Entries/state/entriesSlice";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import EntryModel from "@/modules/entries/models/EntryModel";
+import EntryModel from "@/pages/Entries/models/EntryModel";
 import PageId from "@/enums/PageId";
 import exportToFile from "@/utils/exportToFile";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetAppState } from "@/app/state/appSlice";
-import { useAppDispatch } from "@/modules/store/hooks/useAppDispatch";
-import useAuthentication from "@/modules/authentication/hooks/useAuthentication";
+import { useAppDispatch } from "@/store/hooks/useAppDispatch";
+import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
 import { useCallback } from "react";
-import useEntries from "@/modules/entries/hooks/useEntries";
+import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
