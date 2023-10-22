@@ -16,13 +16,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import EntriesContext from "@/pages/Entries/components/EntriesContext";
 import EntriesContextValue from "@/pages/Entries/types/EntriesContextValue";
 import EntryModel from "@/pages/Entries/models/EntryModel";
-import TimePeriod from "@/enums/TimePeriod";
+import { TimePeriod } from "@/enums/TimePeriod";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-export default function EntriesProvider(props: React.PropsWithChildren<{}>) {
+export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
   const [entries, setEntries] = useState<EntryModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);

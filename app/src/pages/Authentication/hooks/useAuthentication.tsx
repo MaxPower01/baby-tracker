@@ -1,7 +1,7 @@
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import { useContext } from "react";
 
-export default function useAuthentication() {
+export function useAuthentication() {
   const authentication = useContext(AuthenticationContext);
   if (authentication == null) {
     throw new Error(

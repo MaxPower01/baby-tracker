@@ -6,7 +6,7 @@ import EntriesState from "@/pages/Entries/types/EntriesState";
 import EntryModel from "@/pages/Entries/models/EntryModel";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
-import LocalStorageKey from "@/enums/LocalStorageKey";
+import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/store/store";
 import SettingsState from "@/pages/Settings/types/SettingsState";
 import StoreReducerName from "@/store/enums/StoreReducerName";

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Stack, SxProps, useTheme } from "@mui/material";
 
-export default function Section(props: {
+export function Section(props: {
   children: React.ReactNode;
   dividerPosition?: "top" | "bottom";
   sx?: SxProps;

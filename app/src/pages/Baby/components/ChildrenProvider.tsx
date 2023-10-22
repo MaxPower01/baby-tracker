@@ -12,9 +12,9 @@ import Child from "@/pages/Authentication/types/Child";
 import ChildrenContext from "@/pages/Baby/components/ChildrenContext";
 import ChildrenContextValue from "@/pages/Baby/types/ChildrenContextValue";
 import { db } from "@/firebase";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-export default function ChildrenProvider(props: React.PropsWithChildren<{}>) {
+export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
   const [children, setChildren] = useState<Child[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);

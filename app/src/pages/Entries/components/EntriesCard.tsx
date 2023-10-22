@@ -27,11 +27,11 @@ import EntryHeader from "@/pages/Entries/components/EntryHeader";
 import EntryModel from "@/pages/Entries/models/EntryModel";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import useEntries from "@/pages/Entries/hooks/useEntries";
-import useMenu from "@/components/Menu/hooks/useMenu";
+import { useMenu } from "@/components/Menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

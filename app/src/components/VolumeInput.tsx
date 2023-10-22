@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useState } from "react";
@@ -28,7 +28,7 @@ type Props = {
   onChange: (params: { volume: number }) => void;
 };
 
-export default function VolumeInput(props: Props) {
+export function VolumeInput(props: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
   const theme = useTheme();
 

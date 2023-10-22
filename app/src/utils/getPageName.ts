@@ -1,4 +1,4 @@
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 
 export default function getPageName(pathname: string): PageId {
   let page = pathname.substring(1).split("/")[0];

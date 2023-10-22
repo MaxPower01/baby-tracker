@@ -20,9 +20,7 @@ import AuthenticationContextValue from "@/pages/Authentication/types/Authenticat
 import Child from "@/pages/Authentication/types/Child";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 
-export default function AuthenticationProvider(
-  props: React.PropsWithChildren<{}>
-) {
+export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   // Store the user in a state variable
 
   const [user, setUser] = useState<CustomUser | null>(null);

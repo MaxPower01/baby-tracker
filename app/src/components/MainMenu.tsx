@@ -15,19 +15,19 @@ import {
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EntryModel from "@/pages/Entries/models/EntryModel";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import exportToFile from "@/utils/exportToFile";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetAppState } from "@/app/state/appSlice";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useCallback } from "react";
 import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function MainMenu() {
+export function MainMenu() {
   // const { Menu, openMenu, closeMenu } = useMenu();
   const { entries, isLoading: isLoadingEntries } = useEntries();
   const dispatch = useAppDispatch();

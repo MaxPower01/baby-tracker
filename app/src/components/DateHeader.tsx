@@ -15,7 +15,7 @@ type Props = {
   startDate: Date;
 };
 
-export default function DateHeader(props: Props) {
+export function DateHeader(props: Props) {
   const { startDate, sx } = props;
   const theme = useTheme();
   return (

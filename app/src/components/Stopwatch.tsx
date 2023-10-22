@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -50,7 +50,7 @@ type Props = {
   }) => void;
 };
 
-export default function Stopwatch(props: Props) {
+export function Stopwatch(props: Props) {
   const { time, isRunning, lastUpdateTime, onChange, inputsAreReadOnly } =
     props;
 

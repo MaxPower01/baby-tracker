@@ -27,12 +27,12 @@ import { useCallback, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Child from "@/pages/Authentication/types/Child";
 import ChildForm from "@/pages/Baby/components/ChildForm";
-import PageId from "@/enums/PageId";
-import Sex from "@/enums/Sex";
+import { PageId } from "@/enums/PageId";
+import { Sex } from "@/enums/Sex";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
 export default function ChildWizard() {

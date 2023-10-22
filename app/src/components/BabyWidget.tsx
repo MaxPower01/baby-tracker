@@ -1,17 +1,17 @@
 import { Avatar, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
-import LoadingIndicator from "@/components/LoadingIndicator";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import useChildren from "@/pages/Baby/hooks/useChildren";
 
 type Props = {
   sx?: SxProps;
 };
 
-export default function BabyWidget(props: Props) {
+export function BabyWidget(props: Props) {
   const { user } = useAuthentication();
   const { children } = useChildren();
   const theme = useTheme();

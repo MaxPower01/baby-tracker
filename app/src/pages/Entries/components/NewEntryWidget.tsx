@@ -16,13 +16,13 @@ import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/pages/Entries/models/EntryModel";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectActivities } from "@/pages/Activities/state/activitiesSlice";
 import useEntries from "@/pages/Entries/hooks/useEntries";
-import useMenu from "@/components/Menu/hooks/useMenu";
+import { useMenu } from "@/components/Menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

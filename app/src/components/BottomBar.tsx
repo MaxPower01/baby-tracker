@@ -16,17 +16,17 @@ import ActivitiesDrawer from "@/pages/Activities/components/ActivitiesDrawer";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import HomeIcon from "@mui/icons-material/Home";
-import MenuDrawer from "@/components/MenuDrawer";
+import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -58,7 +58,7 @@ type Props = {
   component: React.ElementType<any> | undefined;
 };
 
-export default function BottomBar(props: Props) {
+export function BottomBar(props: Props) {
   const { user } = useAuthentication();
   const selectedChild = useMemo(() => {
     return user?.selectedChild ?? "";

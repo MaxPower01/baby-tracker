@@ -8,14 +8,14 @@ import EntryPage from "@/pages/Entry";
 import FamilyPage from "@/pages/Family";
 import GraphicsPage from "@/pages/Graphics";
 import HomePage from "@/pages/Home";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import SettingsPage from "@/pages/Settings";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useMemo } from "react";
 
-export default function PrivateRoutes() {
+export function PrivateRoutes() {
   const { user } = useAuthentication();
   const selectedChild = useMemo(() => {
     return user?.selectedChild ?? "";

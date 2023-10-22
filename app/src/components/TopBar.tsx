@@ -10,8 +10,8 @@ import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
-import PageId from "@/enums/PageId";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
+import { PageId } from "@/enums/PageId";
 import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
@@ -24,7 +24,7 @@ type Props = {
   component: React.ElementType<any> | undefined;
 };
 
-export default function TopBar(props: Props) {
+export function TopBar(props: Props) {
   const navigate = useNavigate();
 
   const editingEntryId = useSelector(selectEditingEntryId);

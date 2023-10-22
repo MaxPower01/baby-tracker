@@ -1,5 +1,5 @@
 import EntryModel from "@/pages/Entries/models/EntryModel";
-import TimePeriod from "@/enums/TimePeriod";
+import { TimePeriod } from "@/enums/TimePeriod";
 
 /**
  * Generates mock entries for the given time period, starting from today.

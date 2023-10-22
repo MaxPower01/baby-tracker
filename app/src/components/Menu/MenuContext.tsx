@@ -1,7 +1,7 @@
 import { MenuProps } from "@mui/material/Menu";
 import React from "react";
 
-const MenuContext = React.createContext<{
+export const MenuContext = React.createContext<{
   menuProps: MenuProps;
   setAnchorEl: (el: HTMLElement | null) => void;
 }>({
@@ -12,5 +12,3 @@ const MenuContext = React.createContext<{
   },
   setAnchorEl: () => {},
 });
-
-export default MenuContext;

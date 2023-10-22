@@ -1,6 +1,6 @@
 import { Typography, useTheme } from "@mui/material";
 
-export default function SectionTitle(props: { title: string }) {
+export function SectionTitle(props: { title: string }) {
   const theme = useTheme();
   return (
     <Typography

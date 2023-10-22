@@ -1,4 +1,4 @@
-import MenuContext from "@/components/Menu/MenuContext";
+import { MenuContext } from "@/components/Menu/MenuContext";
 import { MenuProps } from "@mui/material/Menu";
 import { Menu as MuiMenu } from "@mui/material";
 import React from "react";
@@ -26,7 +26,7 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
   );
 };
 
-export default function useMenu() {
+export function useMenu() {
   const menuContext = React.useContext(MenuContext);
   if (!menuContext) {
     throw new Error(

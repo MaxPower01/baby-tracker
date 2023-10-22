@@ -4,7 +4,7 @@ import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import EntryForm from "@/pages/Entries/components/EntryForm";
 import EntryModel from "@/pages/Entries/models/EntryModel";
-import MenuProvider from "@/components/Menu/MenuProvider";
+import { MenuProvider } from "@/components/Menu/MenuProvider";
 import { RootState } from "@/store/store";
 import { isValidActivityType } from "@/utils/utils";
 import { selectEntry } from "@/pages/Entries/state/entriesSlice";

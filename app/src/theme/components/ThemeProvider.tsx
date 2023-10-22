@@ -36,7 +36,7 @@ type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
-export default function ThemeProvider(props: ThemeProviderProps) {
+export function ThemeProvider(props: ThemeProviderProps) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const systemMode = prefersDarkMode ? "dark" : "light";

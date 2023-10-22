@@ -1,10 +1,10 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
 import GoogleIcon from "@mui/icons-material/Google";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import PageId from "@/enums/PageId";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";

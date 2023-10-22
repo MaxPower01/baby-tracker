@@ -1,4 +1,4 @@
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 
 export default function getPath({
   page,

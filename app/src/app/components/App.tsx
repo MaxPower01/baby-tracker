@@ -1,13 +1,13 @@
-import BottomBar from "@/components/BottomBar";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { BottomBar } from "@/components/BottomBar";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { Container } from "@mui/material";
-import MenuProvider from "@/components/Menu/MenuProvider";
-import PrivateRoutes from "@/components/PrivateRoutes";
-import PublicRoutes from "@/components/PublicRoutes";
-import TopBar from "@/components/TopBar";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { MenuProvider } from "@/components/Menu/MenuProvider";
+import { PrivateRoutes } from "@/components/PrivateRoutes";
+import { PublicRoutes } from "@/components/PublicRoutes";
+import { TopBar } from "@/components/TopBar";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-export default function App() {
+export function App() {
   const { user } = useAuthentication();
 
   return (

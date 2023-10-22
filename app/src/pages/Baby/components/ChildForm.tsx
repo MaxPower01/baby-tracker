@@ -37,16 +37,16 @@ import { db, storage } from "@/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import Child from "@/pages/Authentication/types/Child";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import PageId from "@/enums/PageId";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
-import Sex from "@/enums/Sex";
+import { Sex } from "@/enums/Sex";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import useChidlren from "@/pages/Baby/hooks/useChildren";
 
 function LinearProgressWithLabel(

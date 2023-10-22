@@ -1,4 +1,4 @@
-enum PageId {
+export enum PageId {
   Home = "home",
   Graphics = "graphics",
   Entries = "entries",
@@ -9,4 +9,3 @@ enum PageId {
   Settings = "settings",
   Activities = "activities",
 }
-export default PageId;

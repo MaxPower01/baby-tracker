@@ -4,7 +4,7 @@ type Props = {
   size?: string | number;
 };
 
-export default function LoadingIndicator(props: Props) {
+export function LoadingIndicator(props: Props) {
   return (
     <Box
       sx={{

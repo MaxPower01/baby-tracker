@@ -11,11 +11,10 @@
  * - lg, large: 1200px
  * - xl, extra-large: 1536px
  */
-enum CSSBreakpoint {
+export enum CSSBreakpoint {
   ExtraSmall = "xs",
   Small = "sm",
   Medium = "md",
   Large = "lg",
   ExtraLarge = "xl",
 }
-export default CSSBreakpoint;

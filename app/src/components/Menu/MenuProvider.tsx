@@ -1,7 +1,7 @@
-import MenuContext from "@/components/Menu/MenuContext";
+import { MenuContext } from "@/components/Menu/MenuContext";
 import React from "react";
 
-export default function MenuProvider(props: React.PropsWithChildren<{}>) {
+export function MenuProvider(props: React.PropsWithChildren<{}>) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   return (

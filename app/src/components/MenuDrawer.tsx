@@ -17,13 +17,13 @@ import {
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CSSBreakpoint from "@/enums/CSSBreakpoint";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import PageId from "@/enums/PageId";
+import { PageId } from "@/enums/PageId";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -33,14 +33,11 @@ import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import useAuthentication from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import useChildren from "@/pages/Baby/hooks/useChildren";
 import { useNavigate } from "react-router-dom";
 
-export default function MenuDrawer(props: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const addParentFunction = httpsCallable(functions, "addParent");
   const navigate = useNavigate();
   const { user, signOut } = useAuthentication();
