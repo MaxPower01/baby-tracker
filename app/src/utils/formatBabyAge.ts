@@ -1,93 +1,59 @@
+import { getAgeInMonths } from "./getAgeInMonths";
+import { getAgeInWeeks } from "@/utils/getAgeInWeeks";
+import { getWeeksSinceCurrentMonthAnniversary } from "@/utils/getWeeksSinceCurrentMonthAnniversary";
+
 export default function formatBabyAge(
-  birthDate: Date,
-  format?: "days" | "weeks" | "months" | "years"
-) {
-  try {
-    const now = new Date();
-    const ageInDays = Math.floor(
-      (now.setHours(0, 0, 0, 0) - new Date(birthDate).setHours(0, 0, 0, 0)) /
-        (1000 * 3600 * 24) +
-        0
-    );
-    const ageInWeeks = ageInDays === 0 ? 0 : Math.floor(ageInDays / 7);
+  dateOfBirth: Date,
+  format: string
+): string {
+  const now = new Date();
+  const days = Math.floor(
+    (now.getTime() - dateOfBirth.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const weeks =
+    format === "months"
+      ? getWeeksSinceCurrentMonthAnniversary(dateOfBirth)
+      : Math.floor(days / 7);
+  const months = getAgeInMonths(dateOfBirth);
+  const years = Math.floor(months / 12);
 
-    // Set default format if not provided or if provided format is not valid
+  let result = "";
 
-    if (!format) {
-      if (ageInDays >= 365) {
-        format = "years";
-      } else if (ageInDays >= 30) {
-        format = "months";
-      } else if (ageInDays >= 7) {
-        format = "weeks";
-      } else {
-        format = "days";
+  switch (format) {
+    case "years":
+      const remainingMonths = months % 12;
+      if (years > 0) {
+        result += `${years} years`;
       }
-    } else if (format === "years" && ageInDays < 365) {
-      format = "months";
-    } else if (format === "months" && ageInDays < 30) {
-      format = "weeks";
-    } else if (format === "weeks" && ageInDays < 7) {
-      format = "days";
-    }
-
-    switch (format) {
-      case "years":
-        const birthYear = birthDate.getFullYear();
-        const currentYear = now.getFullYear();
-        let ageInYears = currentYear - birthYear;
-        const birthDateMonthNumber = birthDate.getMonth();
-        const currentDateMonthNumber = now.getMonth();
-        if (currentDateMonthNumber < birthDateMonthNumber) {
-          ageInYears--;
-        }
-        let yearsResult = `${ageInYears} an${ageInYears > 1 ? "s" : ""}`;
-        if (currentDateMonthNumber > birthDateMonthNumber) {
-          const remainingMonths = currentDateMonthNumber - birthDateMonthNumber;
-          if (remainingMonths > 0) {
-            yearsResult += ` et ${remainingMonths} mois`;
-          }
-        }
-        return yearsResult;
-      case "months":
-        const birthMonth = birthDate.getMonth();
-        const currentMonth = now.getMonth();
-        let ageInMonths = currentMonth - birthMonth;
-        const birthDateDayNumber = birthDate.getDate();
-        const currentDateDayNumber = now.getDate();
-        if (currentDateDayNumber < birthDateDayNumber) {
-          ageInMonths--;
-        }
-        let monthsResult = `${ageInMonths} mois`;
-        if (currentDateDayNumber > birthDateDayNumber) {
-          const remainingDays = currentDateDayNumber - birthDateDayNumber;
-          const remainingWeeks =
-            remainingDays > 0 ? Math.floor(remainingDays / 7) : 0;
-          if (remainingWeeks > 0) {
-            monthsResult += `${remainingWeeks} semaine${
-              remainingWeeks > 1 ? "s" : ""
-            }`;
-          }
-        }
-        return monthsResult;
-      case "weeks":
-        if (ageInDays === 0) return "moins d'une semaine";
-        let weeksResult = `${ageInWeeks} semaine${ageInWeeks > 1 ? "s" : ""}`;
-        const remainingDays = ageInDays - ageInWeeks * 7;
-        if (remainingDays > 0) {
-          weeksResult += ` et ${remainingDays} jour${
-            remainingDays > 1 ? "s" : ""
-          }`;
-        }
-        return weeksResult;
-      case "days":
-      default:
-        if (ageInDays === 0) return "moins d'un jour";
-        let daysResult = `${ageInDays} jour${ageInDays > 1 ? "s" : ""}`;
-        return daysResult;
-    }
-  } catch (error) {
-    console.error("Error in formatBabyAge: ", error);
-    return "";
+      if (remainingMonths > 0) {
+        result += ` and ${remainingMonths} months`;
+      }
+      break;
+    case "months":
+      if (months > 0) {
+        result += `${months} months`;
+      }
+      if (weeks > 0) {
+        result += ` and ${weeks} weeks`;
+      }
+      break;
+    case "weeks":
+      if (weeks > 0) {
+        result += `${weeks} weeks`;
+      }
+      const remainingDays = days % 7;
+      if (remainingDays > 0) {
+        result += ` and ${remainingDays} days`;
+      }
+      break;
+    case "days":
+      if (days > 0) {
+        result += `${days} days`;
+      }
+      break;
+    default:
+      result = "Invalid format";
   }
+
+  return result;
 }
