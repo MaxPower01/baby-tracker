@@ -4,7 +4,7 @@ import { getWeeksSinceCurrentMonthAnniversary } from "@/utils/getWeeksSinceCurre
 
 export default function formatBabyAge(
   dateOfBirth: Date,
-  format: string
+  format?: "days" | "weeks" | "months" | "years"
 ): string {
   const now = new Date();
   const days = Math.floor(
