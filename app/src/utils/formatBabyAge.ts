@@ -10,6 +10,25 @@ export default function formatBabyAge(
   const days = Math.floor(
     (now.getTime() - dateOfBirth.getTime()) / (1000 * 60 * 60 * 24)
   );
+
+  if (!format) {
+    if (days >= 365) {
+      format = "years";
+    } else if (days >= 30) {
+      format = "months";
+    } else if (days >= 7) {
+      format = "weeks";
+    } else {
+      format = "days";
+    }
+  } else if (format === "years" && days < 365) {
+    format = "months";
+  } else if (format === "months" && days < 30) {
+    format = "weeks";
+  } else if (format === "weeks" && days < 7) {
+    format = "days";
+  }
+
   const weeks =
     format === "months"
       ? getWeeksSinceCurrentMonthAnniversary(dateOfBirth)
@@ -17,42 +36,44 @@ export default function formatBabyAge(
   const months = getAgeInMonths(dateOfBirth);
   const years = Math.floor(months / 12);
 
+  console.log("🚀 ~ file: formatBabyAge.ts:36 ~ format:", format);
+
   let result = "";
 
   switch (format) {
     case "years":
       const remainingMonths = months % 12;
       if (years > 0) {
-        result += `${years} years`;
+        result += `${years} année${years > 1 ? "s" : ""}`;
       }
       if (remainingMonths > 0) {
-        result += ` and ${remainingMonths} months`;
+        result += ` et ${remainingMonths} mois`;
       }
       break;
     case "months":
       if (months > 0) {
-        result += `${months} months`;
+        result += `${months} mois`;
       }
       if (weeks > 0) {
-        result += ` and ${weeks} weeks`;
+        result += ` et ${weeks} semaine${weeks > 1 ? "s" : ""}`;
       }
       break;
     case "weeks":
       if (weeks > 0) {
-        result += `${weeks} weeks`;
+        result += `${weeks} semaine${weeks > 1 ? "s" : ""}`;
       }
       const remainingDays = days % 7;
       if (remainingDays > 0) {
-        result += ` and ${remainingDays} days`;
+        result += ` et ${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
       }
       break;
     case "days":
       if (days > 0) {
-        result += `${days} days`;
+        result += `${days} jour${days > 1 ? "s" : ""}`;
       }
       break;
     default:
-      result = "Invalid format";
+      result = "";
   }
 
   return result;
