@@ -12,7 +12,6 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
-  editingEntryId: undefined,
 };
 
 const slice = createSlice({
@@ -27,12 +26,12 @@ const slice = createSlice({
       if (index === -1) {
         state.entries.push({
           id: action.payload.id,
-          entry: action.payload.entry,
+          data: action.payload.entry,
         });
       } else {
         state.entries[index] = {
           id: action.payload.id,
-          entry: action.payload.entry,
+          data: action.payload.entry,
         };
       }
       setLocalState(key, state);
@@ -50,12 +49,12 @@ const slice = createSlice({
         if (index === -1 && entry.id != null) {
           state.entries.push({
             id: entry.id,
-            entry: e,
+            data: e,
           });
         } else if (action.payload.overwrite && entry.id != null) {
           state.entries[index] = {
             id: entry.id,
-            entry: e,
+            data: e,
           };
         }
       });
@@ -72,23 +71,15 @@ const slice = createSlice({
       Object.assign(state, defaultState);
       setLocalState(key, state);
     },
-    updateEditingEntryId: (state, action: PayloadAction<string>) => {
-      state.editingEntryId = action.payload;
-    },
   },
 });
 
-export const {
-  updateEntry,
-  resetEntriesState,
-  removeEntry,
-  addEntries,
-  updateEditingEntryId,
-} = slice.actions;
+export const { updateEntry, resetEntriesState, removeEntry, addEntries } =
+  slice.actions;
 
 export const selectEntries = (state: RootState) => {
   return state.entriesReducer.entries
-    ?.map(({ id, entry }) => EntryModel.deserialize(entry))
+    ?.map(({ id, data: entry }) => EntryModel.deserialize(entry))
     .sort((a, b) => b.timestamp - a.timestamp);
 };
 
@@ -97,10 +88,6 @@ export const selectEntry = (state: RootState, id: string) => {
     return undefined;
   }
   return selectEntries(state)?.find((entry) => entry.id === id);
-};
-
-export const selectEditingEntryId = (state: RootState) => {
-  return state.entriesReducer.editingEntryId;
 };
 
 export const selectLastEntry = (

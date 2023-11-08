@@ -1,4 +1,5 @@
+import { SerializedEntry } from "@/pages/Entries/types/SerializedEntry";
+
 export default interface EntriesState {
-  editingEntryId?: string;
-  entries: Array<{ id: string; entry: string }>;
+  entries: Array<SerializedEntry>;
 }
