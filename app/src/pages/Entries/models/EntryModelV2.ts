@@ -46,4 +46,12 @@ export class EntryModelV2 {
   public set totalDuration(v: number | null) {
     this._totalDuration = v;
   }
+
+  public get leftDuration(): number | null {
+    return this._leftDuration;
+  }
+
+  public get rightDuration(): number | null {
+    return this._rightDuration;
+  }
 }
