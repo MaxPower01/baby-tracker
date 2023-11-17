@@ -1,33 +1,4 @@
-export class EntryModelV2 {
-  private _id: string;
-  public get id(): string {
-    return this._id;
-  }
-  public set id(v: string) {
-    this._id = v;
-  }
-
-  private _startDate: Date;
-  public get startDate(): Date {
-    return this._startDate;
-  }
-  public set startDate(v: Date) {
-    this._startDate = v;
-  }
-
-  private _endDate: Date;
-  public get endDate(): Date {
-    return this._endDate;
-  }
-  public set endDate(v: Date) {
-    this._endDate = v;
-  }
-}
-
-export type StopwatchAction = {
-  type: "start" | "stop";
-  date: Date;
-};
+import { StopwatchAction } from "@/components/Stopwatch/types/StopwatchAction";
 
 export class Stopwatch {
   private _side: "left" | "right" | null;

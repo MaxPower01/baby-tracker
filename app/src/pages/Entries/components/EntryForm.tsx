@@ -46,7 +46,7 @@ import { PageId } from "@/enums/PageId";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
-import { Stopwatch } from "@/components/Stopwatch";
+import { Stopwatch } from "@/components/Stopwatch/Stopwatch";
 import SubActivityChip from "@/pages/Activities/components/SubActivityChip";
 import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
 import { VolumeInput } from "@/components/VolumeInput";
@@ -58,12 +58,13 @@ import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import poopMarks from "@/utils/poopMarks";
 import { storage } from "@/firebase";
-import { updateEditingEntryId } from "@/pages/Entries/state/entriesSlice";
 import urineMarks from "@/utils/urineMarks";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useMenu } from "@/components/Menu/hooks/useMenu";
+
+// import { updateEditingEntryId } from "@/pages/Entries/state/entriesSlice";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -150,9 +151,9 @@ export default function EntryForm(props: EntryFormProps) {
     }
   }, []);
 
-  useEffect(() => {
-    if (entry.id) dispatch(updateEditingEntryId(entry.id));
-  }, [entry]);
+  // useEffect(() => {
+  //   if (entry.id) dispatch(updateEditingEntryId(entry.id));
+  // }, [entry]);
 
   // Handle date and time
 
