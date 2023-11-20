@@ -1,4 +1,69 @@
-import { Stopwatch } from "@/components/Stopwatch/models/Stopwatch";
+export interface StopwatchAction {
+  type: "start" | "stop";
+  date: Date;
+}
+
+export interface Stopwatch {
+  side: "left" | "right" | null;
+  isRunning: boolean;
+  duration: number | null;
+  actions: StopwatchAction[];
+}
+
+export class StopwatchHelper {
+  private constructor() {}
+
+  public static toJSON(stopwatch: any): object {
+    try {
+      if (stopwatch == null) {
+        return {};
+      }
+      const properties = Object.getOwnPropertyNames(stopwatch);
+      const result = {} as any;
+      for (const property of properties) {
+        if (stopwatch[property] instanceof Date) {
+          result[property] = (stopwatch[property] as Date).toISOString();
+          continue;
+        }
+        result[property] = stopwatch[property];
+      }
+      return result;
+    } catch (error) {
+      console.error("StopwatchHelper: Failed to parse data: ", error);
+      return {};
+    }
+  }
+
+  public static serialize(stopwatch: any): string {
+    try {
+      return JSON.stringify(StopwatchHelper.toJSON(stopwatch));
+    } catch (error) {
+      console.error("StopwatchHelper: Failed to parse data: ", error);
+      return "";
+    }
+  }
+
+  public static deserialize(data: any): Stopwatch | null {
+    try {
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      const properties = Object.getOwnPropertyNames(data);
+      const result = {} as any;
+      for (const property of properties) {
+        if (data[property] instanceof Date) {
+          result[property] = new Date(data[property]);
+          continue;
+        }
+        result[property] = data[property];
+      }
+      return result;
+    } catch (error) {
+      console.error("StopwatchHelper: Failed to parse data: ", error);
+      return null;
+    }
+  }
+}
 
 export enum EntryType {
   BottleFeeding = 1,
@@ -41,244 +106,298 @@ export enum EntryType {
   BellyTime = 39,
 }
 
-export interface BaseEntry {
+export interface Entry {
   id: string;
   startDate: Date;
   endDate: Date;
+  note: string;
+  imageURLs: string[];
   entryType: EntryType;
 }
 
-export interface EntryWithAmount extends BaseEntry {
+export interface EntryWithAmount extends Entry {
   amount: number;
-  unit: string;
+  amountUnit: string;
 }
 
-export interface EntryWithSide extends BaseEntry {
-  side: string;
+export interface EntryWithAmountPerSide extends Entry {
+  amounts: {
+    side: string;
+    value: number;
+  }[];
+  amountUnit: string;
 }
 
-export interface EntryWithPoop extends BaseEntry {
-  poop: string;
+export interface EntryWithPoop extends Entry {
+  poopAmount: number;
+  poopTexture: string;
+  poopColor: string;
 }
 
-export interface EntryWithUrine extends BaseEntry {
-  urine: string;
+export interface EntryWithUrine extends Entry {
+  urineAmount: number;
 }
 
-export abstract class Entry implements BaseEntry {
-  id: string;
-  startDate: Date;
-  endDate: Date;
-  abstract entryType: EntryType;
+export interface EntryWithWeight extends Entry {
+  weight: number;
+  weightUnit: string;
+}
 
-  constructor(params: { id: string; startDate: Date; endDate: Date }) {
-    this.id = params.id;
-    this.startDate = params.startDate;
-    this.endDate = params.endDate;
+export interface EntryWithLength extends Entry {
+  length: number;
+  lengthUnit: string;
+}
+
+export interface EntryWithTemperature extends Entry {
+  temperature: number;
+  temperatureUnit: string;
+}
+
+export interface EntryWithDuration extends Entry {
+  stopwatch: Stopwatch;
+}
+
+export interface EntryWithDurationPerSide extends Entry {
+  stopwatches: Stopwatch[];
+}
+
+export interface EntryWithLocation extends Entry {
+  location: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface EntryWithBabyMash extends Entry {
+  babyMashes: {
+    id: string;
+    name: string;
+  }[];
+}
+
+export interface EntryWithMedicine extends Entry {
+  medicines: {
+    id: string;
+    name: string;
+  }[];
+}
+
+export class EntryHelper {
+  private constructor() {}
+
+  public static toJSON(entry: any): object {
+    try {
+      if (entry == null) {
+        return {};
+      }
+      const properties = Object.getOwnPropertyNames(entry);
+      const result = {} as any;
+      for (const property of properties) {
+        if (entry[property] instanceof Date) {
+          result[property] = (entry[property] as Date).toISOString();
+          continue;
+        }
+        if (property === "stopwatch") {
+          result[property] = StopwatchHelper.toJSON(entry[property]);
+          continue;
+        }
+        if (property === "stopwatches") {
+          result[property] = entry[property].map((stopwatch: any) => {
+            return StopwatchHelper.toJSON(stopwatch);
+          });
+          continue;
+        }
+        result[property] = entry[property];
+      }
+      return result;
+    } catch (error) {
+      console.error("EntryHelper: Failed to parse data: ", error);
+      return {};
+    }
   }
 
-  _toJSON(): object {
-    return {
-      id: this.id,
-      startDate: this.startDate,
-      endDate: this.endDate,
-      entryType: this.entryType,
-    };
+  public static serialize(entry: any): string {
+    try {
+      return JSON.stringify(EntryHelper.toJSON(entry));
+    } catch (error) {
+      console.error("EntryHelper: Failed to parse data: ", error);
+      return "";
+    }
   }
 
-  abstract toJSON(): object;
-
-  serialize(): string {
-    return JSON.stringify(this.toJSON());
-  }
-
-  static parse<T extends Entry>(data: any): T {
+  public static deserialize(data: any): Entry | null {
     try {
       if (typeof data === "string") {
         data = JSON.parse(data);
       }
-      switch (data.entryType) {
-        case EntryType.BottleFeeding:
-          return new BottleFeedingEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.BreastFeeding:
-          return new BreastFeedingEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Cry:
-          return new CryEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Diaper:
-          return new DiaperEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Hospital:
-          return new HospitalEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Medicine:
-          return new MedicineEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.MilkExtraction:
-          return new MilkExtractionEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Play:
-          return new PlayEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Poop:
-          return new PoopEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Size:
-          return new SizeEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Sleep:
-          return new SleepEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.SolidFood:
-          return new SolidFoodEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Temperature:
-          return new TemperatureEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Teeth:
-          return new TeethEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Urine:
-          return new UrineEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Vaccine:
-          return new VaccineEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Walk:
-          return new WalkEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Weight:
-          return new WeightEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Regurgitation:
-          return new RegurgitationEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Vomit:
-          return new VomitEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Burp:
-          return new BurpEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Bath:
-          return new BathEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.NasalHygiene:
-          return new NasalHygieneEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Hiccups:
-          return new HiccupsEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.CarRide:
-          return new CarRideEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.NailCutting:
-          return new NailCuttingEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.MedicalFollowUp:
-          return new MedicalFollowUpEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.HeadCircumference:
-          return new HeadCircumferenceEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Fart:
-          return new FartEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Note:
-          return new NoteEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Symptom:
-          return new SymptomEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.BabyMash:
-          return new BabyMashEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.VitaminsAndSupplements:
-          return new VitaminsAndSupplementsEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.AwakeTime:
-          return new AwakeTimeEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.Activity:
-          return new ActivityEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.BabyCare:
-          return new BabyCareEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.BabyToilet:
-          return new BabyToiletEntry({
-            ...data,
-          }) as unknown as T;
-        case EntryType.BellyTime:
-          return new BellyTimeEntry({
-            ...data,
-          }) as unknown as T;
-        default:
-          throw new Error(`Entry: Unknown entry type: ${data.entryType}`);
+      const properties = Object.getOwnPropertyNames(data);
+      const result = {} as any;
+      for (const property of properties) {
+        if (property === "entryType") {
+          continue;
+        }
+        if (data[property] instanceof Date) {
+          result[property] = new Date(data[property]);
+          continue;
+        }
+        result[property] = data[property];
       }
+      return result;
     } catch (error) {
-      throw new Error(`Entry: Failed to parse data: ${error}`);
+      console.error("EntryHelper: Failed to parse data: ", error);
+      return null;
     }
   }
 }
 
-export class BottleFeedingEntry extends Entry implements EntryWithAmount {
-  amount: number;
-  unit: string;
-  entryType = EntryType.BottleFeeding;
+export interface BottleFeedingEntry extends EntryWithAmount {
+  entryType: EntryType.BottleFeeding;
+}
 
-  constructor(params: {
-    id: string;
-    startDate: Date;
-    endDate: Date;
-    amount: number;
-    unit: string;
-  }) {
-    super(params);
-    this.amount = params.amount;
-    this.unit = params.unit;
-  }
+export interface BreastFeedingEntry extends EntryWithDurationPerSide {
+  entryType: EntryType.BreastFeeding;
+}
 
-  toJSON(): object {
-    return {
-      ...super._toJSON(),
-    };
-  }
+export interface CryEntry extends EntryWithDuration {
+  entryType: EntryType.Cry;
+}
+
+export interface DiaperEntry extends EntryWithPoop, EntryWithUrine {
+  entryType: EntryType.Diaper;
+}
+
+export interface HospitalEntry extends Entry {
+  entryType: EntryType.Hospital;
+}
+
+export interface MedicineEntry extends Entry {
+  entryType: EntryType.Medicine;
+}
+
+export interface MilkExtractionEntry extends EntryWithAmount {
+  entryType: EntryType.MilkExtraction;
+}
+
+export interface PlayEntry extends EntryWithDuration {
+  entryType: EntryType.Play;
+}
+
+export interface PoopEntry extends EntryWithPoop {
+  entryType: EntryType.Poop;
+}
+
+export interface SizeEntry extends EntryWithLength {
+  entryType: EntryType.Size;
+}
+
+export interface SleepEntry extends EntryWithDuration {
+  entryType: EntryType.Sleep;
+}
+
+export interface SolidFoodEntry extends Entry {
+  entryType: EntryType.SolidFood;
+}
+
+export interface TemperatureEntry extends EntryWithTemperature {
+  entryType: EntryType.Temperature;
+}
+
+export interface TeethEntry extends Entry {
+  entryType: EntryType.Teeth;
+}
+
+export interface UrineEntry extends EntryWithUrine {
+  entryType: EntryType.Urine;
+}
+
+export interface VaccineEntry extends Entry {
+  entryType: EntryType.Vaccine;
+}
+
+export interface WalkEntry extends EntryWithDuration {
+  entryType: EntryType.Walk;
+}
+
+export interface WeightEntry extends EntryWithWeight {
+  entryType: EntryType.Weight;
+}
+
+export interface RegurgitationEntry extends EntryWithAmount {
+  entryType: EntryType.Regurgitation;
+}
+
+export interface VomitEntry extends EntryWithAmount {
+  entryType: EntryType.Vomit;
+}
+
+export interface BurpEntry extends Entry {
+  entryType: EntryType.Burp;
+}
+
+export interface BathEntry extends EntryWithDuration {
+  entryType: EntryType.Bath;
+}
+
+export interface NasalHygieneEntry extends Entry {
+  entryType: EntryType.NasalHygiene;
+}
+
+export interface HiccupsEntry extends EntryWithDuration {
+  entryType: EntryType.Hiccups;
+}
+
+export interface CarRideEntry extends EntryWithDuration {
+  entryType: EntryType.CarRide;
+}
+
+export interface NailCuttingEntry extends Entry {
+  entryType: EntryType.NailCutting;
+}
+
+export interface MedicalFollowUpEntry extends Entry {
+  entryType: EntryType.MedicalFollowUp;
+}
+
+export interface HeadCircumferenceEntry extends EntryWithLength {
+  entryType: EntryType.HeadCircumference;
+}
+
+export interface FartEntry extends Entry {
+  entryType: EntryType.Fart;
+}
+
+export interface NoteEntry extends Entry {
+  entryType: EntryType.Note;
+}
+
+export interface SymptomEntry extends Entry {
+  entryType: EntryType.Symptom;
+}
+
+export interface BabyMashEntry extends Entry {
+  entryType: EntryType.BabyMash;
+}
+
+export interface VitaminsAndSupplementsEntry extends Entry {
+  entryType: EntryType.VitaminsAndSupplements;
+}
+
+export interface AwakeTimeEntry extends EntryWithDuration {
+  entryType: EntryType.AwakeTime;
+}
+
+export interface ActivityEntry extends EntryWithDuration {
+  entryType: EntryType.Activity;
+}
+
+export interface BabyCareEntry extends EntryWithDuration {
+  entryType: EntryType.BabyCare;
+}
+
+export interface BabyToiletEntry extends EntryWithDuration {
+  entryType: EntryType.BabyToilet;
+}
+
+export interface BellyTimeEntry extends EntryWithDuration {
+  entryType: EntryType.BellyTime;
 }
