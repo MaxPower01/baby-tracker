@@ -11,7 +11,7 @@ import { selectEntry } from "@/pages/Entries/state/entriesSlice";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-export default function EntryPage() {
+export function EntryPage() {
   const { entryId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const activityParam = searchParams.get("activity");

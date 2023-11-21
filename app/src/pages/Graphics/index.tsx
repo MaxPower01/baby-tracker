@@ -6,7 +6,7 @@ import ActivityPicker from "@/pages/Activities/components/ActivityPicker";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { useState } from "react";
 
-export default function GraphicsPage() {
+export function GraphicsPage() {
   const [activityType, setActivityType] = useState<ActivityType | null>(null);
   return (
     <Stack

@@ -1,110 +1,7 @@
-export interface StopwatchAction {
-  type: "start" | "stop";
-  date: Date;
-}
-
-export interface Stopwatch {
-  side: "left" | "right" | null;
-  isRunning: boolean;
-  duration: number | null;
-  actions: StopwatchAction[];
-}
-
-export class StopwatchHelper {
-  private constructor() {}
-
-  public static toJSON(stopwatch: any): object {
-    try {
-      if (stopwatch == null) {
-        return {};
-      }
-      const properties = Object.getOwnPropertyNames(stopwatch);
-      const result = {} as any;
-      for (const property of properties) {
-        if (stopwatch[property] instanceof Date) {
-          result[property] = (stopwatch[property] as Date).toISOString();
-          continue;
-        }
-        result[property] = stopwatch[property];
-      }
-      return result;
-    } catch (error) {
-      console.error("StopwatchHelper: Failed to parse data: ", error);
-      return {};
-    }
-  }
-
-  public static serialize(stopwatch: any): string {
-    try {
-      return JSON.stringify(StopwatchHelper.toJSON(stopwatch));
-    } catch (error) {
-      console.error("StopwatchHelper: Failed to parse data: ", error);
-      return "";
-    }
-  }
-
-  public static deserialize(data: any): Stopwatch | null {
-    try {
-      if (typeof data === "string") {
-        data = JSON.parse(data);
-      }
-      const properties = Object.getOwnPropertyNames(data);
-      const result = {} as any;
-      for (const property of properties) {
-        if (data[property] instanceof Date) {
-          result[property] = new Date(data[property]);
-          continue;
-        }
-        result[property] = data[property];
-      }
-      return result;
-    } catch (error) {
-      console.error("StopwatchHelper: Failed to parse data: ", error);
-      return null;
-    }
-  }
-}
-
-export enum EntryType {
-  BottleFeeding = 1,
-  BreastFeeding = 2,
-  Cry = 3,
-  Diaper = 4,
-  Hospital = 6,
-  Medicine = 7,
-  MilkExtraction = 8,
-  Play = 9,
-  Poop = 10,
-  Size = 11,
-  Sleep = 12,
-  SolidFood = 13,
-  Temperature = 14,
-  Teeth = 15,
-  Urine = 16,
-  Vaccine = 17,
-  Walk = 18,
-  Weight = 19,
-  Regurgitation = 20,
-  Vomit = 21,
-  Burp = 22,
-  Bath = 23,
-  NasalHygiene = 24,
-  Hiccups = 25,
-  CarRide = 26,
-  NailCutting = 27,
-  MedicalFollowUp = 28,
-  HeadCircumference = 29,
-  Fart = 30,
-  Note = 31,
-  Symptom = 32,
-  BabyMash = 33,
-  VitaminsAndSupplements = 34,
-  AwakeTime = 35,
-  Activity = 36,
-  BabyCare = 37,
-  BabyToilet = 38,
-  BellyTime = 39,
-}
+import { EntryType } from "../enums/EntryType";
+import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
+import { StopwatchHelper } from "@/components/Stopwatch/utils/StopwatchHelper";
+import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface Entry {
   id: string;
@@ -113,6 +10,7 @@ export interface Entry {
   note: string;
   imageURLs: string[];
   entryType: EntryType;
+  tags: Tag[];
 }
 
 export interface EntryWithAmount extends Entry {

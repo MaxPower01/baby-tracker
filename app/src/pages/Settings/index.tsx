@@ -106,7 +106,7 @@ function ItemDescription(props: { text: string }) {
   );
 }
 
-export default function SettingsPage() {
+export function SettingsPage() {
   const dispatch = useAppDispatch();
 
   const initialTheme = useSelector(selectThemeMode);

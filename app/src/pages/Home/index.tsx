@@ -25,7 +25,7 @@ import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function HomePage() {
+export function HomePage() {
   const { user } = useAuthentication();
   const navigate = useNavigate();
 
