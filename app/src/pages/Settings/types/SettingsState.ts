@@ -1,4 +1,4 @@
-import GroupEntriesBy from "../enums/GroupEntriesBy";
+import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import ThemeMode from "@/theme/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";

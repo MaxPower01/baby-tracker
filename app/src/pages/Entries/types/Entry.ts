@@ -1,6 +1,5 @@
-import { EntryType } from "../enums/EntryType";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
-import { StopwatchHelper } from "@/components/Stopwatch/utils/StopwatchHelper";
 import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface Entry {
@@ -78,74 +77,6 @@ export interface EntryWithMedicine extends Entry {
     id: string;
     name: string;
   }[];
-}
-
-export class EntryHelper {
-  private constructor() {}
-
-  public static toJSON(entry: any): object {
-    try {
-      if (entry == null) {
-        return {};
-      }
-      const properties = Object.getOwnPropertyNames(entry);
-      const result = {} as any;
-      for (const property of properties) {
-        if (entry[property] instanceof Date) {
-          result[property] = (entry[property] as Date).toISOString();
-          continue;
-        }
-        if (property === "stopwatch") {
-          result[property] = StopwatchHelper.toJSON(entry[property]);
-          continue;
-        }
-        if (property === "stopwatches") {
-          result[property] = entry[property].map((stopwatch: any) => {
-            return StopwatchHelper.toJSON(stopwatch);
-          });
-          continue;
-        }
-        result[property] = entry[property];
-      }
-      return result;
-    } catch (error) {
-      console.error("EntryHelper: Failed to parse data: ", error);
-      return {};
-    }
-  }
-
-  public static serialize(entry: any): string {
-    try {
-      return JSON.stringify(EntryHelper.toJSON(entry));
-    } catch (error) {
-      console.error("EntryHelper: Failed to parse data: ", error);
-      return "";
-    }
-  }
-
-  public static deserialize(data: any): Entry | null {
-    try {
-      if (typeof data === "string") {
-        data = JSON.parse(data);
-      }
-      const properties = Object.getOwnPropertyNames(data);
-      const result = {} as any;
-      for (const property of properties) {
-        if (property === "entryType") {
-          continue;
-        }
-        if (data[property] instanceof Date) {
-          result[property] = new Date(data[property]);
-          continue;
-        }
-        result[property] = data[property];
-      }
-      return result;
-    } catch (error) {
-      console.error("EntryHelper: Failed to parse data: ", error);
-      return null;
-    }
-  }
 }
 
 export interface BottleFeedingEntry extends EntryWithAmount {
