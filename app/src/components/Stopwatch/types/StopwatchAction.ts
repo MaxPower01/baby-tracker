@@ -1,4 +1,4 @@
 export interface StopwatchAction {
   type: "start" | "stop";
-  date: Date;
+  timestamp: number;
 }

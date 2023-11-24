@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import useEntries from "@/pages/Entries/hooks/useEntries";
+import { useEntries } from "@/pages/Entries/hooks/useEntries";
 
 interface DataPoint {
   date: Date;

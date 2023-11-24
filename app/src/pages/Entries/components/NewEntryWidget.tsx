@@ -21,7 +21,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectActivities } from "@/pages/Activities/state/activitiesSlice";
-import useEntries from "@/pages/Entries/hooks/useEntries";
+import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useMenu } from "@/components/Menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -30,17 +30,7 @@ type Props = {};
 
 export default function NewEntryWidget(props: Props) {
   const { entries } = useEntries();
-
-  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
-  const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
-  const breastFeedingActivity = new ActivityModel(ActivityType.BreastFeeding);
-  const bottleFeedingActivity = new ActivityModel(ActivityType.BottleFeeding);
-  const diaperActivity = new ActivityModel(ActivityType.Diaper);
-  const sleepActivity = new ActivityModel(ActivityType.Sleep);
-  // const burpActivity = new ActivityModel(ActivityType.Burp);
-  // const regurgitationActivity = new ActivityModel(ActivityType.Regurgitation);
-  // const vomitActivity = new ActivityModel(ActivityType.Vomit);
-  const { Menu, openMenu, closeMenu } = useMenu();
+  const { closeMenu } = useMenu();
   const theme = useTheme();
   const [now, setNow] = useState(new Date());
   const activities = useSelector(selectActivities);

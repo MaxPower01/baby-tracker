@@ -11,21 +11,17 @@ import ReactDOM from "react-dom/client";
 import { StoreProvider } from "@/store/components/StoreProvider";
 import { ThemeProvider } from "@/theme/components/ThemeProvider";
 
-// history.scrollRestoration = "manual";
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <StoreProvider>
       <AuthenticationProvider>
         <ChildrenProvider>
-          <EntriesProvider>
-            <ThemeProvider>
-              <CssBaseline />
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </ThemeProvider>
-          </EntriesProvider>
+          <ThemeProvider>
+            <CssBaseline />
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </ThemeProvider>
         </ChildrenProvider>
       </AuthenticationProvider>
     </StoreProvider>

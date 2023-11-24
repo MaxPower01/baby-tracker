@@ -1,5 +1,6 @@
-import { SerializedEntry } from "@/pages/Entries/types/SerializedEntry";
+import { Entry } from "@/pages/Entries/types/Entry";
 
 export default interface EntriesState {
-  entries: Array<SerializedEntry>;
+  entries: Array<Entry>;
+  status: "idle" | "loading";
 }

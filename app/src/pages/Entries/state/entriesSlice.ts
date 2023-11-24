@@ -3,68 +3,79 @@ import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import { Entry } from "@/pages/Entries/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/store/store";
 import StoreReducerName from "@/store/enums/StoreReducerName";
+import { useAppSelector } from "@/store/hooks/useAppSelector";
 
 const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
+  status: "idle",
 };
 
 const slice = createSlice({
   name: StoreReducerName.Entries,
   initialState: getInitialState(key, defaultState),
   reducers: {
-    updateEntry: (
-      state,
-      action: PayloadAction<{ id: string; entry: string }>
-    ) => {
-      const index = state.entries.findIndex((e) => e.id === action.payload.id);
+    addEntry: (state, action: PayloadAction<Entry>) => {
+      const index = state.entries.findIndex(
+        (entry) => entry.id === action.payload.id
+      );
       if (index === -1) {
-        state.entries.push({
-          id: action.payload.id,
-          data: action.payload.entry,
-        });
-      } else {
-        state.entries[index] = {
-          id: action.payload.id,
-          data: action.payload.entry,
-        };
+        state.entries.push(action.payload);
       }
       setLocalState(key, state);
     },
-    addEntries: (
-      state,
-      action: PayloadAction<{
-        entries: string[];
-        overwrite: boolean;
-      }>
-    ) => {
-      action.payload.entries.forEach((e) => {
-        const entry = EntryModel.deserialize(e);
-        const index = state.entries.findIndex((s) => s.id === entry.id);
-        if (index === -1 && entry.id != null) {
-          state.entries.push({
-            id: entry.id,
-            data: e,
-          });
-        } else if (action.payload.overwrite && entry.id != null) {
-          state.entries[index] = {
-            id: entry.id,
-            data: e,
-          };
+    addEntries: (state, action: PayloadAction<Entry[]>) => {
+      action.payload.forEach((entry) => {
+        const index = state.entries.findIndex((e) => e.id === entry.id);
+        if (index === -1) {
+          state.entries.push(entry);
+        }
+      });
+      setLocalState(key, state);
+    },
+    updateEntry: (state, action: PayloadAction<Entry>) => {
+      const index = state.entries.findIndex(
+        (entry) => entry.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.entries[index] = action.payload;
+      }
+      setLocalState(key, state);
+    },
+    updateEntries: (state, action: PayloadAction<Entry[]>) => {
+      action.payload.forEach((entry) => {
+        const index = state.entries.findIndex((e) => e.id === entry.id);
+        if (index !== -1) {
+          state.entries[index] = entry;
         }
       });
       setLocalState(key, state);
     },
     removeEntry: (state, action: PayloadAction<string>) => {
-      const index = state.entries.findIndex((e) => e.id === action.payload);
+      const index = state.entries.findIndex(
+        (entry) => entry.id === action.payload
+      );
       if (index !== -1) {
         state.entries.splice(index, 1);
       }
+      setLocalState(key, state);
+    },
+    removeEntries: (state, action: PayloadAction<string[]>) => {
+      action.payload.forEach((id) => {
+        const index = state.entries.findIndex((entry) => entry.id === id);
+        if (index !== -1) {
+          state.entries.splice(index, 1);
+        }
+      });
+      setLocalState(key, state);
+    },
+    setEntries: (state, action: PayloadAction<Entry[]>) => {
+      state.entries = action.payload;
       setLocalState(key, state);
     },
     resetEntriesState: (state) => {
@@ -77,30 +88,8 @@ const slice = createSlice({
 export const { updateEntry, resetEntriesState, removeEntry, addEntries } =
   slice.actions;
 
-export const selectEntries = (state: RootState) => {
-  return state.entriesReducer.entries
-    ?.map(({ id, data: entry }) => EntryModel.deserialize(entry))
-    .sort((a, b) => b.timestamp - a.timestamp);
-};
-
-export const selectEntry = (state: RootState, id: string) => {
-  if (!id) {
-    return undefined;
-  }
-  return selectEntries(state)?.find((entry) => entry.id === id);
-};
-
-export const selectLastEntry = (
-  state: RootState,
-  activityType: ActivityType
-) => {
-  const entries = selectEntries(state);
-  if (!entries) {
-    return undefined;
-  }
-  return entries.find(
-    (entry) => entry.activity && entry.activity.type === activityType
-  );
-};
+export const selectEntries = useAppSelector(
+  (state) => state.entriesReducer.entries
+);
 
 export default slice.reducer;

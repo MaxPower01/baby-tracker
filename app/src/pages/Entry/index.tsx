@@ -7,7 +7,7 @@ import EntryModel from "@/pages/Entries/models/EntryModel";
 import { MenuProvider } from "@/components/Menu/MenuProvider";
 import { RootState } from "@/store/store";
 import { isValidActivityType } from "@/utils/utils";
-import { selectEntry } from "@/pages/Entries/state/entriesSlice";
+import { useAppSelector } from "@/store/hooks/useAppSelector";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -16,8 +16,8 @@ export function EntryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activityParam = searchParams.get("activity");
   const shouldStartTimerParam = searchParams.get("shouldStartTimer");
-  const existingEntry = useSelector((state: RootState) =>
-    selectEntry(state, entryId ?? "")
+  const existingEntry = useAppSelector((state) =>
+    state.entriesReducer.entries.find((entry) => entry.id === entryId)
   );
 
   const activityType = useMemo(() => {

@@ -18,9 +18,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
-import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { PageId } from "@/enums/PageId";

@@ -50,7 +50,6 @@ export default function EntriesCard(props: Props) {
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
-  const dispatch = useAppDispatch();
   const [menuEntry, setMenuEntry] = useState<EntryModel | null>(null);
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
