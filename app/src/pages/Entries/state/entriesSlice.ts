@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivityType from "@/pages/Activities/enums/ActivityType";
@@ -13,8 +13,30 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
+  lastFetchTimestamp: null,
   status: "idle",
 };
+
+export const fetchInitialEntries = createAsyncThunk(
+  "entries/fetchInitialEntries",
+  async (_, { dispatch, getState }) => {
+    const { lastFetchTimestamp } = (getState() as RootState).entriesReducer;
+    const now = Date.now();
+
+    // Vérifiez si les données doivent être rafraîchies (30 minutes = 1800000 millisecondes)
+    if (lastFetchTimestamp && now - lastFetchTimestamp < 1800000) {
+      return;
+    }
+
+    try {
+      // const response = await fetchEntries();
+      dispatch(setLastFetchTimestamp(now));
+      // return response.data;
+    } catch (err) {
+      // Gérer l'erreur
+    }
+  }
+);
 
 const slice = createSlice({
   name: StoreReducerName.Entries,
@@ -82,11 +104,35 @@ const slice = createSlice({
       Object.assign(state, defaultState);
       setLocalState(key, state);
     },
+    setLastFetchTimestamp: (state, action: PayloadAction<number>) => {
+      state.lastFetchTimestamp = action.payload;
+      setLocalState(key, state);
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchInitialEntries.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchInitialEntries.fulfilled, (state) => {
+      state.status = "idle";
+    });
+    builder.addCase(fetchInitialEntries.rejected, (state) => {
+      state.status = "idle";
+    });
   },
 });
 
-export const { updateEntry, resetEntriesState, removeEntry, addEntries } =
-  slice.actions;
+export const {
+  updateEntry,
+  resetEntriesState,
+  removeEntry,
+  addEntries,
+  addEntry,
+  removeEntries,
+  setEntries,
+  setLastFetchTimestamp,
+  updateEntries,
+} = slice.actions;
 
 export const selectEntries = useAppSelector(
   (state) => state.entriesReducer.entries

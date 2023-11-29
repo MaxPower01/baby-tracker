@@ -5,10 +5,21 @@ import { MenuProvider } from "@/components/Menu/MenuProvider";
 import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
 import { TopBar } from "@/components/TopBar";
+import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEffect } from "react";
+
+let didInit = false;
 
 export function App() {
   const { user } = useAuthentication();
+
+  useEffect(() => {
+    if (!didInit) {
+      didInit = true;
+      // Code here will run only once per app load
+    }
+  }, []);
 
   return (
     <>
