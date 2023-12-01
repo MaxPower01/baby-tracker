@@ -22,12 +22,10 @@ export const fetchInitialEntries = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     const { lastFetchTimestamp } = (getState() as RootState).entriesReducer;
     const now = Date.now();
-
-    // Vérifiez si les données doivent être rafraîchies (30 minutes = 1800000 millisecondes)
-    if (lastFetchTimestamp && now - lastFetchTimestamp < 1800000) {
+    const minimumFetchInterval = 1000 * 60 * 30;
+    if (lastFetchTimestamp && now - lastFetchTimestamp < minimumFetchInterval) {
       return;
     }
-
     try {
       // const response = await fetchEntries();
       dispatch(setLastFetchTimestamp(now));

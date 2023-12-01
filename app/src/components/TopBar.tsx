@@ -15,8 +15,9 @@ import { PageId } from "@/enums/PageId";
 import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
-import { selectEditingEntryId } from "@/pages/Entries/state/entriesSlice";
 import { useSelector } from "react-redux";
+
+// import { selectEditingEntryId } from "@/pages/Entries/state/entriesSlice";
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -27,7 +28,7 @@ type Props = {
 export function TopBar(props: Props) {
   const navigate = useNavigate();
 
-  const editingEntryId = useSelector(selectEditingEntryId);
+  // const editingEntryId = useSelector(selectEditingEntryId);
 
   const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
@@ -41,9 +42,9 @@ export function TopBar(props: Props) {
     return pageName === PageId.Entry || pageName === PageId.Child;
   }, [pageName]);
 
-  const shouldRenderDeleteEntryButton = useMemo(() => {
-    return editingEntryId != null && pageName === PageId.Entry;
-  }, [pageName]);
+  // const shouldRenderDeleteEntryButton = useMemo(() => {
+  //   return editingEntryId != null && pageName === PageId.Entry;
+  // }, [pageName]);
 
   const handleBackButtonClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -51,15 +52,15 @@ export function TopBar(props: Props) {
     navigate(-1);
   };
 
-  const handleDeleteEntryButtonClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (!editingEntryId) return;
-      // TODO: Implement
-      // dispatch(removeEntry(editingEntryId));
-      navigate(getPath({ page: PageId.Home }));
-    },
-    [editingEntryId]
-  );
+  // const handleDeleteEntryButtonClick = useCallback(
+  //   (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //     if (!editingEntryId) return;
+  //     // TODO: Implement
+  //     // dispatch(removeEntry(editingEntryId));
+  //     navigate(getPath({ page: PageId.Home }));
+  //   },
+  //   [editingEntryId]
+  // );
 
   return (
     <AppBar

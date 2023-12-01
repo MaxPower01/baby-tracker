@@ -5,9 +5,10 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import useEntries from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+// import useEntries from "@/pages/Entries/hooks/useEntries";
 
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";

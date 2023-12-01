@@ -22,6 +22,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Entry } from "@/pages/Entries/types/Entry";
 import EntryBody from "@/pages/Entries/components/EntryBody";
 import EntryHeader from "@/pages/Entries/components/EntryHeader";
 import EntryModel from "@/pages/Entries/models/EntryModel";
@@ -30,14 +31,14 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
-import useEntries from "@/pages/Entries/hooks/useEntries";
+import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useMenu } from "@/components/Menu/hooks/useMenu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 type Props = {
-  entries: EntryModel[];
-  allEntries: EntryModel[];
+  entries: Entry[];
+  allEntries: Entry[];
   onFilterEntriesButtonClick?: (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     activityType: ActivityType
@@ -50,10 +51,10 @@ export default function EntriesCard(props: Props) {
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
-  const [menuEntry, setMenuEntry] = useState<EntryModel | null>(null);
+  const [menuEntry, setMenuEntry] = useState<Entry | null>(null);
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
-  const { deleteEntry } = useEntries();
+  // const { deleteEntry } = useEntries();
 
   const handleDeleteButtonClick = (
     e: React.MouseEvent<HTMLElement, MouseEvent>
