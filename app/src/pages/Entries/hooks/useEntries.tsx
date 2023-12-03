@@ -1,15 +1,20 @@
+import {
+  fetchInitialEntries,
+  selectEntries,
+  selectEntriesStatus,
+} from "@/pages/Entries/state/entriesSlice";
 import { useContext, useEffect } from "react";
 
 import EntriesContext from "@/pages/Entries/components/EntriesContext";
 import { EntryHelper } from "@/pages/Entries/utils/EntryHelper";
-import { fetchInitialEntries } from "@/pages/Entries/state/entriesSlice";
+import { RootState } from "@/store/store";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
-import { useAppSelector } from "@/store/hooks/useAppSelector";
+import { useSelector } from "react-redux";
 
 export function useEntries() {
   const dispatch = useAppDispatch();
-  const entries = useAppSelector((state) => state.entriesReducer.entries);
-  const status = useAppSelector((state) => state.entriesReducer.status);
+  const entries = useSelector(selectEntries);
+  const status = useSelector(selectEntriesStatus);
 
   useEffect(() => {
     if (status === "idle") {

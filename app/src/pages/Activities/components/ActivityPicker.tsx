@@ -37,7 +37,7 @@ export default function ActivityPicker({
       <Select
         id="activity"
         labelId="activity-label"
-        value={activityType}
+        value={activityType ?? ""}
         SelectDisplayProps={{
           style: {
             padding: "0.5em",
@@ -51,6 +51,7 @@ export default function ActivityPicker({
           const activity = new ActivityModel(activityType);
           return (
             <MenuItem
+              key={activityType}
               value={activityType}
               sx={{
                 padding: 1,

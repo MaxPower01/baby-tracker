@@ -7,7 +7,6 @@ import { Entry } from "@/pages/Entries/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/store/store";
 import StoreReducerName from "@/store/enums/StoreReducerName";
-import { useAppSelector } from "@/store/hooks/useAppSelector";
 
 const key = LocalStorageKey.EntriesState;
 
@@ -132,8 +131,8 @@ export const {
   updateEntries,
 } = slice.actions;
 
-export const selectEntries = useAppSelector(
-  (state) => state.entriesReducer.entries
-);
+export const selectEntries = (state: RootState) => state.entriesReducer.entries;
+export const selectEntriesStatus = (state: RootState) =>
+  state.entriesReducer.status;
 
 export default slice.reducer;

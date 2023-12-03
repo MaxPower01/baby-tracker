@@ -7,7 +7,6 @@ import EntryModel from "@/pages/Entries/models/EntryModel";
 import { MenuProvider } from "@/components/Menu/MenuProvider";
 import { RootState } from "@/store/store";
 import { isValidActivityType } from "@/utils/utils";
-import { useAppSelector } from "@/store/hooks/useAppSelector";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -16,7 +15,7 @@ export function EntryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activityParam = searchParams.get("activity");
   const shouldStartTimerParam = searchParams.get("shouldStartTimer");
-  const existingEntry = useAppSelector((state) =>
+  const existingEntry = useSelector((state: RootState) =>
     state.entriesReducer.entries.find((entry) => entry.id === entryId)
   );
 
@@ -31,23 +30,19 @@ export function EntryPage() {
     if (existingEntry) {
       return existingEntry;
     }
-    const newEntry = new EntryModel();
-    if (activityType) {
-      newEntry.activity = new ActivityModel(activityType);
-    }
-    return newEntry;
   }, [activityType, existingEntry]);
 
   // if (!entry) {
   //   return <LoadingIndicator />;
   // }
 
-  return (
-    <MenuProvider>
-      <EntryForm
-        entry={entry}
-        shouldStartTimer={shouldStartTimerParam as any}
-      />
-    </MenuProvider>
-  );
+  // Create new entry if not found
+
+  return null;
+  // <MenuProvider>
+  //   <EntryForm
+  //     entry={entry}
+  //     shouldStartTimer={shouldStartTimerParam as any}
+  //   />
+  // </MenuProvider>
 }

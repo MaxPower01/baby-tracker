@@ -71,34 +71,14 @@ export class EntryHelper {
     }
   }
 
-  public static fromEntryModel(entryModel: EntryModel): Entry | null {
-    try {
-      if (entryModel == null) {
-        return null;
-      }
-      if (entryModel.activity == null) {
-        return null;
-      }
-      const activityType = entryModel.activity.type;
-      let entryType: EntryType | null = null;
-      if (EntryType.hasOwnProperty(activityType)) {
-        entryType = activityType as unknown as EntryType;
-      }
-      if (entryType == null) {
-        return null;
-      }
-      return {
-        id: entryModel.id || "",
-        entryType: entryType,
-        startDate: entryModel.startDate,
-        endDate: entryModel.endDate,
-        note: entryModel.note,
-        imageURLs: entryModel.imageURLs,
-        tags: [],
-      };
-    } catch (error) {
-      console.error("EntryHelper: Failed to parse data: ", error);
-      return null;
-    }
+  public static anyStopwatchRunning(entry: Entry): boolean {
+    const result =
+      entry.stopwatch?.isRunning ||
+      entry.stopwatches?.some((stopwatch) => stopwatch.isRunning);
+    return result || false;
+  }
+
+  public static clone(entry: Entry): Entry | null {
+    return EntryHelper.deserialize(EntryHelper.serialize(entry));
   }
 }

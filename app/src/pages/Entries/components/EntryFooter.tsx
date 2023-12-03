@@ -1,9 +1,8 @@
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import { Entry } from "@/pages/Entries/types/Entry";
 
 type Props = {
-  entry: EntryModel;
+  entry: Entry;
 };
 export default function EntryFooter(props: Props) {
-  if (!props.entry) return null;
   return null;
 }

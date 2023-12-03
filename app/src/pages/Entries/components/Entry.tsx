@@ -1,13 +1,13 @@
+import { Entry } from "@/pages/Entries/types/Entry";
 import EntryBody from "@/pages/Entries/components/EntryBody";
 import EntryFooter from "@/pages/Entries/components/EntryFooter";
 import EntryHeader from "@/pages/Entries/components/EntryHeader";
-import EntryModel from "@/pages/Entries/models/EntryModel";
 
 type Props = {
-  entry: EntryModel;
+  entry: Entry;
 };
 
-export default function Entry(props: Props) {
+export default function EntryComponent(props: Props) {
   if (!props.entry) return null;
   return (
     <>

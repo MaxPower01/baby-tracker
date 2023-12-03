@@ -64,90 +64,29 @@ export default function EntriesCard(props: Props) {
     setDialogOpened(true);
   };
 
-  const handleAddEntryButtonClick = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    closeMenu(e);
-    if (menuEntry?.activity == null) return;
-    navigate(
-      getPath({
-        page: PageId.Entry,
-        params: { activity: menuEntry.activity.type.toString() },
-      })
-    );
-  };
-
-  const handleFilterEntriesButtonClick = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    closeMenu(e);
-    if (menuEntry?.activity == null) return;
-    if (props.onFilterEntriesButtonClick)
-      props.onFilterEntriesButtonClick(e, menuEntry.activity.type);
-  };
-
   const handleDeleteEntry = useCallback(() => {
     if (menuEntry?.id == null) return;
-    deleteEntry(menuEntry.id).then(() => {
-      handleDialogClose();
-    });
+    // deleteEntry(menuEntry.id).then(() => {
+    //   handleDialogClose();
+    // });
   }, [menuEntry]);
 
   return (
     <>
-      <Card
-        elevation={0}
-        sx={
-          {
-            // backgroundColor: "transparent",
-            // backgroundColor: "transparent" : undefined,
-            // backgroundImage: "none" : undefined,
-            // border: "1px solid" : undefined,
-            // borderColor: theme.palette.divider : undefined,
-            // boxShadow: "none" : undefined,
-          }
-        }
-      >
-        {/* <CardHeader
-        title={
-          <Typography variant="subtitle1">
-            {entries[0].startDate.toDate().toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </Typography>
-        }
-        sx={{
-          position: "sticky",
-          top: 0,
-        }}
-      />
-      <Divider
-        sx={{
-          marginLeft: 2,
-          marginRight: 2,
-        }}
-      /> */}
+      <Card elevation={0} sx={{}}>
         {entries.map((entry, entryIndex) => {
           const nextEntryExists = entryIndex < entries.length - 1;
           const entryHasStopwatchRunning =
-            entry.leftStopwatchIsRunning || entry.rightStopwatchIsRunning;
+            entry.stopwatch?.isRunning ||
+            entry.stopwatches?.some((s) => s.isRunning);
           if (entry.id == null) return null;
           const previousEntry = allEntries
             .slice()
-            // .reverse()
             .find(
               (e) =>
-                e.id != null &&
                 e.id != entry.id &&
-                e.activity != null &&
-                entry.activity != null &&
-                (e.activity.type == entry.activity.type ||
-                  e.linkedActivities
-                    .map((a) => a.type)
-                    .includes(entry.activity.type)) &&
-                e.startDate.getTime() < entry.startDate.getTime()
+                e.entryType == entry.entryType &&
+                e.startTimestamp < entry.startTimestamp
             );
 
           return (
@@ -234,9 +173,8 @@ export default function EntriesCard(props: Props) {
                             : "",
                         }}
                       >
-                        {entry.activity != null && (
-                          <ActivityIcon
-                            activity={entry.activity}
+                        {/* <ActivityIcon
+                            activity={entry.entryType}
                             sx={{
                               fontSize: "3.5em",
                               transform:
@@ -246,8 +184,7 @@ export default function EntriesCard(props: Props) {
                                   ? "scaleX(-1)"
                                   : "scaleX(1)",
                             }}
-                          />
-                        )}
+                          /> */}
                       </Box>
                       <Stack
                         direction={"row"}
@@ -327,36 +264,6 @@ export default function EntriesCard(props: Props) {
       </Card>
 
       <Menu>
-        <MenuItem onClick={(e) => handleAddEntryButtonClick(e)}>
-          <Stack direction={"row"} spacing={1}>
-            {menuEntry?.activity == null ? (
-              <>
-                <AddIcon />
-                <Typography>Ajouter une entrée</Typography>
-              </>
-            ) : (
-              <>
-                <AddIcon />
-                <Typography>{menuEntry.activity.addNewEntryLabel}</Typography>
-              </>
-            )}
-          </Stack>
-        </MenuItem>
-        <MenuItem onClick={(e) => handleFilterEntriesButtonClick(e)}>
-          <Stack direction={"row"} spacing={1}>
-            {menuEntry?.activity == null ? (
-              <>
-                <FilterListIcon />
-                <Typography>Afficher toutes les entrées de ce type</Typography>
-              </>
-            ) : (
-              <>
-                <FilterListIcon />
-                <Typography>{menuEntry.activity.filterEntriesLabel}</Typography>
-              </>
-            )}
-          </Stack>
-        </MenuItem>
         <MenuItem onClick={(e) => handleDeleteButtonClick(e)}>
           <Stack direction={"row"} spacing={1}>
             <DeleteIcon />
