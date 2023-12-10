@@ -210,7 +210,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 }}
                 onClick={() => {
                   props.onClose();
-                  navigate(getPath({ page: PageId.Activities }));
+                  navigate(getPath({ page: PageId.EntryTypes }));
                 }}
               >
                 <SortIcon

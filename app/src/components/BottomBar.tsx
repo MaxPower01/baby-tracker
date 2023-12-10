@@ -12,7 +12,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import ActivitiesDrawer from "@/pages/Activities/components/ActivitiesDrawer";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -21,6 +20,7 @@ import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import HomeIcon from "@mui/icons-material/Home";
 import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
+import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
 import getPageName from "@/utils/getPageName";
 import getPageTitle from "@/utils/getPageTitle";
@@ -229,17 +229,9 @@ export function BottomBar(props: Props) {
             )}
           </Stack>
 
-          <ActivitiesDrawer
+          <NewEntryDrawer
             isOpen={activitiesDrawerIsOpen}
             onClose={() => setActivitiesDrawerIsOpen(false)}
-            handleActivityClick={(type: ActivityType) =>
-              navigate(
-                getPath({
-                  page: PageId.Entry,
-                  params: { activity: type.toString() },
-                })
-              )
-            }
           />
 
           <MenuDrawer

@@ -17,12 +17,20 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import getPath from "@/utils/getPath";
 import { useNavigate } from "react-router-dom";
 
-export default function ActivitiesDrawer(props: {
+export function NewEntryDrawer(props: {
   isOpen: boolean;
   onClose: () => void;
-  handleActivityClick: (type: ActivityType) => void;
 }) {
   const navigate = useNavigate();
+
+  const handleItemClick = (type: ActivityType) => {
+    navigate(
+      getPath({
+        page: PageId.Entry,
+        params: { type: type.toString() },
+      })
+    );
+  };
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -46,7 +54,7 @@ export default function ActivitiesDrawer(props: {
             <Box sx={{ flexGrow: 1 }} />
             <IconButton
               onClick={() => {
-                navigate(getPath({ page: PageId.Activities }));
+                navigate(getPath({ page: PageId.EntryTypes }));
                 props.onClose();
               }}
             >
@@ -75,7 +83,7 @@ export default function ActivitiesDrawer(props: {
         >
           <ActivityButtons
             onClick={(type: ActivityType) => {
-              props.handleActivityClick(type);
+              handleItemClick(type);
               props.onClose();
             }}
           />

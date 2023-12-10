@@ -22,7 +22,7 @@ export default function getPageTitle(pathname: string) {
       return "Ma famille";
     case PageId.Settings:
       return "Paramètres";
-    case PageId.Activities:
+    case PageId.EntryTypes:
       return "Activités";
     case PageId.Child:
       const childId = pathname.substring(1).split("/")[1];

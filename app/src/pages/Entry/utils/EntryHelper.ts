@@ -1,5 +1,6 @@
+import { BaseEntry, Entry } from "@/pages/Entries/types/Entry";
+
 import ActivityType from "@/pages/Activities/enums/ActivityType";
-import { Entry } from "@/pages/Entries/types/Entry";
 import EntryModel from "@/pages/Entries/models/EntryModel";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { StopwatchHelper } from "@/components/Stopwatch/utils/StopwatchHelper";
@@ -80,5 +81,36 @@ export class EntryHelper {
 
   public static clone(entry: Entry): Entry | null {
     return EntryHelper.deserialize(EntryHelper.serialize(entry));
+  }
+
+  public static getDefaultEntryFor(type: any): Entry | null {
+    if (!EntryHelper.isValidEntryType(type)) {
+      return null;
+    }
+    const entryType = type as EntryType;
+    const now = Date.now();
+    const baseEntry: BaseEntry = {
+      id: "",
+      startTimestamp: now,
+      endTimeStamp: now,
+      entryType,
+      imageURLs: [],
+      note: "",
+      tags: [],
+    };
+    return baseEntry;
+  }
+
+  public static isValidEntryType(type: any) {
+    if (!type) {
+      return false;
+    }
+    if (typeof type === "number") {
+      return Object.values(EntryType).includes(type);
+    }
+    if (typeof type === "string") {
+      return Object.values(EntryType).includes(parseInt(type));
+    }
+    return false;
   }
 }

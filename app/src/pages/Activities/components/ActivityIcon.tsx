@@ -2,7 +2,9 @@ import { Box, SxProps } from "@mui/material";
 
 import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { ReactSVG } from "react-svg";
+import { isValidActivityType } from "@/utils/utils";
 
 function BathIcon() {
   return <ReactSVG src="/icons/bath.svg" className="ActivityIcon" />;
@@ -156,16 +158,21 @@ function BellyTimeIcon() {
   return <ReactSVG src="/icons/036-mat-1.svg" className="ActivityIcon" />;
 }
 
-type Props = {
-  activity: ActivityModel;
+type ActivityIconProps = {
+  type: EntryType;
+  activity?: ActivityModel;
   sx?: SxProps | undefined;
 };
 
-export default function ActivityIcon({ activity, sx }: Props) {
+export default function ActivityIcon(props: ActivityIconProps) {
+  let type = props.activity?.type ?? props.type;
+  if (typeof type === "string") {
+    type = parseInt(type);
+  }
   return (
-    <Box sx={sx}>
+    <Box sx={props.sx}>
       {(() => {
-        switch (activity.type) {
+        switch (type) {
           case ActivityType.Bath:
             return <BathIcon />;
           case ActivityType.BottleFeeding:

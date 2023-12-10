@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
-import ActivitiesDrawer from "@/pages/Activities/components/ActivitiesDrawer";
 import ActivityButton from "@/pages/Activities/components/ActivityButton";
 import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import EntryModel from "@/pages/Entries/models/EntryModel";
+import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";

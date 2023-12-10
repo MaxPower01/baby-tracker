@@ -6,7 +6,7 @@ import {
 import { useContext, useEffect } from "react";
 
 import EntriesContext from "@/pages/Entries/components/EntriesContext";
-import { EntryHelper } from "@/pages/Entries/utils/EntryHelper";
+import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
 import { RootState } from "@/store/store";
 import { useAppDispatch } from "@/store/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
@@ -24,6 +24,6 @@ export function useEntries() {
 
   return {
     entries,
-    status,
+    status: "idle",
   };
 }

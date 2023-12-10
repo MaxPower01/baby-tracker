@@ -7,7 +7,7 @@ import { PoopTexure } from "@/types/PoopTexure";
 import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
 import { Tag } from "@/pages/Tags/models/Tag";
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   startTimestamp: number;
   endTimeStamp: number;
