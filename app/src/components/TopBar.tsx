@@ -33,7 +33,7 @@ export function TopBar(props: Props) {
   const { pageName, pageTitle } = useMemo(() => {
     return {
       pageName: getPageName(pathname),
-      pageTitle: getPageTitle(pathname),
+      pageTitle: getPageTitle(pathname) + " (Simon)",
     };
   }, [pathname]);
 
