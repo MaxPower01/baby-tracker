@@ -19,6 +19,7 @@ import AuthenticationContext from "@/pages/Authentication/components/Authenticat
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
 import Child from "@/pages/Authentication/types/Child";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
+import isDevelopment from "@/utils/isDevelopment";
 
 export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   // Store the user in a state variable
@@ -93,13 +94,27 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
         const result = await signInWithPopup(auth, googleAuthProvider);
         // const credential = GoogleAuthProvider.credentialFromResult(result);
         // const token = credential?.accessToken;
+        const authorizedEmails = [
+          "max.manseau01@gmail.com",
+          "audrey_ann.piscine@hotmail.com",
+          "cadieuxsimon91@gmail.com",
+          "sophie.manseau@gmail.com",
+          "thalyvon@cablevision.qc.ca",
+          "fcote112@gmail.com",
+          "paulette.manseau@gmail.com",
+          "alessard18@hotmail.com",
+        ];
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
-        if (isNewUser && window.location.hostname !== "localhost") {
+        const isAuthorizedUser = authorizedEmails.includes(
+          result.user.email ?? ""
+        );
+        if (isAuthorizedUser || isDevelopment()) {
+          user = result.user;
+        } else {
           await deleteUser(result.user);
           return reject("New users are not allowed to sign up right now");
         }
-        user = result.user;
       } catch (error: any) {
         return reject(error);
       }
