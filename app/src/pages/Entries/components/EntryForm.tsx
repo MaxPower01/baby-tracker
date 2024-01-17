@@ -40,8 +40,10 @@ import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { Entry } from "@/pages/Entries/types/Entry";
+import { EntryDateTimePicker } from "@/components/EntryDateTimePicker";
 import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
 import EntryModel from "@/pages/Entries/models/EntryModel";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
@@ -50,6 +52,7 @@ import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Stopwatch } from "@/components/Stopwatch/Stopwatch";
+import { StopwatchV2 } from "@/components/Stopwatch/StopwatchV2";
 import SubActivityChip from "@/pages/Activities/components/SubActivityChip";
 import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
 import { VolumeInput } from "@/components/VolumeInput";
@@ -78,7 +81,7 @@ export default function EntryForm(props: EntryFormProps) {
   return (
     <>
       <SectionStack>
-        <Section>
+        <Section title="header">
           <Stack justifyContent={"center"} alignItems={"center"}>
             <ActivityIcon
               type={props.entry.entryType}
@@ -93,6 +96,16 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Stack>
         </Section>
+
+        <Section title="date-time">
+          <EntryDateTimePicker />
+        </Section>
+
+        {EntryHelper.hasStopwatch(props.entry.entryType) && (
+          <Section title="stopwatch">
+            <StopwatchV2 />
+          </Section>
+        )}
       </SectionStack>
 
       <AppBar

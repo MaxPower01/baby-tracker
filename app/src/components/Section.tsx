@@ -4,6 +4,7 @@ export function Section(props: {
   children: React.ReactNode;
   dividerPosition?: "top" | "bottom";
   sx?: SxProps;
+  title?: string;
   onClick?: () => void;
 }) {
   const { children, dividerPosition, sx, onClick } = props;

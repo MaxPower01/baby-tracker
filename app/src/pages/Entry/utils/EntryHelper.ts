@@ -6,9 +6,21 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { StopwatchHelper } from "@/components/Stopwatch/utils/StopwatchHelper";
 
 export class EntryHelper {
+  static typesWithStopwatch = [
+    EntryType.BreastFeeding,
+    EntryType.MilkExtraction,
+    EntryType.Walk,
+    EntryType.Sleep,
+    EntryType.Hiccups,
+    EntryType.AwakeTime,
+    EntryType.Activity,
+    EntryType.Bath,
+    EntryType.BellyTime,
+  ];
+
   private constructor() {}
 
-  public static toJSON(entry: any): object | null {
+  static toJSON(entry: any): object | null {
     try {
       if (entry == null) {
         return null;
@@ -39,7 +51,7 @@ export class EntryHelper {
     }
   }
 
-  public static serialize(entry: any): string {
+  static serialize(entry: any): string {
     try {
       return JSON.stringify(EntryHelper.toJSON(entry));
     } catch (error) {
@@ -48,7 +60,7 @@ export class EntryHelper {
     }
   }
 
-  public static deserialize(data: any): Entry | null {
+  static deserialize(data: any): Entry | null {
     try {
       if (typeof data === "string") {
         data = JSON.parse(data);
@@ -72,18 +84,18 @@ export class EntryHelper {
     }
   }
 
-  public static anyStopwatchRunning(entry: Entry): boolean {
+  static anyStopwatchRunning(entry: Entry): boolean {
     const result =
       entry.stopwatch?.isRunning ||
       entry.stopwatches?.some((stopwatch) => stopwatch.isRunning);
     return result || false;
   }
 
-  public static clone(entry: Entry): Entry | null {
+  static clone(entry: Entry): Entry | null {
     return EntryHelper.deserialize(EntryHelper.serialize(entry));
   }
 
-  public static getDefaultEntryFor(type: any): Entry | null {
+  static getDefaultEntryFor(type: any): Entry | null {
     if (!EntryHelper.isValidEntryType(type)) {
       return null;
     }
@@ -101,7 +113,7 @@ export class EntryHelper {
     return baseEntry;
   }
 
-  public static isValidEntryType(type: any) {
+  static isValidEntryType(type: any) {
     if (!type) {
       return false;
     }
@@ -112,5 +124,9 @@ export class EntryHelper {
       return Object.values(EntryType).includes(parseInt(type));
     }
     return false;
+  }
+
+  static hasStopwatch(entryType: EntryType) {
+    return EntryHelper.typesWithStopwatch.includes(entryType);
   }
 }
