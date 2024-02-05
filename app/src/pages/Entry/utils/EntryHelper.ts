@@ -117,11 +117,11 @@ export class EntryHelper {
     if (!type) {
       return false;
     }
+    if (typeof type === "string") {
+      type = parseInt(type);
+    }
     if (typeof type === "number") {
       return Object.values(EntryType).includes(type);
-    }
-    if (typeof type === "string") {
-      return Object.values(EntryType).includes(parseInt(type));
     }
     return false;
   }

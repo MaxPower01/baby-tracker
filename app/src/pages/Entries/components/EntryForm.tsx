@@ -22,11 +22,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  LocalizationProvider,
-  MobileDateTimePicker,
-  jaJP,
-} from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { getTitleForEntryType, isNullOrWhiteSpace } from "@/utils/utils";
@@ -39,14 +34,12 @@ import ActivityModel from "@/pages/Activities/models/ActivityModel";
 import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
+import { DateTimePicker } from "@/components/DateTimePicker";
 import { Entry } from "@/pages/Entries/types/Entry";
-import { EntryDateTimePicker } from "@/components/EntryDateTimePicker";
 import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
 import EntryModel from "@/pages/Entries/models/EntryModel";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { PageId } from "@/enums/PageId";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
@@ -98,7 +91,7 @@ export default function EntryForm(props: EntryFormProps) {
         </Section>
 
         <Section title="date-time">
-          <EntryDateTimePicker />
+          <DateTimePicker />
         </Section>
 
         {EntryHelper.hasStopwatch(props.entry.entryType) && (

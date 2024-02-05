@@ -55,7 +55,9 @@ export function BabyWidget(props: Props) {
               }}
               src={baby.avatar}
             >
-              {baby.name.split(" ").map((name) => name[0].toUpperCase())}
+              {baby.name
+                .split(" ")
+                .map((name) => (name[0] ?? "").toUpperCase())}
             </Avatar>
             <Stack>
               <Typography variant="h6" textAlign={"center"}>
