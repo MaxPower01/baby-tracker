@@ -35,6 +35,7 @@ import ActivityType from "@/pages/Activities/enums/ActivityType";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
+import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entries/types/Entry";
 import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
 import EntryModel from "@/pages/Entries/models/EntryModel";
@@ -91,7 +92,11 @@ export default function EntryForm(props: EntryFormProps) {
         </Section>
 
         <Section title="date-time">
-          <DateTimePicker />
+          {EntryHelper.hasStopwatch(props.entry.entryType) ? (
+            <DateTimeRangePicker />
+          ) : (
+            <DateTimePicker />
+          )}
         </Section>
 
         {EntryHelper.hasStopwatch(props.entry.entryType) && (
