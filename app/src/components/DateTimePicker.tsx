@@ -9,7 +9,7 @@ type DateTimePickerProps = {};
 
 export function DateTimePicker(props: DateTimePickerProps) {
   return (
-    <Stack direction={"column"}>
+    <Stack direction={"column"} justifyContent={"center"}>
       <DatePicker icon="left" />
       <TimePicker icon="left" />
     </Stack>

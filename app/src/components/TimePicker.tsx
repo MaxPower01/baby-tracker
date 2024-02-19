@@ -1,3 +1,5 @@
+import { AccessTime } from "@mui/icons-material";
+import { InputAdornment } from "@mui/material";
 import { MobileTimePicker as MUIMobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import React from "react";
 import dayjs from "dayjs";
@@ -12,6 +14,19 @@ export function TimePicker(props: TimePickerProps) {
       ampm={false}
       localeText={{
         toolbarTitle: "Sélectionner l'heure",
+      }}
+      slotProps={{
+        textField: {
+          InputProps: {
+            startAdornment: props.icon ? (
+              <InputAdornment
+                position={props.icon === "left" ? "start" : "end"}
+              >
+                <AccessTime />
+              </InputAdornment>
+            ) : undefined,
+          },
+        },
       }}
     />
   );
