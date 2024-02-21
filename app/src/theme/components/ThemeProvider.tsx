@@ -77,6 +77,9 @@ export function ThemeProvider(props: ThemeProviderProps) {
             default: themeMode === "dark" ? "#1E212A" : "#fff",
             paper: themeMode === "dark" ? "#222530" : "#fff",
           },
+          action: {
+            active: "rgba(255, 255, 255, 0.56)",
+          },
         },
         customPalette: {
           background: {

@@ -25,6 +25,12 @@ export function TimePicker(props: TimePickerProps) {
                 <AccessTime />
               </InputAdornment>
             ) : undefined,
+            size: "small",
+            inputProps: {
+              style: {
+                width: "3em",
+              },
+            },
           },
         },
       }}

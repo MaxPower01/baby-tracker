@@ -1,6 +1,7 @@
 import { Box, InputAdornment, Stack } from "@mui/material";
 
 import { DatePicker } from "@/components/DatePicker";
+import { DateTimePicker } from "@/components/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React from "react";
 import { TimePicker } from "@/components/TimePicker";
@@ -16,14 +17,8 @@ export function DateTimeRangePicker(props: DateTimeRangePickerProps) {
         alignItems: "center",
       }}
     >
-      <Stack direction={"column"}>
-        <DatePicker icon="left" />
-        <TimePicker icon="left" />
-      </Stack>
-      <Stack direction={"column"}>
-        <DatePicker icon="right" />
-        <TimePicker icon="right" />
-      </Stack>
+      <DateTimePicker layout="column" />
+      <DateTimePicker layout="column" />
     </Stack>
   );
 }

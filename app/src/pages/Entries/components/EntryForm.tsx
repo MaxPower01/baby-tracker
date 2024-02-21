@@ -95,7 +95,7 @@ export default function EntryForm(props: EntryFormProps) {
           {EntryHelper.hasStopwatch(props.entry.entryType) ? (
             <DateTimeRangePicker />
           ) : (
-            <DateTimePicker />
+            <DateTimePicker layout="row" />
           )}
         </Section>
 
