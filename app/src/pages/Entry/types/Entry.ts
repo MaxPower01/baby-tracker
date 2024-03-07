@@ -9,11 +9,11 @@ import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface BaseEntry {
   id: string;
+  entryType: EntryType;
   startTimestamp: number;
   endTimeStamp: number;
   note: string;
   imageURLs: string[];
-  entryType: EntryType;
   tags: Tag[];
 }
 

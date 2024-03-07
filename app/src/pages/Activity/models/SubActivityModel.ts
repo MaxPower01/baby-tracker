@@ -1,4 +1,4 @@
-import SubActivityType from "@/pages/Activities/enums/SubActivityType";
+import SubActivityType from "@/pages/Activity/enums/SubActivityType";
 
 export class SubActivityModel {
   private _type: SubActivityType;

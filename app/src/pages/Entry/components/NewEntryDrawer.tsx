@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import { PageId } from "@/enums/PageId";

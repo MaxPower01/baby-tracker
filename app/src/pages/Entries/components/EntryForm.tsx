@@ -1,67 +1,35 @@
 import {
-  Alert,
-  AlertColor,
   AppBar,
   Box,
   Button,
   Container,
-  Divider,
-  Grid,
-  ImageList,
-  ImageListItem,
-  InputLabel,
-  LinearProgress,
-  LinearProgressProps,
-  MenuItem,
-  Slide,
-  Slider,
-  Snackbar,
   Stack,
   TextField,
   Toolbar,
   Typography,
   useTheme,
 } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { getTitleForEntryType, isNullOrWhiteSpace } from "@/utils/utils";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useState } from "react";
 
-import ActivityChip from "@/pages/Activities/components/ActivityChip";
+import { ActivityContextSelector } from "@/pages/Activity/components/ActivityContextSelector";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
-import { Entry } from "@/pages/Entries/types/Entry";
-import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
-import EntryModel from "@/pages/Entries/models/EntryModel";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { Entry } from "@/pages/Entry/types/Entry";
+import { ImagesInput } from "@/components/ImagesInput";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { PageId } from "@/enums/PageId";
+import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
-import { Stopwatch } from "@/components/Stopwatch/Stopwatch";
 import { StopwatchV2 } from "@/components/Stopwatch/StopwatchV2";
-import SubActivityChip from "@/pages/Activities/components/SubActivityChip";
-import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
 import { VolumeInput } from "@/components/VolumeInput";
-import VolumeMenu from "@mui/material/Menu";
-import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
-import formatStopwatchTime from "@/utils/formatStopwatchTime";
-import formatStopwatchesTime from "@/utils/formatStopwatchesTime";
-import getPath from "@/utils/getPath";
-import poopMarks from "@/utils/poopMarks";
-import { storage } from "@/firebase";
-import urineMarks from "@/utils/urineMarks";
-import { useAppDispatch } from "@/store/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/pages/Entries/hooks/useEntries";
-import { useMenu } from "@/components/Menu/hooks/useMenu";
+import { VolumeInputV2 } from "@/components/VolumeInputV2";
+import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
+import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
+import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
+import { getTitleForEntryType } from "@/utils/utils";
 
 type EntryFormProps = {
   entry: Entry;
@@ -91,19 +59,43 @@ export default function EntryForm(props: EntryFormProps) {
           </Stack>
         </Section>
 
-        <Section title="date-time">
-          {EntryHelper.hasStopwatch(props.entry.entryType) ? (
+        {entryTypeHasStopwatch(props.entry.entryType) ? (
+          <Section title="range">
             <DateTimeRangePicker />
-          ) : (
+          </Section>
+        ) : (
+          <Section title="date">
             <DateTimePicker layout="row" />
-          )}
-        </Section>
+          </Section>
+        )}
 
-        {EntryHelper.hasStopwatch(props.entry.entryType) && (
+        {entryTypeHasContextSelector(props.entry.entryType) && (
+          <Section title="context">
+            <ActivityContextSelector />
+          </Section>
+        )}
+
+        {entryTypeHasVolume(props.entry.entryType) && (
+          <Section title="stopwatch">
+            <VolumeInputV2 />
+          </Section>
+        )}
+
+        {entryTypeHasStopwatch(props.entry.entryType) && (
           <Section title="stopwatch">
             <StopwatchV2 />
           </Section>
         )}
+
+        <Section title="notes">
+          <SectionTitle title="Notes" />
+          <NotesInput />
+        </Section>
+
+        <Section title="images">
+          <SectionTitle title="Images" />
+          <ImagesInput />
+        </Section>
       </SectionStack>
 
       <AppBar
@@ -163,4 +155,5 @@ export default function EntryForm(props: EntryFormProps) {
       </AppBar>
     </>
   );
+  console.log("🚀 ~ EntryForm ~ props.entry:", props.entry);
 }

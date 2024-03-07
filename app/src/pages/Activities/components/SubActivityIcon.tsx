@@ -1,8 +1,8 @@
 import { Box, SxProps } from "@mui/material";
 
 import { ReactSVG } from "react-svg";
-import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
-import SubActivityType from "@/pages/Activities/enums/SubActivityType";
+import { SubActivityModel } from "@/pages/Activity/models/SubActivityModel";
+import SubActivityType from "@/pages/Activity/enums/SubActivityType";
 
 function MeconiumIcon() {
   return <ReactSVG src="icons/poop.svg" className="ActivityIcon" />;

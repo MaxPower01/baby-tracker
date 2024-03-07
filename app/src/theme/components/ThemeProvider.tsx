@@ -92,8 +92,8 @@ export function ThemeProvider(props: ThemeProviderProps) {
           },
           text: {
             primary: themeMode === "dark" ? "#ffffff" : "#000000",
-            secondary: themeMode === "dark" ? "#ffffff80" : "#00000080",
-            tertiary: themeMode === "dark" ? "#ffffff50" : "#00000050",
+            secondary: themeMode === "dark" ? "#ffffffb3" : "#000000b3",
+            tertiary: themeMode === "dark" ? "#ffffff80" : "#00000080",
           },
         },
         shape: {

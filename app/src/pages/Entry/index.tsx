@@ -1,15 +1,16 @@
 import { isNullOrWhiteSpace, isValidActivityType } from "@/utils/utils";
 import { useParams, useSearchParams } from "react-router-dom";
 
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
-import { Entry } from "@/pages/Entries/types/Entry";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { Entry } from "@/pages/Entry/types/Entry";
 import EntryForm from "@/pages/Entries/components/EntryForm";
-import { EntryHelper } from "@/pages/Entry/utils/EntryHelper";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/Menu/MenuProvider";
 import { RootState } from "@/store/store";
+import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
+import { getDefaultEntryForType } from "@/pages/Entry/utils/getDefaultEntryForType";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -19,7 +20,7 @@ export function EntryPage() {
   const [searchParams] = useSearchParams();
   const entryType = searchParams.get("type");
   const invalidEntryType = useMemo(
-    () => !EntryHelper.isValidEntryType(entryType),
+    () => !entryTypeIsValid(entryType),
     [entryType]
   );
   if (isNewEntry && invalidEntryType) {
@@ -28,7 +29,7 @@ export function EntryPage() {
     return null;
   }
   const entry: Entry | null = isNewEntry
-    ? EntryHelper.getDefaultEntryFor(entryType)
+    ? getDefaultEntryForType(entryType)
     : useSelector((state: RootState) =>
         state.entriesReducer.entries.find((entry) => entry.id === entryId)
       ) ?? null;

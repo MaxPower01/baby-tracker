@@ -12,7 +12,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";

@@ -20,7 +20,7 @@ import {
 } from "@/pages/Activities/state/activitiesSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import React from "react";

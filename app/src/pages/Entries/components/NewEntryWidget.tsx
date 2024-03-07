@@ -11,10 +11,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import ActivityButton from "@/pages/Activities/components/ActivityButton";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import EntryModel from "@/pages/Entry/models/EntryModel";
 import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";

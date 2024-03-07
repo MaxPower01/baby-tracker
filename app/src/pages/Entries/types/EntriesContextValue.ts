@@ -1,4 +1,4 @@
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import EntryModel from "@/pages/Entry/models/EntryModel";
 import { TimePeriod } from "@/enums/TimePeriod";
 
 export default interface EntriesContextValue {

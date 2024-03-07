@@ -1,6 +1,6 @@
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import { DocumentData } from "firebase/firestore";
-import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
+import { SubActivityModel } from "@/pages/Activity/models/SubActivityModel";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
 

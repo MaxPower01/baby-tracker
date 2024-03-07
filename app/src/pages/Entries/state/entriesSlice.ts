@@ -1,9 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
-import { Entry } from "@/pages/Entries/types/Entry";
+import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/store/store";
 import StoreReducerName from "@/store/enums/StoreReducerName";

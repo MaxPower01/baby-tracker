@@ -1,4 +1,4 @@
-import { Entry } from "@/pages/Entries/types/Entry";
+import { Entry } from "@/pages/Entry/types/Entry";
 import EntryBody from "@/pages/Entries/components/EntryBody";
 import EntryFooter from "@/pages/Entries/components/EntryFooter";
 import EntryHeader from "@/pages/Entries/components/EntryHeader";

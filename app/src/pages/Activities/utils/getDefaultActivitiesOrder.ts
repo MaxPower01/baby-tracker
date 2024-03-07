@@ -1,4 +1,4 @@
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 
 export default function getDefaultActivitiesOrder(): ActivityType[] {
   return [

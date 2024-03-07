@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import EntryModel from "@/pages/Entry/models/EntryModel";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";

@@ -1,5 +1,5 @@
-import ActivityType from "@/pages/Activities/enums/ActivityType";
-import { Entry } from "@/pages/Entries/types/Entry";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 
 /* -------------------------------------------------------------------------- */

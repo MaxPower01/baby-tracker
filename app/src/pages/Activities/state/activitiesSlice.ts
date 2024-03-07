@@ -2,8 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/store/store";
 import StoreReducerName from "@/store/enums/StoreReducerName";

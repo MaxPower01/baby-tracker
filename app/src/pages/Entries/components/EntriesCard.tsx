@@ -19,13 +19,13 @@ import {
 import { useCallback, useState } from "react";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Entry } from "@/pages/Entries/types/Entry";
+import { Entry } from "@/pages/Entry/types/Entry";
 import EntryBody from "@/pages/Entries/components/EntryBody";
 import EntryHeader from "@/pages/Entries/components/EntryHeader";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import EntryModel from "@/pages/Entry/models/EntryModel";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";

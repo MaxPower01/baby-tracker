@@ -1,6 +1,6 @@
-import ActivityType from "@/pages/Activities/enums/ActivityType";
-import EntryModel from "@/pages/Entries/models/EntryModel";
-import SubActivityType from "@/pages/Activities/enums/SubActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import EntryModel from "@/pages/Entry/models/EntryModel";
+import SubActivityType from "@/pages/Activity/enums/SubActivityType";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 

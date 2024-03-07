@@ -1,32 +1,12 @@
 import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
+import { parseStopwatchToJSON } from "@/components/Stopwatch/utils/parseStopwatchToJSON";
 
 export class StopwatchHelper {
   private constructor() {}
 
-  public static toJSON(stopwatch: any): object {
-    try {
-      if (stopwatch == null) {
-        return {};
-      }
-      const properties = Object.getOwnPropertyNames(stopwatch);
-      const result = {} as any;
-      for (const property of properties) {
-        if (stopwatch[property] instanceof Date) {
-          result[property] = (stopwatch[property] as Date).toISOString();
-          continue;
-        }
-        result[property] = stopwatch[property];
-      }
-      return result;
-    } catch (error) {
-      console.error("StopwatchHelper: Failed to parse data: ", error);
-      return {};
-    }
-  }
-
   public static serialize(stopwatch: any): string {
     try {
-      return JSON.stringify(StopwatchHelper.toJSON(stopwatch));
+      return JSON.stringify(parseStopwatchToJSON(stopwatch));
     } catch (error) {
       console.error("StopwatchHelper: Failed to parse data: ", error);
       return "";

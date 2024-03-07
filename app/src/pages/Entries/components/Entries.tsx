@@ -14,7 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
 import { DateHeader } from "@/components/DateHeader";
 import EntriesCard from "@/pages/Entries/components/EntriesCard";

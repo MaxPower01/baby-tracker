@@ -1,8 +1,8 @@
 import { Chip, Stack, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
 import { useSelector } from "react-redux";
 

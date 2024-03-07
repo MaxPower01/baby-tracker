@@ -1,4 +1,4 @@
-import { Entry } from "@/pages/Entries/types/Entry";
+import { Entry } from "@/pages/Entry/types/Entry";
 
 type Props = {
   entry: Entry;

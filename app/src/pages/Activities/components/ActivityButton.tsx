@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 type Props = {
@@ -60,7 +60,7 @@ export default function ActivityButton({
         {activity != null && (
           <>
             <ActivityIcon
-              activity={activity}
+              type={activity.type as any}
               sx={{
                 flexShrink: 0,
               }}

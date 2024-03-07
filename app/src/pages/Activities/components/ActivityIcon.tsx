@@ -1,7 +1,7 @@
 import { Box, SxProps } from "@mui/material";
 
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { ReactSVG } from "react-svg";
 import { isValidActivityType } from "@/utils/utils";
