@@ -18,17 +18,27 @@ type CustomPalette = {
     primary: string;
     secondary: string;
     tertiary: string;
+    disabled: string;
   };
+};
+
+type ThemeOpacity = {
+  primary: number;
+  secondary: number;
+  tertiary: number;
+  disabled: number;
 };
 
 declare module "@mui/material/styles" {
   interface Theme {
     customPalette: CustomPalette;
+    opacity: ThemeOpacity;
   }
 
   // allow configuration using `createTheme`
   interface ThemeOptions {
     customPalette?: CustomPalette;
+    opacity?: ThemeOpacity;
   }
 }
 
@@ -92,9 +102,16 @@ export function ThemeProvider(props: ThemeProviderProps) {
           },
           text: {
             primary: themeMode === "dark" ? "#ffffff" : "#000000",
-            secondary: themeMode === "dark" ? "#ffffffb3" : "#000000b3",
-            tertiary: themeMode === "dark" ? "#ffffff80" : "#00000080",
+            secondary: themeMode === "dark" ? "#ffffffde" : "#000000de",
+            tertiary: themeMode === "dark" ? "#ffffffb3" : "#000000b3",
+            disabled: themeMode === "dark" ? "#ffffff66" : "#00000066",
           },
+        },
+        opacity: {
+          primary: 1,
+          secondary: 0.87,
+          tertiary: 0.6,
+          disabled: 0.38,
         },
         shape: {
           borderRadius: 16,

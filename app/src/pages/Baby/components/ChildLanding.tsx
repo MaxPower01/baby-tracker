@@ -34,7 +34,7 @@ export default function ChildLanding({ setShowForm }: Props) {
           <Typography
             variant={"body1"}
             textAlign={"center"}
-            color={theme.customPalette.text.primary}
+            color={theme.customPalette.text.secondary}
           >
             La première étape pour utiliser l'application est d'ajouter un
             enfant à votre compte.
@@ -58,7 +58,7 @@ export default function ChildLanding({ setShowForm }: Props) {
         >
           <Stack direction={"row"} spacing={1}>
             <ChildCareIcon />
-            <Typography>Ajouter mon enfant</Typography>
+            <Typography variant="button">Ajouter mon enfant</Typography>
           </Stack>
         </Button>
       </Stack>
@@ -66,7 +66,7 @@ export default function ChildLanding({ setShowForm }: Props) {
         <Typography
           variant={"body2"}
           textAlign={"center"}
-          // color={theme.customPalette.text.secondary}
+          color={theme.customPalette.text.secondary}
           sx={
             {
               // fontStyle: "italic",
@@ -79,7 +79,7 @@ export default function ChildLanding({ setShowForm }: Props) {
         <Typography
           variant={"body2"}
           textAlign={"center"}
-          color={theme.customPalette.text.secondary}
+          color={theme.customPalette.text.tertiary}
           sx={
             {
               // fontStyle: "italic",

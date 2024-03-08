@@ -1,4 +1,4 @@
-enum ActivityContextType {
+export enum ActivityContextType {
   Medicine = 1,
   VitaminsAndSupplements = 2,
   BabyCare = 3,

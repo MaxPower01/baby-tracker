@@ -1,8 +1,8 @@
 import { PageId } from "@/enums/PageId";
-import getPageName from "./getPageName";
+import getPageId from "./getPageId";
 
 export default function getPageTitle(pathname: string) {
-  const pageName = getPageName(pathname);
+  const pageName = getPageId(pathname);
   switch (pageName) {
     case PageId.Home:
       return "Accueil";

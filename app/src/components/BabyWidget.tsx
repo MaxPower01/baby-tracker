@@ -1,6 +1,7 @@
 import { Avatar, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
+import Child from "@/pages/Authentication/types/Child";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
@@ -19,6 +20,13 @@ export function BabyWidget(props: Props) {
   if (user == null || children == null) {
     return <LoadingIndicator />;
   }
+  const getBabyAgeLabel = (baby: Child) => {
+    const age = formatBabyAge(baby.birthDate);
+    if (isNullOrWhiteSpace(age)) {
+      return baby.name;
+    }
+    return `${baby.name.split(" ")[0]} a ${age}`;
+  };
 
   return (
     <Stack
@@ -61,7 +69,7 @@ export function BabyWidget(props: Props) {
             </Avatar>
             <Stack>
               <Typography variant="h6" textAlign={"center"}>
-                {baby.name.split(" ")[0]} a {formatBabyAge(baby.birthDate)}
+                {getBabyAgeLabel(baby)}
               </Typography>
               {/* {!isNullOrWhiteSpace(ageLabels.next) && (
                 <Typography

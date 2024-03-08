@@ -36,8 +36,6 @@ export default function formatBabyAge(
   const months = getAgeInMonths(dateOfBirth);
   const years = Math.floor(months / 12);
 
-  console.log("🚀 ~ file: formatBabyAge.ts:36 ~ format:", format);
-
   let result = "";
 
   switch (format) {

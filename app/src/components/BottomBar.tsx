@@ -8,6 +8,7 @@ import {
   Toolbar,
   Typography,
   styled,
+  useTheme,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -22,7 +23,7 @@ import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
-import getPageName from "@/utils/getPageName";
+import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
@@ -66,15 +67,17 @@ export function BottomBar(props: Props) {
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
-  const { pageName, pageTitle } = useMemo(() => {
+  const { pageId, pageTitle } = useMemo(() => {
     return {
-      pageName: getPageName(pathname),
+      pageId: getPageId(pathname),
       pageTitle: getPageTitle(pathname),
     };
   }, [location.pathname]);
 
   const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
   const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
+
+  const theme = useTheme();
 
   const items: Array<BottomBarItem> = [
     {
@@ -83,12 +86,11 @@ export function BottomBar(props: Props) {
       onClick: () => navigate(getPath({ page: PageId.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Home,
-      // sx: {
-      //   opacity: pageName === PageName.Home ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Home ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.Home,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "graphics",
@@ -96,12 +98,11 @@ export function BottomBar(props: Props) {
       onClick: () => navigate(getPath({ page: PageId.Graphics })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Graphics,
-      // sx: {
-      //   opacity: pageName === PageName.Graphics ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Graphics ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.Graphics,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "new-entry-trasparent",
@@ -119,6 +120,7 @@ export function BottomBar(props: Props) {
       isFloatingActionButton: true,
       sx: {
         display: isNullOrWhiteSpace(selectedChild) ? "none" : undefined,
+        opacity: undefined,
       },
     },
     {
@@ -127,12 +129,11 @@ export function BottomBar(props: Props) {
       label: getPageTitle(getPath({ page: PageId.Entries })),
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Entries,
-      // sx: {
-      //   opacity: pageName === PageName.Calendar ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Calendar ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.Entries,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "menu",
@@ -140,17 +141,39 @@ export function BottomBar(props: Props) {
       label: "Menu",
       IconWrapper: IconButton,
       Icon: MenuIcon,
-      color: "default",
+      color: "inherit",
       isCurrentPage: false,
-      // sx: {
-      //   opacity: pageName === PageName.Menu ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Menu ? "bold" : undefined,
-      // },
+      sx: {
+        opacity: undefined,
+      },
     },
   ];
 
-  if (pageName === PageId.Entry || pageName === PageId.Child) {
+  if (pageId === PageId.Entry || pageId === PageId.Child) {
     return null;
+  }
+
+  // items.forEach((item) => {
+  //   console.log(item);
+  //   if (item.sx && Object.keys(item.sx).includes("opacity")) {
+  //     // Assign the sx property to the theme.opacity.tertiary value
+  //     item.sx = { ...item.sx, opacity: theme.opacity.tertiary };
+  //   }
+  // });
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (
+      item.sx &&
+      Object.keys(item.sx).includes("opacity") &&
+      !item.isFloatingActionButton
+    ) {
+      const opacity =
+        item.isCurrentPage == true
+          ? theme.opacity.secondary
+          : theme.opacity.tertiary;
+      item.sx = { ...item.sx, opacity };
+    }
   }
 
   return (
@@ -201,7 +224,11 @@ export function BottomBar(props: Props) {
                     flexDirection: "column",
                     flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
-                    opacity: isCurrentPage == false ? 0.6 : undefined,
+                    // opacity:
+                    //   isCurrentPage == false
+                    //     ? theme.opacity.tertiary
+                    //     : theme.opacity.primary,
+
                     ...sx,
                   }}
                 >

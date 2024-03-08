@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { PageId } from "@/enums/PageId";
-import getPageName from "@/utils/getPageName";
+import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { useSelector } from "react-redux";
@@ -33,7 +33,7 @@ export function TopBar(props: Props) {
   const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
     return {
-      pageName: getPageName(pathname),
+      pageName: getPageId(pathname),
       pageTitle: getPageTitle(pathname),
     };
   }, [pathname]);

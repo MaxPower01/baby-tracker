@@ -179,7 +179,6 @@ export default function ChildForm(props: Props) {
           // Complete function ...
           getDownloadURL(uploadTask.snapshot.ref)
             .then((downloadURL) => {
-              console.log("File available at", downloadURL);
               setAvatar(downloadURL);
             })
             .catch((error) => {
@@ -357,7 +356,6 @@ export default function ChildForm(props: Props) {
     setIsSaving(true);
     saveChild(newChild)
       .then((savedChild) => {
-        console.log("Child saved: ", savedChild);
         navigate(
           getPath({
             page: PageId.Home,

@@ -12,6 +12,7 @@ import {
 import { useCallback, useState } from "react";
 
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
