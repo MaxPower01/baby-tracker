@@ -4,6 +4,7 @@ export interface ActivityContext {
   id: string;
   name: string;
   type: ActivityContextType;
+  order: number;
   /**
    * Timestamp of the creation of the activity context.
    * If undefined, it means that the activity context is not created by the user,

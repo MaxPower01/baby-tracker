@@ -50,47 +50,73 @@ export function ActivityContextDrawer(props: Props) {
   const [isSaving, setIsSaving] = React.useState(false);
   const drawerTitle = getActivityContextDrawerTitle(props.type);
   const activityContextType = getActivityContextTypeFromEntryType(props.type);
+  const [error, setError] = React.useState<string | null>(null);
   const [newActivityContextName, setNewActivityContextName] =
     React.useState("");
   // TODO: fetch activity contexts
   const [activityContexts, setActivityContexts] = React.useState<
     ActivityContext[]
-  >([
-    // TODO: Remove mock data
-    {
-      id: "1",
-      name: "Context 1",
-      type: activityContextType as any,
-      createdAtTimestamp: undefined,
-    },
-    {
-      id: "2",
-      name: "Context 2",
-      type: activityContextType as any,
-      createdAtTimestamp: undefined,
-    },
-    {
-      id: "3",
-      name: "Context 3",
-      type: activityContextType as any,
-      createdAtTimestamp: undefined,
-    },
-  ]);
-  const addActivityContext = useCallback(() => {
-    // TODO: Implement
-    const lastItem = activityContexts[activityContexts.length - 1];
-    setActivityContexts([
-      ...activityContexts,
+  >(
+    [
+      // TODO: Remove mock data
       {
-        id: (parseInt(lastItem.id) + 1).toString(),
-        name: newActivityContextName,
+        id: "1",
+        name: "Context 1",
         type: activityContextType as any,
         createdAtTimestamp: undefined,
+        order: 0,
       },
-    ]);
+      {
+        id: "2",
+        name: "Context 2",
+        type: activityContextType as any,
+        createdAtTimestamp: undefined,
+        order: 1,
+      },
+      {
+        id: "3",
+        name: "Context 3",
+        type: activityContextType as any,
+        createdAtTimestamp: undefined,
+        order: 2,
+      },
+    ].toSorted((a, b) => b.order - a.order)
+  );
+  const addActivityContext = useCallback(() => {
+    if (isNullOrWhiteSpace(newActivityContextName)) {
+      setNewActivityContextName("");
+      return;
+    }
+    if (!isNullOrWhiteSpace(error)) {
+      setError(null);
+    }
+    const isActivityContextNameAlreadyExists = activityContexts.some(
+      (item) => item.name === newActivityContextName
+    );
+    if (isActivityContextNameAlreadyExists) {
+      setError("Un élément avec ce nom existe déjà.");
+      return;
+    }
+    const length = activityContexts.length;
+    const lastItem = activityContexts.find((item) => item.order === length - 1);
+    if (!lastItem) {
+      return;
+    }
+    setActivityContexts(
+      [
+        ...activityContexts,
+        {
+          id: (parseInt(lastItem.id) + 1).toString(),
+          name: newActivityContextName,
+          type: activityContextType as any,
+          createdAtTimestamp: undefined,
+          order: activityContexts.length,
+        },
+      ].toSorted((a, b) => b.order - a.order)
+    );
     setNewActivityContextName("");
     props.setActivityContextId((parseInt(lastItem.id) + 1).toString());
-  }, [activityContexts, activityContextType, newActivityContextName]);
+  }, [activityContexts, activityContextType, newActivityContextName, error]);
 
   const handleSelection = () => {
     // TODO: Save activity context
@@ -192,6 +218,13 @@ export function ActivityContextDrawer(props: Props) {
                   onChange={(event) =>
                     setNewActivityContextName(event.target.value)
                   }
+                  onKeyUp={(event) => {
+                    if (event.key === "Enter") {
+                      addActivityContext();
+                    }
+                  }}
+                  error={!isNullOrWhiteSpace(error)}
+                  helperText={error}
                   fullWidth
                 />
                 <IconButton
