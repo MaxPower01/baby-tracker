@@ -36,6 +36,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { ReactSVG } from "react-svg";
@@ -208,7 +209,7 @@ export function SettingsPage() {
 
         <VerticalStack>
           <ItemLabel label={"Grouper les entrées rapprochées"} />
-          <FormControl>
+          <FormControl variant="outlined">
             <Select
               id="group-entries-select"
               value={groupEntriesBy}
@@ -231,6 +232,7 @@ export function SettingsPage() {
         <VerticalStack>
           <ItemLabel label={"Intervalles de groupement"} />
           <FormControl
+            variant="outlined"
             sx={{
               opacity: groupEntriesBy == GroupEntriesBy.None ? 0.5 : 1,
             }}
@@ -294,7 +296,7 @@ export function SettingsPage() {
           >
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <ActivityIcon
-                activity={new ActivityModel(ActivityType.Poop)}
+                type={EntryType.Poop}
                 sx={{
                   fontSize: "1.5rem",
                 }}
@@ -317,7 +319,7 @@ export function SettingsPage() {
           >
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <ActivityIcon
-                activity={new ActivityModel(ActivityType.Urine)}
+                type={EntryType.Urine}
                 sx={{
                   fontSize: "1.5rem",
                 }}

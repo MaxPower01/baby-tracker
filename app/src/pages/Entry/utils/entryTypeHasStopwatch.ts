@@ -1,4 +1,5 @@
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 const typesWithStopwatch = [
   EntryType.BreastFeeding,
@@ -14,17 +15,9 @@ const typesWithStopwatch = [
 
 export function entryTypeHasStopwatch(entryType: EntryType) {
   try {
-    if (typeof entryType === "string") {
-      const parsed = parseInt(entryType);
-      if (!isNaN(parsed)) {
-        return typesWithStopwatch.includes(parsed);
-      } else {
-        return typesWithStopwatch.includes(
-          EntryType[entryType as keyof typeof EntryType]
-        );
-      }
-    }
-    return typesWithStopwatch.includes(entryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    if (parsedEntryType === null) return false;
+    return typesWithStopwatch.includes(parsedEntryType);
   } catch (error) {
     console.error(error);
     return false;

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useCallback, useState } from "react";
 
-import { ActivityContextSelector } from "@/pages/Activity/components/ActivityContextSelector";
+import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
@@ -40,6 +40,8 @@ export default function EntryForm(props: EntryFormProps) {
   const name = getTitleForEntryType(props.entry.entryType);
   const handleSubmit = useCallback(() => {}, []);
   const [isSaving, setIsSaving] = useState(false);
+  const [activityContext, setActivityContext] =
+    useState<ActivityContextType | null>(null);
   return (
     <>
       <SectionStack>
@@ -71,7 +73,11 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasContextSelector(props.entry.entryType) && (
           <Section title="context">
-            <ActivityContextSelector />
+            <ActivityContextPicker
+              entryType={props.entry.entryType}
+              activityContext={activityContext}
+              setActivityContext={setActivityContext}
+            />
           </Section>
         )}
 

@@ -5,6 +5,7 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { ReactSVG } from "react-svg";
 import { isValidActivityType } from "@/utils/utils";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 function BathIcon() {
   return <ReactSVG src="/icons/bath.svg" className="ActivityIcon" />;
@@ -166,13 +167,12 @@ type ActivityIconProps = {
 
 export default function ActivityIcon(props: ActivityIconProps) {
   let type = props.activity?.type ?? props.type;
-  if (typeof type === "string") {
-    type = parseInt(type);
-  }
+  const parsedType = parseEnumValue(type, EntryType);
+  if (parsedType === null) return false;
   return (
     <Box sx={props.sx}>
       {(() => {
-        switch (type) {
+        switch (parsedType) {
           case ActivityType.Bath:
             return <BathIcon />;
           case ActivityType.BottleFeeding:

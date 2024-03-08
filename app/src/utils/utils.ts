@@ -1,6 +1,7 @@
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Entries                                  */
@@ -132,10 +133,9 @@ export function groupEntriesByTime(params: {
 }
 
 export function getTitleForEntryType(entryType: EntryType): string {
-  if (typeof entryType === "string") {
-    entryType = parseInt(entryType);
-  }
-  switch (entryType) {
+  const parsedEntryType = parseEnumValue(entryType, EntryType);
+  if (parsedEntryType === null) return "";
+  switch (parsedEntryType) {
     case EntryType.Bath:
       return "Bain";
     case EntryType.BottleFeeding:

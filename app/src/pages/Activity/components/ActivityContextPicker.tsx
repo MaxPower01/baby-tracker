@@ -1,6 +1,5 @@
 import {
   FormControl,
-  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -9,64 +8,67 @@ import {
   Typography,
 } from "@mui/material";
 
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import React from "react";
+import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 
 type Props = {
-  activityType: ActivityType | null;
-  setActivityType: React.Dispatch<React.SetStateAction<ActivityType | null>>;
+  entryType: EntryType;
+  activityContext: ActivityContextType | null;
+  setActivityContext: React.Dispatch<
+    React.SetStateAction<ActivityContextType | null>
+  >;
 };
 
-export default function ActivityPicker({
-  activityType,
-  setActivityType,
-}: Props) {
-  const handleActivityTypeChange = (
-    event: SelectChangeEvent<ActivityType | null>
+export function ActivityContextPicker(props: Props) {
+  const handleActivityContextChange = (
+    event: SelectChangeEvent<ActivityContextType | null>
   ) => {
     const newValue = event.target.value;
     if (newValue === null) return;
     if (typeof newValue === "string") return;
-    setActivityType(newValue);
+    props.setActivityContext(newValue);
   };
+  const placeholderName = getActivityContextPickerPlaceholder(props.entryType);
+  const activityContexts: ActivityContext[] = []; // TODO: fetch activity contexts
   return (
     <FormControl fullWidth variant="outlined">
-      <InputLabel id="activity-label">Activité</InputLabel>
+      <InputLabel id="activity-context-label">{placeholderName}</InputLabel>
       <Select
-        id="activity"
-        labelId="activity-label"
-        value={activityType ?? ""}
+        id="activity-context"
+        labelId="activity-context-label"
+        value={props.activityContext ?? ""}
         // SelectDisplayProps={{
         //   style: {
         //     padding: "0.5em",
         //   },
         // }}
-        label={"Activité"}
-        onChange={handleActivityTypeChange}
+        label={placeholderName}
+        onChange={handleActivityContextChange}
         // error={sexError !== ""}
       >
-        {Object.values(ActivityType).map((activityType) => {
-          if (typeof activityType === "string") return null;
-          const activity = new ActivityModel(activityType);
+        {activityContexts.map((activityContext) => {
           return (
             <MenuItem
-              key={activityType}
-              value={activityType}
+              key={activityContext.type}
+              value={activityContext.type}
               // sx={{
               //   padding: 1,
               // }}
             >
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <ActivityIcon
-                  type={activity.type as any}
+                  type={props.entryType}
                   sx={{
                     fontSize: "1.5em",
                   }}
                 />
                 <Typography variant={"body1"} fontWeight={500}>
-                  {activity.name}
+                  {activityContext.name}
                 </Typography>
               </Stack>
             </MenuItem>
@@ -74,8 +76,8 @@ export default function ActivityPicker({
         })}
       </Select>
       {/* <FormHelperText error={sexError !== ""}>
-    {sexError !== "" ? sexError : ""}
-  </FormHelperText> */}
+{sexError !== "" ? sexError : ""}
+</FormHelperText> */}
     </FormControl>
   );
 }

@@ -1,4 +1,5 @@
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 const entryTypesWithContextSelector = [
   EntryType.Medicine,
@@ -13,17 +14,9 @@ const entryTypesWithContextSelector = [
 
 export function entryTypeHasContextSelector(entryType: EntryType) {
   try {
-    if (typeof entryType === "string") {
-      const parsed = parseInt(entryType);
-      if (!isNaN(parsed)) {
-        return entryTypesWithContextSelector.includes(parsed);
-      } else {
-        return entryTypesWithContextSelector.includes(
-          EntryType[entryType as keyof typeof EntryType]
-        );
-      }
-    }
-    return entryTypesWithContextSelector.includes(entryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    if (parsedEntryType === null) return false;
+    return entryTypesWithContextSelector.includes(parsedEntryType);
   } catch (error) {
     console.error(error);
     return false;

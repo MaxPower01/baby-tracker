@@ -13,7 +13,6 @@ export function GraphicsPage() {
       spacing={2}
       sx={{
         width: "100%",
-        overflow: "hidden",
       }}
     >
       {/* <Stack>

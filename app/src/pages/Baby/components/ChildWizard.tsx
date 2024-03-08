@@ -132,7 +132,7 @@ export default function ChildWizard() {
       case 1:
         return (
           <>
-            <FormControl fullWidth variant="standard">
+            <FormControl fullWidth variant="outlined">
               <InputLabel id="sex-label">Sexe</InputLabel>
               <Select
                 id="sex"
@@ -161,7 +161,7 @@ export default function ChildWizard() {
       case 2:
         return (
           <>
-            <FormControl fullWidth variant="standard">
+            <FormControl fullWidth variant="outlined">
               <TextField
                 id="name"
                 label="Nom"

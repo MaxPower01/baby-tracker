@@ -540,7 +540,7 @@ export default function ChildForm(props: Props) {
           )}
         </Stack>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Nom" icon="user" />
             <TextField
@@ -553,7 +553,7 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Sexe" icon="gender-symbols" />
             <Stack>
@@ -561,7 +561,6 @@ export default function ChildForm(props: Props) {
                 id="sex"
                 value={sex}
                 onChange={handleSexChange}
-                variant="outlined"
                 error={sexError !== ""}
               >
                 <MenuItem value={Sex.male}>Garçon</MenuItem>
@@ -574,7 +573,7 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Date de naissance" icon="calendar" />
             <LocalizationProvider
@@ -599,7 +598,7 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Poids à la naissance" icon="weight" />
             <Stack
@@ -629,7 +628,7 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Taille à la naissance" icon="size" />
             <Stack
@@ -658,7 +657,7 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
 
-        <FormControl fullWidth variant="standard">
+        <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Tour de tête à la naissance" icon="size" />
             <Stack
