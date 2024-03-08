@@ -76,7 +76,6 @@ export function ActivityContextDrawer(props: Props) {
       createdAtTimestamp: undefined,
     },
   ]);
-  const handleSubmit = () => {};
   const addActivityContext = useCallback(() => {
     // TODO: Implement
     const lastItem = activityContexts[activityContexts.length - 1];
@@ -92,6 +91,15 @@ export function ActivityContextDrawer(props: Props) {
     setNewActivityContextName("");
     props.setActivityContextId((parseInt(lastItem.id) + 1).toString());
   }, [activityContexts, activityContextType, newActivityContextName]);
+
+  const handleSelection = () => {
+    // TODO: Save activity context
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      props.onClose();
+    }, 1000);
+  };
 
   if (activityContextType === null) {
     return null;
@@ -243,7 +251,7 @@ export function ActivityContextDrawer(props: Props) {
           >
             <Button
               variant="contained"
-              onClick={handleSubmit}
+              onClick={handleSelection}
               fullWidth
               size="large"
               disabled={isSaving || isNullOrWhiteSpace(props.activityContextId)}
