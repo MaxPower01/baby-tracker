@@ -10,7 +10,7 @@ import { EntriesProvider } from "@/pages/Entries/components/EntriesProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { SnackbarProvider } from "@/components/Snackbar/SnackbarProvider";
+import { SnackbarProvider } from "@/components/SnackbarProvider";
 import { StoreProvider } from "@/store/components/StoreProvider";
 import { ThemeProvider } from "@/theme/components/ThemeProvider";
 

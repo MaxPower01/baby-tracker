@@ -19,7 +19,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { DateHeader } from "@/components/DateHeader";
 import EntriesCard from "@/pages/Entries/components/EntriesCard";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
-import { MenuProvider } from "@/components/Menu/MenuProvider";
+import { MenuProvider } from "@/components/MenuProvider";
 import { TimePeriod } from "@/enums/TimePeriod";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";

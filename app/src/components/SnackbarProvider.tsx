@@ -1,13 +1,33 @@
 import { Alert, Slide, SlideProps, Snackbar } from "@mui/material";
+import React, { useContext } from "react";
 
-import React from "react";
-import { ShowSnackbarProps } from "@/components/Snackbar/types/ShowSnackbarProps";
-import { SnackbarContext } from "@/components/Snackbar/SnackbarContext";
-import { SnackbarContextProps } from "@/components/Snackbar/types/SnackbarContextProps";
+interface ShowSnackbarProps {
+  id: string;
+  message: string;
+  severity: "error" | "warning" | "info" | "success";
+  isOpen: boolean;
+}
+
+interface SnackbarContextProps {
+  showSnackbar: (props: ShowSnackbarProps) => void;
+  hideSnackbar: (id: string) => void;
+}
+
+const SnackbarContext = React.createContext<SnackbarContextProps | undefined>(
+  undefined
+);
 
 function SlideTransition(props: SlideProps) {
   return <Slide {...props} direction="up" />;
 }
+
+export const useSnackbar = () => {
+  const context = useContext(SnackbarContext);
+  if (!context) {
+    throw new Error("useSnackbar must be used within a SnackbarProvider");
+  }
+  return context;
+};
 
 export function SnackbarProvider(props: React.PropsWithChildren<{}>) {
   const [snackbars, setSnackbars] = React.useState<ShowSnackbarProps[]>([]);

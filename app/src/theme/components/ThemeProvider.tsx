@@ -4,10 +4,13 @@ import {
 } from "@mui/material/styles";
 import React, { useEffect } from "react";
 
-import ColorModeContext from "@/theme/components/ColorModeContext";
 import { selectThemeMode } from "@/pages/Settings/state/settingsSlice";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSelector } from "react-redux";
+
+const ColorModeContext = React.createContext({
+  toggleColorMode: () => {},
+});
 
 type CustomPalette = {
   background: {

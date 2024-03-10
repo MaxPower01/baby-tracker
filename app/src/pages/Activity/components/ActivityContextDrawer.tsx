@@ -41,7 +41,6 @@ import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivit
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useSnackbar } from "@/components/Snackbar/hooks/useSnackbar";
 import { v4 as uuid } from "uuid";
 
 type Props = {
@@ -57,7 +56,6 @@ type Item = ActivityContext & { isSelected: boolean };
 export function ActivityContextDrawer(props: Props) {
   const theme = useTheme();
   const [editMode, setEditMode] = React.useState(false);
-  // const { showSnackbar } = useSnackbar();
   const [isSaving, setIsSaving] = React.useState(false);
   const drawerTitle = getActivityContextDrawerTitle(props.type);
   const activityContextType = getActivityContextTypeFromEntryType(props.type);
@@ -71,10 +69,6 @@ export function ActivityContextDrawer(props: Props) {
       input.focus();
     }
   };
-  // const [snackbarCounter, setSnackbarCounter] = React.useState(0);
-  // const snackbarId = useMemo(() => {
-  //   return `activity-context-drawer-snackbar-${snackbarCounter}`;
-  // }, [snackbarCounter]);
   // TODO: fetch activity contexts
   const [items, setItems] = React.useState<Item[]>([]);
   const selectedItems = useMemo(() => {
@@ -132,33 +126,12 @@ export function ActivityContextDrawer(props: Props) {
       props.setActivityContextId(newItemId);
       const success = true;
       if (success) {
-        // showSnackbar({
-        //   id: snackbarId,
-        //   message: `L'élément "${newItemName}" a été ajouté.`,
-        //   severity: "success",
-        //   isOpen: true,
-        // });
         setNewItemName("");
       } else {
-        // showSnackbar({
-        //   id: snackbarId,
-        //   message: `L'élément "${newItemName}" n'a pas pu être ajouté.`,
-        //   severity: "error",
-        //   isOpen: true,
-        // });
       }
-      // setSnackbarCounter((prev) => prev + 1);
       setIsSaving(false);
     }, 500);
-  }, [
-    items,
-    activityContextType,
-    newItemName,
-    error,
-    // showSnackbar,
-    // snackbarId,
-    // snackbarCounter,
-  ]);
+  }, [items, activityContextType, newItemName, error]);
 
   const handleItemSelection = (id: string) => {
     setItems((prev) =>

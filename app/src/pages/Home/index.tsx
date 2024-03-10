@@ -13,7 +13,7 @@ import {
 import { BabyWidget } from "@/components/BabyWidget";
 import Entries from "@/pages/Entries/components/Entries";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { MenuProvider } from "@/components/Menu/MenuProvider";
+import { MenuProvider } from "@/components/MenuProvider";
 import NewEntryWidget from "@/pages/Entries/components/NewEntryWidget";
 import { PageId } from "@/enums/PageId";
 import { Section } from "@/components/Section";

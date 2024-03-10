@@ -7,7 +7,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import EntryForm from "@/pages/Entries/components/EntryForm";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
-import { MenuProvider } from "@/components/Menu/MenuProvider";
+import { MenuProvider } from "@/components/MenuProvider";
 import { RootState } from "@/store/store";
 import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
 import { getDefaultEntryForType } from "@/pages/Entry/utils/getDefaultEntryForType";

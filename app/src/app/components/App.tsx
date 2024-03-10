@@ -1,7 +1,7 @@
 import { BottomBar } from "@/components/BottomBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { Container } from "@mui/material";
-import { MenuProvider } from "@/components/Menu/MenuProvider";
+import { MenuProvider } from "@/components/MenuProvider";
 import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
 import { TopBar } from "@/components/TopBar";
