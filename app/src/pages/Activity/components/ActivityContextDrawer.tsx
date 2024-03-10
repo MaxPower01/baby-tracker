@@ -28,6 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import { EmptyState } from "@/components/EmptyState";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
@@ -51,72 +52,34 @@ export function ActivityContextDrawer(props: Props) {
   const drawerTitle = getActivityContextDrawerTitle(props.type);
   const activityContextType = getActivityContextTypeFromEntryType(props.type);
   const [error, setError] = React.useState<string | null>(null);
-  const [newActivityContextName, setNewActivityContextName] =
-    React.useState("");
+  const [newItemName, setNewItemName] = React.useState("");
   // TODO: fetch activity contexts
-  const [activityContexts, setActivityContexts] = React.useState<
-    ActivityContext[]
-  >(
-    [
-      // TODO: Remove mock data
-      {
-        id: "1",
-        name: "Context 1",
-        type: activityContextType as any,
-        createdAtTimestamp: undefined,
-        order: 0,
-      },
-      {
-        id: "2",
-        name: "Context 2",
-        type: activityContextType as any,
-        createdAtTimestamp: undefined,
-        order: 1,
-      },
-      {
-        id: "3",
-        name: "Context 3",
-        type: activityContextType as any,
-        createdAtTimestamp: undefined,
-        order: 2,
-      },
-    ].toSorted((a, b) => b.order - a.order)
-  );
+  const [items, setItems] = React.useState<ActivityContext[]>([]);
+  const anyItems = items.length > 0;
   const addActivityContext = useCallback(() => {
-    if (isNullOrWhiteSpace(newActivityContextName)) {
-      setNewActivityContextName("");
+    if (isNullOrWhiteSpace(newItemName)) {
+      setNewItemName("");
       return;
     }
     if (!isNullOrWhiteSpace(error)) {
       setError(null);
     }
-    const isActivityContextNameAlreadyExists = activityContexts.some(
-      (item) => item.name === newActivityContextName
+    const itemNameAlreadyExists = items.some(
+      (item) => item.name === newItemName
     );
-    if (isActivityContextNameAlreadyExists) {
+    if (itemNameAlreadyExists) {
       setError("Un élément avec ce nom existe déjà.");
       return;
     }
-    const length = activityContexts.length;
-    const lastItem = activityContexts.find((item) => item.order === length - 1);
+    const length = items.length;
+    const lastItem = items.find((item) => item.order === length - 1);
     if (!lastItem) {
       return;
     }
-    setActivityContexts(
-      [
-        ...activityContexts,
-        {
-          id: (parseInt(lastItem.id) + 1).toString(),
-          name: newActivityContextName,
-          type: activityContextType as any,
-          createdAtTimestamp: undefined,
-          order: activityContexts.length,
-        },
-      ].toSorted((a, b) => b.order - a.order)
-    );
-    setNewActivityContextName("");
+    // TODO: Save activity context
+    setNewItemName("");
     props.setActivityContextId((parseInt(lastItem.id) + 1).toString());
-  }, [activityContexts, activityContextType, newActivityContextName, error]);
+  }, [items, activityContextType, newItemName, error]);
 
   const handleSelection = () => {
     // TODO: Save activity context
@@ -214,10 +177,8 @@ export function ActivityContextDrawer(props: Props) {
                   placeholder={getActivityContextDrawerAddItemPlaceholder(
                     props.type
                   )}
-                  value={newActivityContextName}
-                  onChange={(event) =>
-                    setNewActivityContextName(event.target.value)
-                  }
+                  value={newItemName}
+                  onChange={(event) => setNewItemName(event.target.value)}
                   onKeyUp={(event) => {
                     if (event.key === "Enter") {
                       addActivityContext();
@@ -229,7 +190,7 @@ export function ActivityContextDrawer(props: Props) {
                 />
                 <IconButton
                   color="primary"
-                  disabled={isNullOrWhiteSpace(newActivityContextName)}
+                  disabled={isNullOrWhiteSpace(newItemName)}
                   onClick={addActivityContext}
                 >
                   <AddIcon />
@@ -247,7 +208,7 @@ export function ActivityContextDrawer(props: Props) {
                   marginTop: 2,
                 }}
               >
-                {activityContexts.map((activityContext) => {
+                {items.map((activityContext) => {
                   return (
                     <FormControlLabel
                       key={activityContext.id}
@@ -271,49 +232,50 @@ export function ActivityContextDrawer(props: Props) {
             </FormControl>
           </Stack>
 
-          <Box
-            sx={{
-              flexShrink: 0,
-              position: "sticky",
-              bottom: 0,
-              // opacity:
-              //   isCurrentPage == false
-              //     ? theme.opacity.tertiary
-              //     : theme.opacity.primary,
-            }}
-          >
-            <Button
-              variant="contained"
-              onClick={handleSelection}
-              fullWidth
-              size="large"
-              disabled={isSaving || isNullOrWhiteSpace(props.activityContextId)}
+          {!anyItems && <EmptyState />}
+
+          {anyItems && (
+            <Box
               sx={{
-                height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                flexShrink: 0,
+                position: "sticky",
+                bottom: 0,
               }}
             >
-              <Typography variant="button">Sélectionner</Typography>
-              <Box
+              <Button
+                variant="contained"
+                onClick={handleSelection}
+                fullWidth
+                size="large"
+                disabled={
+                  isSaving || isNullOrWhiteSpace(props.activityContextId)
+                }
                 sx={{
-                  display: isSaving ? "flex" : "none",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  width: "100%",
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
                 }}
               >
-                <LoadingIndicator
-                  size={`calc(${theme.typography.button.fontSize} * 2)`}
-                />
-              </Box>
-            </Button>
-          </Box>
-          {/* TODO: List all activity context items */}
+                <Typography variant="button">Sélectionner</Typography>
+                <Box
+                  sx={{
+                    display: isSaving ? "flex" : "none",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LoadingIndicator
+                    size={`calc(${theme.typography.button.fontSize} * 2)`}
+                  />
+                </Box>
+              </Button>
+            </Box>
+          )}
         </Box>
       </Container>
     </SwipeableDrawer>

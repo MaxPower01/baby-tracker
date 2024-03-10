@@ -42,7 +42,7 @@ export default function formatBabyAge(
     case "years":
       const remainingMonths = months % 12;
       if (years > 0) {
-        result += `${years} année${years > 1 ? "s" : ""}`;
+        result += `${years} an${years > 1 ? "s" : ""}`;
       }
       if (remainingMonths > 0) {
         result += ` et ${remainingMonths} mois`;
