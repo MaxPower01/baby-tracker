@@ -10,6 +10,7 @@ import { EntriesProvider } from "@/pages/Entries/components/EntriesProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { SnackbarProvider } from "@/components/Snackbar/SnackbarProvider";
 import { StoreProvider } from "@/store/components/StoreProvider";
 import { ThemeProvider } from "@/theme/components/ThemeProvider";
 
@@ -23,10 +24,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             adapterLocale="fr-ca"
           >
             <ThemeProvider>
-              <CssBaseline />
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
+              <SnackbarProvider>
+                <CssBaseline />
+                <BrowserRouter>
+                  <App />
+                </BrowserRouter>
+              </SnackbarProvider>
             </ThemeProvider>
           </LocalizationProvider>
         </ChildrenProvider>

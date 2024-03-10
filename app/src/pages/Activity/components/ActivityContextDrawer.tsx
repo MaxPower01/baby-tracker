@@ -1,16 +1,20 @@
 import {
+  Alert,
   Box,
   Button,
+  Checkbox,
   Container,
   Divider,
   FormControl,
   FormControlLabel,
+  FormGroup,
   IconButton,
   InputLabel,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
+  Snackbar,
   Stack,
   SwipeableDrawer,
   TextField,
@@ -18,7 +22,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
@@ -37,6 +41,8 @@ import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivit
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { useSnackbar } from "@/components/Snackbar/hooks/useSnackbar";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   type: EntryType;
@@ -46,19 +52,47 @@ type Props = {
   setActivityContextId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
+type Item = ActivityContext & { isSelected: boolean };
+
 export function ActivityContextDrawer(props: Props) {
   const theme = useTheme();
+  const [editMode, setEditMode] = React.useState(false);
+  // const { showSnackbar } = useSnackbar();
   const [isSaving, setIsSaving] = React.useState(false);
   const drawerTitle = getActivityContextDrawerTitle(props.type);
   const activityContextType = getActivityContextTypeFromEntryType(props.type);
   const [error, setError] = React.useState<string | null>(null);
   const [newItemName, setNewItemName] = React.useState("");
+  const textfieldId = "new-activity-context";
+  const focusTextfield = () => {
+    const input = document.getElementById(textfieldId);
+    if (input) {
+      input.click();
+      input.focus();
+    }
+  };
+  // const [snackbarCounter, setSnackbarCounter] = React.useState(0);
+  // const snackbarId = useMemo(() => {
+  //   return `activity-context-drawer-snackbar-${snackbarCounter}`;
+  // }, [snackbarCounter]);
   // TODO: fetch activity contexts
-  const [items, setItems] = React.useState<ActivityContext[]>([]);
+  const [items, setItems] = React.useState<Item[]>([]);
+  const selectedItems = useMemo(() => {
+    return items.filter((item) => item.isSelected);
+  }, [items]);
+  const confirmButtonLabel = useMemo(() => {
+    if (selectedItems.length === 0) {
+      return "Sélectionner";
+    }
+    return `Sélectionner (${selectedItems.length})`;
+  }, [selectedItems]);
   const anyItems = items.length > 0;
-  const addActivityContext = useCallback(() => {
+  const addItem = useCallback(() => {
     if (isNullOrWhiteSpace(newItemName)) {
       setNewItemName("");
+      return;
+    }
+    if (activityContextType === null) {
       return;
     }
     if (!isNullOrWhiteSpace(error)) {
@@ -72,22 +106,78 @@ export function ActivityContextDrawer(props: Props) {
       return;
     }
     const length = items.length;
+    let newItemOrder = 0;
     const lastItem = items.find((item) => item.order === length - 1);
-    if (!lastItem) {
-      return;
+    if (lastItem) {
+      newItemOrder = lastItem.order + 1;
     }
-    // TODO: Save activity context
-    setNewItemName("");
-    props.setActivityContextId((parseInt(lastItem.id) + 1).toString());
-  }, [items, activityContextType, newItemName, error]);
-
-  const handleSelection = () => {
-    // TODO: Save activity context
+    // TODO: Save activity context and get id
     setIsSaving(true);
     setTimeout(() => {
+      // Simulating an async call
+      const newItemId = uuid();
+      setItems((prev) =>
+        [
+          ...prev,
+          {
+            id: newItemId,
+            type: activityContextType,
+            name: newItemName,
+            order: newItemOrder,
+            isSelected: true,
+            createdAtTimestamp: Date.now(),
+          },
+        ].toSorted((a, b) => b.order - a.order)
+      );
+      props.setActivityContextId(newItemId);
+      const success = true;
+      if (success) {
+        // showSnackbar({
+        //   id: snackbarId,
+        //   message: `L'élément "${newItemName}" a été ajouté.`,
+        //   severity: "success",
+        //   isOpen: true,
+        // });
+        setNewItemName("");
+      } else {
+        // showSnackbar({
+        //   id: snackbarId,
+        //   message: `L'élément "${newItemName}" n'a pas pu être ajouté.`,
+        //   severity: "error",
+        //   isOpen: true,
+        // });
+      }
+      // setSnackbarCounter((prev) => prev + 1);
       setIsSaving(false);
-      props.onClose();
-    }, 1000);
+    }, 500);
+  }, [
+    items,
+    activityContextType,
+    newItemName,
+    error,
+    // showSnackbar,
+    // snackbarId,
+    // snackbarCounter,
+  ]);
+
+  const handleItemSelection = (id: string) => {
+    setItems((prev) =>
+      prev.map((item) => {
+        if (item.id === id) {
+          return { ...item, isSelected: !item.isSelected };
+        }
+        return item;
+      })
+    );
+  };
+
+  const handleConfirm = () => {
+    // TODO: Pass selected items to parent component
+    props.onClose();
+  };
+
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
   };
 
   if (activityContextType === null) {
@@ -126,7 +216,7 @@ export function ActivityContextDrawer(props: Props) {
             <IconButton
               onClick={() => {
                 // TODO: Set edit mode to true
-                props.onClose();
+                toggleEditMode();
               }}
             >
               <EditIcon />
@@ -148,11 +238,15 @@ export function ActivityContextDrawer(props: Props) {
         sx={{
           paddingTop: 2,
           paddingBottom: 2,
+          backgroundColor: "inherit",
+          backgroundImage: "inherit",
         }}
       >
         <Box
           sx={{
             maxHeight: "70vh",
+            backgroundColor: "inherit",
+            backgroundImage: "inherit",
           }}
         >
           <Stack
@@ -173,7 +267,7 @@ export function ActivityContextDrawer(props: Props) {
                 }}
               >
                 <TextField
-                  id="new-activity-context"
+                  id={textfieldId}
                   placeholder={getActivityContextDrawerAddItemPlaceholder(
                     props.type
                   )}
@@ -181,58 +275,54 @@ export function ActivityContextDrawer(props: Props) {
                   onChange={(event) => setNewItemName(event.target.value)}
                   onKeyUp={(event) => {
                     if (event.key === "Enter") {
-                      addActivityContext();
+                      addItem();
                     }
                   }}
                   error={!isNullOrWhiteSpace(error)}
                   helperText={error}
                   fullWidth
+                  disabled={isSaving}
                 />
                 <IconButton
                   color="primary"
-                  disabled={isNullOrWhiteSpace(newItemName)}
-                  onClick={addActivityContext}
+                  disabled={isNullOrWhiteSpace(newItemName) || isSaving}
+                  onClick={addItem}
                 >
                   <AddIcon />
                 </IconButton>
               </Stack>
             </FormControl>
             <FormControl fullWidth variant="outlined">
-              <RadioGroup
-                value={props.activityContextId ?? ""}
-                onChange={(event) =>
-                  props.setActivityContextId(event.target.value)
-                }
+              <FormGroup
                 sx={{
                   width: "100%",
                   marginTop: 2,
                 }}
               >
-                {items.map((activityContext) => {
+                {items.map((item) => {
                   return (
                     <FormControlLabel
-                      key={activityContext.id}
-                      value={activityContext.id}
-                      control={<Radio />}
-                      label={
-                        <Stack
-                          direction={"row"}
-                          spacing={1}
-                          alignItems={"center"}
-                        >
-                          <Typography variant={"body1"} fontWeight={500}>
-                            {activityContext.name}
-                          </Typography>
-                        </Stack>
+                      key={item.id}
+                      control={
+                        <Checkbox
+                          checked={item.isSelected}
+                          onChange={() => handleItemSelection(item.id)}
+                          name={item.name}
+                        />
                       }
+                      label={item.name}
                     />
                   );
                 })}
-              </RadioGroup>
+              </FormGroup>
             </FormControl>
           </Stack>
 
-          {!anyItems && <EmptyState />}
+          {!anyItems && (
+            <div onClick={focusTextfield}>
+              <EmptyState />
+            </div>
+          )}
 
           {anyItems && (
             <Box
@@ -240,21 +330,27 @@ export function ActivityContextDrawer(props: Props) {
                 flexShrink: 0,
                 position: "sticky",
                 bottom: 0,
+                backgroundColor: "inherit",
+                backgroundImage: "inherit",
+                paddingTop: 1,
+                paddingBottom: 1,
               }}
             >
               <Button
                 variant="contained"
-                onClick={handleSelection}
+                onClick={handleConfirm}
                 fullWidth
                 size="large"
                 disabled={
-                  isSaving || isNullOrWhiteSpace(props.activityContextId)
+                  isSaving ||
+                  isNullOrWhiteSpace(props.activityContextId) ||
+                  !selectedItems.length
                 }
                 sx={{
                   height: `calc(${theme.typography.button.fontSize} * 2.5)`,
                 }}
               >
-                <Typography variant="button">Sélectionner</Typography>
+                <Typography variant="button">{confirmButtonLabel}</Typography>
                 <Box
                   sx={{
                     display: isSaving ? "flex" : "none",
