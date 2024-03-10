@@ -19,7 +19,7 @@ import EntryModel from "@/pages/Entry/models/EntryModel";
 import { TimePeriod } from "@/enums/TimePeriod";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAppDispatch } from "@/store/hooks/useAppDispatch";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 export function EntriesProvider(props: React.PropsWithChildren<{}>) {

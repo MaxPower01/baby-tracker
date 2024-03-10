@@ -6,13 +6,38 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import Child from "@/pages/Authentication/types/Child";
-import ChildrenContext from "@/pages/Baby/components/ChildrenContext";
-import ChildrenContextValue from "@/pages/Baby/types/ChildrenContextValue";
 import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+
+interface ChildrenContextValue {
+  children: Child[] | null;
+  isLoading: boolean;
+  saveChild: (child: Child) => Promise<Child>;
+}
+
+const ChildrenContext = createContext(
+  null
+) as React.Context<ChildrenContextValue | null>;
+
+export function useChildren() {
+  const entries = useContext(ChildrenContext);
+  if (entries == null) {
+    throw new Error(
+      "Children context is null. Make sure to call useChidlren() inside of a <ChildrenProvider />"
+    );
+  }
+  return entries;
+}
 
 export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();

@@ -2,12 +2,12 @@ import {
   fetchInitialEntries,
   selectEntries,
   selectEntriesStatus,
-} from "@/pages/Entries/state/entriesSlice";
+} from "@/state/entriesSlice";
 import { useContext, useEffect } from "react";
 
 import EntriesContext from "@/pages/Entries/components/EntriesContext";
-import { RootState } from "@/store/store";
-import { useAppDispatch } from "@/store/hooks/useAppDispatch";
+import { RootState } from "@/state/store";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 export function useEntries() {

@@ -17,14 +17,14 @@ import {
 import {
   selectActivities,
   updateActivitiesOrder,
-} from "@/pages/Activities/state/activitiesSlice";
+} from "@/state/activitiesSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import React from "react";
-import { useAppDispatch } from "@/store/hooks/useAppDispatch";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 export default function ActivitiesPage() {

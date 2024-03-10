@@ -24,7 +24,7 @@ import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
-import { StopwatchV2 } from "@/components/Stopwatch/StopwatchV2";
+import { StopwatchV2 } from "@/components/StopwatchV2";
 import { VolumeInput } from "@/components/VolumeInput";
 import { VolumeInputV2 } from "@/components/VolumeInputV2";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";

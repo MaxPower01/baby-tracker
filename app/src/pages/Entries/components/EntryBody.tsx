@@ -13,7 +13,7 @@ import {
 import {
   selectShowPoopQuantityInHomePage,
   selectShowUrineQuantityInHomePage,
-} from "@/pages/Settings/state/settingsSlice";
+} from "@/state/settingsSlice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";

@@ -12,7 +12,7 @@ import { PageId } from "@/enums/PageId";
 import { formatDateTime } from "@/utils/utils";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import useChildren from "@/pages/Baby/hooks/useChildren";
+import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 

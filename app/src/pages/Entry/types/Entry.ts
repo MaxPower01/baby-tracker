@@ -4,7 +4,7 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { Medicine } from "@/types/Medicine";
 import { PoopColor } from "@/types/PoopColor";
 import { PoopTexure } from "@/types/PoopTexure";
-import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
+import { Stopwatch } from "@/types/Stopwatch";
 import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface BaseEntry {

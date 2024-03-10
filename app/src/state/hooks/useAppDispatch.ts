@@ -1,4 +1,4 @@
-import store from "@/store/store";
+import store from "@/state/store";
 import { useDispatch } from "react-redux";
 
 export type AppDispatch = typeof store.dispatch;

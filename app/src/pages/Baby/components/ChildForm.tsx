@@ -47,7 +47,7 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import useChidlren from "@/pages/Baby/hooks/useChildren";
+import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -121,7 +121,7 @@ export default function ChildForm(props: Props) {
 
   const [child, setChild] = useState<Child>(initialChild);
 
-  const { saveChild } = useChidlren();
+  const { saveChild } = useChildren();
 
   const [isSaving, setIsSaving] = useState(false);
 

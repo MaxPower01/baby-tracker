@@ -23,7 +23,7 @@ import { MenuProvider } from "@/components/MenuProvider";
 import { TimePeriod } from "@/enums/TimePeriod";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
-import { selectActivities } from "@/pages/Activities/state/activitiesSlice";
+import { selectActivities } from "@/state/activitiesSlice";
 import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useSelector } from "react-redux";
 

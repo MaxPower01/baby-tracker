@@ -20,7 +20,7 @@ import { PageId } from "@/enums/PageId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { selectActivities } from "@/pages/Activities/state/activitiesSlice";
+import { selectActivities } from "@/state/activitiesSlice";
 import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";

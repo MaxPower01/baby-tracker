@@ -8,7 +8,7 @@ import EntryForm from "@/pages/Entries/components/EntryForm";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/MenuProvider";
-import { RootState } from "@/store/store";
+import { RootState } from "@/state/store";
 import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
 import { getDefaultEntryForType } from "@/pages/Entry/utils/getDefaultEntryForType";
 import { useMemo } from "react";

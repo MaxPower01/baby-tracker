@@ -7,10 +7,10 @@ import EntryModel from "@/pages/Entry/models/EntryModel";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
-import { RootState } from "@/store/store";
+import { RootState } from "@/state/store";
 import SettingsState from "@/pages/Settings/types/SettingsState";
-import StoreReducerName from "@/store/enums/StoreReducerName";
-import ThemeMode from "@/theme/enums/ThemeMode";
+import StoreReducerName from "@/enums/StoreReducerName";
+import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 
 const key = LocalStorageKey.SettingsState;

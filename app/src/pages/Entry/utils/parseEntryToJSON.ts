@@ -1,5 +1,5 @@
-import { StopwatchHelper } from "@/components/Stopwatch/utils/StopwatchHelper";
-import { parseStopwatchToJSON } from "@/components/Stopwatch/utils/parseStopwatchToJSON";
+import { StopwatchHelper } from "@/utils/StopwatchHelper";
+import { parseStopwatchToJSON } from "@/utils/parseStopwatchToJSON";
 
 export function parseEntryToJSON(entry: any): object | null {
   try {

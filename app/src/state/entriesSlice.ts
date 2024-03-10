@@ -5,8 +5,8 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
-import { RootState } from "@/store/store";
-import StoreReducerName from "@/store/enums/StoreReducerName";
+import { RootState } from "@/state/store";
+import StoreReducerName from "@/enums/StoreReducerName";
 
 const key = LocalStorageKey.EntriesState;
 

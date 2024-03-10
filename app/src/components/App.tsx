@@ -5,7 +5,7 @@ import { MenuProvider } from "@/components/MenuProvider";
 import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
 import { TopBar } from "@/components/TopBar";
-import { useAppDispatch } from "@/store/hooks/useAppDispatch";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEffect } from "react";
 

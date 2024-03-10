@@ -1,5 +1,5 @@
-import { Stopwatch } from "@/components/Stopwatch/types/Stopwatch";
-import { parseStopwatchToJSON } from "@/components/Stopwatch/utils/parseStopwatchToJSON";
+import { Stopwatch } from "@/types/Stopwatch";
+import { parseStopwatchToJSON } from "@/utils/parseStopwatchToJSON";
 
 export class StopwatchHelper {
   private constructor() {}

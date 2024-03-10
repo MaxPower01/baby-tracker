@@ -1,7 +1,7 @@
 import "./main.scss";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { App } from "@/app/components/App";
+import { App } from "@/components/App";
 import { AuthenticationProvider } from "@/pages/Authentication/components/AuthenticationProvider";
 import { BrowserRouter } from "react-router-dom";
 import { ChildrenProvider } from "@/pages/Baby/components/ChildrenProvider";
@@ -11,8 +11,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { SnackbarProvider } from "@/components/SnackbarProvider";
-import { StoreProvider } from "@/store/components/StoreProvider";
-import { ThemeProvider } from "@/theme/components/ThemeProvider";
+import { StoreProvider } from "@/components/StoreProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

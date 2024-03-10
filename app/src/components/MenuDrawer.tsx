@@ -32,7 +32,7 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import useChildren from "@/pages/Baby/hooks/useChildren";
+import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
 import { useNavigate } from "react-router-dom";
 
 export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {

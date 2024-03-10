@@ -1,4 +1,4 @@
-import { StopwatchAction } from "@/components/Stopwatch/types/StopwatchAction";
+import { StopwatchAction } from "@/types/StopwatchAction";
 
 export interface Stopwatch {
   side: "left" | "right" | null;

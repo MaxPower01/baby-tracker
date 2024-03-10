@@ -4,7 +4,7 @@ import {
 } from "@mui/material/styles";
 import React, { useEffect } from "react";
 
-import { selectThemeMode } from "@/pages/Settings/state/settingsSlice";
+import { selectThemeMode } from "@/state/settingsSlice";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSelector } from "react-redux";
 

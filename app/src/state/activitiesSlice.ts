@@ -5,8 +5,8 @@ import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
-import { RootState } from "@/store/store";
-import StoreReducerName from "@/store/enums/StoreReducerName";
+import { RootState } from "@/state/store";
+import StoreReducerName from "@/enums/StoreReducerName";
 import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities";
 import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 

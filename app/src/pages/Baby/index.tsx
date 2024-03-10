@@ -6,7 +6,7 @@ import ChildLanding from "@/pages/Baby/components/ChildLanding";
 import ChildWizard from "@/pages/Baby/components/ChildWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
-import useChildren from "@/pages/Baby/hooks/useChildren";
+import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
 import { useParams } from "react-router-dom";
 
 export default function ChildPage() {

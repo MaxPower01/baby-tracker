@@ -6,7 +6,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import useChildren from "@/pages/Baby/hooks/useChildren";
+import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
 
 type Props = {
   sx?: SxProps;
