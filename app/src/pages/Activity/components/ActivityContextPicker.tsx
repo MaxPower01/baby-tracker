@@ -1,7 +1,9 @@
 import {
   Box,
+  Checkbox,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -10,6 +12,10 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
+import {
+  getActivityContextPickerPlaceholder,
+  getActivityContextType,
+} from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
@@ -20,33 +26,25 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
-import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
+import { selectActivityContexts } from "@/state/activitiesSlice";
+import { useSelector } from "react-redux";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   entryType: EntryType;
-  activityContext: ActivityContextType | null;
-  setActivityContext: React.Dispatch<
-    React.SetStateAction<ActivityContextType | null>
-  >;
+  selectedItems: ActivityContext[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<ActivityContext[]>>;
 };
 
 export function ActivityContextPicker(props: Props) {
+  const addNewItemId = `add-new-item-${uuid()}`;
+  const items = useSelector(selectActivityContexts);
+  const activityContextType = getActivityContextType(props.entryType);
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-  const handleActivityContextChange = (
-    event: SelectChangeEvent<ActivityContextType | null>
-  ) => {
-    const newValue = event.target.value;
-    if (newValue === null) return;
-    if (newValue === "add") return setDrawerIsOpen(true);
-    if (typeof newValue === "string") return;
-    props.setActivityContext(newValue);
-  };
-  const [activityContextId, setActivityContextId] = useState<string | null>(
-    null
-  );
-  const placeholderName = getActivityContextPickerPlaceholder(props.entryType);
-  const newItemLabel = getActivityContextPickerNewItemLabel(props.entryType);
-  const activityContexts: ActivityContext[] = []; // TODO: fetch activity contexts
+  const placeholderName =
+    getActivityContextPickerPlaceholder(activityContextType);
+  const newItemLabel =
+    getActivityContextPickerNewItemLabel(activityContextType);
   const theme = useTheme();
   const label = () => {
     return (
@@ -82,56 +80,63 @@ export function ActivityContextPicker(props: Props) {
       </Stack>
     );
   };
+  const selectedIds = props.selectedItems.map((item) => item.id);
+  const handleSelectedItemsChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value;
+    if (value.includes(addNewItemId)) {
+      setSelectIsOpen(false);
+      setDrawerIsOpen(true);
+      return;
+    }
+    const newSelectedItems = items.filter((item) => value.includes(item.id));
+    props.setSelectedItems(newSelectedItems);
+  };
+  const [selectIsOpen, setSelectIsOpen] = useState(false);
+
   return (
     <>
       <FormControl fullWidth variant="outlined">
         <InputLabel id="activity-context-label">{label()}</InputLabel>
         <Select
           id="activity-context"
+          multiple
           labelId="activity-context-label"
-          value={props.activityContext ?? ""}
+          value={props.selectedItems.map((item) => item.id)}
           label={label()}
-          onChange={handleActivityContextChange}
+          onChange={handleSelectedItemsChange}
+          open={selectIsOpen}
+          onOpen={() => setSelectIsOpen(true)}
+          onClose={() => setSelectIsOpen(false)}
           // error={sexError !== ""}
         >
-          {activityContexts.map((activityContext) => {
+          {items.map((activityContext) => {
             return (
-              <MenuItem key={activityContext.type} value={activityContext.type}>
+              <MenuItem key={activityContext.id} value={activityContext.id}>
                 <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                  <ActivityIcon
-                    type={props.entryType}
-                    sx={{
-                      fontSize: "1.5em",
-                    }}
+                  <Checkbox
+                    checked={selectedIds.includes(activityContext.id)}
                   />
-                  <Typography variant={"body1"} fontWeight={500}>
-                    {activityContext.name}
-                  </Typography>
+                  <ListItemText primary={activityContext.name} />
                 </Stack>
               </MenuItem>
             );
           })}
 
-          <MenuItem key={"add"} value={"add"}>
+          <MenuItem key={addNewItemId} value={addNewItemId}>
             <Stack direction={"row"} spacing={1} alignItems={"center"}>
               <AddIcon />
-              <Typography variant={"body1"} fontWeight={500}>
-                {newItemLabel}
-              </Typography>
+              <ListItemText primary={newItemLabel} />
             </Stack>
           </MenuItem>
         </Select>
-        {/* <FormHelperText error={sexError !== ""}>
-{sexError !== "" ? sexError : ""}
-</FormHelperText> */}
       </FormControl>
 
       <ActivityContextDrawer
         type={props.entryType}
         isOpen={drawerIsOpen}
         onClose={() => setDrawerIsOpen(false)}
-        activityContextId={activityContextId}
-        setActivityContextId={setActivityContextId}
+        selectedItems={props.selectedItems}
+        setSelectedItems={props.setSelectedItems}
       />
     </>
   );

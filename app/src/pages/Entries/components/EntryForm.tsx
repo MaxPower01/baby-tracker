@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useCallback, useState } from "react";
 
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
@@ -41,8 +42,9 @@ export default function EntryForm(props: EntryFormProps) {
   const name = getTitleForEntryType(props.entry.entryType);
   const handleSubmit = useCallback(() => {}, []);
   const [isSaving, setIsSaving] = useState(false);
-  const [activityContext, setActivityContext] =
-    useState<ActivityContextType | null>(null);
+  const [selectedActivityContexts, setSelectedActivityContexts] = useState<
+    ActivityContext[]
+  >([]);
   return (
     <>
       <SectionStack>
@@ -51,11 +53,11 @@ export default function EntryForm(props: EntryFormProps) {
             <ActivityIcon
               type={props.entry.entryType}
               sx={{
-                fontSize: "4em",
+                fontSize: "5em",
               }}
             />
             <Stack direction={"row"} alignItems={"center"}>
-              <Typography variant="h4" textAlign="center" fontWeight={600}>
+              <Typography variant="h5" textAlign="center">
                 {name}
               </Typography>
             </Stack>
@@ -76,8 +78,8 @@ export default function EntryForm(props: EntryFormProps) {
           <Section title="context">
             <ActivityContextPicker
               entryType={props.entry.entryType}
-              activityContext={activityContext}
-              setActivityContext={setActivityContext}
+              selectedItems={selectedActivityContexts}
+              setSelectedItems={setSelectedActivityContexts}
             />
           </Section>
         )}

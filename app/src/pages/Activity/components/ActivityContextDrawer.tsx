@@ -33,6 +33,7 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import { EmptyState } from "@/components/EmptyState";
+import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
@@ -47,8 +48,8 @@ type Props = {
   type: EntryType;
   isOpen: boolean;
   onClose: () => void;
-  activityContextId: string | null;
-  setActivityContextId: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedItems: ActivityContext[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<ActivityContext[]>>;
 };
 
 type Item = ActivityContext & { isSelected: boolean };
@@ -62,7 +63,7 @@ export function ActivityContextDrawer(props: Props) {
   const [error, setError] = React.useState<string | null>(null);
   const [newItemName, setNewItemName] = React.useState("");
   const textfieldId = "new-activity-context";
-  const focusTextfield = () => {
+  const setFocusOnTextfield = () => {
     const input = document.getElementById(textfieldId);
     if (input) {
       input.click();
@@ -123,7 +124,7 @@ export function ActivityContextDrawer(props: Props) {
           },
         ].toSorted((a, b) => b.order - a.order)
       );
-      props.setActivityContextId(newItemId);
+      // props.setActivityContextId(newItemId);
       const success = true;
       if (success) {
         setNewItemName("");
@@ -292,9 +293,12 @@ export function ActivityContextDrawer(props: Props) {
           </Stack>
 
           {!anyItems && (
-            <div onClick={focusTextfield}>
-              <EmptyState />
-            </div>
+            <Box onClick={setFocusOnTextfield}>
+              <EmptyState
+                context={EmptyStateContext.ActivityContextDrawer}
+                activityContextType={activityContextType}
+              />
+            </Box>
           )}
 
           {anyItems && (
@@ -316,7 +320,7 @@ export function ActivityContextDrawer(props: Props) {
                 size="large"
                 disabled={
                   isSaving ||
-                  isNullOrWhiteSpace(props.activityContextId) ||
+                  !props.selectedItems.length ||
                   !selectedItems.length
                 }
                 sx={{

@@ -1,3 +1,5 @@
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 
 export default function getDefaultActivitiesOrder(): ActivityType[] {
@@ -40,5 +42,22 @@ export default function getDefaultActivitiesOrder(): ActivityType[] {
     ActivityType.BabyCare,
     ActivityType.BabyToilet,
     ActivityType.BellyTime,
+  ];
+}
+
+export function getDefaultActivityContexts(): ActivityContext[] {
+  return [
+    {
+      id: "test-1",
+      name: "Lait maternel",
+      order: 0,
+      type: ActivityContextType.BottleFeeding,
+    },
+    {
+      id: "test-2",
+      name: "Prépartion pour nourrisson",
+      order: 1,
+      type: ActivityContextType.BottleFeeding,
+    },
   ];
 }

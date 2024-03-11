@@ -1,4 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import getDefaultActivitiesOrder, {
+  getDefaultActivityContexts,
+} from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
@@ -8,13 +11,13 @@ import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities";
-import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 
 const key = LocalStorageKey.ActivitiesState;
 
 const defaultState: ActivitiesState = {
   activities: getDefaultActivities().map((a) => a.serialize()),
   activitiesOrder: getDefaultActivitiesOrder(),
+  activityContexts: getDefaultActivityContexts(),
 };
 
 const slice = createSlice({
@@ -49,5 +52,8 @@ export const selectActivities = (state: RootState) => {
   );
   return activities.sort((a, b) => a.order - b.order);
 };
+
+export const selectActivityContexts = (state: RootState) =>
+  state.activitiesReducer.activityContexts;
 
 export default slice.reducer;
