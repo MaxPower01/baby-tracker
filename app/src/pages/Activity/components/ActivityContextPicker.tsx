@@ -1,7 +1,9 @@
 import {
   Box,
   Checkbox,
+  Chip,
   FormControl,
+  FormControlLabel,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -80,7 +82,6 @@ export function ActivityContextPicker(props: Props) {
       </Stack>
     );
   };
-  const selectedIds = props.selectedItems.map((item) => item.id);
   const handleSelectedItemsChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value;
     if (value.includes(addNewItemId)) {
@@ -88,8 +89,9 @@ export function ActivityContextPicker(props: Props) {
       setDrawerIsOpen(true);
       return;
     }
-    const newSelectedItems = items.filter((item) => value.includes(item.id));
-    props.setSelectedItems(newSelectedItems);
+    props.setSelectedItems((prev) => {
+      return items.filter((item) => value.includes(item.id));
+    });
   };
   const [selectIsOpen, setSelectIsOpen] = useState(false);
 
@@ -107,17 +109,34 @@ export function ActivityContextPicker(props: Props) {
           open={selectIsOpen}
           onOpen={() => setSelectIsOpen(true)}
           onClose={() => setSelectIsOpen(false)}
+          renderValue={(selected) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value) => {
+                const item = items.find((item) => item.id === value);
+                if (!item) {
+                  return null;
+                }
+                return <Chip key={item.id} label={item.name} />;
+              })}
+            </Box>
+          )}
           // error={sexError !== ""}
         >
-          {items.map((activityContext) => {
+          {items.map((item) => {
             return (
-              <MenuItem key={activityContext.id} value={activityContext.id}>
-                <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                  <Checkbox
-                    checked={selectedIds.includes(activityContext.id)}
-                  />
-                  <ListItemText primary={activityContext.name} />
-                </Stack>
+              <MenuItem key={item.id} value={item.id}>
+                <FormControlLabel
+                  key={item.id}
+                  control={
+                    <Checkbox
+                      checked={props.selectedItems.some(
+                        (selectedItem) => selectedItem.id === item.id
+                      )}
+                      name={item.name}
+                    />
+                  }
+                  label={item.name}
+                />
               </MenuItem>
             );
           })}

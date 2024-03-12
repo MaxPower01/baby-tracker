@@ -42,6 +42,8 @@ import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivit
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { selectActivityContexts } from "@/state/activitiesSlice";
+import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
@@ -51,8 +53,6 @@ type Props = {
   selectedItems: ActivityContext[];
   setSelectedItems: React.Dispatch<React.SetStateAction<ActivityContext[]>>;
 };
-
-type Item = ActivityContext & { isSelected: boolean };
 
 export function ActivityContextDrawer(props: Props) {
   const theme = useTheme();
@@ -71,16 +71,13 @@ export function ActivityContextDrawer(props: Props) {
     }
   };
   // TODO: fetch activity contexts
-  const [items, setItems] = React.useState<Item[]>([]);
-  const selectedItems = useMemo(() => {
-    return items.filter((item) => item.isSelected);
-  }, [items]);
+  const items = useSelector(selectActivityContexts);
   const confirmButtonLabel = useMemo(() => {
-    if (selectedItems.length === 0) {
+    if (props.selectedItems.length === 0) {
       return "Sélectionner";
     }
-    return `Sélectionner (${selectedItems.length})`;
-  }, [selectedItems]);
+    return `Sélectionner (${props.selectedItems.length})`;
+  }, [props.selectedItems]);
   const anyItems = items.length > 0;
   const addItem = useCallback(() => {
     if (isNullOrWhiteSpace(newItemName)) {
@@ -111,19 +108,19 @@ export function ActivityContextDrawer(props: Props) {
     setTimeout(() => {
       // Simulating an async call
       const newItemId = uuid();
-      setItems((prev) =>
-        [
-          ...prev,
-          {
-            id: newItemId,
-            type: activityContextType,
-            name: newItemName,
-            order: newItemOrder,
-            isSelected: true,
-            createdAtTimestamp: Date.now(),
-          },
-        ].toSorted((a, b) => b.order - a.order)
-      );
+      // setItems((prev) =>
+      //   [
+      //     ...prev,
+      //     {
+      //       id: newItemId,
+      //       type: activityContextType,
+      //       name: newItemName,
+      //       order: newItemOrder,
+      //       isSelected: true,
+      //       createdAtTimestamp: Date.now(),
+      //     },
+      //   ].toSorted((a, b) => b.order - a.order)
+      // );
       // props.setActivityContextId(newItemId);
       const success = true;
       if (success) {
@@ -134,15 +131,26 @@ export function ActivityContextDrawer(props: Props) {
     }, 500);
   }, [items, activityContextType, newItemName, error]);
 
-  const handleItemSelection = (id: string) => {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          return { ...item, isSelected: !item.isSelected };
+  const handleSelectedItemsChange = (id: string) => {
+    // setItems((prev) =>
+    //   prev.map((item) => {
+    //     if (item.id === id) {
+    //       return { ...item, isSelected: !item.isSelected };
+    //     }
+    //     return item;
+    //   })
+    // );
+    props.setSelectedItems((prev) => {
+      const index = prev.findIndex((item) => item.id === id);
+      if (index === -1) {
+        const item = items.find((item) => item.id === id);
+        if (!item) {
+          return prev;
         }
-        return item;
-      })
-    );
+        return [...prev, item];
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const handleConfirm = () => {
@@ -279,8 +287,10 @@ export function ActivityContextDrawer(props: Props) {
                       key={item.id}
                       control={
                         <Checkbox
-                          checked={item.isSelected}
-                          onChange={() => handleItemSelection(item.id)}
+                          checked={props.selectedItems.some(
+                            (selectedItem) => selectedItem.id === item.id
+                          )}
+                          onChange={() => handleSelectedItemsChange(item.id)}
                           name={item.name}
                         />
                       }
@@ -321,7 +331,7 @@ export function ActivityContextDrawer(props: Props) {
                 disabled={
                   isSaving ||
                   !props.selectedItems.length ||
-                  !selectedItems.length
+                  !props.selectedItems.length
                 }
                 sx={{
                   height: `calc(${theme.typography.button.fontSize} * 2.5)`,
