@@ -34,6 +34,9 @@ export function getActivityContextPickerNewItemLabel(
     case ActivityContextType.BottleFeeding:
       result = "Ajouter un type de lait ou préparation";
       break;
+    case ActivityContextType.SolidFood:
+      result = "Ajouter un type de nourriture solide";
+      break;
     default:
       break;
   }

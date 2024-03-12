@@ -23,10 +23,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { ChangeEvent, useCallback, useMemo } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
 import {
   addActivityContext,
   selectActivityContexts,
+  selectActivityContextsOfType,
 } from "@/state/activitiesSlice";
 
 import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
@@ -42,6 +43,8 @@ import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
+import { RootState } from "@/state/store";
+import { deviceIsMobile } from "@/utils/deviceIsMobile";
 import { getActivityContextDrawerAddItemPlaceholder } from "@/pages/Activity/utils/getActivityContextDrawerAddItemPlaceholder";
 import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivityContextDrawerTitle";
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
@@ -63,7 +66,6 @@ type Props = {
 export function ActivityContextDrawer(props: Props) {
   const dispatch = useAppDispatch();
   const { showSnackbar } = useSnackbar();
-  const [initialSelectedItems] = React.useState(props.selectedItems);
   const theme = useTheme();
   const [editMode, setEditMode] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
@@ -80,7 +82,9 @@ export function ActivityContextDrawer(props: Props) {
       input.focus();
     }
   };
-  const items = useSelector(selectActivityContexts);
+  const items = useSelector((state: RootState) =>
+    selectActivityContextsOfType(state, activityContextType)
+  );
   const confirmButtonLabel = useMemo(() => {
     if (props.selectedItems.length === 0) {
       return "Sélectionner";
@@ -89,62 +93,67 @@ export function ActivityContextDrawer(props: Props) {
   }, [props.selectedItems]);
   const anyItems = items.length > 0;
   const addItem = useCallback(() => {
-    if (isNullOrWhiteSpace(newItemName)) {
-      setNewItemName("");
-      setError("Le nom ne peut pas être vide.");
-      return;
-    }
-    if (activityContextType === null) {
-      return;
-    }
-    if (!isNullOrWhiteSpace(error)) {
-      setError(null);
-    }
-    const itemNameAlreadyExists = items.some(
-      (item) => item.name === newItemName
-    );
-    if (itemNameAlreadyExists) {
-      setError("Un élément avec ce nom existe déjà.");
-      return;
-    }
-    let newItemOrder = 0;
-    if (items.length > 0) {
-      const firstItem = items[0];
-      newItemOrder = firstItem.order - 1;
-    }
-    // TODO: Save activity context and get id
-    const newItem: ActivityContext = {
-      id: uuid(),
-      name: newItemName,
-      order: newItemOrder,
-      type: activityContextType,
-    };
-    setIsSaving(true);
-    // Simulating an async call with a timeout
-    let success = true;
-    setTimeout(() => {
-      // TODO: Add in Redux
-      if (success) {
+    return new Promise<boolean>((resolve, reject) => {
+      if (isNullOrWhiteSpace(newItemName)) {
         setNewItemName("");
-      } else {
+        setError("Le nom ne peut pas être vide.");
+        return reject();
       }
-      setIsSaving(false);
-    }, 500);
-    dispatch(
-      addActivityContext({
-        activityContext: JSON.stringify(newItem),
-      })
-    );
-    if (success) {
-      props.setSelectedItems((prev) => [...prev, newItem]);
-    } else {
-      showSnackbar({
-        id: errorSnackbarId,
-        message: "Une erreure s'est produite, veuillez réessayer plus tard.",
-        severity: "error",
-        isOpen: true,
-      });
-    }
+      if (activityContextType === null) {
+        return reject();
+      }
+      if (!isNullOrWhiteSpace(error)) {
+        setError(null);
+      }
+      const itemNameAlreadyExists = items.some(
+        (item) => item.name === newItemName
+      );
+      if (itemNameAlreadyExists) {
+        setError("Un élément avec ce nom existe déjà.");
+        return reject();
+      }
+      let newItemOrder = 0;
+      if (items.length > 0) {
+        const firstItem = items[0];
+        newItemOrder = firstItem.order - 1;
+      }
+      // TODO: Save activity context and get id
+      const newItem: ActivityContext = {
+        id: uuid(),
+        name: newItemName,
+        order: newItemOrder,
+        type: activityContextType,
+      };
+      setIsSaving(true);
+      // Simulating an async call with a timeout
+      let success = true;
+      setTimeout(() => {
+        // TODO: Add in Redux
+        if (success) {
+          setNewItemName("");
+        } else {
+          return reject();
+        }
+        dispatch(
+          addActivityContext({
+            activityContext: JSON.stringify(newItem),
+          })
+        );
+        setIsSaving(false);
+        if (success) {
+          props.setSelectedItems((prev) => [...prev, newItem]);
+        } else {
+          showSnackbar({
+            id: errorSnackbarId,
+            message:
+              "Une erreure s'est produite, veuillez réessayer plus tard.",
+            severity: "error",
+            isOpen: true,
+          });
+        }
+        return resolve(success);
+      }, 500);
+    });
   }, [items, activityContextType, newItemName, error]);
 
   const handleSelectedItemsChange = (id: string) => {
@@ -165,10 +174,17 @@ export function ActivityContextDrawer(props: Props) {
     props.onClose();
   };
 
-  const handleClose = () => {
-    props.setSelectedItems(initialSelectedItems);
+  const handleDrawerClose = () => {
     props.onClose();
   };
+
+  if (props.isOpen && items.length === 0) {
+    if (!deviceIsMobile()) {
+      requestAnimationFrame(() => {
+        setFocusOnTextfield();
+      });
+    }
+  }
 
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
@@ -187,12 +203,40 @@ export function ActivityContextDrawer(props: Props) {
     setNewItemName(event.target.value);
   };
 
+  const handleEmptyStateClick = useCallback(async () => {
+    if (newItemName.trim().length === 0) {
+      setFocusOnTextfield();
+    } else {
+      await addItem();
+      handleConfirm();
+    }
+  }, [newItemName]);
+
+  const handleTextfieldKeyUp = useCallback(
+    async (event: React.KeyboardEvent) => {
+      if (event.key === "Enter") {
+        await addItem();
+        if (!anyItems) {
+          handleConfirm();
+        }
+      }
+    },
+    [addItem, anyItems]
+  );
+
+  const handleAddItemButtonClick = useCallback(async () => {
+    await addItem();
+    if (!anyItems) {
+      handleConfirm();
+    }
+  }, [addItem, anyItems]);
+
   return (
     <SwipeableDrawer
       anchor="bottom"
       open={props.isOpen}
       onOpen={() => {}}
-      onClose={handleClose}
+      onClose={handleDrawerClose}
       disableSwipeToOpen={true}
     >
       <Box
@@ -224,7 +268,7 @@ export function ActivityContextDrawer(props: Props) {
             >
               <EditIcon />
             </IconButton>
-            <IconButton onClick={handleClose}>
+            <IconButton onClick={handleDrawerClose}>
               <CloseIcon />
             </IconButton>
           </Toolbar>
@@ -276,11 +320,7 @@ export function ActivityContextDrawer(props: Props) {
                   )}
                   value={newItemName}
                   onChange={handleTextfieldChange}
-                  onKeyUp={(event) => {
-                    if (event.key === "Enter") {
-                      addItem();
-                    }
-                  }}
+                  onKeyUp={handleTextfieldKeyUp}
                   error={!isNullOrWhiteSpace(error)}
                   helperText={error}
                   fullWidth
@@ -297,7 +337,7 @@ export function ActivityContextDrawer(props: Props) {
                   sx={{
                     flexShrink: 0,
                   }}
-                  onClick={addItem}
+                  onClick={handleAddItemButtonClick}
                   disabled={isNullOrWhiteSpace(newItemName) || isSaving}
                 >
                   <AddIcon />
@@ -334,12 +374,11 @@ export function ActivityContextDrawer(props: Props) {
           </Stack>
 
           {!anyItems && (
-            <Box onClick={setFocusOnTextfield}>
-              <EmptyState
-                context={EmptyStateContext.ActivityContextDrawer}
-                activityContextType={activityContextType}
-              />
-            </Box>
+            <EmptyState
+              context={EmptyStateContext.ActivityContextDrawer}
+              activityContextType={activityContextType}
+              onClick={handleEmptyStateClick}
+            />
           )}
 
           {anyItems && (

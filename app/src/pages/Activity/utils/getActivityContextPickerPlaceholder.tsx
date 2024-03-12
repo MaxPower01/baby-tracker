@@ -34,6 +34,9 @@ export function getActivityContextPickerPlaceholder(
     case ActivityContextType.BottleFeeding:
       result = "Type de lait ou préparation";
       break;
+    case ActivityContextType.SolidFood:
+      result = "Type de nourriture solide";
+      break;
     default:
       break;
   }
@@ -71,6 +74,9 @@ export function getActivityContextType(
       break;
     case EntryType.BottleFeeding:
       result = ActivityContextType.BottleFeeding;
+      break;
+    case EntryType.SolidFood:
+      result = ActivityContextType.SolidFood;
       break;
     default:
       break;

@@ -30,6 +30,9 @@ export function getActivityContextDrawerTitle(entryType: EntryType) {
     case EntryType.BottleFeeding:
       result = "Types de lait ou préparation";
       break;
+    case EntryType.SolidFood:
+      result = "Types de nourriture solide";
+      break;
     default:
       break;
   }

@@ -18,6 +18,10 @@ import {
   getActivityContextPickerPlaceholder,
   getActivityContextType,
 } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
+import {
+  selectActivityContexts,
+  selectActivityContextsOfType,
+} from "@/state/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
@@ -27,8 +31,9 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { RootState } from "@/state/store";
+import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
-import { selectActivityContexts } from "@/state/activitiesSlice";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
@@ -40,8 +45,11 @@ type Props = {
 
 export function ActivityContextPicker(props: Props) {
   const addNewItemId = `add-new-item-${uuid()}`;
-  const items = useSelector(selectActivityContexts);
   const activityContextType = getActivityContextType(props.entryType);
+  const items = useSelector((state: RootState) =>
+    selectActivityContextsOfType(state, activityContextType)
+  );
+  const canMultiSelect = activityContextTypeCanMultiSelect(activityContextType);
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
   const placeholderName =
     getActivityContextPickerPlaceholder(activityContextType);
@@ -95,52 +103,66 @@ export function ActivityContextPicker(props: Props) {
   };
   const [selectIsOpen, setSelectIsOpen] = useState(false);
 
+  const handleOpenSelect = () => {
+    if (canMultiSelect) {
+      // For now, we'll bypass the Select component and go straight to the drawer
+      // since it's easier to add new items and confirm the selection
+      setDrawerIsOpen(true);
+    } else {
+      setSelectIsOpen(true);
+    }
+  };
+
   return (
     <>
       <FormControl fullWidth variant="outlined">
         <InputLabel id="activity-context-label">{label()}</InputLabel>
         <Select
           id="activity-context"
-          multiple
+          multiple={canMultiSelect}
           labelId="activity-context-label"
           value={props.selectedItems.map((item) => item.id)}
           label={label()}
           onChange={handleSelectedItemsChange}
           open={selectIsOpen}
-          onOpen={() => {
-            // For now, we'll bypass the Select component and go straight to the drawer
-            // since it's easier to add new items and confirm the selection
-            setDrawerIsOpen(true);
-          }}
+          onOpen={handleOpenSelect}
           onClose={() => setSelectIsOpen(false)}
-          renderValue={(selected) => (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value) => {
-                const item = items.find((item) => item.id === value);
-                if (!item) {
-                  return null;
-                }
-                return <Chip key={item.id} label={item.name} />;
-              })}
-            </Box>
-          )}
+          renderValue={
+            canMultiSelect
+              ? (selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => {
+                      const item = items.find((item) => item.id === value);
+                      if (!item) {
+                        return null;
+                      }
+                      return <Chip key={item.id} label={item.name} />;
+                    })}
+                  </Box>
+                )
+              : undefined
+          }
           // error={sexError !== ""}
         >
           {items.map((item) => {
             return (
               <MenuItem key={item.id} value={item.id}>
-                <FormControlLabel
-                  key={item.id}
-                  control={
-                    <Checkbox
-                      checked={props.selectedItems.some(
-                        (selectedItem) => selectedItem.id === item.id
-                      )}
-                      name={item.name}
-                    />
-                  }
-                  label={item.name}
-                />
+                {canMultiSelect ? (
+                  <FormControlLabel
+                    key={item.id}
+                    control={
+                      <Checkbox
+                        checked={props.selectedItems.some(
+                          (selectedItem) => selectedItem.id === item.id
+                        )}
+                        name={item.name}
+                      />
+                    }
+                    label={item.name}
+                  />
+                ) : (
+                  <ListItemText primary={item.name} />
+                )}
               </MenuItem>
             );
           })}

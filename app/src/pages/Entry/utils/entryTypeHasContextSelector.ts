@@ -10,6 +10,7 @@ const entryTypesWithContextSelector = [
   EntryType.Sleep,
   EntryType.BabyMash,
   EntryType.BottleFeeding,
+  EntryType.SolidFood,
 ];
 
 export function entryTypeHasContextSelector(entryType: EntryType) {

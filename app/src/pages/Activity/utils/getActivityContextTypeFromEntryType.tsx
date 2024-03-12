@@ -33,6 +33,9 @@ export function getActivityContextTypeFromEntryType(
     case EntryType.BottleFeeding:
       result = ActivityContextType.BottleFeeding;
       break;
+    case EntryType.SolidFood:
+      result = ActivityContextType.SolidFood;
+      break;
     default:
       break;
   }

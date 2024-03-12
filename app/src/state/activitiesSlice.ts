@@ -5,6 +5,7 @@ import getDefaultActivitiesOrder, {
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
@@ -64,5 +65,14 @@ export const selectActivityContexts = (state: RootState) =>
   state.activitiesReducer.activityContexts.toSorted(
     (a, b) => a.order - b.order
   );
+
+export const selectActivityContextsOfType = (
+  state: RootState,
+  type: ActivityContextType | null
+) => {
+  return state.activitiesReducer.activityContexts
+    .filter((a) => a.type === type)
+    .toSorted((a, b) => a.order - b.order);
+};
 
 export default slice.reducer;
