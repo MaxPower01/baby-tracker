@@ -31,7 +31,6 @@ import { useAuthentication } from "@/pages/Authentication/hooks/useAuthenticatio
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
-  zIndex: 1,
   top: -25,
   left: 0,
   right: 0,

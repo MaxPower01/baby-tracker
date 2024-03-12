@@ -11,6 +11,7 @@ import {
   FormGroup,
   IconButton,
   InputLabel,
+  ListItemText,
   MenuItem,
   Radio,
   RadioGroup,
@@ -21,6 +22,7 @@ import {
   TextField,
   Toolbar,
   Typography,
+  styled,
   useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
@@ -55,12 +57,17 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import { v4 as uuid } from "uuid";
 
+const StyledFab = styled(Fab)({
+  zIndex: 0,
+});
+
 type Props = {
   type: EntryType;
   isOpen: boolean;
   onClose: () => void;
   selectedItems: ActivityContext[];
   setSelectedItems: React.Dispatch<React.SetStateAction<ActivityContext[]>>;
+  canMultiSelect: boolean;
 };
 
 export function ActivityContextDrawer(props: Props) {
@@ -97,10 +104,10 @@ export function ActivityContextDrawer(props: Props) {
       if (isNullOrWhiteSpace(newItemName)) {
         setNewItemName("");
         setError("Le nom ne peut pas être vide.");
-        return reject();
+        return reject("Name cannot be empty.");
       }
       if (activityContextType === null) {
-        return reject();
+        return reject("Activity context type is null.");
       }
       if (!isNullOrWhiteSpace(error)) {
         setError(null);
@@ -110,7 +117,7 @@ export function ActivityContextDrawer(props: Props) {
       );
       if (itemNameAlreadyExists) {
         setError("Un élément avec ce nom existe déjà.");
-        return reject();
+        return reject("Item with this name already exists.");
       }
       let newItemOrder = 0;
       if (items.length > 0) {
@@ -132,16 +139,21 @@ export function ActivityContextDrawer(props: Props) {
         if (success) {
           setNewItemName("");
         } else {
-          return reject();
+          return reject("An error occurred while saving the item.");
         }
         dispatch(
           addActivityContext({
             activityContext: JSON.stringify(newItem),
           })
         );
-        setIsSaving(false);
         if (success) {
-          props.setSelectedItems((prev) => [...prev, newItem]);
+          if (props.canMultiSelect) {
+            props.setSelectedItems((prev) => {
+              return [...prev, newItem];
+            });
+          } else {
+            props.setSelectedItems([newItem]);
+          }
         } else {
           showSnackbar({
             id: errorSnackbarId,
@@ -151,12 +163,13 @@ export function ActivityContextDrawer(props: Props) {
             isOpen: true,
           });
         }
+        setIsSaving(false);
         return resolve(success);
       }, 500);
     });
   }, [items, activityContextType, newItemName, error]);
 
-  const handleSelectedItemsChange = (id: string) => {
+  const handleMultiSelectChange = (id: string) => {
     props.setSelectedItems((prev) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index === -1) {
@@ -168,6 +181,15 @@ export function ActivityContextDrawer(props: Props) {
       }
       return prev.filter((item) => item.id !== id);
     });
+  };
+
+  const handleSingleSelectChange = (id: string) => {
+    const item = items.find((item) => item.id === id);
+    if (!item) {
+      return;
+    }
+    props.setSelectedItems([item]);
+    handleConfirm();
   };
 
   const handleConfirm = () => {
@@ -203,33 +225,52 @@ export function ActivityContextDrawer(props: Props) {
     setNewItemName(event.target.value);
   };
 
-  const handleEmptyStateClick = useCallback(async () => {
+  const addItemAndConfirmIfNeeded = () => {
+    return new Promise<void>((resolve, reject) => {
+      addItem()
+        .then((success) => {
+          if (success) {
+            if (!anyItems || !props.canMultiSelect) {
+              handleConfirm();
+            }
+          }
+          return resolve();
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
+  const handleEmptyStateClick = () => {
     if (newItemName.trim().length === 0) {
       setFocusOnTextfield();
     } else {
-      await addItem();
-      handleConfirm();
+      addItemAndConfirmIfNeeded()
+        .then(() => {})
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  }, [newItemName]);
+  };
 
-  const handleTextfieldKeyUp = useCallback(
-    async (event: React.KeyboardEvent) => {
-      if (event.key === "Enter") {
-        await addItem();
-        if (!anyItems) {
-          handleConfirm();
-        }
-      }
-    },
-    [addItem, anyItems]
-  );
-
-  const handleAddItemButtonClick = useCallback(async () => {
-    await addItem();
-    if (!anyItems) {
-      handleConfirm();
+  const handleTextfieldKeyUp = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      addItemAndConfirmIfNeeded()
+        .then(() => {})
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  }, [addItem, anyItems]);
+  };
+
+  const handleAddItemButtonClick = () => {
+    addItemAndConfirmIfNeeded()
+      .then(() => {})
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <SwipeableDrawer
@@ -326,12 +367,7 @@ export function ActivityContextDrawer(props: Props) {
                   fullWidth
                   disabled={isSaving}
                 />
-                {/* <IconButton
-                  color="primary"
-                  disabled={isNullOrWhiteSpace(newItemName) || isSaving}
-                  onClick={addItem}
-                > */}
-                <Fab
+                <StyledFab
                   color="primary"
                   size="small"
                   sx={{
@@ -341,7 +377,7 @@ export function ActivityContextDrawer(props: Props) {
                   disabled={isNullOrWhiteSpace(newItemName) || isSaving}
                 >
                   <AddIcon />
-                </Fab>
+                </StyledFab>
                 {/* </IconButton> */}
               </Stack>
             </FormControl>
@@ -349,11 +385,11 @@ export function ActivityContextDrawer(props: Props) {
               <FormGroup
                 sx={{
                   width: "100%",
-                  marginTop: 2,
+                  marginTop: 1,
                 }}
               >
                 {items.map((item) => {
-                  return (
+                  return props.canMultiSelect ? (
                     <FormControlLabel
                       key={item.id}
                       control={
@@ -361,12 +397,20 @@ export function ActivityContextDrawer(props: Props) {
                           checked={props.selectedItems.some(
                             (selectedItem) => selectedItem.id === item.id
                           )}
-                          onChange={() => handleSelectedItemsChange(item.id)}
+                          onChange={() => handleMultiSelectChange(item.id)}
                           name={item.name}
                         />
                       }
                       label={item.name}
                     />
+                  ) : (
+                    <MenuItem
+                      key={item.id}
+                      value={item.id}
+                      onClick={() => handleSingleSelectChange(item.id)}
+                    >
+                      <ListItemText primary={item.name} />
+                    </MenuItem>
                   );
                 })}
               </FormGroup>
@@ -381,7 +425,7 @@ export function ActivityContextDrawer(props: Props) {
             />
           )}
 
-          {anyItems && (
+          {anyItems && props.canMultiSelect && (
             <Box
               sx={{
                 flexShrink: 0,

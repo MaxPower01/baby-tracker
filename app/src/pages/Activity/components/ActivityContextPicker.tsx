@@ -132,7 +132,10 @@ export function ActivityContextPicker(props: Props) {
               ? (selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => {
-                      const item = items.find((item) => item.id === value);
+                      console.log(selected);
+                      const item = props.selectedItems.find(
+                        (item) => item.id === value
+                      );
                       if (!item) {
                         return null;
                       }
@@ -168,7 +171,14 @@ export function ActivityContextPicker(props: Props) {
           })}
 
           <MenuItem key={addNewItemId} value={addNewItemId}>
-            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              spacing={1}
+              alignItems={"center"}
+              sx={{
+                opacity: theme.opacity.tertiary,
+              }}
+            >
               <AddIcon />
               <ListItemText primary={newItemLabel} />
             </Stack>
@@ -185,6 +195,7 @@ export function ActivityContextPicker(props: Props) {
         }}
         selectedItems={props.selectedItems}
         setSelectedItems={props.setSelectedItems}
+        canMultiSelect={canMultiSelect}
       />
     </>
   );
