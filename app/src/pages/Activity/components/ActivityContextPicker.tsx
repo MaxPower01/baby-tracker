@@ -107,7 +107,11 @@ export function ActivityContextPicker(props: Props) {
           label={label()}
           onChange={handleSelectedItemsChange}
           open={selectIsOpen}
-          onOpen={() => setSelectIsOpen(true)}
+          onOpen={() => {
+            // For now, we'll bypass the Select component and go straight to the drawer
+            // since it's easier to add new items and confirm the selection
+            setDrawerIsOpen(true);
+          }}
           onClose={() => setSelectIsOpen(false)}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -153,7 +157,10 @@ export function ActivityContextPicker(props: Props) {
       <ActivityContextDrawer
         type={props.entryType}
         isOpen={drawerIsOpen}
-        onClose={() => setDrawerIsOpen(false)}
+        onClose={() => {
+          setDrawerIsOpen(false);
+          setSelectIsOpen(false);
+        }}
         selectedItems={props.selectedItems}
         setSelectedItems={props.setSelectedItems}
       />

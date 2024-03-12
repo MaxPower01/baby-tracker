@@ -38,10 +38,17 @@ const slice = createSlice({
       state.activities = [...newActivities].map((a) => a.serialize());
       setLocalState(key, state);
     },
+    addActivityContext: (
+      state,
+      action: PayloadAction<{ activityContext: string }>
+    ) => {
+      state.activityContexts.push(JSON.parse(action.payload.activityContext));
+      setLocalState(key, state);
+    },
   },
 });
 
-export const { updateActivitiesOrder } = slice.actions;
+export const { updateActivitiesOrder, addActivityContext } = slice.actions;
 
 export const selectActivitiesOrder = (state: RootState) =>
   state.activitiesReducer.activitiesOrder;
@@ -54,6 +61,8 @@ export const selectActivities = (state: RootState) => {
 };
 
 export const selectActivityContexts = (state: RootState) =>
-  state.activitiesReducer.activityContexts;
+  state.activitiesReducer.activityContexts.toSorted(
+    (a, b) => a.order - b.order
+  );
 
 export default slice.reducer;

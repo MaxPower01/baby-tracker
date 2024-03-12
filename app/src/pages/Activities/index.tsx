@@ -146,7 +146,7 @@ export default function ActivitiesPage() {
                             alignItems={"center"}
                           >
                             <ActivityIcon
-                              activity={activity}
+                              type={activity.type as any}
                               sx={{
                                 fontSize: "2em",
                               }}
