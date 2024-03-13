@@ -70,7 +70,7 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         ) : (
           <Section title="date">
-            <DateTimePicker layout="row" />
+            <DateTimePicker layout="row" iconPostion="left" align="left" />
           </Section>
         )}
 

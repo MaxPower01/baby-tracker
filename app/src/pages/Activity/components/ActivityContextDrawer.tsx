@@ -89,6 +89,12 @@ export function ActivityContextDrawer(props: Props) {
       input.focus();
     }
   };
+  const removeFocusFromTextfield = () => {
+    const input = document.getElementById(textfieldId);
+    if (input) {
+      input.blur();
+    }
+  };
   const items = useSelector((state: RootState) =>
     selectActivityContextsOfType(state, activityContextType)
   );
@@ -189,22 +195,22 @@ export function ActivityContextDrawer(props: Props) {
       return;
     }
     props.setSelectedItems([item]);
-    handleConfirm();
+    handleClose();
   };
 
-  const handleConfirm = () => {
-    props.onClose();
-  };
-
-  const handleDrawerClose = () => {
+  const handleClose = () => {
+    removeFocusFromTextfield();
+    setNewItemName("");
     props.onClose();
   };
 
   if (props.isOpen && items.length === 0) {
     if (!deviceIsMobile()) {
-      requestAnimationFrame(() => {
-        setFocusOnTextfield();
-      });
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          setFocusOnTextfield();
+        });
+      }, 100);
     }
   }
 
@@ -215,6 +221,7 @@ export function ActivityContextDrawer(props: Props) {
   if (activityContextType === null) {
     return null;
   }
+
   const handleTextfieldChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -231,7 +238,7 @@ export function ActivityContextDrawer(props: Props) {
         .then((success) => {
           if (success) {
             if (!anyItems || !props.canMultiSelect) {
-              handleConfirm();
+              handleClose();
             }
           }
           return resolve();
@@ -277,7 +284,7 @@ export function ActivityContextDrawer(props: Props) {
       anchor="bottom"
       open={props.isOpen}
       onOpen={() => {}}
-      onClose={handleDrawerClose}
+      onClose={handleClose}
       disableSwipeToOpen={true}
     >
       <Box
@@ -306,10 +313,11 @@ export function ActivityContextDrawer(props: Props) {
               onClick={() => {
                 toggleEditMode();
               }}
+              disabled={isSaving || !anyItems}
             >
               <EditIcon />
             </IconButton>
-            <IconButton onClick={handleDrawerClose}>
+            <IconButton onClick={handleClose}>
               <CloseIcon />
             </IconButton>
           </Toolbar>
@@ -378,7 +386,6 @@ export function ActivityContextDrawer(props: Props) {
                 >
                   <AddIcon />
                 </StyledFab>
-                {/* </IconButton> */}
               </Stack>
             </FormControl>
             <FormControl fullWidth variant="outlined">
@@ -439,7 +446,7 @@ export function ActivityContextDrawer(props: Props) {
             >
               <Button
                 variant="contained"
-                onClick={handleConfirm}
+                onClick={handleClose}
                 fullWidth
                 size="large"
                 disabled={

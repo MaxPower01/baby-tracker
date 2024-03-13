@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 
 type DatePickerProps = {
   icon?: "left" | "right";
+  align: "left" | "right";
 };
 
 export function DatePicker(props: DatePickerProps) {
@@ -19,19 +20,32 @@ export function DatePicker(props: DatePickerProps) {
       slotProps={{
         textField: {
           InputProps: {
-            startAdornment: props.icon ? (
-              <InputAdornment
-                position={props.icon === "left" ? "start" : "end"}
-              >
-                <CalendarToday />
-              </InputAdornment>
-            ) : undefined,
+            startAdornment:
+              props.icon === "left" ? (
+                <InputAdornment position={"start"}>
+                  <CalendarToday />
+                </InputAdornment>
+              ) : undefined,
+            endAdornment:
+              props.icon === "right" ? (
+                <InputAdornment position={"end"}>
+                  <CalendarToday />
+                </InputAdornment>
+              ) : undefined,
             size: "small",
             inputProps: {
               style: {
                 width: "5.5em",
+                alignItems: "center",
+                justifyContent:
+                  props.align === "left" ? "flex-start" : "flex-end",
               },
             },
+          },
+          sx: {
+            width: "100%",
+            alignItems: "center",
+            justifyContent: props.align === "left" ? "flex-start" : "flex-end",
           },
         },
       }}

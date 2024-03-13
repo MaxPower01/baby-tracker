@@ -5,6 +5,7 @@ import React from "react";
 import dayjs from "dayjs";
 
 type TimePickerProps = {
+  align: "left" | "right";
   icon?: "left" | "right";
 };
 export function TimePicker(props: TimePickerProps) {
@@ -18,19 +19,30 @@ export function TimePicker(props: TimePickerProps) {
       slotProps={{
         textField: {
           InputProps: {
-            startAdornment: props.icon ? (
-              <InputAdornment
-                position={props.icon === "left" ? "start" : "end"}
-              >
-                <AccessTime />
-              </InputAdornment>
-            ) : undefined,
+            startAdornment:
+              props.icon === "left" ? (
+                <InputAdornment position={"start"}>
+                  <AccessTime />
+                </InputAdornment>
+              ) : undefined,
+            endAdornment:
+              props.icon === "right" ? (
+                <InputAdornment position={"end"}>
+                  <AccessTime />
+                </InputAdornment>
+              ) : undefined,
             size: "small",
             inputProps: {
               style: {
                 width: "3em",
+                justifyContent:
+                  props.align === "left" ? "flex-start" : "flex-end",
               },
             },
+          },
+          sx: {
+            width: "100%",
+            alignItems: props.align === "left" ? "flex-start" : "flex-end",
           },
         },
       }}
