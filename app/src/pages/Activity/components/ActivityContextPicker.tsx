@@ -104,13 +104,13 @@ export function ActivityContextPicker(props: Props) {
   const [selectIsOpen, setSelectIsOpen] = useState(false);
 
   const handleOpenSelect = () => {
-    if (canMultiSelect) {
-      // For now, we'll bypass the Select component and go straight to the drawer
-      // since it's easier to add new items and confirm the selection
-      setDrawerIsOpen(true);
-    } else {
-      setSelectIsOpen(true);
-    }
+    // if (canMultiSelect) {
+    //   // For now, we'll bypass the Select component and go straight to the drawer
+    //   // since it's easier to add new items and confirm the selection
+    setDrawerIsOpen(true);
+    // } else {
+    //   setSelectIsOpen(true);
+    // }
   };
 
   return (
@@ -145,7 +145,6 @@ export function ActivityContextPicker(props: Props) {
                 )
               : undefined
           }
-          // error={sexError !== ""}
         >
           {items.map((item) => {
             return (

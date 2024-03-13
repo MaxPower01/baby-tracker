@@ -7,10 +7,12 @@ import { EmptyStatePeriod } from "@/enums/EmptyStatePeriod";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import React from "react";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
+import { getEmptyStateDescription } from "@/utils/getEmptyStateDescription";
 import { getEmptyStateTitle } from "@/utils/getEmptyStateTitle";
+import { getEntryTypeForEmptyState } from "@/utils/getEntryTypeForEmptyState";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
-type Props = {
+export type EmptyStateProps = {
   type?: EntryType;
   period?: EmptyStatePeriod;
   context: EmptyStateContext;
@@ -18,11 +20,13 @@ type Props = {
   onClick?: () => void;
 };
 
-export function EmptyState(props: Props) {
+export function EmptyState(props: EmptyStateProps) {
   let shouldRender = false;
   let buttonLabel = "";
-  const title = getEmptyStateTitle({ ...props });
+  const title = getEmptyStateTitle(props);
+  const description = getEmptyStateDescription(props);
   const theme = useTheme();
+  const entryType = getEntryTypeForEmptyState(props);
   if (props.context === EmptyStateContext.ActivityContextDrawer) {
     if (props.activityContextType != null) {
       buttonLabel = getActivityContextPickerNewItemLabel(
@@ -37,9 +41,9 @@ export function EmptyState(props: Props) {
   return (
     <Stack spacing={2}>
       <Stack spacing={1}>
-        {props.type != null && (
+        {entryType != null && (
           <ActivityIcon
-            type={props.type}
+            type={entryType}
             sx={{
               fontSize: "7em",
               opacity: theme.opacity.disabled,
@@ -47,8 +51,25 @@ export function EmptyState(props: Props) {
           />
         )}
         {!isNullOrWhiteSpace(title) && (
-          <Typography variant="h5" textAlign="center">
+          <Typography
+            variant="h6"
+            textAlign="center"
+            sx={{
+              color: theme.customPalette.text.secondary,
+            }}
+          >
             {title}
+          </Typography>
+        )}
+        {!isNullOrWhiteSpace(description) && (
+          <Typography
+            variant="body1"
+            textAlign="center"
+            sx={{
+              color: theme.customPalette.text.tertiary,
+            }}
+          >
+            {description}
           </Typography>
         )}
       </Stack>
