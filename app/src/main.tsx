@@ -15,25 +15,22 @@ import { StoreProvider } from "@/components/StoreProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <StoreProvider>
-      <AuthenticationProvider>
-        <ChildrenProvider>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale="fr-ca"
-          >
-            <ThemeProvider>
-              <SnackbarProvider>
-                <CssBaseline />
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </SnackbarProvider>
-            </ThemeProvider>
-          </LocalizationProvider>
-        </ChildrenProvider>
-      </AuthenticationProvider>
-    </StoreProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <StoreProvider>
+    <AuthenticationProvider>
+      <ChildrenProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr-ca">
+          <ThemeProvider>
+            <SnackbarProvider>
+              <CssBaseline />
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </ChildrenProvider>
+    </AuthenticationProvider>
+  </StoreProvider>
+  // </React.StrictMode>
 );

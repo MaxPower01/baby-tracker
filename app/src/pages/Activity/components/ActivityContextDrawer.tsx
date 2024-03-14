@@ -25,11 +25,19 @@ import {
   styled,
   useTheme,
 } from "@mui/material";
-import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
+import { OnDragEndResponder, OnDragStartResponder } from "react-beautiful-dnd";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   addActivityContext,
   selectActivityContexts,
   selectActivityContextsOfType,
+  updateActivityContexts,
 } from "@/state/activitiesSlice";
 
 import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
@@ -39,6 +47,7 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import { DraggableActivityContextsList } from "./DraggableActivityContextsList";
 import EditIcon from "@mui/icons-material/Edit";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
@@ -104,7 +113,7 @@ export function ActivityContextDrawer(props: Props) {
     }
     return `Sélectionner (${props.selectedItems.length})`;
   }, [props.selectedItems]);
-  const anyItems = items.length > 0;
+  const saveChangesButtonLabel = "Confirmer";
   const addItem = useCallback(() => {
     return new Promise<boolean>((resolve, reject) => {
       if (isNullOrWhiteSpace(newItemName)) {
@@ -201,6 +210,7 @@ export function ActivityContextDrawer(props: Props) {
   const handleClose = () => {
     removeFocusFromTextfield();
     setNewItemName("");
+    setEditMode(false);
     props.onClose();
   };
 
@@ -237,7 +247,7 @@ export function ActivityContextDrawer(props: Props) {
       addItem()
         .then((success) => {
           if (success) {
-            if (!anyItems || !props.canMultiSelect) {
+            if (items.length > 0 || !props.canMultiSelect) {
               handleClose();
             }
           }
@@ -279,6 +289,10 @@ export function ActivityContextDrawer(props: Props) {
       });
   };
 
+  const saveEditModeChanges = () => {
+    setEditMode(false);
+  };
+
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -313,7 +327,7 @@ export function ActivityContextDrawer(props: Props) {
               onClick={() => {
                 toggleEditMode();
               }}
-              disabled={isSaving || !anyItems}
+              disabled={isSaving || items.length <= 0}
             >
               <EditIcon />
             </IconButton>
@@ -352,134 +366,190 @@ export function ActivityContextDrawer(props: Props) {
             sx={{ width: "100%" }}
             flexGrow={1}
           >
-            <FormControl fullWidth variant="outlined">
-              <Stack
-                direction={"row"}
-                spacing={1}
-                justifyContent={"center"}
-                alignItems={"center"}
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <TextField
-                  id={textfieldId}
-                  placeholder={getActivityContextDrawerAddItemPlaceholder(
-                    props.type
-                  )}
-                  value={newItemName}
-                  onChange={handleTextfieldChange}
-                  onKeyUp={handleTextfieldKeyUp}
-                  error={!isNullOrWhiteSpace(error)}
-                  helperText={error}
-                  fullWidth
-                  disabled={isSaving}
-                />
-                <StyledFab
-                  color="primary"
-                  size="small"
+            {!editMode && (
+              <FormControl fullWidth variant="outlined">
+                <Stack
+                  direction={"row"}
+                  spacing={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
                   sx={{
-                    flexShrink: 0,
-                  }}
-                  onClick={handleAddItemButtonClick}
-                  disabled={isNullOrWhiteSpace(newItemName) || isSaving}
-                >
-                  <AddIcon />
-                </StyledFab>
-              </Stack>
-            </FormControl>
-            <FormControl fullWidth variant="outlined">
-              <FormGroup
-                sx={{
-                  width: "100%",
-                  marginTop: 1,
-                }}
-              >
-                {items.map((item) => {
-                  return props.canMultiSelect ? (
-                    <FormControlLabel
-                      key={item.id}
-                      control={
-                        <Checkbox
-                          checked={props.selectedItems.some(
-                            (selectedItem) => selectedItem.id === item.id
-                          )}
-                          onChange={() => handleMultiSelectChange(item.id)}
-                          name={item.name}
-                        />
-                      }
-                      label={item.name}
-                    />
-                  ) : (
-                    <MenuItem
-                      key={item.id}
-                      value={item.id}
-                      onClick={() => handleSingleSelectChange(item.id)}
-                    >
-                      <ListItemText primary={item.name} />
-                    </MenuItem>
-                  );
-                })}
-              </FormGroup>
-            </FormControl>
-          </Stack>
-
-          {!anyItems && (
-            <EmptyState
-              context={EmptyStateContext.ActivityContextDrawer}
-              activityContextType={activityContextType}
-              onClick={handleEmptyStateClick}
-            />
-          )}
-
-          {anyItems && props.canMultiSelect && (
-            <Box
-              sx={{
-                flexShrink: 0,
-                position: "sticky",
-                bottom: 0,
-                backgroundColor: "inherit",
-                backgroundImage: "inherit",
-                paddingTop: 1,
-                paddingBottom: 1,
-              }}
-            >
-              <Button
-                variant="contained"
-                onClick={handleClose}
-                fullWidth
-                size="large"
-                disabled={
-                  isSaving ||
-                  !props.selectedItems.length ||
-                  !props.selectedItems.length
-                }
-                sx={{
-                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
-                }}
-              >
-                <Typography variant="button">{confirmButtonLabel}</Typography>
-                <Box
-                  sx={{
-                    display: isSaving ? "flex" : "none",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
                     width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
                   }}
                 >
-                  <LoadingIndicator
-                    size={`calc(${theme.typography.button.fontSize} * 2)`}
+                  <TextField
+                    id={textfieldId}
+                    placeholder={getActivityContextDrawerAddItemPlaceholder(
+                      props.type
+                    )}
+                    value={newItemName}
+                    onChange={handleTextfieldChange}
+                    onKeyUp={handleTextfieldKeyUp}
+                    error={!isNullOrWhiteSpace(error)}
+                    helperText={error}
+                    fullWidth
+                    disabled={isSaving}
                   />
-                </Box>
-              </Button>
-            </Box>
-          )}
+                  <StyledFab
+                    color="primary"
+                    size="small"
+                    sx={{
+                      flexShrink: 0,
+                    }}
+                    onClick={handleAddItemButtonClick}
+                    disabled={isNullOrWhiteSpace(newItemName) || isSaving}
+                  >
+                    <AddIcon />
+                  </StyledFab>
+                </Stack>
+              </FormControl>
+            )}
+
+            {items.length > 0 && editMode && (
+              <DraggableActivityContextsList
+                activityContextType={activityContextType}
+              />
+            )}
+
+            {items.length > 0 && !editMode && (
+              <FormControl fullWidth variant="outlined">
+                <FormGroup
+                  sx={{
+                    width: "100%",
+                    marginTop: 1,
+                  }}
+                >
+                  {items.map((item) => {
+                    return props.canMultiSelect ? (
+                      <FormControlLabel
+                        key={item.id}
+                        control={
+                          <Checkbox
+                            checked={props.selectedItems.some(
+                              (selectedItem) => selectedItem.id === item.id
+                            )}
+                            onChange={() => handleMultiSelectChange(item.id)}
+                            name={item.name}
+                          />
+                        }
+                        label={item.name}
+                      />
+                    ) : (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        onClick={() => handleSingleSelectChange(item.id)}
+                      >
+                        <ListItemText primary={item.name} />
+                      </MenuItem>
+                    );
+                  })}
+                </FormGroup>
+              </FormControl>
+            )}
+
+            {items.length <= 0 && (
+              <EmptyState
+                context={EmptyStateContext.ActivityContextDrawer}
+                activityContextType={activityContextType}
+                onClick={handleEmptyStateClick}
+              />
+            )}
+
+            {items.length > 0 && props.canMultiSelect && (
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  position: "sticky",
+                  bottom: 0,
+                  backgroundColor: "inherit",
+                  backgroundImage: "inherit",
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  width: "100%",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={handleClose}
+                  fullWidth
+                  size="large"
+                  disabled={isSaving || !props.selectedItems.length}
+                  sx={{
+                    height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                  }}
+                >
+                  <Typography variant="button">{confirmButtonLabel}</Typography>
+                  <Box
+                    sx={{
+                      display: isSaving ? "flex" : "none",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LoadingIndicator
+                      size={`calc(${theme.typography.button.fontSize} * 2)`}
+                    />
+                  </Box>
+                </Button>
+              </Box>
+            )}
+
+            {items.length > 0 && editMode && (
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  position: "sticky",
+                  bottom: 0,
+                  backgroundColor: "inherit",
+                  backgroundImage: "inherit",
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  width: "100%",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={saveEditModeChanges}
+                  fullWidth
+                  size="large"
+                  disabled={isSaving}
+                  sx={{
+                    height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                  }}
+                >
+                  <Typography variant="button">
+                    {saveChangesButtonLabel}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: isSaving ? "flex" : "none",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LoadingIndicator
+                      size={`calc(${theme.typography.button.fontSize} * 2)`}
+                    />
+                  </Box>
+                </Button>
+              </Box>
+            )}
+          </Stack>
         </Box>
       </Container>
     </SwipeableDrawer>

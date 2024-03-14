@@ -32,17 +32,20 @@ export function TimePicker(props: TimePickerProps) {
                 </InputAdornment>
               ) : undefined,
             size: "small",
-            inputProps: {
-              style: {
-                width: "3em",
-                justifyContent:
-                  props.align === "left" ? "flex-start" : "flex-end",
-              },
-            },
           },
           sx: {
             width: "100%",
             alignItems: props.align === "left" ? "flex-start" : "flex-end",
+            "& fieldset": {
+              borderColor: "transparent",
+            },
+            "& input": {
+              width: "3em",
+              justifyContent:
+                props.align === "left" ? "flex-start" : "flex-end",
+              paddingTop: 0.5,
+              paddingBottom: 0.5,
+            },
           },
         },
       }}

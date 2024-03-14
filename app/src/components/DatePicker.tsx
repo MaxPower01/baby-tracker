@@ -33,19 +33,22 @@ export function DatePicker(props: DatePickerProps) {
                 </InputAdornment>
               ) : undefined,
             size: "small",
-            inputProps: {
-              style: {
-                width: "5.5em",
-                alignItems: "center",
-                justifyContent:
-                  props.align === "left" ? "flex-start" : "flex-end",
-              },
-            },
           },
           sx: {
             width: "100%",
             alignItems: "center",
             justifyContent: props.align === "left" ? "flex-start" : "flex-end",
+            "& fieldset": {
+              borderColor: "transparent",
+            },
+            "& input": {
+              width: "5.5em",
+              alignItems: "center",
+              justifyContent:
+                props.align === "left" ? "flex-start" : "flex-end",
+              paddingTop: 0.5,
+              paddingBottom: 0.5,
+            },
           },
         },
       }}

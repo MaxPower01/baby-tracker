@@ -46,10 +46,36 @@ const slice = createSlice({
       state.activityContexts.push(JSON.parse(action.payload.activityContext));
       setLocalState(key, state);
     },
+    updateActivityContexts: (
+      state,
+      action: PayloadAction<{ activityContexts: string[] }>
+    ) => {
+      if (!action.payload.activityContexts?.length) {
+        return;
+      }
+      const udpatedActivityContexts = action.payload.activityContexts.map((a) =>
+        JSON.parse(a)
+      );
+      const currentActivityContexts = [...state.activityContexts];
+      udpatedActivityContexts.forEach((updatedActivityContext) => {
+        const index = currentActivityContexts.findIndex(
+          (a) => a.id === updatedActivityContext.id
+        );
+        if (index !== -1) {
+          currentActivityContexts[index] = updatedActivityContext;
+        }
+      });
+      state.activityContexts = currentActivityContexts;
+      setLocalState(key, state);
+    },
   },
 });
 
-export const { updateActivitiesOrder, addActivityContext } = slice.actions;
+export const {
+  updateActivitiesOrder,
+  addActivityContext,
+  updateActivityContexts,
+} = slice.actions;
 
 export const selectActivitiesOrder = (state: RootState) =>
   state.activitiesReducer.activitiesOrder;
@@ -70,7 +96,7 @@ export const selectActivityContextsOfType = (
   state: RootState,
   type: ActivityContextType | null
 ) => {
-  return state.activitiesReducer.activityContexts
+  return [...state.activitiesReducer.activityContexts]
     .filter((a) => a.type === type)
     .toSorted((a, b) => a.order - b.order);
 };

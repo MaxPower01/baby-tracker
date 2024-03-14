@@ -21,13 +21,15 @@ type DateTimePickerProps = {
 export function DateTimePicker(props: DateTimePickerProps) {
   const theme = useTheme();
   return (
-    <Stack direction={props.layout} justifyContent={"center"} gap={1}>
+    <Stack direction={props.layout} justifyContent={"center"}>
       {props.relation && (
         <Typography
           variant="body2"
           sx={{
             color: theme.customPalette.text.tertiary,
             textAlign: props.align,
+            paddingLeft: props.align === "left" ? 2 : 0,
+            paddingRight: props.align === "right" ? 2 : 0,
           }}
         >
           {props.relation === "start" ? "Début" : "Fin"}

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Card, Stack, TextField, useTheme } from "@mui/material";
 import {
   DragDropContext,
   Draggable,
@@ -14,68 +6,69 @@ import {
   OnDragEndResponder,
   OnDragStartResponder,
 } from "react-beautiful-dnd";
+import React, { useCallback, useState } from "react";
 import {
-  selectActivities,
-  updateActivitiesOrder,
+  selectActivityContextsOfType,
+  updateActivityContexts,
 } from "@/state/activitiesSlice";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
-import React from "react";
+import { RootState } from "@/state/store";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
-export default function ActivitiesPage() {
-  const initialActivities = useSelector(selectActivities);
+type Props = {
+  activityContextType: ActivityContextType;
+  // TODO: onSave
+};
 
-  const [activities, setActivities] = React.useState(initialActivities);
+export function DraggableActivityContextsList(props: Props) {
+  const items = useSelector((state: RootState) =>
+    selectActivityContextsOfType(state, props.activityContextType)
+  );
 
-  const dispatch = useAppDispatch();
+  const [localItems, setLocalItems] = useState(items);
 
-  const reorder = (
-    list: ActivityModel[],
-    startIndex: number,
-    endIndex: number
-  ) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-  };
-
-  const droppableId = "activities-droppable";
-
-  const onDragStart: OnDragStartResponder = (result) => {
+  const onDragStart: OnDragStartResponder = useCallback((result) => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate(100);
     }
+  }, []);
+
+  const reorder = (
+    list: ActivityContext[],
+    startIndex: number,
+    endIndex: number
+  ) => {
+    let result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    result = result.map((item, index) => {
+      return { ...item, order: index };
+    });
+    return [...result];
   };
 
-  const onDragEnd: OnDragEndResponder = (result) => {
-    if (!result.destination) {
-      return;
-    }
-    const newActivities = reorder(
-      activities,
-      result.source.index,
-      result.destination.index
-    );
-    setActivities(newActivities);
-    const newActivitiesOrder = newActivities.map((activity) => activity.type);
-    setTimeout(() => {
-      dispatch(
-        updateActivitiesOrder({
-          activitiesOrder: newActivitiesOrder,
-        })
+  const onDragEnd: OnDragEndResponder = useCallback(
+    (result) => {
+      if (!result.destination) {
+        return;
+      }
+      const newItems = reorder(
+        localItems,
+        result.source.index,
+        result.destination.index
       );
-    }, 500);
-  };
+      setLocalItems((prevItems) => [...newItems]);
+    },
+    [localItems]
+  );
 
   const theme = useTheme();
 
-  const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+  const getDraggableCardStyle = (isDragging: boolean, draggableStyle: any) => ({
     width: "100%",
     ...draggableStyle,
     "& .Item": {
@@ -84,14 +77,33 @@ export default function ActivitiesPage() {
         backgroundColor: theme.palette.action.hover,
       },
     },
+    background: isDragging ? undefined : "transparent",
   });
 
-  if (activities.length === 0) {
-    return <LoadingIndicator />;
-  }
+  const droppableId = "activity-contexts-droppable";
 
-  // react-beautiful-dnd does not support React.StrictMode
-  // See issue #2350 for more details: https://github.com/atlassian/react-beautiful-dnd/issues/2350
+  const handleItemNameChange = useCallback(
+    (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      item: ActivityContext
+    ) => {
+      const newName = event.target.value;
+      setLocalItems((prevItems) => {
+        const newItems = prevItems.map((i) => {
+          if (i.id === item.id) {
+            return { ...i, name: newName };
+          }
+          return i;
+        });
+        return [...newItems];
+      });
+    },
+    [localItems]
+  );
+
+  if (localItems.length === 0) {
+    return null;
+  }
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -106,7 +118,7 @@ export default function ActivitiesPage() {
             ref={provided.innerRef}
             spacing={1}
           >
-            {activities.map((activity, index) => {
+            {localItems.map((item, index) => {
               return (
                 <Draggable
                   key={index}
@@ -118,10 +130,11 @@ export default function ActivitiesPage() {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      sx={getItemStyle(
+                      sx={getDraggableCardStyle(
                         snapshot.isDragging,
                         provided.draggableProps.style
                       )}
+                      elevation={0}
                     >
                       <Box className="Item">
                         <Stack
@@ -145,21 +158,14 @@ export default function ActivitiesPage() {
                             justifyContent={"flex-start"}
                             alignItems={"center"}
                           >
-                            <ActivityIcon
-                              type={activity.type as any}
-                              sx={{
-                                fontSize: "2em",
-                              }}
+                            {item.name}
+                            <TextField
+                              value={item.name}
+                              onChange={(event) =>
+                                handleItemNameChange(event, item)
+                              }
+                              fullWidth
                             />
-
-                            <Typography
-                              variant={"body1"}
-                              sx={{
-                                marginLeft: 2,
-                              }}
-                            >
-                              {activity.name}
-                            </Typography>
                           </Stack>
                         </Stack>
                       </Box>
