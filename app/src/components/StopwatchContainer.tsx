@@ -33,51 +33,49 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 type Props = {
   size: "big" | "small";
   hasSides?: boolean;
+  leftTime: number;
+  setLeftTime: React.Dispatch<React.SetStateAction<number>>;
+  rightTime: number;
+  setRightTime: React.Dispatch<React.SetStateAction<number>>;
+  leftIsRunning: boolean;
+  setLeftIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
+  rightIsRunning: boolean;
+  setRightIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
+  leftLastUpdateTime: number | null;
+  setLeftLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
+  rightLastUpdateTime: number | null;
+  setRightLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export function StopwatchContainer(props: Props) {
-  const [leftTime, setLeftTime] = useState(0);
-  const [rightTime, setRightTime] = useState(0);
-  const time = useMemo(() => leftTime + rightTime, [leftTime, rightTime]);
-  const [leftIsRunning, setLeftIsRunning] = useState(false);
-  const [rightIsRunning, setRightIsRunning] = useState(false);
-  const isRunning = useMemo(
-    () => leftIsRunning || rightIsRunning,
-    [leftIsRunning, rightIsRunning]
-  );
-  const timeLabel = useMemo(() => formatStopwatchTime(time), [time]);
-  const [leftLastUpdateTime, setLeftLastUpdateTime] = useState<number | null>(
-    null
-  );
-  const [rightLastUpdateTime, setRightLastUpdateTime] = useState<number | null>(
-    null
-  );
-  const lastUpdateTime = useMemo(() => {
-    return leftLastUpdateTime && rightLastUpdateTime
-      ? Math.max(leftLastUpdateTime, rightLastUpdateTime)
-      : leftLastUpdateTime ?? rightLastUpdateTime;
-  }, [leftLastUpdateTime, rightLastUpdateTime]);
+  const time = props.leftTime + props.rightTime;
+  const isRunning = props.leftIsRunning || props.rightIsRunning;
+  const timeLabel = formatStopwatchTime(time);
+  const lastUpdateTime =
+    props.leftLastUpdateTime && props.rightLastUpdateTime
+      ? Math.max(props.leftLastUpdateTime, props.rightLastUpdateTime)
+      : props.leftLastUpdateTime ?? props.rightLastUpdateTime;
 
-  const onLeftChange = (props: {
+  const onLeftChange = (params: {
     time: number;
     isRunning: boolean;
     lastUpdateTime: number | null;
     isStartStop: boolean;
   }) => {
-    setLeftTime(props.time);
-    setLeftIsRunning(props.isRunning);
-    setLeftLastUpdateTime(props.lastUpdateTime);
+    props.setLeftTime(params.time);
+    props.setLeftIsRunning(params.isRunning);
+    props.setLeftLastUpdateTime(params.lastUpdateTime);
   };
 
-  const onRightChange = (props: {
+  const onRightChange = (params: {
     time: number;
     isRunning: boolean;
     lastUpdateTime: number | null;
     isStartStop: boolean;
   }) => {
-    setRightTime(props.time);
-    setRightIsRunning(props.isRunning);
-    setRightLastUpdateTime(props.lastUpdateTime);
+    props.setRightTime(params.time);
+    props.setRightIsRunning(params.isRunning);
+    props.setRightLastUpdateTime(params.lastUpdateTime);
   };
 
   const theme = useTheme();
@@ -103,25 +101,25 @@ export function StopwatchContainer(props: Props) {
   // }, [isRunning, lastUpdateTime]);
 
   useEffect(() => {
-    if (leftIsRunning || rightIsRunning) {
+    if (props.leftIsRunning || props.rightIsRunning) {
       const intervalId = setInterval(() => {
         const now = Date.now();
-        if (leftIsRunning) {
+        if (props.leftIsRunning) {
           const leftDelta = now - (lastUpdateTime ?? now);
-          const newLeftTime = leftTime + leftDelta;
+          const newLeftTime = props.leftTime + leftDelta;
           onLeftChange({
             time: newLeftTime,
-            isRunning: leftIsRunning,
+            isRunning: props.leftIsRunning,
             lastUpdateTime: now,
             isStartStop: false,
           });
         }
-        if (rightIsRunning) {
+        if (props.rightIsRunning) {
           const rightDelta = now - (lastUpdateTime ?? now);
-          const newRightTime = rightTime + rightDelta;
+          const newRightTime = props.rightTime + rightDelta;
           onRightChange({
             time: newRightTime,
-            isRunning: rightIsRunning,
+            isRunning: props.rightIsRunning,
             lastUpdateTime: now,
             isStartStop: false,
           });
@@ -129,7 +127,7 @@ export function StopwatchContainer(props: Props) {
       }, 1000);
       return () => clearInterval(intervalId);
     }
-  }, [leftIsRunning, rightIsRunning, lastUpdateTime, time]);
+  }, [lastUpdateTime, time]);
 
   const seconds = useMemo(() => Math.floor((time % 60000) / 1000), [time]);
   const minutes = useMemo(() => Math.floor((time % 3600000) / 60000), [time]);
@@ -258,24 +256,24 @@ export function StopwatchContainer(props: Props) {
           <Stopwatch
             size={props.size}
             label={props.hasSides ? "Gauche" : undefined}
-            time={leftTime}
-            setTime={setLeftTime}
-            isRunning={leftIsRunning}
-            setIsRunning={setLeftIsRunning}
-            lastUpdateTime={leftLastUpdateTime}
-            setLastUpdateTime={setLeftLastUpdateTime}
+            time={props.leftTime}
+            setTime={props.setLeftTime}
+            isRunning={props.leftIsRunning}
+            setIsRunning={props.setLeftIsRunning}
+            lastUpdateTime={props.leftLastUpdateTime}
+            setLastUpdateTime={props.setLeftLastUpdateTime}
           />
 
           {props.hasSides && (
             <Stopwatch
               size={props.size}
               label={"Droite"}
-              time={rightTime}
-              setTime={setRightTime}
-              isRunning={rightIsRunning}
-              setIsRunning={setRightIsRunning}
-              lastUpdateTime={rightLastUpdateTime}
-              setLastUpdateTime={setRightLastUpdateTime}
+              time={props.rightTime}
+              setTime={props.setRightTime}
+              isRunning={props.rightIsRunning}
+              setIsRunning={props.setRightIsRunning}
+              lastUpdateTime={props.rightLastUpdateTime}
+              setLastUpdateTime={props.setRightLastUpdateTime}
             />
           )}
         </Stack>

@@ -43,6 +43,8 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
 import { Sex } from "@/enums/Sex";
+import { SizeInput } from "@/components/SizeInput";
+import { WeightInput } from "@/components/WeightInput";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
@@ -229,119 +231,10 @@ export default function ChildForm(props: Props) {
 
   const [weight, setWeight] = useState(child.birthWeight ?? 0);
 
-  const kilograms = useMemo(() => {
-    if (weight == null || isNaN(weight) || weight === 0) return 0;
-    return Math.round((weight / 1000) * 100) / 100; // 2 decimal places
-  }, [weight]);
-
-  const pounds = useMemo(() => {
-    if (weight == null || isNaN(weight) || weight === 0) return 0;
-    return Math.round((weight / 453.592) * 100) / 100; // 2 decimal places
-  }, [weight]);
-
-  const handleKilogramsChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let newKilograms = 0;
-    try {
-      newKilograms = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing kilograms: ", error);
-    }
-    setWeight(newKilograms * 1000);
-  };
-
-  const handlePoundsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let newPounds = 0;
-    try {
-      newPounds = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing pounds: ", error);
-    }
-    setWeight(newPounds * 453.592);
-  };
-
   const [size, setSize] = useState(child.birthSize ?? 0);
   const [headCircumference, setHeadCircumference] = useState(
     child.birthHeadCircumference ?? 0
   );
-
-  const sizeInCentimeters = useMemo(() => {
-    if (size == null || isNaN(size) || size === 0) return 0;
-    return Math.round((size / 10) * 100) / 100; // 2 decimal places
-  }, [size]);
-
-  const sizeInInches = useMemo(() => {
-    if (size == null || isNaN(size) || size === 0) return 0;
-    return Math.round((size / 25.4) * 100) / 100; // 2 decimal places
-  }, [size]);
-
-  const handleSizeInCentimetersChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let newCentimeters = 0;
-    try {
-      newCentimeters = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing centimeters: ", error);
-    }
-    setSize(newCentimeters * 10);
-  };
-
-  const handleSizeInInchesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let newInches = 0;
-    try {
-      newInches = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing inches: ", error);
-    }
-    setSize(newInches * 25.4);
-  };
-  const headCircumferenceInCentimeters = useMemo(() => {
-    if (
-      headCircumference == null ||
-      isNaN(headCircumference) ||
-      headCircumference === 0
-    )
-      return 0;
-    return Math.round((headCircumference / 10) * 100) / 100; // 2 decimal places
-  }, [headCircumference]);
-
-  const headCircumferenceInInches = useMemo(() => {
-    if (
-      headCircumference == null ||
-      isNaN(headCircumference) ||
-      headCircumference === 0
-    )
-      return 0;
-    return Math.round((headCircumference / 25.4) * 100) / 100; // 2 decimal places
-  }, [headCircumference]);
-
-  const handleHeadCircumferenceInCentimetersChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let newCentimeters = 0;
-    try {
-      newCentimeters = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing centimeters: ", error);
-    }
-    setHeadCircumference(newCentimeters * 10);
-  };
-
-  const handleHeadCircumferenceInInchesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let newInches = 0;
-    try {
-      newInches = parseFloat(event.target.value);
-    } catch (error) {
-      console.error("Error parsing inches: ", error);
-    }
-    setHeadCircumference(newInches * 25.4);
-  };
 
   const save = useCallback(async () => {
     const newChild = Object.assign({}, child);
@@ -599,88 +492,24 @@ export default function ChildForm(props: Props) {
         <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Poids à la naissance" icon="weight" />
-            <Stack
-              direction={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              spacing={1.5}
-            >
-              <TextField
-                label="Kg"
-                name="weight"
-                type="number"
-                value={kilograms}
-                onChange={handleKilogramsChange}
-                fullWidth
-              />
-
-              <TextField
-                label="Lbs"
-                name="weight"
-                type="number"
-                value={pounds}
-                onChange={handlePoundsChange}
-                fullWidth
-              />
-            </Stack>
+            <WeightInput value={weight} setValue={setWeight} />
           </Stack>
         </FormControl>
 
         <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Taille à la naissance" icon="size" />
-            <Stack
-              direction={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              spacing={1.5}
-            >
-              <TextField
-                label="Centimètres"
-                name="size-in-cm"
-                type="number"
-                value={sizeInCentimeters}
-                onChange={handleSizeInCentimetersChange}
-                fullWidth
-              />
-              <TextField
-                label="Pouces"
-                name="size-in-inches"
-                type="number"
-                value={sizeInInches}
-                onChange={handleSizeInInchesChange}
-                fullWidth
-              />
-            </Stack>
+            <SizeInput value={size} setValue={setSize} />
           </Stack>
         </FormControl>
 
         <FormControl fullWidth variant="outlined">
           <Stack spacing={1.5}>
             <ItemLabel label="Tour de tête à la naissance" icon="size" />
-            <Stack
-              direction={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              spacing={1.5}
-            >
-              <TextField
-                label="Centimètres"
-                name="head-circumference-in-cm"
-                type="number"
-                value={headCircumferenceInCentimeters}
-                onChange={handleHeadCircumferenceInCentimetersChange}
-                fullWidth
-              />
-              <TextField
-                label="Pouces"
-                name="head-circumference-in-inches"
-                type="number"
-                value={headCircumferenceInInches}
-                onChange={handleHeadCircumferenceInInchesChange}
-                fullWidth
-              />
-            </Stack>
+            <SizeInput
+              value={headCircumference}
+              setValue={setHeadCircumference}
+            />
           </Stack>
         </FormControl>
       </Stack>

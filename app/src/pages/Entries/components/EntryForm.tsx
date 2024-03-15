@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
@@ -60,6 +60,30 @@ export default function EntryForm(props: EntryFormProps) {
   const [volume, setVolume] = useState(0);
   const [weight, setWeight] = useState(0);
   const [size, setSize] = useState(0);
+  const [leftStopwatchTime, setLeftStopwatchTime] = useState(0);
+  const [rightStopwatchTime, setRightStopwatchTime] = useState(0);
+  const stopwatchTime = useMemo(
+    () => leftStopwatchTime + rightStopwatchTime,
+    [leftStopwatchTime, rightStopwatchTime]
+  );
+  const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(false);
+  const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(false);
+  const stopwatchIsRunning = useMemo(
+    () => leftStopwatchIsRunning || rightStopwatchIsRunning,
+    [leftStopwatchIsRunning, rightStopwatchIsRunning]
+  );
+  const [leftStopwatchLastUpdateTime, setLeftStopwatchLastUpdateTime] =
+    useState<number | null>(null);
+  const [rightStopwatchLastUpdateTime, setRightStopwatchLastUpdateTime] =
+    useState<number | null>(null);
+  const lastStopwatchUpdateTime = useMemo(
+    () =>
+      leftStopwatchLastUpdateTime && rightStopwatchLastUpdateTime
+        ? Math.max(leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime)
+        : leftStopwatchLastUpdateTime ?? rightStopwatchLastUpdateTime,
+    [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
+  );
+
   return (
     <>
       <Stack
@@ -132,6 +156,7 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasVolume(props.entry.entryType) && (
           <Section title="volume">
+            <SectionTitle title="Quantité" />
             <VolumeInput value={volume} setValue={setVolume} />
           </Section>
         )}
@@ -153,6 +178,18 @@ export default function EntryForm(props: EntryFormProps) {
             <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryType)}
+              leftTime={leftStopwatchTime}
+              setLeftTime={setLeftStopwatchTime}
+              rightTime={rightStopwatchTime}
+              setRightTime={setRightStopwatchTime}
+              leftIsRunning={leftStopwatchIsRunning}
+              setLeftIsRunning={setLeftStopwatchIsRunning}
+              rightIsRunning={rightStopwatchIsRunning}
+              setRightIsRunning={setRightStopwatchIsRunning}
+              leftLastUpdateTime={leftStopwatchLastUpdateTime}
+              setLeftLastUpdateTime={setLeftStopwatchLastUpdateTime}
+              rightLastUpdateTime={rightStopwatchLastUpdateTime}
+              setRightLastUpdateTime={setRightStopwatchLastUpdateTime}
             />
           </Section>
         )}
