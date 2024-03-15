@@ -75,7 +75,9 @@ export function TopBar(props: Props) {
       <Container maxWidth={CSSBreakpoint.Small}>
         <Toolbar disableGutters>
           {shouldRenderBackButton && (
-            <IconButton onClick={handleBackButtonClick}>
+            <IconButton onClick={handleBackButtonClick} sx={{
+              marginRight: 1
+            }}>
               <ArrowBackIcon />
             </IconButton>
           )}

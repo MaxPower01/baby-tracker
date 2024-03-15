@@ -1,13 +1,12 @@
 import { Button, Typography, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
+import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import StopIcon from "@mui/icons-material/Stop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
-// import RestartAltIcon from "@mui/icons-material/RestartAlt";
-type StopwatchButtonProps = {
+type Props = {
   size: "big" | "small";
   label?: string;
   time: number;
@@ -18,7 +17,7 @@ type StopwatchButtonProps = {
   setLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
-export function StopwatchButton(props: StopwatchButtonProps) {
+export function StopwatchPlayPauseButton(props: Props) {
   const theme = useTheme();
   const basePadding = props.size === "big" ? 8 : 4;
   const paddingTop = props.size === "big" ? basePadding : 0;
@@ -98,7 +97,7 @@ export function StopwatchButton(props: StopwatchButtonProps) {
       )}
 
       {props.isRunning ? (
-        <StopIcon sx={{ fontSize: iconFontSize }} />
+        <PauseIcon sx={{ fontSize: iconFontSize }} />
       ) : (
         <PlayArrowIcon sx={{ fontSize: iconFontSize }} />
       )}

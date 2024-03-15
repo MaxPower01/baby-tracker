@@ -27,7 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
-import { StopwatchButton } from "@/components/StopwatchButton";
+import { StopwatchPlayPauseButton } from "@/components/StopwatchPlayPauseButton";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 
 type Props = {
@@ -248,14 +248,14 @@ export function Stopwatch(props: Props) {
 
         <Stack
           direction={"row"}
-          justifyContent={"center"}
+          justifyContent={"space-around"}
           alignItems={"center"}
-          spacing={4}
+          spacing={2}
           sx={{
             width: "100%",
           }}
         >
-          <StopwatchButton
+          <StopwatchPlayPauseButton
             size={props.size}
             label={props.hasSides ? "Gauche" : undefined}
             time={leftTime}
@@ -267,7 +267,7 @@ export function Stopwatch(props: Props) {
           />
 
           {props.hasSides && (
-            <StopwatchButton
+            <StopwatchPlayPauseButton
               size={props.size}
               label={"Droite"}
               time={rightTime}
