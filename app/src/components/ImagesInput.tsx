@@ -1,4 +1,4 @@
-import { Box, Button, ImageList, ImageListItem } from "@mui/material";
+import { Box, Button, ImageList, ImageListItem, Modal } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
@@ -16,68 +16,82 @@ type Props = {
 
 export function ImagesInput(props: Props) {
   const { user } = useAuthentication();
-  const inputId = "images-input-upload";
   const [progress, setProgress] = useState(0);
-
-  const uploadImage = useCallback(
-    async (image: File) => {
-      const selectedChild = user?.selectedChild ?? "";
-      if (image == null || isNullOrWhiteSpace(selectedChild)) return;
-      const storageRef = ref(
-        storage,
-        `child/${selectedChild}/images/${image.name}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, image);
-      setProgress(0);
-      props.setIsUploading(true);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Progress function ...
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(progress);
-        },
-        (error) => {
-          // Error function ...
-          console.error(error);
-          props.setIsUploading(false);
-        },
-        () => {
-          // Complete function ...
-          getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              props.setImageUrls((prevImageUrls) => {
-                const newImageUrls = [...prevImageUrls, downloadURL];
-                return newImageUrls;
-              });
-            })
-            .catch((error) => {
-              console.error(error);
-            })
-            .finally(() => {
-              props.setIsUploading(false);
-              setProgress(0);
-            });
-        }
-      );
-    },
-    [user]
-  );
+  const inputId = "images-input-upload";
 
   const handleInputClick = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (props.isUploading) return;
       const files = event.target.files;
       if (files == null || files.length === 0) return;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        await uploadImage(file); // This will upload images one after the other, waiting for each to finish before starting the next
+
+      const totalSize = Array.from(files).reduce(
+        (acc, file) => acc + file.size,
+        0
+      );
+      let totalUploaded = 0;
+
+      props.setIsUploading(true);
+      setProgress(0);
+
+      const uploadPromises = Array.from(files).map((file) => {
+        return new Promise<void>((resolve, reject) => {
+          const storageRef = ref(
+            storage,
+            `child/${user?.selectedChild ?? ""}/images/${file.name}`
+          );
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const fileProgress =
+                snapshot.bytesTransferred / snapshot.totalBytes;
+              totalUploaded +=
+                fileProgress * file.size -
+                totalUploaded * (file.size / totalSize);
+              const overallProgress = (totalUploaded / totalSize) * 100;
+              setProgress(overallProgress);
+            },
+            (error) => {
+              console.error(error);
+              reject(error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref)
+                .then((downloadURL) => {
+                  props.setImageUrls((prevImageUrls) => [
+                    ...prevImageUrls,
+                    downloadURL,
+                  ]);
+                })
+                .finally(() => resolve());
+            }
+          );
+        });
+      });
+
+      try {
+        await Promise.all(uploadPromises);
+      } catch (error) {
+        console.error("An error occurred during the upload", error);
+      } finally {
+        props.setIsUploading(false);
+        setProgress(100); // Optionally set progress to 100% here, or adjust based on actual completion
       }
     },
-    [user, uploadImage]
+    [props.isUploading, user]
   );
+
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImageUrl(imageUrl);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImageUrl(null);
+  };
 
   return (
     <>
@@ -120,7 +134,9 @@ export function ImagesInput(props: Props) {
                   overflow: "hidden",
                   border: "1px solid",
                   borderColor: "divider",
+                  cursor: "pointer",
                 }}
+                onClick={() => handleImageClick(imageURL)}
               >
                 <img src={`${imageURL}`} loading="lazy" />
               </ImageListItem>
@@ -128,6 +144,26 @@ export function ImagesInput(props: Props) {
           })}
         </ImageList>
       )}
+
+      <Modal
+        open={selectedImageUrl !== null}
+        onClose={handleCloseModal}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <Box
+          sx={{
+            outline: "none",
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            overflow: "auto",
+          }}
+        >
+          <img
+            src={selectedImageUrl ?? ""}
+            style={{ width: "100%", height: "auto" }}
+          />
+        </Box>
+      </Modal>
     </>
   );
 }

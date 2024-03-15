@@ -12,7 +12,7 @@ export function NotesInput(props: Props) {
       label=""
       name="note"
       type="text"
-      placeholder="Des détails supplémentaires, des commentaires, etc."
+      placeholder="Détails supplémentaires, commentaires, etc."
       value={props.note}
       onChange={(e) => props.setNote(e.target.value)}
       fullWidth
