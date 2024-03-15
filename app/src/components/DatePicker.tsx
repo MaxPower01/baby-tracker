@@ -57,6 +57,9 @@ export function DatePicker(props: Props) {
               paddingTop: 0.5,
               paddingBottom: 0.5,
             },
+            "& *": {
+              cursor: "pointer",
+            },
           },
         },
       }}

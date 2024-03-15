@@ -48,12 +48,16 @@ export function TimePicker(props: Props) {
             "& fieldset": {
               borderColor: "transparent",
             },
+            cursor: "pointer",
             "& input": {
               width: "3em",
               justifyContent:
                 props.align === "left" ? "flex-start" : "flex-end",
               paddingTop: 0.5,
               paddingBottom: 0.5,
+            },
+            "& *": {
+              cursor: "pointer",
             },
           },
         },

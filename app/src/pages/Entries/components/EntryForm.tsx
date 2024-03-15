@@ -51,6 +51,7 @@ export default function EntryForm(props: EntryFormProps) {
   const [startTime, setStartTime] = useState<Dayjs>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs>(dayjs());
   const [endTime, setEndTime] = useState<Dayjs>(dayjs());
+  const [note, setNote] = useState("");
   return (
     <>
       <SectionStack>
@@ -124,7 +125,7 @@ export default function EntryForm(props: EntryFormProps) {
 
         <Section title="notes">
           <SectionTitle title="Notes" />
-          <NotesInput />
+          <NotesInput note={note} setNote={setNote} />
         </Section>
 
         <Section title="images">
