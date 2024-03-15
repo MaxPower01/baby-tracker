@@ -3,21 +3,20 @@ import { useEffect, useMemo, useState } from "react";
 
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
 type Props = {
   size: "big" | "small";
+  type: "play/pause" | "stop";
   label?: string;
   time: number;
-  setTime: React.Dispatch<React.SetStateAction<number>>;
   isRunning: boolean;
-  setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
-  lastUpdateTime: number | null;
-  setLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
+  handleClick: () => void;
 };
 
-export function StopwatchPlayPauseButton(props: Props) {
+export function StopwatchButton(props: Props) {
   const theme = useTheme();
   const basePadding = props.size === "big" ? 8 : 4;
   const paddingTop = props.size === "big" ? basePadding : 0;
@@ -30,27 +29,6 @@ export function StopwatchPlayPauseButton(props: Props) {
   const borderRadius = props.size === "big" ? "50%" : undefined;
 
   const timeLabel = formatStopwatchTime(props.time);
-
-  const onChange = (params: {
-    time: number;
-    isRunning: boolean;
-    lastUpdateTime: number | null;
-    isStartStop: boolean;
-  }) => {
-    props.setTime(params.time);
-    props.setIsRunning(params.isRunning);
-    props.setLastUpdateTime(params.lastUpdateTime);
-  };
-
-  const handleStartStop = () => {
-    onChange({
-      time: !props.isRunning && props.time == 0 ? 1000 : props.time,
-      isRunning: !props.isRunning,
-      lastUpdateTime: Date.now(),
-      isStartStop: true,
-    });
-  };
-
   return (
     <Button
       color="primary"
@@ -67,7 +45,7 @@ export function StopwatchPlayPauseButton(props: Props) {
         padding: `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`,
         minWidth: "0",
       }}
-      onClick={handleStartStop}
+      onClick={props.handleClick}
     >
       {props.size === "big" && (
         <>
@@ -96,10 +74,14 @@ export function StopwatchPlayPauseButton(props: Props) {
         </>
       )}
 
-      {props.isRunning ? (
-        <PauseIcon sx={{ fontSize: iconFontSize }} />
+      {props.type === "play/pause" ? (
+        props.isRunning ? (
+          <PauseIcon sx={{ fontSize: iconFontSize }} />
+        ) : (
+          <PlayArrowIcon sx={{ fontSize: iconFontSize }} />
+        )
       ) : (
-        <PlayArrowIcon sx={{ fontSize: iconFontSize }} />
+        <StopIcon sx={{ fontSize: iconFontSize }} />
       )}
     </Button>
   );

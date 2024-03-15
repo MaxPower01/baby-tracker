@@ -26,7 +26,7 @@ import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
-import { Stopwatch } from "@/components/Stopwatch";
+import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { VolumeInput } from "@/components/VolumeInput";
 import { VolumeInputV2 } from "@/components/VolumeInputV2";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
@@ -115,7 +115,7 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasStopwatch(props.entry.entryType) && (
           <Section title="stopwatch">
-            <Stopwatch
+            <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryType)}
             />
