@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  Fab,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -18,6 +19,7 @@ import {
   TextFieldVariants,
   Toolbar,
   Typography,
+  styled,
   useTheme,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
@@ -25,69 +27,122 @@ import { useEffect, useMemo, useState } from "react";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { StopwatchButton } from "@/components/StopwatchButton";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
-import { isNullOrWhiteSpace } from "@/utils/utils";
-
-// import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 type Props = {
-  playPauseButtonId: string;
-  editButtonId: string;
-  label?: string;
-  sx?: SxProps | undefined;
-  time: number;
-  isRunning: boolean;
-  lastUpdateTime: number | null;
-  buttonIsDisabled?: boolean;
-  inputsAreDisabled?: boolean;
-  inputsAreReadOnly?: boolean;
-  onChange: (params: {
+  size: "big" | "small";
+  hasSides?: boolean;
+};
+
+export function Stopwatch(props: Props) {
+  const [leftTime, setLeftTime] = useState(0);
+  const [rightTime, setRightTime] = useState(0);
+  const time = useMemo(() => leftTime + rightTime, [leftTime, rightTime]);
+  const [leftIsRunning, setLeftIsRunning] = useState(false);
+  const [rightIsRunning, setRightIsRunning] = useState(false);
+  const isRunning = useMemo(
+    () => leftIsRunning || rightIsRunning,
+    [leftIsRunning, rightIsRunning]
+  );
+  const timeLabel = useMemo(() => formatStopwatchTime(time), [time]);
+  const [leftLastUpdateTime, setLeftLastUpdateTime] = useState<number | null>(
+    null
+  );
+  const [rightLastUpdateTime, setRightLastUpdateTime] = useState<number | null>(
+    null
+  );
+  const lastUpdateTime = useMemo(() => {
+    return leftLastUpdateTime && rightLastUpdateTime
+      ? Math.max(leftLastUpdateTime, rightLastUpdateTime)
+      : leftLastUpdateTime ?? rightLastUpdateTime;
+  }, [leftLastUpdateTime, rightLastUpdateTime]);
+
+  const onLeftChange = (props: {
     time: number;
     isRunning: boolean;
     lastUpdateTime: number | null;
     isStartStop: boolean;
-  }) => void;
-};
+  }) => {
+    setLeftTime(props.time);
+    setLeftIsRunning(props.isRunning);
+    setLeftLastUpdateTime(props.lastUpdateTime);
+  };
 
-export function Stopwatch(props: Props) {
-  const { time, isRunning, lastUpdateTime, onChange, inputsAreReadOnly } =
-    props;
+  const onRightChange = (props: {
+    time: number;
+    isRunning: boolean;
+    lastUpdateTime: number | null;
+    isStartStop: boolean;
+  }) => {
+    setRightTime(props.time);
+    setRightIsRunning(props.isRunning);
+    setRightLastUpdateTime(props.lastUpdateTime);
+  };
 
   const theme = useTheme();
 
-  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [drawerTime, setDrawerTime] = useState(time);
 
+  // useEffect(() => {
+  //   if (isRunning) {
+  //     const intervalId = setInterval(() => {
+  //       const now = Date.now();
+  //       const delta = now - (lastUpdateTime ?? now);
+  //       const newTime = time + delta;
+  //       onChange({
+  //         time: newTime,
+  //         isRunning,
+  //         lastUpdateTime: now,
+  //         isStartStop: false,
+  //       });
+  //     }, 1000);
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [isRunning, lastUpdateTime]);
+
   useEffect(() => {
-    if (isRunning) {
+    if (leftIsRunning || rightIsRunning) {
       const intervalId = setInterval(() => {
         const now = Date.now();
-        const delta = now - (lastUpdateTime ?? now);
-        const newTime = time + delta;
-        onChange({
-          time: newTime,
-          isRunning,
-          lastUpdateTime: now,
-          isStartStop: false,
-        });
+        if (leftIsRunning) {
+          const leftDelta = now - (lastUpdateTime ?? now);
+          const newLeftTime = leftTime + leftDelta;
+          onLeftChange({
+            time: newLeftTime,
+            isRunning: leftIsRunning,
+            lastUpdateTime: now,
+            isStartStop: false,
+          });
+        }
+        if (rightIsRunning) {
+          const rightDelta = now - (lastUpdateTime ?? now);
+          const newRightTime = rightTime + rightDelta;
+          onRightChange({
+            time: newRightTime,
+            isRunning: rightIsRunning,
+            lastUpdateTime: now,
+            isStartStop: false,
+          });
+        }
       }, 1000);
       return () => clearInterval(intervalId);
     }
-  }, [isRunning, lastUpdateTime]);
+  }, [leftIsRunning, rightIsRunning, lastUpdateTime, time]);
 
   const seconds = useMemo(() => Math.floor((time % 60000) / 1000), [time]);
   const minutes = useMemo(() => Math.floor((time % 3600000) / 60000), [time]);
   const hours = useMemo(() => Math.floor(time / 3600000), [time]);
 
-  const handleStartStop = () => {
-    onChange({
-      time: !isRunning && time == 0 ? 1000 : time,
-      isRunning: !isRunning,
-      lastUpdateTime: Date.now(),
-      isStartStop: true,
-    });
-  };
+  // const handleStartStop = () => {
+  //   onChange({
+  //     time: !isRunning && time == 0 ? 1000 : time,
+  //     isRunning: !isRunning,
+  //     lastUpdateTime: Date.now(),
+  //     isStartStop: true,
+  //   });
+  // };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
@@ -119,12 +174,12 @@ export function Stopwatch(props: Props) {
     if (newHours > 99) {
       newHours = 99;
     }
-    onChange({
-      time: newSeconds * 1000 + newMinutes * 60000 + newHours * 3600000,
-      isRunning,
-      lastUpdateTime: Date.now(),
-      isStartStop: false,
-    });
+    // onChange({
+    //   time: newSeconds * 1000 + newMinutes * 60000 + newHours * 3600000,
+    //   isRunning,
+    //   lastUpdateTime: Date.now(),
+    //   isStartStop: false,
+    // });
   };
 
   const textfieldStyle: SxProps = {
@@ -157,100 +212,78 @@ export function Stopwatch(props: Props) {
     fontSize: "1.25em",
   };
 
-  const playPauseButtonFontSize = "3.5em";
-
   return (
     <>
-      <Stack spacing={2} sx={props.sx}>
-        {/* {props.label && (
-        <Typography textAlign="center" variant="body1">
-          {props.label}
-        </Typography>
-      )} */}
+      <Stack
+        spacing={1}
+        direction={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        sx={{
+          width: "100%",
+        }}
+      >
         <Stack
-          // direction={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-          spacing={1}
           sx={{
             width: "100%",
           }}
         >
-          <Stack
-            direction={"row"}
-            spacing={0}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Button
-              id={props.editButtonId}
-              variant={inputsAreReadOnly ? "text" : "text"}
-              onClick={() => {
-                if (!inputsAreReadOnly) {
-                  setDrawerTime(time);
-                  setDrawerIsOpen(true);
-                }
-              }}
-              // disabled={inputsAreReadOnly}
+          {props.size === "big" && (
+            <Typography
+              variant="body1"
+              color={theme.customPalette.text.tertiary}
+              textAlign={"center"}
             >
-              <Typography
-                variant="h5"
-                color={
-                  inputsAreReadOnly
-                    ? theme.customPalette.text.primary
-                    : undefined
-                }
-              >
-                {formatStopwatchTime(time, false, true)}
-              </Typography>
-            </Button>
-          </Stack>
-          <Button
-            id={props.playPauseButtonId}
-            onClick={handleStartStop}
-            disabled={props.buttonIsDisabled}
-            sx={{
-              borderRadius: "9999px",
-              paddingLeft: 2,
-              paddingRight: 2,
-              paddingTop: 1,
-              paddingBottom: 1,
-              minWidth: "10em",
-            }}
-            variant={isRunning ? "contained" : "outlined"}
+              Durée
+            </Typography>
+          )}
+          <Typography
+            variant="h4"
+            color={theme.customPalette.text.primary}
+            textAlign={"center"}
           >
-            <Stack spacing={0} justifyContent={"center"} alignItems={"center"}>
-              {props.label && (
-                <Typography
-                  textAlign="center"
-                  variant="body1"
-                  textTransform={"none"}
-                  fontWeight={"300"}
-                >
-                  {props.label}
-                </Typography>
-              )}
-              {isRunning ? (
-                <PauseIcon
-                  sx={{
-                    fontSize: playPauseButtonFontSize,
-                  }}
-                />
-              ) : (
-                <PlayArrowIcon
-                  sx={{
-                    fontSize: playPauseButtonFontSize,
-                  }}
-                />
-              )}
-            </Stack>
-          </Button>
+            {timeLabel}
+          </Typography>
+        </Stack>
+
+        <Stack
+          direction={"row"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={4}
+          sx={{
+            width: "100%",
+          }}
+        >
+          <StopwatchButton
+            size={props.size}
+            label={props.hasSides ? "Gauche" : undefined}
+            time={leftTime}
+            setTime={setLeftTime}
+            isRunning={leftIsRunning}
+            setIsRunning={setLeftIsRunning}
+            lastUpdateTime={leftLastUpdateTime}
+            setLastUpdateTime={setLeftLastUpdateTime}
+          />
+
+          {props.hasSides && (
+            <StopwatchButton
+              size={props.size}
+              label={"Droite"}
+              time={rightTime}
+              setTime={setRightTime}
+              isRunning={rightIsRunning}
+              setIsRunning={setRightIsRunning}
+              lastUpdateTime={rightLastUpdateTime}
+              setLastUpdateTime={setRightLastUpdateTime}
+            />
+          )}
         </Stack>
       </Stack>
 
       <Dialog
-        open={drawerIsOpen}
-        onClose={() => setDrawerIsOpen(false)}
+        open={dialogIsOpen}
+        onClose={() => setDialogIsOpen(false)}
         aria-labelledby="stopwatch-dialog-title"
         aria-describedby="stopwatch-dialog-description"
         fullWidth
@@ -299,14 +332,14 @@ export function Stopwatch(props: Props) {
                   // endAdornment: (
                   //   <InputAdornment position="end">h</InputAdornment>
                   // ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      // event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
+                  // onFocus: (event) => {
+                  // if (inputsAreReadOnly) {
+                  //   event.target.blur();
+                  // } else {
+                  //   // event.target.select();
+                  // }
+                  // },
+                  // readOnly: inputsAreReadOnly,
                   "aria-valuemin": 0,
                   "aria-colcount": 2,
                   sx: {
@@ -343,14 +376,14 @@ export function Stopwatch(props: Props) {
                   // endAdornment: (
                   //   <InputAdornment position="end">min</InputAdornment>
                   // ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      // event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
+                  // onFocus: (event) => {
+                  // if (inputsAreReadOnly) {
+                  //   event.target.blur();
+                  // } else {
+                  //   // event.target.select();
+                  // }
+                  // },
+                  // readOnly: inputsAreReadOnly,
                   "aria-valuemin": 0,
                   "aria-valuemax": 59,
                   "aria-colcount": 2,
@@ -388,14 +421,14 @@ export function Stopwatch(props: Props) {
                   // endAdornment: (
                   //   <InputAdornment position="end">s</InputAdornment>
                   // ),
-                  onFocus: (event) => {
-                    if (inputsAreReadOnly) {
-                      event.target.blur();
-                    } else {
-                      // event.target.select();
-                    }
-                  },
-                  readOnly: inputsAreReadOnly,
+                  // onFocus: (event) => {
+                  //   if (inputsAreReadOnly) {
+                  //     event.target.blur();
+                  //   } else {
+                  //     // event.target.select();
+                  //   }
+                  // },
+                  // readOnly: inputsAreReadOnly,
                   "aria-valuemin": 0,
                   "aria-valuemax": 59,
                   "aria-colcount": 2,
@@ -418,18 +451,18 @@ export function Stopwatch(props: Props) {
         <DialogActions>
           <Button
             onClick={() => {
-              onChange({
-                time: drawerTime,
-                isRunning: false,
-                isStartStop: false,
-                lastUpdateTime: Date.now(),
-              });
-              setDrawerIsOpen(false);
+              // onChange({
+              //   time: drawerTime,
+              //   isRunning: false,
+              //   isStartStop: false,
+              //   lastUpdateTime: Date.now(),
+              // });
+              setDialogIsOpen(false);
             }}
           >
             Annuler
           </Button>
-          <Button onClick={() => setDrawerIsOpen(false)} variant="contained">
+          <Button onClick={() => setDialogIsOpen(false)} variant="contained">
             Sauvegarder
           </Button>
         </DialogActions>

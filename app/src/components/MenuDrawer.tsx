@@ -348,8 +348,8 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAddParent}>Ajouter un parent</Button>
           <Button onClick={handleDialogClose}>Annuler</Button>
+          <Button onClick={handleAddParent}>Ajouter un parent</Button>
         </DialogActions>
       </Dialog>
     </>

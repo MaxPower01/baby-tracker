@@ -287,9 +287,11 @@ export default function EntriesCard(props: Props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteEntry}>Supprimer</Button>
           <Button onClick={handleDialogClose} autoFocus>
             Annuler
+          </Button>
+          <Button variant="contained" color="error" onClick={handleDeleteEntry}>
+            Supprimer
           </Button>
         </DialogActions>
       </Dialog>

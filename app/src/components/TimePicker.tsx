@@ -1,17 +1,26 @@
+import dayjs, { Dayjs } from "dayjs";
+
 import { AccessTime } from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
 import { MobileTimePicker as MUIMobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import React from "react";
-import dayjs from "dayjs";
 
-type TimePickerProps = {
+type Props = {
   align: "left" | "right";
   icon?: "left" | "right";
+  value: Dayjs;
+  setValue: React.Dispatch<React.SetStateAction<Dayjs>>;
 };
-export function TimePicker(props: TimePickerProps) {
+export function TimePicker(props: Props) {
+  const handleChange = (newDate: Dayjs | null) => {
+    if (newDate) {
+      props.setValue(newDate);
+    }
+  };
   return (
     <MUIMobileTimePicker
-      defaultValue={dayjs()}
+      value={props.value}
+      onChange={handleChange}
       ampm={false}
       localeText={{
         toolbarTitle: "Sélectionner l'heure",

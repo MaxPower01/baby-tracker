@@ -1,19 +1,27 @@
 import { InputAdornment, Stack, useTheme } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 
 import { CalendarToday } from "@mui/icons-material";
 import { MobileDatePicker as MUIMobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import React from "react";
-import dayjs from "dayjs";
 
-type DatePickerProps = {
+type Props = {
   icon?: "left" | "right";
   align: "left" | "right";
+  value: Dayjs;
+  setValue: React.Dispatch<React.SetStateAction<Dayjs>>;
 };
 
-export function DatePicker(props: DatePickerProps) {
+export function DatePicker(props: Props) {
+  const handleChange = (newDate: Dayjs | null) => {
+    if (newDate) {
+      props.setValue(newDate);
+    }
+  };
   return (
     <MUIMobileDatePicker
-      defaultValue={dayjs()}
+      value={props.value}
+      onChange={handleChange}
       localeText={{
         toolbarTitle: "Sélectionner la date",
       }}

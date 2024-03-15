@@ -68,6 +68,26 @@ const slice = createSlice({
       state.activityContexts = currentActivityContexts;
       setLocalState(key, state);
     },
+    setActivityContextsOfType: (
+      state,
+      action: PayloadAction<{
+        activityContexts: string[];
+        type: ActivityContextType;
+      }>
+    ) => {
+      const activityContexts = action.payload.activityContexts.map((a) =>
+        JSON.parse(a)
+      );
+      const currentActivityContexts = [...state.activityContexts];
+      const filteredActivityContexts = currentActivityContexts.filter(
+        (a) => a.type !== action.payload.type
+      );
+      state.activityContexts = [
+        ...filteredActivityContexts,
+        ...activityContexts,
+      ];
+      setLocalState(key, state);
+    },
   },
 });
 
@@ -75,6 +95,7 @@ export const {
   updateActivitiesOrder,
   addActivityContext,
   updateActivityContexts,
+  setActivityContextsOfType,
 } = slice.actions;
 
 export const selectActivitiesOrder = (state: RootState) =>

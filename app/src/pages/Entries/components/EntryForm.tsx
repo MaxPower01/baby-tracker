@@ -9,6 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
@@ -25,10 +26,11 @@ import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
-import { StopwatchV2 } from "@/components/StopwatchV2";
+import { Stopwatch } from "@/components/Stopwatch";
 import { VolumeInput } from "@/components/VolumeInput";
 import { VolumeInputV2 } from "@/components/VolumeInputV2";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
+import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { getTitleForEntryType } from "@/utils/utils";
@@ -45,6 +47,10 @@ export default function EntryForm(props: EntryFormProps) {
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >([]);
+  const [startDate, setStartDate] = useState<Dayjs>(dayjs());
+  const [startTime, setStartTime] = useState<Dayjs>(dayjs());
+  const [endDate, setEndDate] = useState<Dayjs>(dayjs());
+  const [endTime, setEndTime] = useState<Dayjs>(dayjs());
   return (
     <>
       <SectionStack>
@@ -66,11 +72,28 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasStopwatch(props.entry.entryType) ? (
           <Section title="range">
-            <DateTimeRangePicker />
+            <DateTimeRangePicker
+              startDate={startDate}
+              setStartDate={setStartDate}
+              startTime={startTime}
+              setStartTime={setStartTime}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              endTime={endTime}
+              setEndTime={setEndTime}
+            />
           </Section>
         ) : (
           <Section title="date">
-            <DateTimePicker layout="row" iconPostion="left" align="left" />
+            <DateTimePicker
+              layout="row"
+              iconPostion="left"
+              align="left"
+              date={startDate}
+              setDate={setStartDate}
+              time={startTime}
+              setTime={setStartTime}
+            />
           </Section>
         )}
 
@@ -85,14 +108,17 @@ export default function EntryForm(props: EntryFormProps) {
         )}
 
         {entryTypeHasVolume(props.entry.entryType) && (
-          <Section title="stopwatch">
+          <Section title="volume">
             <VolumeInputV2 />
           </Section>
         )}
 
         {entryTypeHasStopwatch(props.entry.entryType) && (
           <Section title="stopwatch">
-            <StopwatchV2 />
+            <Stopwatch
+              size="big"
+              hasSides={entryTypeHasSides(props.entry.entryType)}
+            />
           </Section>
         )}
 
