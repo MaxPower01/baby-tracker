@@ -20,26 +20,26 @@ import CloseIcon from "@mui/icons-material/Close";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
 type Props = {
-  volume: number;
-  setVolume: React.Dispatch<React.SetStateAction<number>>;
+  value: number;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export function VolumeInput(props: Props) {
-  let volumeMl = props.volume.toFixed(2);
-  if (volumeMl.endsWith("0") && volumeMl.indexOf(".") !== -1) {
-    if (volumeMl.endsWith("0") && volumeMl.endsWith("00") === false) {
-      volumeMl = volumeMl.slice(0, -1);
-    } else if (volumeMl.endsWith("00")) {
-      volumeMl = volumeMl.slice(0, -3);
+  let milliliters = props.value.toFixed(2);
+  if (milliliters.endsWith("0") && milliliters.indexOf(".") !== -1) {
+    if (milliliters.endsWith("0") && milliliters.endsWith("00") === false) {
+      milliliters = milliliters.slice(0, -1);
+    } else if (milliliters.endsWith("00")) {
+      milliliters = milliliters.slice(0, -3);
     }
   }
 
-  let volumeOz = (props.volume * 0.033814).toFixed(2);
-  if (volumeOz.endsWith("0") && volumeOz.indexOf(".") !== -1) {
-    if (volumeOz.endsWith("0") && volumeOz.endsWith("00") === false) {
-      volumeOz = volumeOz.slice(0, -1);
-    } else if (volumeOz.endsWith("00")) {
-      volumeOz = volumeOz.slice(0, -3);
+  let ounces = (props.value * 0.033814).toFixed(2);
+  if (ounces.endsWith("0") && ounces.indexOf(".") !== -1) {
+    if (ounces.endsWith("0") && ounces.endsWith("00") === false) {
+      ounces = ounces.slice(0, -1);
+    } else if (ounces.endsWith("00")) {
+      ounces = ounces.slice(0, -3);
     }
   }
 
@@ -49,7 +49,7 @@ export function VolumeInput(props: Props) {
   ) => {
     const value = e.target.value;
     if (isNullOrWhiteSpace(value)) {
-      props.setVolume(0);
+      props.setValue(0);
       return;
     }
 
@@ -59,9 +59,9 @@ export function VolumeInput(props: Props) {
     }
 
     if (unit === "ml") {
-      props.setVolume(parsedValue);
+      props.setValue(parsedValue);
     } else {
-      props.setVolume(parsedValue / 0.033814);
+      props.setValue(parsedValue / 0.033814);
     }
   };
 
@@ -71,7 +71,7 @@ export function VolumeInput(props: Props) {
         label="Millilitres"
         name="volume-ml"
         type="number"
-        value={volumeMl}
+        value={milliliters}
         onChange={(e) => handleChange(e, "ml")}
         fullWidth
         InputProps={{
@@ -86,7 +86,7 @@ export function VolumeInput(props: Props) {
         label="Onces"
         name="volume-oz"
         type="number"
-        value={volumeOz}
+        value={ounces}
         onChange={(e) => handleChange(e, "oz")}
         fullWidth
         InputProps={{

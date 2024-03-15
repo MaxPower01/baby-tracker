@@ -26,12 +26,16 @@ import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
+import { SizeInput } from "@/components/SizeInput";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { VolumeInput } from "@/components/VolumeInput";
+import { WeightInput } from "@/components/WeightInput";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
+import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
+import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getTitleForEntryType } from "@/utils/utils";
 
 type EntryFormProps = {
@@ -54,6 +58,8 @@ export default function EntryForm(props: EntryFormProps) {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [volume, setVolume] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [size, setSize] = useState(0);
   return (
     <>
       <Stack
@@ -112,21 +118,33 @@ export default function EntryForm(props: EntryFormProps) {
               />
             </Section>
           )}
-
-          {entryTypeHasContextSelector(props.entry.entryType) && (
-            <Section title="context">
-              <ActivityContextPicker
-                entryType={props.entry.entryType}
-                selectedItems={selectedActivityContexts}
-                setSelectedItems={setSelectedActivityContexts}
-              />
-            </Section>
-          )}
         </Stack>
+
+        {entryTypeHasContextSelector(props.entry.entryType) && (
+          <Section title="context">
+            <ActivityContextPicker
+              entryType={props.entry.entryType}
+              selectedItems={selectedActivityContexts}
+              setSelectedItems={setSelectedActivityContexts}
+            />
+          </Section>
+        )}
 
         {entryTypeHasVolume(props.entry.entryType) && (
           <Section title="volume">
-            <VolumeInput volume={volume} setVolume={setVolume} />
+            <VolumeInput value={volume} setValue={setVolume} />
+          </Section>
+        )}
+
+        {entryTypeHasWeight(props.entry.entryType) && (
+          <Section title="weight">
+            <WeightInput value={weight} setValue={setWeight} />
+          </Section>
+        )}
+
+        {entryTypeHasSize(props.entry.entryType) && (
+          <Section title="size">
+            <SizeInput value={size} setValue={setSize} />
           </Section>
         )}
 
