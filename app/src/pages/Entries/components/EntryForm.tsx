@@ -52,6 +52,8 @@ export default function EntryForm(props: EntryFormProps) {
   const [endDate, setEndDate] = useState<Dayjs>(dayjs());
   const [endTime, setEndTime] = useState<Dayjs>(dayjs());
   const [note, setNote] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   return (
     <>
       <SectionStack>
@@ -130,7 +132,12 @@ export default function EntryForm(props: EntryFormProps) {
 
         <Section title="images">
           <SectionTitle title="Images" />
-          <ImagesInput />
+          <ImagesInput
+            imageUrls={imageUrls}
+            setImageUrls={setImageUrls}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+          />
         </Section>
       </SectionStack>
 
