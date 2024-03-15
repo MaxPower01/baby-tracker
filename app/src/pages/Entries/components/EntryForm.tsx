@@ -28,7 +28,6 @@ import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { VolumeInput } from "@/components/VolumeInput";
-import { VolumeInputV2 } from "@/components/VolumeInputV2";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
@@ -54,65 +53,80 @@ export default function EntryForm(props: EntryFormProps) {
   const [note, setNote] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [volume, setVolume] = useState(0);
   return (
     <>
-      <SectionStack>
-        <Section title="header">
-          <Stack justifyContent={"center"} alignItems={"center"}>
-            <ActivityIcon
-              type={props.entry.entryType}
-              sx={{
-                fontSize: "5em",
-              }}
-            />
-            <Stack direction={"row"} alignItems={"center"}>
-              <Typography variant="h5" textAlign="center">
-                {name}
-              </Typography>
+      <Stack
+        spacing={4}
+        alignItems="center"
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Stack
+          spacing={2}
+          alignItems="center"
+          sx={{
+            width: "100%",
+          }}
+        >
+          <Section title="header">
+            <Stack justifyContent={"center"} alignItems={"center"}>
+              <ActivityIcon
+                type={props.entry.entryType}
+                sx={{
+                  fontSize: "5em",
+                }}
+              />
+              <Stack direction={"row"} alignItems={"center"}>
+                <Typography variant="h5" textAlign="center">
+                  {name}
+                </Typography>
+              </Stack>
             </Stack>
-          </Stack>
-        </Section>
+          </Section>
 
-        {entryTypeHasStopwatch(props.entry.entryType) ? (
-          <Section title="range">
-            <DateTimeRangePicker
-              startDate={startDate}
-              setStartDate={setStartDate}
-              startTime={startTime}
-              setStartTime={setStartTime}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              endTime={endTime}
-              setEndTime={setEndTime}
-            />
-          </Section>
-        ) : (
-          <Section title="date">
-            <DateTimePicker
-              layout="row"
-              iconPostion="left"
-              align="left"
-              date={startDate}
-              setDate={setStartDate}
-              time={startTime}
-              setTime={setStartTime}
-            />
-          </Section>
-        )}
+          {entryTypeHasStopwatch(props.entry.entryType) ? (
+            <Section title="range">
+              <DateTimeRangePicker
+                startDate={startDate}
+                setStartDate={setStartDate}
+                startTime={startTime}
+                setStartTime={setStartTime}
+                endDate={endDate}
+                setEndDate={setEndDate}
+                endTime={endTime}
+                setEndTime={setEndTime}
+              />
+            </Section>
+          ) : (
+            <Section title="date">
+              <DateTimePicker
+                layout="row"
+                iconPostion="left"
+                align="left"
+                date={startDate}
+                setDate={setStartDate}
+                time={startTime}
+                setTime={setStartTime}
+              />
+            </Section>
+          )}
 
-        {entryTypeHasContextSelector(props.entry.entryType) && (
-          <Section title="context">
-            <ActivityContextPicker
-              entryType={props.entry.entryType}
-              selectedItems={selectedActivityContexts}
-              setSelectedItems={setSelectedActivityContexts}
-            />
-          </Section>
-        )}
+          {entryTypeHasContextSelector(props.entry.entryType) && (
+            <Section title="context">
+              <ActivityContextPicker
+                entryType={props.entry.entryType}
+                selectedItems={selectedActivityContexts}
+                setSelectedItems={setSelectedActivityContexts}
+              />
+            </Section>
+          )}
+        </Stack>
 
         {entryTypeHasVolume(props.entry.entryType) && (
           <Section title="volume">
-            <VolumeInputV2 />
+            <VolumeInput volume={volume} setVolume={setVolume} />
           </Section>
         )}
 
@@ -139,7 +153,7 @@ export default function EntryForm(props: EntryFormProps) {
             setIsUploading={setIsUploading}
           />
         </Section>
-      </SectionStack>
+      </Stack>
 
       <AppBar
         position="fixed"
