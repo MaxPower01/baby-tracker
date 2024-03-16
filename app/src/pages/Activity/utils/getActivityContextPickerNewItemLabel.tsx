@@ -37,6 +37,9 @@ export function getActivityContextPickerNewItemLabel(
     case ActivityContextType.SolidFood:
       result = "Ajouter un type de nourriture solide";
       break;
+    case ActivityContextType.Symptom:
+      result = "Ajouter un symptôme";
+      break;
     default:
       break;
   }

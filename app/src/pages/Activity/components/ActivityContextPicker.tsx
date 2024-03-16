@@ -10,30 +10,21 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
-  Typography,
   useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
-import {
-  getActivityContextPickerPlaceholder,
-  getActivityContextType,
-} from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
-import {
-  selectActivityContexts,
-  selectActivityContextsOfType,
-} from "@/state/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
-import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { RootState } from "@/state/store";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
+import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
+import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
+import { selectActivityContextsOfType } from "@/state/activitiesSlice";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 

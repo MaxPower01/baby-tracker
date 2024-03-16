@@ -15,6 +15,7 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
   const babyMashTitle = "Aucun type de purée défini";
   const bottleFeedingTitle = "Aucun type de lait ou préparation défini";
   const solidFoodTitle = "Aucun type d'aliment défini";
+  const symptomTitle = "Aucun symptôme défini";
   if (props.type != null) {
     switch (props.type) {
       case EntryType.Medicine:
@@ -35,6 +36,8 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
         return bottleFeedingTitle;
       case EntryType.SolidFood:
         return solidFoodTitle;
+      case EntryType.Symptom:
+        return symptomTitle;
       default:
         return defaultTitle;
     }
@@ -60,6 +63,8 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
           return bottleFeedingTitle;
         case ActivityContextType.SolidFood:
           return solidFoodTitle;
+        case ActivityContextType.Symptom:
+          return symptomTitle;
         default:
           return defaultTitle;
       }

@@ -2,13 +2,14 @@ import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType"
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getActivityContextTypeFromEntryType(
+export function getActivityContextType(
   entryType: EntryType
 ): ActivityContextType | null {
-  let result: ActivityContextType | null = null;
-  const parsedEntryType = parseEnumValue(entryType, EntryType);
-  if (parsedEntryType === null) return result;
-  switch (parsedEntryType) {
+  let result = null;
+  if (entryType == null) return result;
+  const parsedType = parseEnumValue(entryType, EntryType);
+  if (parsedType === null) return result;
+  switch (parsedType) {
     case EntryType.Medicine:
       result = ActivityContextType.Medicine;
       break;

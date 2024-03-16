@@ -15,10 +15,6 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import {
-  getActivityContextPickerPlaceholder,
-  getActivityContextType,
-} from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
-import {
   selectActivityContexts,
   selectActivityContextsOfType,
 } from "@/state/activitiesSlice";
@@ -35,6 +31,8 @@ import { RootState } from "@/state/store";
 import { TemperatureMethod } from "@/enums/TemperatureMethod";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
+import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
+import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
 import { getTemperatureMethodName } from "@/utils/getTemperatureMethodName";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 import { useSelector } from "react-redux";

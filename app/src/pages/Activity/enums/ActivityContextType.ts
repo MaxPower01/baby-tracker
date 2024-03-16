@@ -8,4 +8,5 @@ export enum ActivityContextType {
   BabyMash = 7,
   BottleFeeding = 8,
   SolidFood = 9,
+  Symptom = 10,
 }

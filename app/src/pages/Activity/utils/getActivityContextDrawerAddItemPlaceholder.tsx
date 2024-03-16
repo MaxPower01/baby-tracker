@@ -35,6 +35,9 @@ export function getActivityContextDrawerAddItemPlaceholder(
     case EntryType.SolidFood:
       result = "Ajouter un type de nourriture solide";
       break;
+    case EntryType.Symptom:
+      result = "Ajouter un symptôme";
+      break;
     default:
       break;
   }

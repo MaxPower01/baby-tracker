@@ -33,6 +33,9 @@ export function getEntryTypeFromActivityContextType(
     case ActivityContextType.SolidFood:
       result = EntryType.SolidFood;
       break;
+    case ActivityContextType.Symptom:
+      result = EntryType.Symptom;
+      break;
     default:
       break;
   }

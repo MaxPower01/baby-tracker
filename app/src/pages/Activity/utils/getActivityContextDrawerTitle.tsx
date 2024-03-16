@@ -33,6 +33,9 @@ export function getActivityContextDrawerTitle(entryType: EntryType) {
     case EntryType.SolidFood:
       result = "Types de nourriture solide";
       break;
+    case EntryType.Symptom:
+      result = "Symptômes";
+      break;
     default:
       break;
   }

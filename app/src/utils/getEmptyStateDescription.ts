@@ -5,16 +5,6 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 
 export function getEmptyStateDescription(props: EmptyStateProps) {
   const defaultDescription = "Revenez plus tard";
-  // const medicineDescription = "Aucun type de médicament défini";
-  // const vitaminsAndSupplementsDescription =
-  //   "Aucun type de vitamines et suppléments défini";
-  // const babyCareDescription = "Aucun type de soins pour bébé défini";
-  // const vaccineDescription = "Aucun type de vaccin défini";
-  // const activityDescription = "Aucun type d'activité défini";
-  // const sleepDescription = "Aucun lieu de sommeil défini";
-  // const babyMashDescription = "Aucun type de purée défini";
-  // const bottleFeedingDescription = "Aucun type de lait ou préparation défini";
-  // const solidFoodDescription = "Aucun type d'aliment solide défini";
   const medicineDescription = "Tenez un registre des médicaments de votre bébé";
   const vitaminsAndSupplementsDescription =
     "Suivez de près les suppléments vitaminiques de votre bébé";
@@ -32,6 +22,8 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
     "Suivez avec précision les tétées au biberon de votre bébé en spécifiant le type de lait ou de préparation utilisé";
   const solidFoodDescription =
     "Suivez chacun des repas solides de votre bébé en notant les aliments consommés";
+  const symptomDescription =
+    "Suivez facilement les symptômes de votre bébé pour une meilleure compréhension de sa santé";
   if (props.type != null) {
     switch (props.type) {
       case EntryType.Medicine:
@@ -52,6 +44,8 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
         return bottleFeedingDescription;
       case EntryType.SolidFood:
         return solidFoodDescription;
+      case EntryType.Symptom:
+        return symptomDescription;
       default:
         return defaultDescription;
     }
@@ -77,6 +71,8 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
           return bottleFeedingDescription;
         case ActivityContextType.SolidFood:
           return solidFoodDescription;
+        case ActivityContextType.Symptom:
+          return symptomDescription;
         default:
           return defaultDescription;
       }

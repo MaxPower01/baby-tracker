@@ -5,6 +5,7 @@ export function activityContextTypeCanMultiSelect(
 ): boolean {
   return (
     activityContextType === ActivityContextType.BabyMash ||
-    activityContextType === ActivityContextType.SolidFood
+    activityContextType === ActivityContextType.SolidFood ||
+    activityContextType === ActivityContextType.Symptom
   );
 }
