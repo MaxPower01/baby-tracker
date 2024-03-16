@@ -9,16 +9,16 @@ type Props = {
 };
 
 export function SizeInput(props: Props) {
-  let millimeters = props.value.toFixed(2);
-  if (millimeters.endsWith("0") && millimeters.indexOf(".") !== -1) {
-    if (millimeters.endsWith("0") && millimeters.endsWith("00") === false) {
-      millimeters = millimeters.slice(0, -1);
-    } else if (millimeters.endsWith("00")) {
-      millimeters = millimeters.slice(0, -3);
+  let centimeters = props.value.toFixed(2);
+  if (centimeters.endsWith("0") && centimeters.indexOf(".") !== -1) {
+    if (centimeters.endsWith("0") && centimeters.endsWith("00") === false) {
+      centimeters = centimeters.slice(0, -1);
+    } else if (centimeters.endsWith("00")) {
+      centimeters = centimeters.slice(0, -3);
     }
   }
 
-  let inches = (props.value * 0.0393701).toFixed(2);
+  let inches = (props.value / 2.54).toFixed(2);
   if (inches.endsWith("0") && inches.indexOf(".") !== -1) {
     if (inches.endsWith("0") && inches.endsWith("00") === false) {
       inches = inches.slice(0, -1);
@@ -29,7 +29,7 @@ export function SizeInput(props: Props) {
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    unit: "mm" | "in"
+    unit: "cm" | "in"
   ) => {
     const value = e.target.value;
     if (isNullOrWhiteSpace(value)) {
@@ -42,24 +42,24 @@ export function SizeInput(props: Props) {
       return;
     }
 
-    if (unit === "mm") {
+    if (unit === "cm") {
       props.setValue(parsedValue);
     } else {
-      props.setValue(parsedValue / 0.0393701);
+      props.setValue(parsedValue * 2.54);
     }
   };
 
   return (
     <Stack direction={"row"} spacing={2} sx={{ width: "100%" }}>
       <TextField
-        label="Millimètres"
-        name="size-mm"
+        label="Centimètres"
+        name="size-cm"
         type="number"
-        value={millimeters}
-        onChange={(e) => handleChange(e, "mm")}
+        value={centimeters}
+        onChange={(e) => handleChange(e, "cm")}
         fullWidth
         InputProps={{
-          endAdornment: <InputAdornment position="end">mm</InputAdornment>,
+          endAdornment: <InputAdornment position="end">cm</InputAdornment>,
           inputProps: {
             onSelect: (e: React.FocusEvent<HTMLInputElement>) =>
               e.target.select(),

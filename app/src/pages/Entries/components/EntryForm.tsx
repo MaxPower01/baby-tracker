@@ -28,12 +28,16 @@ import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SizeInput } from "@/components/SizeInput";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
+import { TemperatureInput } from "@/components/TemperatureInput";
+import { TemperatureMethod } from "@/enums/TemperatureMethod";
+import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
 import { VolumeInput } from "@/components/VolumeInput";
 import { WeightInput } from "@/components/WeightInput";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
+import { entryTypeHasTemperature } from "@/pages/Entry/utils/entryTypeHasTemperature";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getTitleForEntryType } from "@/utils/utils";
@@ -83,6 +87,9 @@ export default function EntryForm(props: EntryFormProps) {
         : leftStopwatchLastUpdateTime ?? rightStopwatchLastUpdateTime,
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
   );
+  const [temperature, setTemperature] = useState(0);
+  const [temperatureMethod, setTemperatureMethod] =
+    useState<TemperatureMethod | null>(null);
 
   return (
     <>
@@ -152,6 +159,22 @@ export default function EntryForm(props: EntryFormProps) {
               setSelectedItems={setSelectedActivityContexts}
             />
           </Section>
+        )}
+
+        {entryTypeHasTemperature(props.entry.entryType) && (
+          <>
+            <Section title="temperature-method">
+              <TemperatureMethodPicker
+                value={temperatureMethod}
+                setValue={setTemperatureMethod}
+              />
+            </Section>
+
+            <Section title="temperature">
+              <SectionTitle title="Température" />
+              <TemperatureInput value={temperature} setValue={setTemperature} />
+            </Section>
+          </>
         )}
 
         {entryTypeHasVolume(props.entry.entryType) && (
