@@ -262,6 +262,7 @@ export function StopwatchContainer(props: Props) {
             setIsRunning={props.setLeftIsRunning}
             lastUpdateTime={props.leftLastUpdateTime}
             setLastUpdateTime={props.setLeftLastUpdateTime}
+            hideTimeLabel={!props.hasSides}
           />
 
           {props.hasSides && (

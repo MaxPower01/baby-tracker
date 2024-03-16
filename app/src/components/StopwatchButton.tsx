@@ -13,6 +13,7 @@ type Props = {
   label?: string;
   time: number;
   isRunning: boolean;
+  hideTimeLabel?: boolean;
   handleClick: () => void;
 };
 
@@ -60,17 +61,19 @@ export function StopwatchButton(props: Props) {
               {props.label}
             </Typography>
           )}
-          {timeLabel && !isNullOrWhiteSpace(timeLabel) && (
-            <Typography
-              variant="body1"
-              textAlign={"center"}
-              sx={{
-                fontWeight: "bold",
-              }}
-            >
-              {timeLabel}
-            </Typography>
-          )}
+          {timeLabel &&
+            !isNullOrWhiteSpace(timeLabel) &&
+            !props.hideTimeLabel && (
+              <Typography
+                variant="body1"
+                textAlign={"center"}
+                sx={{
+                  fontWeight: "bold",
+                }}
+              >
+                {timeLabel}
+              </Typography>
+            )}
         </>
       )}
 

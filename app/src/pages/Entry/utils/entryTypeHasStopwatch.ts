@@ -11,6 +11,7 @@ const typesWithStopwatch = [
   EntryType.Activity,
   EntryType.Bath,
   EntryType.BellyTime,
+  EntryType.Play,
 ];
 
 export function entryTypeHasStopwatch(entryType: EntryType) {

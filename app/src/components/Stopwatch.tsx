@@ -10,6 +10,7 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 type Props = {
   size: "big" | "small";
   label?: string;
+  hideTimeLabel?: boolean;
   time: number;
   setTime: React.Dispatch<React.SetStateAction<number>>;
   isRunning: boolean;
@@ -33,6 +34,7 @@ export function Stopwatch(props: Props) {
       label={props.label}
       handleClick={handleButtonClick}
       type="play/pause"
+      hideTimeLabel={props.hideTimeLabel}
     />
   );
 }
