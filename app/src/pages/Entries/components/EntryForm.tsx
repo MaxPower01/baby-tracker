@@ -20,11 +20,13 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { ImagesInput } from "@/components/ImagesInput";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { NasalHygieneType } from "@/enums/NasalHygieneType";
 import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
+import { PoopAmountSelector } from "@/components/PoopAmountSelector";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -33,18 +35,22 @@ import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { TemperatureInput } from "@/components/TemperatureInput";
 import { TemperatureMethod } from "@/enums/TemperatureMethod";
 import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
+import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
+import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasTemperature } from "@/pages/Entry/utils/entryTypeHasTemperature";
+import { entryTypeHasUrine } from "@/pages/Entry/utils/entryTypeHasUrine";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getTitleForEntryType } from "@/utils/utils";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 type EntryFormProps = {
   entry: Entry;
@@ -102,6 +108,8 @@ export default function EntryForm(props: EntryFormProps) {
     () => leftVollume + rightVollume,
     [leftVollume, rightVollume]
   );
+  const [urineAmount, setUrineAmount] = useState(0);
+  const [poopAmount, setPoopAmount] = useState(0);
 
   return (
     <>
@@ -220,6 +228,25 @@ export default function EntryForm(props: EntryFormProps) {
         {entryTypeHasSize(props.entry.entryType) && (
           <Section title="size">
             <SizeInput value={size} setValue={setSize} />
+          </Section>
+        )}
+
+        {entryTypeHasUrine(props.entry.entryType) && (
+          <Section title="urine">
+            {parseEnumValue(props.entry.entryType, EntryType) !=
+              EntryType.Urine && <SectionTitle title="Pipi" />}
+            <UrineAmountSelector
+              value={urineAmount}
+              setValue={setUrineAmount}
+            />
+          </Section>
+        )}
+
+        {entryTypeHasPoop(props.entry.entryType) && (
+          <Section title="poop">
+            {parseEnumValue(props.entry.entryType, EntryType) !=
+              EntryType.Poop && <SectionTitle title="Caca" />}
+            <PoopAmountSelector value={poopAmount} setValue={setPoopAmount} />
           </Section>
         )}
 

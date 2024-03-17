@@ -73,6 +73,14 @@ function PoopIcon() {
   return <ReactSVG src="/icons/poop.svg" className="ActivityIcon" />;
 }
 
+function PoopIconOutlined() {
+  return <ReactSVG src="/icons/poop-outlined.svg" className="ActivityIcon" />;
+}
+
+function PoopIconMonochrome() {
+  return <ReactSVG src="/icons/poop-monochrome.svg" className="ActivityIcon" />;
+}
+
 function SizeIcon() {
   return <ReactSVG src="/icons/size.svg" className="ActivityIcon" />;
 }
@@ -99,6 +107,16 @@ function TeethIcon() {
 
 function UrineIcon() {
   return <ReactSVG src="/icons/urine.svg" className="ActivityIcon" />;
+}
+
+function UrineIconOutlined() {
+  return <ReactSVG src="/icons/urine-outlined.svg" className="ActivityIcon" />;
+}
+
+function UrineIconMonochrome() {
+  return (
+    <ReactSVG src="/icons/urine-monochrome.svg" className="ActivityIcon" />
+  );
 }
 
 function VaccineIcon() {
@@ -163,6 +181,8 @@ type ActivityIconProps = {
   type: EntryType;
   activity?: ActivityModel;
   sx?: SxProps | undefined;
+  outlined?: boolean;
+  monochrome?: boolean;
 };
 
 export default function ActivityIcon(props: ActivityIconProps) {
@@ -204,6 +224,12 @@ export default function ActivityIcon(props: ActivityIconProps) {
           case ActivityType.Play:
             return <PlayIcon />;
           case ActivityType.Poop:
+            if (props.outlined) {
+              return <PoopIconOutlined />;
+            }
+            if (props.monochrome) {
+              return <PoopIconMonochrome />;
+            }
             return <PoopIcon />;
           case ActivityType.Regurgitation:
             return <RegurgitationIcon />;
@@ -220,6 +246,12 @@ export default function ActivityIcon(props: ActivityIconProps) {
           case ActivityType.Teeth:
             return <TeethIcon />;
           case ActivityType.Urine:
+            if (props.outlined) {
+              return <UrineIconOutlined />;
+            }
+            if (props.monochrome) {
+              return <UrineIconMonochrome />;
+            }
             return <UrineIcon />;
           case ActivityType.Vaccine:
             return <VaccineIcon />;
