@@ -123,7 +123,6 @@ export function ActivityContextPicker(props: Props) {
               ? (selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => {
-                      console.log(selected);
                       const item = props.selectedItems.find(
                         (item) => item.id === value
                       );

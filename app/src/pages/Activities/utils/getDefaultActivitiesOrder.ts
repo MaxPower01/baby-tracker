@@ -1,4 +1,3 @@
-import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 
@@ -43,8 +42,4 @@ export default function getDefaultActivitiesOrder(): ActivityType[] {
     ActivityType.BabyToilet,
     ActivityType.BellyTime,
   ];
-}
-
-export function getDefaultActivityContexts(): ActivityContext[] {
-  return [];
 }

@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import {
   selectActivityContexts,
   selectActivityContextsOfType,
+  selectTemperatureMethods,
 } from "@/state/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
@@ -80,18 +81,7 @@ export function TemperatureMethodPicker(props: Props) {
     );
   };
 
-  const items: { id: number; name: string }[] = [];
-
-  for (const value in TemperatureMethod) {
-    if (!isNaN(Number(value))) {
-      items.push({
-        id: Number(value),
-        name: getTemperatureMethodName(
-          parseEnumValue(value, TemperatureMethod)
-        ),
-      });
-    }
-  }
+  const items = useSelector(selectTemperatureMethods);
 
   const renderValue = (selected: TemperatureMethod | null) => {
     if (selected === null) {
@@ -115,7 +105,7 @@ export function TemperatureMethodPicker(props: Props) {
           {items.map((item) => {
             return (
               <MenuItem key={item.id} value={item.id}>
-                <ListItemText primary={item.name} />
+                <ListItemText primary={item.label} />
               </MenuItem>
             );
           })}

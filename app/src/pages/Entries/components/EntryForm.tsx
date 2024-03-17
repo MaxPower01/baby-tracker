@@ -22,6 +22,8 @@ import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { ImagesInput } from "@/components/ImagesInput";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { NasalHygieneType } from "@/enums/NasalHygieneType";
+import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
@@ -32,8 +34,10 @@ import { TemperatureInput } from "@/components/TemperatureInput";
 import { TemperatureMethod } from "@/enums/TemperatureMethod";
 import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
 import { VolumeInput } from "@/components/VolumeInput";
+import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
+import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
@@ -61,7 +65,6 @@ export default function EntryForm(props: EntryFormProps) {
   const [note, setNote] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [volume, setVolume] = useState(0);
   const [weight, setWeight] = useState(0);
   const [size, setSize] = useState(0);
   const [leftStopwatchTime, setLeftStopwatchTime] = useState(0);
@@ -90,6 +93,15 @@ export default function EntryForm(props: EntryFormProps) {
   const [temperature, setTemperature] = useState(0);
   const [temperatureMethod, setTemperatureMethod] =
     useState<TemperatureMethod | null>(null);
+  const [nasalHygieneTypes, setNasalHygieneTypes] = useState<
+    NasalHygieneType[]
+  >([]);
+  const [leftVollume, setLeftVollume] = useState(0);
+  const [rightVollume, setRightVollume] = useState(0);
+  const volume = useMemo(
+    () => leftVollume + rightVollume,
+    [leftVollume, rightVollume]
+  );
 
   return (
     <>
@@ -177,10 +189,25 @@ export default function EntryForm(props: EntryFormProps) {
           </>
         )}
 
+        {entryTypeHasNasalHygiene(props.entry.entryType) && (
+          <Section title="nasal-hygiene">
+            <NasalHygieneTypesPicker
+              values={nasalHygieneTypes}
+              setValues={setNasalHygieneTypes}
+            />
+          </Section>
+        )}
+
         {entryTypeHasVolume(props.entry.entryType) && (
           <Section title="volume">
             <SectionTitle title="Quantité" />
-            <VolumeInput value={volume} setValue={setVolume} />
+            <VolumeInputContainer
+              hasSides={entryTypeHasSides(props.entry.entryType)}
+              leftValue={leftVollume}
+              setLeftValue={setLeftVollume}
+              rightValue={rightVollume}
+              setRightValue={setRightVollume}
+            />
           </Section>
         )}
 
@@ -198,6 +225,7 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasStopwatch(props.entry.entryType) && (
           <Section title="stopwatch">
+            <SectionTitle title="Durée" />
             <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryType)}
@@ -290,5 +318,4 @@ export default function EntryForm(props: EntryFormProps) {
       </AppBar>
     </>
   );
-  console.log("🚀 ~ EntryForm ~ props.entry:", props.entry);
 }

@@ -226,7 +226,7 @@ export function StopwatchContainer(props: Props) {
             width: "100%",
           }}
         >
-          {props.size === "big" && (
+          {/* {props.size === "big" && (
             <Typography
               variant="body1"
               color={theme.customPalette.text.tertiary}
@@ -234,7 +234,7 @@ export function StopwatchContainer(props: Props) {
             >
               Durée
             </Typography>
-          )}
+          )} */}
           <Typography
             variant="h4"
             color={theme.customPalette.text.primary}

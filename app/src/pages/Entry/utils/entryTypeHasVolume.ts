@@ -1,6 +1,10 @@
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 
-const entryTypesWithVolume = [EntryType.Medicine, EntryType.BottleFeeding];
+const entryTypesWithVolume = [
+  EntryType.Medicine,
+  EntryType.BottleFeeding,
+  EntryType.MilkExtraction,
+];
 
 export function entryTypeHasVolume(entryType: EntryType) {
   try {

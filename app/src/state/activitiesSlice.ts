@@ -1,7 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import getDefaultActivitiesOrder, {
-  getDefaultActivityContexts,
-} from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
@@ -12,6 +9,10 @@ import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities";
+import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
+import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
+import { getDefaultNasalHygieneTypes } from "@/pages/Activities/utils/getDefaultNasalHygieneTypes";
+import { getDefaultTemperatureMethods } from "@/pages/Activities/utils/getDefaultTemperatureMethods";
 
 const key = LocalStorageKey.ActivitiesState;
 
@@ -19,6 +20,8 @@ const defaultState: ActivitiesState = {
   activities: getDefaultActivities().map((a) => a.serialize()),
   activitiesOrder: getDefaultActivitiesOrder(),
   activityContexts: getDefaultActivityContexts(),
+  temperatureMethods: getDefaultTemperatureMethods(),
+  nasalHygieneTypes: getDefaultNasalHygieneTypes(),
 };
 
 const slice = createSlice({
@@ -121,5 +124,11 @@ export const selectActivityContextsOfType = (
     .filter((a) => a.type === type)
     .toSorted((a, b) => a.order - b.order);
 };
+
+export const selectTemperatureMethods = (state: RootState) =>
+  state.activitiesReducer.temperatureMethods;
+
+export const selectNasalHygieneTypes = (state: RootState) =>
+  state.activitiesReducer.nasalHygieneTypes;
 
 export default slice.reducer;

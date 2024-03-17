@@ -29,7 +29,7 @@ export function DateTimePicker(props: Props) {
     <Stack direction={props.layout} justifyContent={"center"}>
       {props.relation && (
         <Typography
-          variant="body2"
+          variant="body1"
           sx={{
             color: theme.customPalette.text.tertiary,
             textAlign: props.align,

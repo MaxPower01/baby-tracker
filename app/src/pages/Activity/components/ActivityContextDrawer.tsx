@@ -101,7 +101,8 @@ export function ActivityContextDrawer(props: Props) {
   const [isSaving, setIsSaving] = React.useState(false);
   const defaultDrawerTitle = getActivityContextDrawerTitle(props.type);
   const editModeDrawerTitle = useMemo(() => {
-    return `${defaultDrawerTitle} (Édition)`;
+    // return `${defaultDrawerTitle} (Édition)`;
+    return `${defaultDrawerTitle}`;
   }, [defaultDrawerTitle]);
   const drawerTitle = useMemo(() => {
     return editMode ? editModeDrawerTitle : defaultDrawerTitle;
@@ -321,6 +322,15 @@ export function ActivityContextDrawer(props: Props) {
           type: activityContextType,
         })
       );
+      props.setSelectedItems((prev) => {
+        return prev.map((item) => {
+          const updatedItem = localItems.find((i) => i.id === item.id);
+          if (updatedItem) {
+            return updatedItem;
+          }
+          return item;
+        });
+      });
       setIsSaving(false);
       setEditMode(false);
     }, 500);
@@ -677,7 +687,7 @@ export function ActivityContextDrawer(props: Props) {
                 />
               )}
 
-              {items.length > 0 && props.canMultiSelect && (
+              {items.length > 0 && props.canMultiSelect && !editMode && (
                 <Box
                   sx={{
                     flexShrink: 0,

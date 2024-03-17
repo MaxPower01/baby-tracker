@@ -22,9 +22,14 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 type Props = {
   value: number;
   setValue: React.Dispatch<React.SetStateAction<number>>;
+  label?: string;
+  layout: "column" | "row";
+  align: "left" | "right";
 };
 
 export function VolumeInput(props: Props) {
+  const theme = useTheme();
+
   let milliliters = props.value.toFixed(2);
   if (milliliters.endsWith("0") && milliliters.indexOf(".") !== -1) {
     if (milliliters.endsWith("0") && milliliters.endsWith("00") === false) {
@@ -66,7 +71,24 @@ export function VolumeInput(props: Props) {
   };
 
   return (
-    <Stack direction={"row"} spacing={2} sx={{ width: "100%" }}>
+    <Stack
+      direction={props.layout}
+      justifyContent={"center"}
+      spacing={2}
+      sx={{ width: "100%" }}
+    >
+      {props.label && (
+        <Typography
+          variant="body1"
+          sx={{
+            color: theme.customPalette.text.tertiary,
+            textAlign: props.align,
+          }}
+          gutterBottom
+        >
+          {props.label}
+        </Typography>
+      )}
       <TextField
         label="Millilitres"
         name="volume-ml"

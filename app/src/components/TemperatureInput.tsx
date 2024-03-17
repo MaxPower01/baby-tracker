@@ -60,6 +60,10 @@ export function TemperatureInput(props: Props) {
         fullWidth
         InputProps={{
           endAdornment: <InputAdornment position="end">°C</InputAdornment>,
+          inputProps: {
+            onSelect: (e: React.FocusEvent<HTMLInputElement>) =>
+              e.target.select(),
+          },
         }}
       />
       <TextField
@@ -71,6 +75,10 @@ export function TemperatureInput(props: Props) {
         fullWidth
         InputProps={{
           endAdornment: <InputAdornment position="end">°F</InputAdornment>,
+          inputProps: {
+            onSelect: (e: React.FocusEvent<HTMLInputElement>) =>
+              e.target.select(),
+          },
         }}
       />
     </Stack>
