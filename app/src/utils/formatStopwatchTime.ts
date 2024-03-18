@@ -1,5 +1,3 @@
-import formatStopwatchesTime from "./formatStopwatchesTime";
-
 /* -------------------------------------------------------------------------- */
 /*                                 Stopwatches                                */
 /* -------------------------------------------------------------------------- */
@@ -8,6 +6,8 @@ import formatStopwatchesTime from "./formatStopwatchesTime";
  * @param time Milliseconds
  * @returns String of the format "mm:ss"
  */
+
+import formatStopwatchesTime from "@/utils/formatStopwatchesTime";
 
 export default function formatStopwatchTime(
   time: number,

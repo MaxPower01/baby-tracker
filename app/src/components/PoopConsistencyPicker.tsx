@@ -29,9 +29,9 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
-import { PoopConsistency } from "@/enums/PoopConsistency";
+import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
 import { RootState } from "@/state/store";
-import { TemperatureMethod } from "@/enums/TemperatureMethod";
+import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
@@ -43,8 +43,8 @@ import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  value: PoopConsistency | null;
-  setValue: React.Dispatch<React.SetStateAction<PoopConsistency | null>>;
+  value: PoopConsistencyId | null;
+  setValue: React.Dispatch<React.SetStateAction<PoopConsistencyId | null>>;
 };
 
 export function PoopConsistencyPicker(props: Props) {
@@ -86,7 +86,7 @@ export function PoopConsistencyPicker(props: Props) {
 
   const items = useSelector(selectPoopConsistencyTypes);
 
-  const renderValue = (selected: PoopConsistency | null) => {
+  const renderValue = (selected: PoopConsistencyId | null) => {
     if (selected === null) {
       return "";
     }
@@ -102,7 +102,7 @@ export function PoopConsistencyPicker(props: Props) {
           labelId="temperature-method-picker-label"
           value={props.value ?? ""}
           label={label()}
-          onChange={(e) => props.setValue(e.target.value as PoopConsistency)}
+          onChange={(e) => props.setValue(e.target.value as PoopConsistencyId)}
           renderValue={renderValue}
         >
           {items.map((item) => {

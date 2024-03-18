@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import EntriesContext from "@/pages/Entries/components/EntriesContext";
 import EntriesContextValue from "@/pages/Entries/types/EntriesContextValue";
 import EntryModel from "@/pages/Entry/models/EntryModel";
-import { TimePeriod } from "@/enums/TimePeriod";
+import { TimePeriodId } from "@/enums/TimePeriodId";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
@@ -28,10 +28,10 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
-  const getDateFor = (timePeriod: TimePeriod) => {
+  const getDateFor = (timePeriod: TimePeriodId) => {
     const now = new Date();
     switch (timePeriod) {
-      case TimePeriod.Week:
+      case TimePeriodId.Week:
         return new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -39,7 +39,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.Month:
+      case TimePeriodId.Month:
         return new Date(
           now.getFullYear(),
           now.getMonth() - 1,
@@ -47,7 +47,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.Day:
+      case TimePeriodId.Day:
         return new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -55,7 +55,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
           now.getHours(),
           now.getMinutes()
         );
-      case TimePeriod.TwoDays:
+      case TimePeriodId.TwoDays:
       default:
         return new Date(
           now.getFullYear(),
@@ -68,7 +68,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   };
 
   const getEntries = useCallback(
-    async (params: { timePeriod: TimePeriod }) => {
+    async (params: { timePeriod: TimePeriodId }) => {
       const selectedChild = user?.selectedChild ?? "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         setEntries([]);
@@ -104,7 +104,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     getEntries({
-      timePeriod: TimePeriod.TwoDays,
+      timePeriod: TimePeriodId.TwoDays,
     }).then((fetchedEntries) => {
       setEntries((prevEntries) => {
         if (prevEntries.length === 0) {
@@ -127,7 +127,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
       return;
     }
     const now = new Date();
-    const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriod.TwoDays));
+    const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriodId.TwoDays));
     const q = query(
       collection(db, `children/${selectedChild}/entries`),
       where("startDate", ">=", endAtTimestamp),

@@ -29,7 +29,7 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { RootState } from "@/state/store";
-import { TemperatureMethod } from "@/enums/TemperatureMethod";
+import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
@@ -40,8 +40,8 @@ import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  value: TemperatureMethod | null;
-  setValue: React.Dispatch<React.SetStateAction<TemperatureMethod | null>>;
+  value: TemperatureMethodId | null;
+  setValue: React.Dispatch<React.SetStateAction<TemperatureMethodId | null>>;
 };
 
 export function TemperatureMethodPicker(props: Props) {
@@ -83,7 +83,7 @@ export function TemperatureMethodPicker(props: Props) {
 
   const items = useSelector(selectTemperatureMethods);
 
-  const renderValue = (selected: TemperatureMethod | null) => {
+  const renderValue = (selected: TemperatureMethodId | null) => {
     if (selected === null) {
       return "";
     }
@@ -99,7 +99,9 @@ export function TemperatureMethodPicker(props: Props) {
           labelId="temperature-method-picker-label"
           value={props.value ?? ""}
           label={label()}
-          onChange={(e) => props.setValue(e.target.value as TemperatureMethod)}
+          onChange={(e) =>
+            props.setValue(e.target.value as TemperatureMethodId)
+          }
           renderValue={renderValue}
         >
           {items.map((item) => {

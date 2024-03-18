@@ -1,5 +1,7 @@
+import { PoopColorId } from "@/enums/PoopColorId";
+
 export interface PoopColor {
-  id: string;
-  name: string;
-  color: string;
+  id: PoopColorId;
+  label: string;
+  value: string;
 }

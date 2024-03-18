@@ -20,7 +20,7 @@ import { DateHeader } from "@/components/DateHeader";
 import EntriesCard from "@/pages/Entries/components/EntriesCard";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/MenuProvider";
-import { TimePeriod } from "@/enums/TimePeriod";
+import { TimePeriodId } from "@/enums/TimePeriodId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/state/activitiesSlice";
@@ -28,7 +28,7 @@ import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useSelector } from "react-redux";
 
 type Props = {
-  fetchTimePeriod?: TimePeriod;
+  fetchTimePeriod?: TimePeriodId;
   title?: string;
 };
 

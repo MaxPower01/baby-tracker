@@ -28,7 +28,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Child from "@/pages/Authentication/types/Child";
 import ChildForm from "@/pages/Baby/components/ChildForm";
 import { PageId } from "@/enums/PageId";
-import { Sex } from "@/enums/Sex";
+import { SexId } from "@/enums/SexId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
@@ -146,8 +146,8 @@ export default function ChildWizard() {
                 onChange={handleSexChange}
                 error={sexError !== ""}
               >
-                <MenuItem value={Sex.male}>Garçon</MenuItem>
-                <MenuItem value={Sex.female}>Fille</MenuItem>
+                <MenuItem value={SexId.male}>Garçon</MenuItem>
+                <MenuItem value={SexId.female}>Fille</MenuItem>
               </Select>
               <FormHelperText error={sexError !== ""}>
                 {sexError !== "" ? sexError : ""}

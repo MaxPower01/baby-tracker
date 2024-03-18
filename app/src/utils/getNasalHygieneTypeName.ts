@@ -1,15 +1,15 @@
-import { NasalHygieneType } from "@/enums/NasalHygieneType";
+import { NasalHygieneId } from "@/enums/NasalHygieneId";
 
 export function getNasalHygieneTypeName(
-  nasalHygieneType: NasalHygieneType | null | undefined
+  nasalHygieneType: NasalHygieneId | null | undefined
 ) {
   if (nasalHygieneType === null || nasalHygieneType === undefined) {
     return "";
   }
   switch (nasalHygieneType) {
-    case NasalHygieneType.Aspirator:
+    case NasalHygieneId.Aspirator:
       return "Aspirateur nasal";
-    case NasalHygieneType.Saline:
+    case NasalHygieneId.Saline:
       return "Solution saline";
     default:
       return "";

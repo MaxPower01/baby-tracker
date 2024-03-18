@@ -1,4 +1,4 @@
-import "./main.scss";
+import "@/main.scss";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { App } from "@/components/App";

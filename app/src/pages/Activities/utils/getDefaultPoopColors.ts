@@ -1,16 +1,18 @@
 import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
-import { getPoopConsistencyTypeName } from "@/utils/getPoopConsistencyTypeName";
+import { getPoopColorValue } from "@/utils/getPoopColorValue";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getDefaultPoopConsistencyTypes() {
+export function getDefaultPoopColors() {
   let result = [];
   for (const value in PoopConsistencyId) {
     if (!isNaN(Number(value))) {
+      const { label, value: colorValue } = getPoopColorValue(
+        parseEnumValue(value, PoopConsistencyId)
+      );
       result.push({
         id: Number(value),
-        label: getPoopConsistencyTypeName(
-          parseEnumValue(value, PoopConsistencyId)
-        ),
+        label,
+        value: colorValue,
       });
     }
   }

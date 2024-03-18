@@ -42,7 +42,7 @@ import Child from "@/pages/Authentication/types/Child";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
-import { Sex } from "@/enums/Sex";
+import { SexId } from "@/enums/SexId";
 import { SizeInput } from "@/components/SizeInput";
 import { WeightInput } from "@/components/WeightInput";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
@@ -454,8 +454,8 @@ export default function ChildForm(props: Props) {
                 onChange={handleSexChange}
                 error={sexError !== ""}
               >
-                <MenuItem value={Sex.male}>Garçon</MenuItem>
-                <MenuItem value={Sex.female}>Fille</MenuItem>
+                <MenuItem value={SexId.male}>Garçon</MenuItem>
+                <MenuItem value={SexId.female}>Fille</MenuItem>
               </Select>
               <FormHelperText error={sexError !== ""}>
                 {sexError !== "" ? sexError : ""}

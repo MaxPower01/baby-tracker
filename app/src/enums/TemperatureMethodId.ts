@@ -1,4 +1,4 @@
-export enum TemperatureMethod {
+export enum TemperatureMethodId {
   Oral = 1,
   Rectal = 2,
   /**

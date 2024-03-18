@@ -29,7 +29,7 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
-import { NasalHygieneType } from "@/enums/NasalHygieneType";
+import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { RootState } from "@/state/store";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
@@ -41,8 +41,8 @@ import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  values: NasalHygieneType[];
-  setValues: React.Dispatch<React.SetStateAction<NasalHygieneType[]>>;
+  values: NasalHygieneId[];
+  setValues: React.Dispatch<React.SetStateAction<NasalHygieneId[]>>;
 };
 
 export function NasalHygieneTypesPicker(props: Props) {
@@ -92,9 +92,9 @@ export function NasalHygieneTypesPicker(props: Props) {
         : value.map((v) => parseInt(v));
     const parsedValues = values
       .map((value) => {
-        return parseEnumValue(value, NasalHygieneType);
+        return parseEnumValue(value, NasalHygieneId);
       })
-      .filter((value) => value != null && !isNaN(value)) as NasalHygieneType[];
+      .filter((value) => value != null && !isNaN(value)) as NasalHygieneId[];
     const duplicateValues = parsedValues.filter(
       (value, index) => parsedValues.indexOf(value) !== index
     );
@@ -133,7 +133,7 @@ export function NasalHygieneTypesPicker(props: Props) {
                   <Chip
                     key={item.toString()}
                     label={getNasalHygieneTypeName(
-                      parseEnumValue(value, NasalHygieneType)
+                      parseEnumValue(value, NasalHygieneId)
                     )}
                   />
                 );
@@ -152,7 +152,7 @@ export function NasalHygieneTypesPicker(props: Props) {
                     <Checkbox
                       checked={props.values.some(
                         (value) =>
-                          value == parseEnumValue(item.id, NasalHygieneType)
+                          value == parseEnumValue(item.id, NasalHygieneId)
                       )}
                       readOnly
                       name={item.label}

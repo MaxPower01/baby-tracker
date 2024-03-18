@@ -23,17 +23,22 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { ImagesInput } from "@/components/ImagesInput";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { NasalHygieneType } from "@/enums/NasalHygieneType";
+import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
 import { PoopAmountPicker } from "@/components/PoopAmountPicker";
+import { PoopColor } from "@/types/PoopColor";
+import { PoopColorId } from "@/enums/PoopColorId";
+import PoopColorPicker from "@/components/PoopColorPicker";
+import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopConsistencyPicker } from "@/components/PoopConsistencyPicker";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SizeInput } from "@/components/SizeInput";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { TemperatureInput } from "@/components/TemperatureInput";
-import { TemperatureMethod } from "@/enums/TemperatureMethod";
+import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
 import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
@@ -97,11 +102,11 @@ export default function EntryForm(props: EntryFormProps) {
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
   );
   const [temperature, setTemperature] = useState(0);
-  const [temperatureMethod, setTemperatureMethod] =
-    useState<TemperatureMethod | null>(null);
-  const [nasalHygieneTypes, setNasalHygieneTypes] = useState<
-    NasalHygieneType[]
-  >([]);
+  const [temperatureMethodId, setTemperatureMethodId] =
+    useState<TemperatureMethodId | null>(null);
+  const [nasalHygieneTypes, setNasalHygieneTypes] = useState<NasalHygieneId[]>(
+    []
+  );
   const [leftVollume, setLeftVollume] = useState(0);
   const [rightVollume, setRightVollume] = useState(0);
   const volume = useMemo(
@@ -110,6 +115,9 @@ export default function EntryForm(props: EntryFormProps) {
   );
   const [urineAmount, setUrineAmount] = useState(0);
   const [poopAmount, setPoopAmount] = useState(0);
+  const [poopConsistencyId, setPoopConsistencyId] =
+    useState<PoopConsistencyId | null>(null);
+  const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(null);
 
   return (
     <>
@@ -185,8 +193,8 @@ export default function EntryForm(props: EntryFormProps) {
           <>
             <Section title="temperature-method">
               <TemperatureMethodPicker
-                value={temperatureMethod}
-                setValue={setTemperatureMethod}
+                value={temperatureMethodId}
+                setValue={setTemperatureMethodId}
               />
             </Section>
 
@@ -247,6 +255,15 @@ export default function EntryForm(props: EntryFormProps) {
             {parseEnumValue(props.entry.entryType, EntryType) !=
               EntryType.Poop && <SectionTitle title="Caca" />}
             <PoopAmountPicker value={poopAmount} setValue={setPoopAmount} />
+            {poopAmount > 0 && (
+              <PoopConsistencyPicker
+                value={poopConsistencyId}
+                setValue={setPoopConsistencyId}
+              />
+            )}
+            {poopAmount > 0 && (
+              <PoopColorPicker value={poopColorId} setValue={setPoopColorId} />
+            )}
           </Section>
         )}
 

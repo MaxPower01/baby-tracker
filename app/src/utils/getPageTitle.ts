@@ -1,5 +1,5 @@
 import { PageId } from "@/enums/PageId";
-import getPageId from "./getPageId";
+import getPageId from "@/utils/getPageId";
 
 export default function getPageTitle(pathname: string) {
   const pageName = getPageId(pathname);

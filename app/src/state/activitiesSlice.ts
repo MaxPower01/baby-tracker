@@ -12,6 +12,7 @@ import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities"
 import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import { getDefaultNasalHygieneTypes } from "@/pages/Activities/utils/getDefaultNasalHygieneTypes";
+import { getDefaultPoopColors } from "@/pages/Activities/utils/getDefaultPoopColors";
 import { getDefaultPoopConsistencyTypes } from "@/pages/Activities/utils/getDefaultPoopConsistencyTypes";
 import { getDefaultTemperatureMethods } from "@/pages/Activities/utils/getDefaultTemperatureMethods";
 
@@ -24,6 +25,7 @@ const defaultState: ActivitiesState = {
   temperatureMethods: getDefaultTemperatureMethods(),
   nasalHygieneTypes: getDefaultNasalHygieneTypes(),
   poopConsistencyTypes: getDefaultPoopConsistencyTypes(),
+  poopColors: getDefaultPoopColors(),
 };
 
 const slice = createSlice({
@@ -135,5 +137,8 @@ export const selectNasalHygieneTypes = (state: RootState) =>
 
 export const selectPoopConsistencyTypes = (state: RootState) =>
   state.activitiesReducer.poopConsistencyTypes;
+
+export const selectPoopColors = (state: RootState) =>
+  state.activitiesReducer.poopColors;
 
 export default slice.reducer;

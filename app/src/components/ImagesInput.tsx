@@ -2,7 +2,7 @@ import { Box, Button, ImageList, ImageListItem, Modal } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-import { LinearProgressWithLabel } from "./LinearProgressWithLabel";
+import { LinearProgressWithLabel } from "@/components/LinearProgressWithLabel";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { storage } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";

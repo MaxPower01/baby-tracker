@@ -1,4 +1,4 @@
-export enum NasalHygieneType {
+export enum NasalHygieneId {
   /**
    * Mouche-bébé
    */

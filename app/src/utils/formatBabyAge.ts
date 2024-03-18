@@ -1,4 +1,4 @@
-import { getAgeInMonths } from "./getAgeInMonths";
+import { getAgeInMonths } from "@/utils/getAgeInMonths";
 import { getAgeInWeeks } from "@/utils/getAgeInWeeks";
 import { getWeeksSinceCurrentMonthAnniversary } from "@/utils/getWeeksSinceCurrentMonthAnniversary";
 
