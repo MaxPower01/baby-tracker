@@ -78,7 +78,7 @@ export function PoopConsistencyPicker(props: Props) {
             color: theme.customPalette.text.tertiary,
           }}
         >
-          Méthode utilisée
+          Consistance
         </Box>
       </Stack>
     );

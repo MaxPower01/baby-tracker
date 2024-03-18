@@ -1,5 +1,5 @@
 export enum PoopColorId {
-  MustardYellow = 1,
+  Yellow = 1,
   Brown = 2,
   DarkBrown = 3,
   Green = 4,
