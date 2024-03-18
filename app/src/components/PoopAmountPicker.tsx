@@ -21,7 +21,7 @@ type Props = {
   setValue: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export function PoopAmountSelector(props: Props) {
+export function PoopAmountPicker(props: Props) {
   const theme = useTheme();
   const legend = getPoopAmountSelectorLegend(props.value);
   return (

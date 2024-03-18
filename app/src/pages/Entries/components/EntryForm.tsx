@@ -26,7 +26,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { NasalHygieneType } from "@/enums/NasalHygieneType";
 import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
-import { PoopAmountSelector } from "@/components/PoopAmountSelector";
+import { PoopAmountPicker } from "@/components/PoopAmountPicker";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -246,7 +246,7 @@ export default function EntryForm(props: EntryFormProps) {
           <Section title="poop">
             {parseEnumValue(props.entry.entryType, EntryType) !=
               EntryType.Poop && <SectionTitle title="Caca" />}
-            <PoopAmountSelector value={poopAmount} setValue={setPoopAmount} />
+            <PoopAmountPicker value={poopAmount} setValue={setPoopAmount} />
           </Section>
         )}
 
