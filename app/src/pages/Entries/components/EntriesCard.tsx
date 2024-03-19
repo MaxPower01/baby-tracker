@@ -31,7 +31,6 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useEntries } from "@/pages/Entries/hooks/useEntries";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";

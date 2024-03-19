@@ -24,7 +24,7 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/state/activitiesSlice";
-import { useEntries } from "@/pages/Entries/hooks/useEntries";
+import { useEntries } from "@/pages/Entries/components/EntriesProvider";
 import { useSelector } from "react-redux";
 
 type Props = {

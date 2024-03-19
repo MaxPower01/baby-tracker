@@ -11,16 +11,45 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import EntriesContext from "@/pages/Entries/components/EntriesContext";
-import EntriesContextValue from "@/pages/Entries/types/EntriesContextValue";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+
+interface EntriesContextType {
+  entries: EntryModel[];
+  setEntries: React.Dispatch<React.SetStateAction<EntryModel[]>>;
+  isLoading: boolean;
+  getEntries: (params: { timePeriod: TimePeriodId }) => Promise<EntryModel[]>;
+  deleteEntry: (entryId: string) => Promise<void>;
+  saveEntry: (entry: EntryModel) => Promise<string | null>;
+  status: "loading" | "idle";
+}
+
+const EntriesContext = createContext(
+  null
+) as React.Context<EntriesContextType | null>;
+
+export function useEntries() {
+  const context = useContext(EntriesContext);
+  if (context == null) {
+    throw new Error(
+      "Entries context is null. Make sure to call useEntries() inside of a <EntriesProvider />"
+    );
+  }
+  return context;
+}
 
 export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
@@ -231,7 +260,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
     [user]
   );
 
-  const context: EntriesContextValue = useMemo(
+  const context: EntriesContextType = useMemo(
     () => ({
       entries,
       setEntries,
@@ -239,6 +268,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
       getEntries,
       deleteEntry,
       saveEntry,
+      status: isLoading ? "loading" : "idle",
     }),
     [entries, setEntries, isLoading, getEntries, deleteEntry, saveEntry]
   );
