@@ -5,35 +5,29 @@ import { PoopColor } from "@/types/PoopColor";
 import { PoopTexure } from "@/types/PoopTexure";
 import { Stopwatch } from "@/types/Stopwatch";
 import { Tag } from "@/pages/Tags/models/Tag";
+import { Timestamp } from "firebase/firestore";
 
-export interface BaseEntry {
-  id: string;
+export interface Entry {
+  id?: string;
   entryType: EntryType;
-  startTimestamp: number;
-  endTimeStamp: number;
+  startTimestamp: Timestamp;
+  endTimeStamp: Timestamp;
   note: string;
   imageURLs: string[];
-  tags: Tag[];
-}
-
-export interface Entry extends BaseEntry {
-  amount?: number;
-  amounts?: {
-    side: string;
-    value: number;
-  }[];
-  amountUnit?: string;
-  poopAmount?: number;
-  poopTexture?: PoopTexure;
-  poopColor?: PoopColor;
-  urineAmount?: number;
-  weight?: number;
-  weightUnit?: string;
-  length?: number;
-  lengthUnit?: string;
-  temperature?: number;
-  temperatureUnit?: string;
-  stopwatch?: Stopwatch;
-  stopwatches?: Stopwatch[];
   activityContexts: ActivityContext[];
+  leftVolume?: number;
+  rightVolume?: number;
+  weight?: number;
+  size?: number;
+  temperature?: number;
+  temperatureMethodId?: number;
+  leftTime?: number;
+  leftStopwatchIsRunning?: boolean;
+  rightTime?: number;
+  rightStopwatchIsRunning?: boolean;
+  urineAmount?: number;
+  poopAmount?: number;
+  poopColorId?: number;
+  poopTextureId?: number;
+  nasalHygieneIds?: number[];
 }

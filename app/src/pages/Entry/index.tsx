@@ -10,7 +10,6 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/MenuProvider";
 import { RootState } from "@/state/store";
 import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
-import { getDefaultEntryForType } from "@/pages/Entry/utils/getDefaultEntryForType";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -29,7 +28,7 @@ export function EntryPage() {
     return null;
   }
   const entry: Entry | null = isNewEntry
-    ? getDefaultEntryForType(entryType)
+    ? null
     : useSelector((state: RootState) =>
         state.entriesReducer.entries.find((entry) => entry.id === entryId)
       ) ?? null;

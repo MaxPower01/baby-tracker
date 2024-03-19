@@ -40,6 +40,7 @@ import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { TemperatureInput } from "@/components/TemperatureInput";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
+import { Timestamp } from "firebase/firestore";
 import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
@@ -64,17 +65,29 @@ type EntryFormProps = {
 export default function EntryForm(props: EntryFormProps) {
   const theme = useTheme();
   const name = getTitleForEntryType(props.entry.entryType);
-  const handleSubmit = useCallback(() => {}, []);
-  const [isSaving, setIsSaving] = useState(false);
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >([]);
   const [startDate, setStartDate] = useState<Dayjs>(dayjs());
   const [startTime, setStartTime] = useState<Dayjs>(dayjs());
+  const startDateTime = useMemo(() => {
+    const date = startDate.startOf("day");
+    date.hour(startTime.hour());
+    date.minute(startTime.minute());
+    date.second(startTime.second());
+    return date;
+  }, [startDate, startTime]);
   const [endDate, setEndDate] = useState<Dayjs>(dayjs());
   const [endTime, setEndTime] = useState<Dayjs>(dayjs());
+  const endDateTime = useMemo(() => {
+    const date = endDate.startOf("day");
+    date.hour(endTime.hour());
+    date.minute(endTime.minute());
+    date.second(endTime.second());
+    return date;
+  }, [endDate, endTime]);
   const [note, setNote] = useState("");
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageURLs, setImageURLs] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [weight, setWeight] = useState(0);
   const [size, setSize] = useState(0);
@@ -104,20 +117,113 @@ export default function EntryForm(props: EntryFormProps) {
   const [temperature, setTemperature] = useState(0);
   const [temperatureMethodId, setTemperatureMethodId] =
     useState<TemperatureMethodId | null>(null);
-  const [nasalHygieneTypes, setNasalHygieneTypes] = useState<NasalHygieneId[]>(
-    []
-  );
-  const [leftVollume, setLeftVollume] = useState(0);
-  const [rightVollume, setRightVollume] = useState(0);
+  const [nasalHygieneIds, setNasalHygieneIds] = useState<NasalHygieneId[]>([]);
+  const [leftVolume, setLeftVolume] = useState(0);
+  const [rightVolume, setRightVollume] = useState(0);
   const volume = useMemo(
-    () => leftVollume + rightVollume,
-    [leftVollume, rightVollume]
+    () => leftVolume + rightVolume,
+    [leftVolume, rightVolume]
   );
   const [urineAmount, setUrineAmount] = useState(0);
   const [poopAmount, setPoopAmount] = useState(0);
   const [poopConsistencyId, setPoopConsistencyId] =
     useState<PoopConsistencyId | null>(null);
   const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const save = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      try {
+        if (isSaving) {
+          return;
+        }
+        setIsSaving(true);
+        const entry: Entry = {
+          id: undefined,
+          entryType: props.entry.entryType,
+          startTimestamp: Timestamp.fromDate(startDateTime.toDate()),
+          endTimeStamp: Timestamp.fromDate(endDateTime.toDate()),
+          note: note,
+          imageURLs: imageURLs,
+          activityContexts: selectedActivityContexts,
+          leftVolume: leftVolume,
+          rightVolume: rightVolume,
+          weight: weight,
+          size: size,
+          temperature: temperature,
+          temperatureMethodId: temperatureMethodId ?? undefined,
+          leftTime: leftStopwatchTime,
+          leftStopwatchIsRunning: leftStopwatchIsRunning,
+          rightTime: rightStopwatchTime,
+          rightStopwatchIsRunning: rightStopwatchIsRunning,
+          urineAmount: urineAmount,
+          poopAmount: poopAmount,
+          poopColorId: poopColorId ?? undefined,
+          poopTextureId: poopConsistencyId ?? undefined,
+          nasalHygieneIds: nasalHygieneIds,
+        };
+        setIsSaving(false);
+        resolve(entry);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }, [
+    startDateTime,
+    endDateTime,
+    note,
+    imageURLs,
+    selectedActivityContexts,
+    leftVolume,
+    rightVolume,
+    weight,
+    size,
+    temperature,
+    temperatureMethodId,
+    leftStopwatchTime,
+    leftStopwatchIsRunning,
+    rightStopwatchTime,
+    rightStopwatchIsRunning,
+    urineAmount,
+    poopAmount,
+    poopColorId,
+    poopConsistencyId,
+    nasalHygieneIds,
+    isSaving,
+  ]);
+
+  const handleSubmit = useCallback(() => {
+    save()
+      .then((entry) => {
+        console.log("Entry saved", entry);
+      })
+      .catch((error) => {
+        console.error("Error saving entry", error);
+      });
+  }, [
+    startDateTime,
+    endDateTime,
+    note,
+    imageURLs,
+    selectedActivityContexts,
+    leftVolume,
+    rightVolume,
+    weight,
+    size,
+    temperature,
+    temperatureMethodId,
+    leftStopwatchTime,
+    leftStopwatchIsRunning,
+    rightStopwatchTime,
+    rightStopwatchIsRunning,
+    urineAmount,
+    poopAmount,
+    poopColorId,
+    poopConsistencyId,
+    nasalHygieneIds,
+    isSaving,
+    save,
+  ]);
 
   return (
     <>
@@ -208,8 +314,8 @@ export default function EntryForm(props: EntryFormProps) {
         {entryTypeHasNasalHygiene(props.entry.entryType) && (
           <Section title="nasal-hygiene">
             <NasalHygieneTypesPicker
-              values={nasalHygieneTypes}
-              setValues={setNasalHygieneTypes}
+              values={nasalHygieneIds}
+              setValues={setNasalHygieneIds}
             />
           </Section>
         )}
@@ -219,9 +325,9 @@ export default function EntryForm(props: EntryFormProps) {
             <SectionTitle title="Quantité" />
             <VolumeInputContainer
               hasSides={entryTypeHasSides(props.entry.entryType)}
-              leftValue={leftVollume}
-              setLeftValue={setLeftVollume}
-              rightValue={rightVollume}
+              leftValue={leftVolume}
+              setLeftValue={setLeftVolume}
+              rightValue={rightVolume}
               setRightValue={setRightVollume}
             />
           </Section>
@@ -297,8 +403,8 @@ export default function EntryForm(props: EntryFormProps) {
         <Section title="images">
           <SectionTitle title="Images" />
           <ImagesInput
-            imageUrls={imageUrls}
-            setImageUrls={setImageUrls}
+            imageUrls={imageURLs}
+            setImageUrls={setImageURLs}
             isUploading={isUploading}
             setIsUploading={setIsUploading}
           />
