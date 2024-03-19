@@ -241,8 +241,8 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasUrine(props.entry.entryType) && (
           <Section title="urine">
-            {parseEnumValue(props.entry.entryType, EntryType) !=
-              EntryType.Urine && <SectionTitle title="Pipi" />}
+            {/* {parseEnumValue(props.entry.entryType, EntryType) !=
+              EntryType.Urine && <SectionTitle title="Pipi" />} */}
             <UrineAmountSelector
               value={urineAmount}
               setValue={setUrineAmount}
@@ -252,8 +252,8 @@ export default function EntryForm(props: EntryFormProps) {
 
         {entryTypeHasPoop(props.entry.entryType) && (
           <Section title="poop">
-            {parseEnumValue(props.entry.entryType, EntryType) !=
-              EntryType.Poop && <SectionTitle title="Caca" />}
+            {/* {parseEnumValue(props.entry.entryType, EntryType) !=
+              EntryType.Poop && <SectionTitle title="Caca" />} */}
             <PoopAmountPicker value={poopAmount} setValue={setPoopAmount} />
             {poopAmount > 0 && (
               <PoopConsistencyPicker
