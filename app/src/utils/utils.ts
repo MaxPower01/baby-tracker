@@ -46,7 +46,8 @@ export function groupEntriesByDate(entries: Entry[]): {
   const mostRecentEntry = entries.reduce((a, b) =>
     a.startTimestamp > b.startTimestamp ? a : b
   );
-  const mostRecentDate = new Date(mostRecentEntry.startTimestamp);
+  // const mostRecentDate = new Date(mostRecentEntry.startTimestamp);
+  const mostRecentDate = mostRecentEntry.startTimestamp.toDate();
   const mostRecentYear = mostRecentDate.getFullYear();
   for (let i = currentYear; i >= mostRecentYear; i--) {
     const yearEntries = {
@@ -64,7 +65,8 @@ export function groupEntriesByDate(entries: Entry[]): {
         const dayEntries = {
           dayNumber: k,
           entries: entries.filter((entry) => {
-            const startDate = new Date(entry.startTimestamp);
+            // const startDate = new Date(entry.startTimestamp);
+            const startDate = entry.startTimestamp.toDate();
             return (
               startDate.getFullYear() === i &&
               startDate.getMonth() === j &&
@@ -100,15 +102,18 @@ export function groupEntriesByTime(params: {
   if (!entries || entries.length === 0) return result;
   // Sort entries by timestamp, from most recent to least recent
   const sortedEntries = entries.sort(
-    (a, b) => b.startTimestamp - a.startTimestamp
+    (a, b) =>
+      b.startTimestamp.toDate().getTime() - a.startTimestamp.toDate().getTime()
   );
-  let lastDate = new Date(sortedEntries[0].startTimestamp);
+  // let lastDate = new Date(sortedEntries[0].startTimestamp);
+  let lastDate = sortedEntries[0].startTimestamp.toDate();
   let currentGroup = {
     entries: [] as Entry[],
   };
   for (let i = 0; i < sortedEntries.length; i++) {
     const entry = entries[i];
-    const entryDate = new Date(entry.startTimestamp);
+    // const entryDate = new Date(entry.startTimestamp);
+    const entryDate = entry.startTimestamp.toDate();
     const previousEntryDate = lastDate;
     const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
     const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);

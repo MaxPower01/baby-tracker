@@ -4,6 +4,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -74,7 +75,7 @@ export default function ActivityChip({
             />
           )} */}
           <ActivityIcon
-            activity={activity}
+            type={activity.type as any}
             sx={{
               marginRight: size === "small" ? -0.5 : -1,
               marginLeft: 0.5,

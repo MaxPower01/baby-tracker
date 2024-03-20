@@ -139,7 +139,8 @@ export default function Entries(props: Props) {
                 return null;
               }
               const firstEntry = dayEntries.entries[0];
-              const startDate = new Date(firstEntry.startTimestamp);
+              // const startDate = new Date(firstEntry.startTimestamp);
+              const startDate = firstEntry.startTimestamp.toDate();
 
               const entriesByTime = groupEntriesByTime({
                 entries: dayEntries.entries,

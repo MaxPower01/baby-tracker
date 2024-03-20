@@ -29,6 +29,7 @@ import EntryModel from "@/pages/Entry/models/EntryModel";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
+import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useMenu } from "@/components/MenuProvider";
@@ -75,9 +76,7 @@ export default function EntriesCard(props: Props) {
       <Card elevation={0} sx={{}}>
         {entries.map((entry, entryIndex) => {
           const nextEntryExists = entryIndex < entries.length - 1;
-          const entryHasStopwatchRunning =
-            entry.stopwatch?.isRunning ||
-            entry.stopwatches?.some((s) => s.isRunning);
+          const stopwatchRunning = entryHasStopwatchRunning(entry);
           if (entry.id == null) return null;
           const previousEntry = allEntries
             .slice()
@@ -159,15 +158,15 @@ export default function EntriesCard(props: Props) {
                           borderRadius: "50%",
                           border: "1px solid",
                           // backgroundColor: theme.customPalette.background.avatar,
-                          backgroundColor: entryHasStopwatchRunning
+                          backgroundColor: stopwatchRunning
                             ? `${theme.palette.primary.main}30`
                             : "transparent",
                           flexShrink: 0,
                           zIndex: 1,
-                          borderColor: entryHasStopwatchRunning
+                          borderColor: stopwatchRunning
                             ? `${theme.palette.primary.main}50`
                             : "transparent",
-                          boxShadow: entryHasStopwatchRunning
+                          boxShadow: stopwatchRunning
                             ? `0 0 5px 0px ${theme.palette.primary.main}`
                             : "",
                         }}
@@ -197,7 +196,7 @@ export default function EntriesCard(props: Props) {
                           entry={entry}
                           hideIcon
                           textColor={
-                            entryHasStopwatchRunning
+                            stopwatchRunning
                               ? theme.palette.primary.main
                               : undefined
                           }

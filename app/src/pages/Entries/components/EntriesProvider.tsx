@@ -20,7 +20,7 @@ import {
   useState,
 } from "react";
 
-import EntryModel from "@/pages/Entry/models/EntryModel";
+import { Entry } from "@/pages/Entry/types/Entry";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { db } from "@/firebase";
 import { isNullOrWhiteSpace } from "@/utils/utils";
@@ -28,12 +28,12 @@ import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 interface EntriesContextType {
-  entries: EntryModel[];
-  setEntries: React.Dispatch<React.SetStateAction<EntryModel[]>>;
+  entries: Entry[];
+  setEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
   isLoading: boolean;
-  getEntries: (params: { timePeriod: TimePeriodId }) => Promise<EntryModel[]>;
+  getEntries: (params: { timePeriod: TimePeriodId }) => Promise<Entry[]>;
   deleteEntry: (entryId: string) => Promise<void>;
-  saveEntry: (entry: EntryModel) => Promise<string | null>;
+  saveEntry: (entry: Entry) => Promise<string | null>;
   status: "loading" | "idle";
 }
 
@@ -53,7 +53,7 @@ export function useEntries() {
 
 export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
-  const [entries, setEntries] = useState<EntryModel[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
@@ -116,15 +116,18 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
         setIsLoading(false);
         return [];
       }
-      const entries: EntryModel[] = [];
+      const entries: Entry[] = [];
       querySnapshot.forEach((doc) => {
-        const entry = EntryModel.fromFirestore(doc.data());
-        entry.id = doc.id;
-        entries.push(entry);
+        // const entry = EntryModel.fromFirestore(doc.data());
+        // entry.id = doc.id;
+        // entries.push(entry);
       });
       setIsLoading(false);
       entries.sort((a, b) => {
-        return b.startDate.getTime() - a.startDate.getTime();
+        return (
+          b.startTimestamp.toDate().getTime() -
+          a.startTimestamp.toDate().getTime()
+        );
       });
       return [...entries];
     },
@@ -146,7 +149,10 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
           }
         });
         newEntries.sort((a, b) => {
-          return b.startDate.getTime() - a.startDate.getTime();
+          return (
+            b.startTimestamp.toDate().getTime() -
+            a.startTimestamp.toDate().getTime()
+          );
         });
         return [...newEntries];
       });
@@ -163,20 +169,20 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
       orderBy("startDate", "desc")
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const addedEntries: EntryModel[] = [];
-      const modifiedEntries: EntryModel[] = [];
-      const removedEntries: EntryModel[] = [];
+      const addedEntries: Entry[] = [];
+      const modifiedEntries: Entry[] = [];
+      const removedEntries: Entry[] = [];
       snapshot.docChanges().forEach((change) => {
         if (change.doc.data() != null) {
-          const entry = EntryModel.fromFirestore(change.doc.data());
-          entry.id = change.doc.id;
-          if (change.type === "added") {
-            addedEntries.push(entry);
-          } else if (change.type === "modified") {
-            modifiedEntries.push(entry);
-          } else if (change.type === "removed") {
-            removedEntries.push(entry);
-          }
+          // const entry = EntryModel.fromFirestore(change.doc.data());
+          // entry.id = change.doc.id;
+          // if (change.type === "added") {
+          //   addedEntries.push(entry);
+          // } else if (change.type === "modified") {
+          //   modifiedEntries.push(entry);
+          // } else if (change.type === "removed") {
+          //   removedEntries.push(entry);
+          // }
         }
       });
       if (
@@ -205,7 +211,10 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
             });
           });
           newEntries.sort((a, b) => {
-            return b.startDate.getTime() - a.startDate.getTime();
+            return (
+              b.startTimestamp.toDate().getTime() -
+              a.startTimestamp.toDate().getTime()
+            );
           });
           return [...newEntries];
         });
@@ -226,12 +235,12 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   );
 
   const saveEntry = useCallback(
-    async (entry: EntryModel) => {
+    async (entry: Entry) => {
       const selectedChild = user?.selectedChild ?? "";
       if (user == null || isNullOrWhiteSpace(selectedChild)) {
         return null;
       }
-      const { id, ...rest } = entry.toJSON({ keepDates: true });
+      const { id, ...rest } = entry;
       if (id == null) {
         const docRef = await addDoc(
           collection(db, `children/${selectedChild}/entries`),
