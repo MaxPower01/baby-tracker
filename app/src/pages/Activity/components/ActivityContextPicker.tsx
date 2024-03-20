@@ -24,7 +24,7 @@ import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activi
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
-import { selectActivityContextsOfType } from "@/state/activitiesSlice";
+import { selectActivityContextsOfType } from "@/state/slices/activitiesSlice";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 

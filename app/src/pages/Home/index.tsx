@@ -9,9 +9,15 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
+import {
+  selectEntriesStatus,
+  selectRecentEntries,
+} from "@/state/slices/entriesSlice";
 
+import ActivitiesWidget from "@/pages/Activities/components/ActivitiesWidget";
 import { BabyWidget } from "@/components/BabyWidget";
 import Entries from "@/pages/Entries/components/Entries";
+import EntriesList from "@/pages/Entries/components/EntriesList";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { MenuProvider } from "@/components/MenuProvider";
 import NewEntryWidget from "@/pages/Entries/components/NewEntryWidget";
@@ -22,13 +28,20 @@ import { SectionTitle } from "@/components/SectionTitle";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 
 export function HomePage() {
   const { user } = useAuthentication();
   const navigate = useNavigate();
+  const entries = useSelector(selectRecentEntries);
+  const entriesStatus = useSelector(selectEntriesStatus);
 
   if (user?.selectedChild == null) {
+    return <LoadingIndicator />;
+  }
+
+  if (entriesStatus === "loading" && entries.length === 0) {
     return <LoadingIndicator />;
   }
 
@@ -54,12 +67,10 @@ export function HomePage() {
         />
       </Section>
       <Section>
-        <MenuProvider>
-          <NewEntryWidget />
-        </MenuProvider>
+        <ActivitiesWidget />
       </Section>
       <Section>
-        <Entries />
+        <EntriesList entries={entries} />
       </Section>
     </SectionStack>
   );

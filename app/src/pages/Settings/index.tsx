@@ -30,7 +30,7 @@ import {
   updateShowUrineQuantityInHomePage,
   updateThemeMode,
   updateWeightUnit,
-} from "@/state/settingsSlice";
+} from "@/state/slices/settingsSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";

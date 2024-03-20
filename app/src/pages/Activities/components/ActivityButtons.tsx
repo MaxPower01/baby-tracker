@@ -2,7 +2,7 @@ import ActivityButton from "@/pages/Activities/components/ActivityButton";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Box } from "@mui/material";
-import { selectActivities } from "@/state/activitiesSlice";
+import { selectActivities } from "@/state/slices/activitiesSlice";
 import { useSelector } from "react-redux";
 
 type Props = {

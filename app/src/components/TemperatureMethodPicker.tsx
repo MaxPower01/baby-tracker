@@ -18,7 +18,7 @@ import {
   selectActivityContexts,
   selectActivityContextsOfType,
   selectTemperatureMethods,
-} from "@/state/activitiesSlice";
+} from "@/state/slices/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";

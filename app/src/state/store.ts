@@ -1,9 +1,9 @@
-import activitiesReducer from "@/state/activitiesSlice";
-import appReducer from "@/state/appSlice";
+import activitiesReducer from "@/state/slices/activitiesSlice";
+import appReducer from "@/state/slices/appSlice";
 import { configureStore } from "@reduxjs/toolkit";
-import entriesReducer from "@/state/entriesSlice";
+import entriesReducer from "@/state/slices/entriesSlice";
 import logger from "redux-logger";
-import settingsReducer from "@/state/settingsSlice";
+import settingsReducer from "@/state/slices/settingsSlice";
 
 const reducer = {
   appReducer,

@@ -7,6 +7,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
+import { Timestamp } from "firebase/firestore";
 
 const key = LocalStorageKey.EntriesState;
 
@@ -134,5 +135,22 @@ export const {
 export const selectEntries = (state: RootState) => state.entriesReducer.entries;
 export const selectEntriesStatus = (state: RootState) =>
   state.entriesReducer.status;
+
+export const selectRecentEntries = (state: RootState) => {
+  try {
+    const timeRange = 1000 * 60 * 60 * 48;
+    const rangeEndDate = new Date();
+    const rangeStartDate = new Date(rangeEndDate.getTime() - timeRange);
+    const rangeStartTimestamp = Timestamp.fromDate(rangeStartDate);
+    const rangeEndTimestamp = Timestamp.fromDate(rangeEndDate);
+    return state.entriesReducer.entries.filter(
+      (entry) =>
+        entry.startTimestamp.seconds >= rangeStartTimestamp.seconds &&
+        entry.startTimestamp.seconds <= rangeEndTimestamp.seconds
+    );
+  } catch (error) {
+    return [];
+  }
+};
 
 export default slice.reducer;

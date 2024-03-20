@@ -17,7 +17,7 @@ import {
 import {
   selectActivities,
   updateActivitiesOrder,
-} from "@/state/activitiesSlice";
+} from "@/state/slices/activitiesSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";

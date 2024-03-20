@@ -51,7 +51,7 @@ import {
   selectActivityContextsOfType,
   setActivityContextsOfType,
   updateActivityContexts,
-} from "@/state/activitiesSlice";
+} from "@/state/slices/activitiesSlice";
 
 import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";

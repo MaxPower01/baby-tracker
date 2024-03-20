@@ -2,10 +2,12 @@ import { MenuProps } from "@mui/material/Menu";
 import { Menu as MuiMenu } from "@mui/material";
 import React from "react";
 
-const MenuContext = React.createContext<{
+interface MenuContext {
   menuProps: MenuProps;
   setAnchorEl: (el: HTMLElement | null) => void;
-}>({
+}
+
+const Context = React.createContext<MenuContext>({
   menuProps: {
     open: false,
     anchorEl: null,
@@ -20,7 +22,7 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
   props
 ) => {
   // Retrieve the context.
-  const { menuProps } = React.useContext(MenuContext);
+  const { menuProps } = React.useContext(Context);
   // Spread the props to the Menu component.
   return (
     <MuiMenu
@@ -37,8 +39,28 @@ const Menu: React.FC<Omit<MenuProps, "open" | "anchorEl" | "onClose">> = (
   );
 };
 
+export function MenuProvider(props: React.PropsWithChildren<{}>) {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  return (
+    <Context.Provider
+      value={{
+        menuProps: {
+          anchorEl,
+          open: Boolean(anchorEl),
+          onClose: () => setAnchorEl(null),
+        },
+        setAnchorEl: (el: HTMLElement | null) => {
+          setAnchorEl(el);
+        },
+      }}
+      {...props}
+    />
+  );
+}
+
 export function useMenu() {
-  const menuContext = React.useContext(MenuContext);
+  const menuContext = React.useContext(Context);
   if (!menuContext) {
     throw new Error(
       "No MenuContext provided. Make sure to call useMenu() inside a MenuProvider."
@@ -69,24 +91,4 @@ export function useMenu() {
     openMenu,
     closeMenu,
   };
-}
-
-export function MenuProvider(props: React.PropsWithChildren<{}>) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
-  return (
-    <MenuContext.Provider
-      value={{
-        menuProps: {
-          anchorEl,
-          open: Boolean(anchorEl),
-          onClose: () => setAnchorEl(null),
-        },
-        setAnchorEl: (el: HTMLElement | null) => {
-          setAnchorEl(el);
-        },
-      }}
-      {...props}
-    />
-  );
 }

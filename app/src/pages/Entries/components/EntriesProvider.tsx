@@ -27,7 +27,7 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-interface EntriesContextType {
+interface EntriesContext {
   entries: Entry[];
   setEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
   isLoading: boolean;
@@ -37,19 +37,7 @@ interface EntriesContextType {
   status: "loading" | "idle";
 }
 
-const EntriesContext = createContext(
-  null
-) as React.Context<EntriesContextType | null>;
-
-export function useEntries() {
-  const context = useContext(EntriesContext);
-  if (context == null) {
-    throw new Error(
-      "Entries context is null. Make sure to call useEntries() inside of a <EntriesProvider />"
-    );
-  }
-  return context;
-}
+const Context = createContext(null) as React.Context<EntriesContext | null>;
 
 export function EntriesProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
@@ -269,7 +257,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
     [user]
   );
 
-  const context: EntriesContextType = useMemo(
+  const context: EntriesContext = useMemo(
     () => ({
       entries,
       setEntries,
@@ -282,5 +270,15 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
     [entries, setEntries, isLoading, getEntries, deleteEntry, saveEntry]
   );
 
-  return <EntriesContext.Provider value={context} {...props} />;
+  return <Context.Provider value={context} {...props} />;
+}
+
+export function useEntries() {
+  const context = useContext(Context);
+  if (context == null) {
+    throw new Error(
+      "Entries context is null. Make sure to call useEntries() inside of a <EntriesProvider />"
+    );
+  }
+  return context;
 }

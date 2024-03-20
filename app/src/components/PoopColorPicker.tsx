@@ -4,7 +4,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { PoopColor } from "@/types/PoopColor";
 import { PoopColorId } from "@/enums/PoopColorId";
 import React from "react";
-import { selectPoopColors } from "@/state/activitiesSlice";
+import { selectPoopColors } from "@/state/slices/activitiesSlice";
 import { useSelector } from "react-redux";
 
 type Props = {

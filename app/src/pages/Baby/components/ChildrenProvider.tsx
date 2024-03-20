@@ -19,18 +19,16 @@ import Child from "@/pages/Authentication/types/Child";
 import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-interface ChildrenContextValue {
+interface ChildrenContext {
   children: Child[] | null;
   isLoading: boolean;
   saveChild: (child: Child) => Promise<Child>;
 }
 
-const ChildrenContext = createContext(
-  null
-) as React.Context<ChildrenContextValue | null>;
+const Context = createContext(null) as React.Context<ChildrenContext | null>;
 
 export function useChildren() {
-  const entries = useContext(ChildrenContext);
+  const entries = useContext(Context);
   if (entries == null) {
     throw new Error(
       "Children context is null. Make sure to call useChidlren() inside of a <ChildrenProvider />"
@@ -171,7 +169,7 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
     });
   }, [user]);
 
-  const context: ChildrenContextValue = useMemo(
+  const context: ChildrenContext = useMemo(
     () => ({
       children,
       isLoading,
@@ -180,5 +178,5 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
     [children, isLoading, user, saveChild]
   );
 
-  return <ChildrenContext.Provider value={context} {...props} />;
+  return <Context.Provider value={context} {...props} />;
 }

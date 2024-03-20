@@ -1,7 +1,7 @@
 import { Alert, Slide, SlideProps, Snackbar } from "@mui/material";
 import React, { useContext } from "react";
 
-interface ShowSnackbarProps {
+interface SnackbarProps {
   id: string;
   message: string;
   severity: "error" | "warning" | "info" | "success";
@@ -13,21 +13,19 @@ interface ShowSnackbarProps {
   autoHideDuration?: number;
 }
 
-interface SnackbarContextProps {
-  showSnackbar: (props: ShowSnackbarProps) => void;
+interface SnackbarContext {
+  showSnackbar: (props: SnackbarProps) => void;
   hideSnackbar: (id: string) => void;
 }
 
-const SnackbarContext = React.createContext<SnackbarContextProps | undefined>(
-  undefined
-);
+const Context = React.createContext<SnackbarContext | undefined>(undefined);
 
 function SlideTransition(props: SlideProps) {
   return <Slide {...props} direction="up" />;
 }
 
 export const useSnackbar = () => {
-  const context = useContext(SnackbarContext);
+  const context = useContext(Context);
   if (!context) {
     throw new Error("useSnackbar must be used within a SnackbarProvider");
   }
@@ -35,8 +33,8 @@ export const useSnackbar = () => {
 };
 
 export function SnackbarProvider(props: React.PropsWithChildren<{}>) {
-  const [snackbars, setSnackbars] = React.useState<ShowSnackbarProps[]>([]);
-  const showSnackbar = (showSnackbarProps: ShowSnackbarProps) => {
+  const [snackbars, setSnackbars] = React.useState<SnackbarProps[]>([]);
+  const showSnackbar = (showSnackbarProps: SnackbarProps) => {
     setSnackbars((prev) => {
       const existing = prev.find(
         (snackbar) => snackbar.id === showSnackbarProps.id
@@ -70,12 +68,12 @@ export function SnackbarProvider(props: React.PropsWithChildren<{}>) {
       });
     });
   };
-  const providerValue: SnackbarContextProps = {
+  const providerValue: SnackbarContext = {
     showSnackbar,
     hideSnackbar,
   };
   return (
-    <SnackbarContext.Provider value={providerValue} {...props}>
+    <Context.Provider value={providerValue} {...props}>
       {props.children}
       {snackbars.map((snackbar) => (
         <Snackbar
@@ -104,6 +102,6 @@ export function SnackbarProvider(props: React.PropsWithChildren<{}>) {
           </Alert>
         </Snackbar>
       ))}
-    </SnackbarContext.Provider>
+    </Context.Provider>
   );
 }
