@@ -5,25 +5,32 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
+import { RECENT_DATA_FETCH_COOLDOWN } from "@/constants/RECENT_DATA_FETCH_COOLDOWN";
+import { RECENT_TIME_RANGE } from "@/constants/RECENT_TIME_RANGE";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { Timestamp } from "firebase/firestore";
+import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 
 const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
-  lastFetchTimestamp: null,
+  latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
 
-export const fetchInitialEntries = createAsyncThunk(
+export const fetchRecentEntries = createAsyncThunk(
   "entries/fetchInitialEntries",
   async (_, { dispatch, getState }) => {
-    const { lastFetchTimestamp } = (getState() as RootState).entriesReducer;
+    const { latestRecentEntriesFetchedTimestamp: lastFetchTimestamp } = (
+      getState() as RootState
+    ).entriesReducer;
     const now = Date.now();
-    const minimumFetchInterval = 1000 * 60 * 30;
-    if (lastFetchTimestamp && now - lastFetchTimestamp < minimumFetchInterval) {
+    if (
+      lastFetchTimestamp &&
+      now - lastFetchTimestamp < RECENT_DATA_FETCH_COOLDOWN
+    ) {
       return;
     }
     try {
@@ -103,18 +110,18 @@ const slice = createSlice({
       setLocalState(key, state);
     },
     setLastFetchTimestamp: (state, action: PayloadAction<number>) => {
-      state.lastFetchTimestamp = action.payload;
+      state.latestRecentEntriesFetchedTimestamp = action.payload;
       setLocalState(key, state);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchInitialEntries.pending, (state) => {
+    builder.addCase(fetchRecentEntries.pending, (state) => {
       state.status = "loading";
     });
-    builder.addCase(fetchInitialEntries.fulfilled, (state) => {
+    builder.addCase(fetchRecentEntries.fulfilled, (state) => {
       state.status = "idle";
     });
-    builder.addCase(fetchInitialEntries.rejected, (state) => {
+    builder.addCase(fetchRecentEntries.rejected, (state) => {
       state.status = "idle";
     });
   },
@@ -138,15 +145,9 @@ export const selectEntriesStatus = (state: RootState) =>
 
 export const selectRecentEntries = (state: RootState) => {
   try {
-    const timeRange = 1000 * 60 * 60 * 48;
-    const rangeEndDate = new Date();
-    const rangeStartDate = new Date(rangeEndDate.getTime() - timeRange);
-    const rangeStartTimestamp = Timestamp.fromDate(rangeStartDate);
-    const rangeEndTimestamp = Timestamp.fromDate(rangeEndDate);
+    const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
     return state.entriesReducer.entries.filter(
-      (entry) =>
-        entry.startTimestamp.seconds >= rangeStartTimestamp.seconds &&
-        entry.startTimestamp.seconds <= rangeEndTimestamp.seconds
+      (entry) => entry.startTimestamp.seconds >= rangeStartTimestamp.seconds
     );
   } catch (error) {
     return [];

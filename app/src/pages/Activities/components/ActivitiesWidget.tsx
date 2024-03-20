@@ -1,5 +1,10 @@
+import { Entry } from "@/pages/Entry/types/Entry";
 import React from "react";
 
-export default function ActivitiesWidget() {
-  return <div>ActivitiesWidget</div>;
+type Props = {
+  entries: Entry[];
+};
+
+export default function ActivitiesWidget(props: Props) {
+  return <div>RecentEntriesWidget</div>;
 }
