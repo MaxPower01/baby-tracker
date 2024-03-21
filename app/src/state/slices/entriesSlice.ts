@@ -1,4 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import {
   getInitialState,
   isNullOrWhiteSpace,
@@ -6,6 +7,7 @@ import {
 } from "@/utils/utils";
 
 import ActivityType from "@/pages/Activity/enums/ActivityType";
+import CustomUser from "@/pages/Authentication/types/CustomUser";
 import EntriesState from "@/pages/Entries/types/EntriesState";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
@@ -13,8 +15,8 @@ import { RECENT_DATA_AGE_LIMIT } from "@/constants/RECENT_DATA_AGE_LIMIT";
 import { RECENT_DATA_FETCH_COOLDOWN } from "@/constants/RECENT_DATA_FETCH_COOLDOWN";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
-import { Timestamp } from "firebase/firestore";
 import { createSelector } from "@reduxjs/toolkit";
+import { db } from "@/firebase";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 
 const key = LocalStorageKey.EntriesState;
@@ -49,6 +51,49 @@ export const fetchRecentEntries = createAsyncThunk(
     } catch (err) {
       // Gérer l'erreur
     }
+  }
+);
+
+type SaveEntryProps = {
+  entry: Entry;
+  user: CustomUser;
+};
+
+export const saveEntry = createAsyncThunk(
+  "entries/saveEntry",
+  async (props: SaveEntryProps, { dispatch }) => {
+    const { entry, user } = props;
+    const selectedChild = user?.selectedChild ?? "";
+    if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      return;
+    }
+    const { id, ...rest } = entry;
+    let newId = id;
+    if (isNullOrWhiteSpace(id)) {
+      const docRef = await addDoc(
+        collection(db, `children/${selectedChild}/entries`),
+        {
+          ...rest,
+          createdDate: Timestamp.fromDate(new Date()),
+          createdBy: {
+            id: user.uid,
+            name: user.displayName ?? "",
+          },
+        }
+      );
+      newId = docRef.id;
+    } else {
+      await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
+        ...rest,
+        editedDate: Timestamp.fromDate(new Date()),
+        editedBy: {
+          id: user.uid,
+          name: user.displayName ?? "",
+        },
+      });
+    }
+    const newEntry = { ...entry, id: newId };
+    dispatch(addEntry({ entry: JSON.stringify(newEntry) }));
   }
 );
 

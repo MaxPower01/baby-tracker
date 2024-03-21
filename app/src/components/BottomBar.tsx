@@ -244,7 +244,7 @@ export function BottomBar(props: Props) {
                       textAlign="center"
                       sx={{
                         // fontSize: "50%",
-                        fontWeight: isCurrentPage == true ? "bold" : undefined,
+                        fontWeight: isCurrentPage == true ? "bold" : 400,
                       }}
                     >
                       {label}

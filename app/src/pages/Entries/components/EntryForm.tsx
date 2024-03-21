@@ -45,6 +45,7 @@ import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
+import { dispatch } from "d3";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
@@ -57,12 +58,15 @@ import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getTitleForEntryType } from "@/utils/utils";
 import { parseEnumValue } from "@/utils/parseEnumValue";
+import { saveEntry } from "@/state/slices/entriesSlice";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 type EntryFormProps = {
   entry: Entry;
 };
 
 export default function EntryForm(props: EntryFormProps) {
+  const { user } = useAuthentication();
   const theme = useTheme();
   const name = getTitleForEntryType(props.entry.entryType);
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
@@ -134,7 +138,7 @@ export default function EntryForm(props: EntryFormProps) {
   const save = useCallback(() => {
     return new Promise((resolve, reject) => {
       try {
-        if (isSaving) {
+        if (isSaving || user == null) {
           return;
         }
         setIsSaving(true);
@@ -142,7 +146,7 @@ export default function EntryForm(props: EntryFormProps) {
           id: undefined,
           entryType: props.entry.entryType,
           startTimestamp: Timestamp.fromDate(startDateTime.toDate()),
-          endTimeStamp: Timestamp.fromDate(endDateTime.toDate()),
+          endTimestamp: Timestamp.fromDate(endDateTime.toDate()),
           note: note,
           imageURLs: imageURLs,
           activityContexts: selectedActivityContexts,
@@ -162,6 +166,10 @@ export default function EntryForm(props: EntryFormProps) {
           poopTextureId: poopConsistencyId ?? undefined,
           nasalHygieneIds: nasalHygieneIds,
         };
+        // dispatch(saveEntry({
+        //   entry: entry,
+        //   user: user
+        // }));
         setIsSaving(false);
         resolve(entry);
       } catch (error) {
@@ -190,6 +198,7 @@ export default function EntryForm(props: EntryFormProps) {
     poopConsistencyId,
     nasalHygieneIds,
     isSaving,
+    user,
   ]);
 
   const handleSubmit = useCallback(() => {
@@ -223,6 +232,7 @@ export default function EntryForm(props: EntryFormProps) {
     nasalHygieneIds,
     isSaving,
     save,
+    user,
   ]);
 
   return (

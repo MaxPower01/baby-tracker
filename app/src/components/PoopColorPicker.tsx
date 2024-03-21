@@ -26,11 +26,9 @@ export default function PoopColorPicker(props: Props) {
       }}
     >
       {items.map((item) => {
-        console.log(item);
-        console.log(props.value);
         return (
           <Chip
-            // Icon should be a cirle with the color of the poop
+            key={item.id}
             variant={props.value == item.id ? "filled" : "outlined"}
             icon={
               <Box

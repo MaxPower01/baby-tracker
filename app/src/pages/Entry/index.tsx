@@ -10,6 +10,7 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/MenuProvider";
 import { RootState } from "@/state/store";
 import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
+import { getDefaultEntry } from "@/utils/getDefaultEntry";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -28,12 +29,13 @@ export function EntryPage() {
     return null;
   }
   const entry: Entry | null = isNewEntry
-    ? null
+    ? getDefaultEntry(entryType)
     : useSelector((state: RootState) =>
         state.entriesReducer.entries.find((entry) => entry.id === entryId)
       ) ?? null;
   if (!entry) {
     // TODO: Try to load entry from server
+    // TODO: Show error message
     console.error("Entry not found");
     return null;
   }

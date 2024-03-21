@@ -11,7 +11,7 @@ export interface Entry {
   id?: string;
   entryType: EntryType;
   startTimestamp: Timestamp;
-  endTimeStamp: Timestamp;
+  endTimestamp: Timestamp;
   note: string;
   imageURLs: string[];
   activityContexts: ActivityContext[];
