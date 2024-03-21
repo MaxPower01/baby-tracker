@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 
-import ChildForm from "@/pages/Baby/components/ChildForm";
+import BabyForm from "@/pages/Baby/components/BabyForm";
 import ChildLanding from "@/pages/Baby/components/ChildLanding";
 import ChildWizard from "@/pages/Baby/components/ChildWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -34,11 +34,11 @@ export default function ChildPage() {
         </Typography>
       );
     }
-    return <ChildForm child={child} />;
+    return <BabyForm child={child} />;
   }
 
   if (showForm) {
-    return <ChildForm />;
+    return <BabyForm />;
   }
 
   return <ChildLanding setShowForm={setShowForm} />;

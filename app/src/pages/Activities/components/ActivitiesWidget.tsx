@@ -6,5 +6,8 @@ type Props = {
 };
 
 export default function ActivitiesWidget(props: Props) {
+  if (props.entries.length === 0) {
+    return <div>ActivitiesWidget: No entries</div>;
+  }
   return <div>RecentEntriesWidget</div>;
 }

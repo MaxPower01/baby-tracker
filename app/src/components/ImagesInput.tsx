@@ -83,14 +83,14 @@ export function ImagesInput(props: Props) {
     [props.isUploading, user]
   );
 
-  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [modalImageURL, setModalImageURL] = useState<string | null>(null);
 
   const handleImageClick = (imageUrl: string) => {
-    setSelectedImageUrl(imageUrl);
+    setModalImageURL(imageUrl);
   };
 
   const handleCloseModal = () => {
-    setSelectedImageUrl(null);
+    setModalImageURL(null);
   };
 
   return (
@@ -146,7 +146,7 @@ export function ImagesInput(props: Props) {
       )}
 
       <Modal
-        open={selectedImageUrl !== null}
+        open={modalImageURL !== null}
         onClose={handleCloseModal}
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
@@ -159,7 +159,7 @@ export function ImagesInput(props: Props) {
           }}
         >
           <img
-            src={selectedImageUrl ?? ""}
+            src={modalImageURL ?? ""}
             style={{ width: "100%", height: "auto" }}
           />
         </Box>

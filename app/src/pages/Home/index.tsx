@@ -10,18 +10,19 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  addEntries,
+  removeEntries,
+  selectEntriesStatus,
+  selectRecentEntries,
+  updateEntries,
+} from "@/state/slices/entriesSlice";
+import {
   collection,
   onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import {
-  removeEntries,
-  selectEntriesStatus,
-  selectRecentEntries,
-  updateEntries,
-} from "@/state/slices/entriesSlice";
 import { useEffect, useState } from "react";
 
 import ActivitiesWidget from "@/pages/Activities/components/ActivitiesWidget";
@@ -83,42 +84,19 @@ export function HomePage() {
           );
         }
         if (modifiedEntries.length > 0) {
-          dispatch(updateEntries(modifiedEntries));
+          dispatch(
+            updateEntries({
+              entries: modifiedEntries.map((entry) => JSON.stringify(entry)),
+            })
+          );
         }
-        // if (
-        //   addedEntries.length > 0 ||
-        //   modifiedEntries.length > 0 ||
-        //   removedEntries.length > 0
-        // ) {
-        // setEntries((prevEntries) => {
-        //   let newEntries = [...prevEntries];
-        //   removedEntries.forEach((removedEntry) => {
-        //     newEntries = newEntries.filter(
-        //       (entry) => entry.id !== removedEntry.id
-        //     );
-        //   });
-        //   addedEntries.forEach((addedEntry) => {
-        //     if (!newEntries.some((entry) => entry.id === addedEntry.id)) {
-        //       newEntries.push(addedEntry);
-        //     }
-        //   });
-        //   modifiedEntries.forEach((modifiedEntry) => {
-        //     newEntries = newEntries.map((entry) => {
-        //       if (entry.id == modifiedEntry.id) {
-        //         return modifiedEntry;
-        //       }
-        //       return entry;
-        //     });
-        //   });
-        //   newEntries.sort((a, b) => {
-        //     return (
-        //       b.startTimestamp.toDate().getTime() -
-        //       a.startTimestamp.toDate().getTime()
-        //     );
-        //   });
-        //   return [...newEntries];
-        // });
-        // }
+        if (addedEntries.length > 0) {
+          dispatch(
+            addEntries({
+              entries: addedEntries.map((entry) => JSON.stringify(entry)),
+            })
+          );
+        }
       });
 
       return () => unsubscribe();
@@ -126,10 +104,6 @@ export function HomePage() {
   }, [user?.selectedChild]);
 
   if (user?.selectedChild == null) {
-    return <LoadingIndicator />;
-  }
-
-  if (entriesStatus === "loading" && entries.length === 0) {
     return <LoadingIndicator />;
   }
 

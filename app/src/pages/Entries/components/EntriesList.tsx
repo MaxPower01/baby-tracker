@@ -7,5 +7,8 @@ type Props = {
 };
 
 export default function EntriesList(props: Props) {
+  if (props.entries.length === 0) {
+    return <div>EntriesList: No entries</div>;
+  }
   return <div>EntriesList</div>;
 }

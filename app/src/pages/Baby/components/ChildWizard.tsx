@@ -25,8 +25,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import BabyForm from "@/pages/Baby/components/BabyForm";
 import Child from "@/pages/Authentication/types/Child";
-import ChildForm from "@/pages/Baby/components/ChildForm";
 import { PageId } from "@/enums/PageId";
 import { SexId } from "@/enums/SexId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";

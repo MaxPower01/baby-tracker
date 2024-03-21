@@ -10,6 +10,7 @@ import {
   LinearProgress,
   LinearProgressProps,
   MenuItem,
+  Modal,
   Select,
   SelectChangeEvent,
   Stack,
@@ -102,7 +103,7 @@ type Props = {
   child?: Child;
 };
 
-export default function ChildForm(props: Props) {
+export default function BabyForm(props: Props) {
   const theme = useTheme();
   const navigate = useNavigate();
   const avatarWidth = 150;
@@ -376,6 +377,29 @@ export default function ChildForm(props: Props) {
     create,
   ]);
 
+  const handleUploadImageButtonClick = () => {
+    if (document && document.getElementById) {
+      const input = document.getElementById("child-form-image-upload");
+      if (input) {
+        input.click();
+      }
+    }
+  };
+
+  const [modalImageURL, setModalImageURL] = useState<string | null>(null);
+
+  const handleCloseModal = () => {
+    setModalImageURL(null);
+  };
+
+  const handleAvatarClick = useCallback(() => {
+    if (!avatar || isNullOrWhiteSpace(avatar)) {
+      handleUploadImageButtonClick();
+      return;
+    }
+    setModalImageURL(avatar);
+  }, [avatar]);
+
   return (
     <>
       <Stack spacing={4}>
@@ -390,8 +414,10 @@ export default function ChildForm(props: Props) {
               borderColor: isNullOrWhiteSpace(avatar)
                 ? theme.palette.divider
                 : null,
+              cursor: "pointer",
             }}
             src={avatar}
+            onClick={handleAvatarClick}
           >
             {initials}
           </Avatar>
@@ -411,19 +437,7 @@ export default function ChildForm(props: Props) {
                 style={{ display: "none" }}
               />
               <label htmlFor="child-form-image-upload">
-                <Button
-                  variant="text"
-                  onClick={() => {
-                    if (document && document.getElementById) {
-                      const input = document.getElementById(
-                        "child-form-image-upload"
-                      );
-                      if (input) {
-                        input.click();
-                      }
-                    }
-                  }}
-                >
+                <Button variant="text" onClick={handleUploadImageButtonClick}>
                   Définir la photo de profil
                 </Button>
               </label>
@@ -513,6 +527,26 @@ export default function ChildForm(props: Props) {
           </Stack>
         </FormControl>
       </Stack>
+
+      <Modal
+        open={modalImageURL !== null}
+        onClose={handleCloseModal}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <Box
+          sx={{
+            outline: "none",
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            overflow: "auto",
+          }}
+        >
+          <img
+            src={modalImageURL ?? ""}
+            style={{ width: "100%", height: "auto" }}
+          />
+        </Box>
+      </Modal>
 
       <AppBar
         position="fixed"

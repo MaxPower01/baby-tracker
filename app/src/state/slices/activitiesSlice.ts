@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
@@ -108,12 +108,12 @@ export const {
 export const selectActivitiesOrder = (state: RootState) =>
   state.activitiesReducer.activitiesOrder;
 
-export const selectActivities = (state: RootState) => {
-  const activities = [...state.activitiesReducer.activities].map((a) =>
-    ActivityModel.deserialize(a)
-  );
-  return activities.sort((a, b) => a.order - b.order);
-};
+export const selectActivities = createSelector(
+  (state: RootState) => state.activitiesReducer.activities,
+  (activities) => {
+    return [...activities].map((a) => ActivityModel.deserialize(a));
+  }
+);
 
 export const selectActivityContexts = (state: RootState) =>
   state.activitiesReducer.activityContexts.toSorted(
