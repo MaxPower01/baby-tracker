@@ -1,5 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getInitialState, setLocalState } from "@/utils/utils";
+import {
+  getInitialState,
+  isNullOrWhiteSpace,
+  setLocalState,
+} from "@/utils/utils";
 
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/pages/Entries/types/EntriesState";
@@ -42,6 +46,8 @@ export const fetchRecentEntries = createAsyncThunk(
     }
   }
 );
+
+// TODO: Instead of using Entry in the payloads, we should pass a stringified version of the entry and parse it in the reducer
 
 const slice = createSlice({
   name: StoreReducerName.Entries,
@@ -92,8 +98,14 @@ const slice = createSlice({
       }
       setLocalState(key, state);
     },
-    removeEntries: (state, action: PayloadAction<string[]>) => {
-      action.payload.forEach((id) => {
+    removeEntries: (
+      state,
+      action: PayloadAction<{
+        ids: string[];
+      }>
+    ) => {
+      action.payload.ids.forEach((id) => {
+        if (isNullOrWhiteSpace(id)) return;
         const index = state.entries.findIndex((entry) => entry.id === id);
         if (index !== -1) {
           state.entries.splice(index, 1);

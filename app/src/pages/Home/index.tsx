@@ -17,8 +17,10 @@ import {
   where,
 } from "firebase/firestore";
 import {
+  removeEntries,
   selectEntriesStatus,
   selectRecentEntries,
+  updateEntries,
 } from "@/state/slices/entriesSlice";
 import { useEffect, useState } from "react";
 
@@ -36,6 +38,7 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -45,6 +48,7 @@ export function HomePage() {
   const navigate = useNavigate();
   const entries = useSelector(selectRecentEntries);
   const entriesStatus = useSelector(selectEntriesStatus);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (user?.selectedChild != null) {
@@ -60,51 +64,61 @@ export function HomePage() {
         const removedEntries: Entry[] = [];
         snapshot.docChanges().forEach((change) => {
           if (change.doc.data() != null) {
-            // const entry = EntryModel.fromFirestore(change.doc.data());
-            // entry.id = change.doc.id;
-            // if (change.type === "added") {
-            //   addedEntries.push(entry);
-            // } else if (change.type === "modified") {
-            //   modifiedEntries.push(entry);
-            // } else if (change.type === "removed") {
-            //   removedEntries.push(entry);
-            // }
+            const entry = change.doc.data() as Entry;
+            entry.id = change.doc.id;
+            if (change.type === "added") {
+              addedEntries.push(entry);
+            } else if (change.type === "modified") {
+              modifiedEntries.push(entry);
+            } else if (change.type === "removed") {
+              removedEntries.push(entry);
+            }
           }
         });
-        if (
-          addedEntries.length > 0 ||
-          modifiedEntries.length > 0 ||
-          removedEntries.length > 0
-        ) {
-          // setEntries((prevEntries) => {
-          //   let newEntries = [...prevEntries];
-          //   removedEntries.forEach((removedEntry) => {
-          //     newEntries = newEntries.filter(
-          //       (entry) => entry.id !== removedEntry.id
-          //     );
-          //   });
-          //   addedEntries.forEach((addedEntry) => {
-          //     if (!newEntries.some((entry) => entry.id === addedEntry.id)) {
-          //       newEntries.push(addedEntry);
-          //     }
-          //   });
-          //   modifiedEntries.forEach((modifiedEntry) => {
-          //     newEntries = newEntries.map((entry) => {
-          //       if (entry.id == modifiedEntry.id) {
-          //         return modifiedEntry;
-          //       }
-          //       return entry;
-          //     });
-          //   });
-          //   newEntries.sort((a, b) => {
-          //     return (
-          //       b.startTimestamp.toDate().getTime() -
-          //       a.startTimestamp.toDate().getTime()
-          //     );
-          //   });
-          //   return [...newEntries];
-          // });
+        if (removedEntries.length > 0) {
+          dispatch(
+            removeEntries({
+              ids: removedEntries.map((entry) => entry.id ?? ""),
+            })
+          );
         }
+        if (modifiedEntries.length > 0) {
+          dispatch(updateEntries(modifiedEntries));
+        }
+        // if (
+        //   addedEntries.length > 0 ||
+        //   modifiedEntries.length > 0 ||
+        //   removedEntries.length > 0
+        // ) {
+        // setEntries((prevEntries) => {
+        //   let newEntries = [...prevEntries];
+        //   removedEntries.forEach((removedEntry) => {
+        //     newEntries = newEntries.filter(
+        //       (entry) => entry.id !== removedEntry.id
+        //     );
+        //   });
+        //   addedEntries.forEach((addedEntry) => {
+        //     if (!newEntries.some((entry) => entry.id === addedEntry.id)) {
+        //       newEntries.push(addedEntry);
+        //     }
+        //   });
+        //   modifiedEntries.forEach((modifiedEntry) => {
+        //     newEntries = newEntries.map((entry) => {
+        //       if (entry.id == modifiedEntry.id) {
+        //         return modifiedEntry;
+        //       }
+        //       return entry;
+        //     });
+        //   });
+        //   newEntries.sort((a, b) => {
+        //     return (
+        //       b.startTimestamp.toDate().getTime() -
+        //       a.startTimestamp.toDate().getTime()
+        //     );
+        //   });
+        //   return [...newEntries];
+        // });
+        // }
       });
 
       return () => unsubscribe();
