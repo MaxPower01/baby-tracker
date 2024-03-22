@@ -165,6 +165,7 @@ export default function EntryForm(props: EntryFormProps) {
         }
         setIsSaving(true);
         const entry: Entry = {
+          babyId: props.entry.babyId,
           entryType: props.entry.entryType,
           startTimestamp: getTimestamp(startDateTime.toDate()),
           endTimestamp: getTimestamp(endDateTime.toDate()),

@@ -70,7 +70,7 @@ export const saveEntry = createAsyncThunk(
     if (user == null || isNullOrWhiteSpace(selectedChild)) {
       return thunkAPI.rejectWithValue("User or selected child is null");
     }
-    const entryToSave = getEntryToSave(entry);
+    const entryToSave = getEntryToSave(entry, selectedChild);
     const { id, ...rest } = entryToSave;
     let newId = id;
     if (isNullOrWhiteSpace(id)) {
@@ -82,7 +82,7 @@ export const saveEntry = createAsyncThunk(
           editedBy: "",
         };
         const docRef = await addDoc(
-          collection(db, `children/${selectedChild}/entries`),
+          collection(db, `children/${entryToSave.babyId}/entries`),
           entryToAdd
         );
         newId = docRef.id;
@@ -97,7 +97,7 @@ export const saveEntry = createAsyncThunk(
           editedBy: user.uid,
         };
         await setDoc(
-          doc(db, `children/${selectedChild}/entries/${id}`),
+          doc(db, `children/${entryToSave.babyId}/entries/${id}`),
           entryToUpdate
         );
       } catch (error) {

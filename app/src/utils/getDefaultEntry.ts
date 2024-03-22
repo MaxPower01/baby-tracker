@@ -5,7 +5,10 @@ import { getTimestamp } from "@/utils/getTimestamp";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getDefaultEntry(entryType: string | null): Entry | null {
+export function getDefaultEntry(
+  entryType: string | null,
+  babyId: string
+): Entry | null {
   if (isNullOrWhiteSpace(entryType) || typeof entryType !== "string") {
     return null;
   }
@@ -16,6 +19,7 @@ export function getDefaultEntry(entryType: string | null): Entry | null {
   const timestamp = getTimestamp(new Date());
   let result: Entry = {
     id: "",
+    babyId: babyId,
     entryType: parsedEntryType,
     activityContexts: [],
     startTimestamp: timestamp,

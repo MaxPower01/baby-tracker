@@ -1,8 +1,9 @@
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
 
-export function getEntryToSave(entry: Entry): Entry {
+export function getEntryToSave(entry: Entry, babyId: string): Entry {
   const newEntry = { ...entry };
+  newEntry.babyId = babyId;
   if (newEntry.createdTimestamp === 0) {
     newEntry.createdTimestamp = null;
   }

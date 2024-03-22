@@ -8,6 +8,7 @@ import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface Entry {
   id?: string;
+  babyId: string;
   entryType: EntryType;
   /**
    * Represents the start date of the entry in seconds since the epoch.
