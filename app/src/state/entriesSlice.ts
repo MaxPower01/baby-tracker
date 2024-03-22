@@ -113,119 +113,148 @@ function addEntryToState(
   state: EntriesState,
   payload: {
     entry: string;
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.entries.findIndex((entry) => entry.id === entry.id);
+  const index = state.entries.findIndex((e) => e.id === entry.id);
   if (index === -1) {
     state.entries.push(entry);
   }
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function addEntriesToState(
   state: EntriesState,
   payload: {
     entries: string[];
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    addEntryToState(state, { entry: JSON.stringify(entry) });
+    addEntryToState(state, { entry: JSON.stringify(entry) }, true);
   });
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function updateEntryInState(
   state: EntriesState,
   payload: {
     entry: string;
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.entries.findIndex((entry) => entry.id === entry.id);
+  const index = state.entries.findIndex((e) => e.id === entry.id);
   if (index !== -1) {
     state.entries[index] = entry;
   } else {
-    addEntryToState(state, payload);
+    addEntryToState(state, payload, true);
   }
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function updateEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    updateEntryInState(state, { entry: JSON.stringify(entry) });
+    updateEntryInState(state, { entry: JSON.stringify(entry) }, true);
   });
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function removeEntryFromState(
   state: EntriesState,
   payload: {
     id: string;
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
-  const index = state.entries.findIndex((entry) => entry.id === payload.id);
+  const index = state.entries.findIndex((e) => e.id === payload.id);
   if (index !== -1) {
     state.entries.splice(index, 1);
   }
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function removeEntriesFromState(
   state: EntriesState,
   payload: {
     ids: string[];
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   payload.ids.forEach((id) => {
     if (isNullOrWhiteSpace(id)) return;
-    const index = state.entries.findIndex((entry) => entry.id === id);
+    const index = state.entries.findIndex((e) => e.id === id);
     if (index !== -1) {
       state.entries.splice(index, 1);
     }
   });
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function setEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   state.entries = entries;
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
-function resetState(state: EntriesState) {
+function resetState(state: EntriesState, preventLocalStorageUpdate = false) {
   Object.assign(state, defaultState);
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function setLastFetchTimestampInState(
   state: EntriesState,
   payload: {
     timestamp: number;
-  }
+  },
+  preventLocalStorageUpdate = false
 ) {
   state.latestRecentEntriesFetchedTimestamp = payload.timestamp;
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 function setStatusInState(
   state: EntriesState,
-  status: "idle" | "loading" | "saving"
+  status: "idle" | "loading" | "saving",
+  preventLocalStorageUpdate = false
 ) {
   state.status = status;
-  setLocalState(key, state);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
 }
 
 const slice = createSlice({
@@ -314,7 +343,8 @@ const slice = createSlice({
       setStatusInState(state, "saving");
     });
     builder.addCase(saveEntry.fulfilled, (state, action) => {
-      updateEntryInState(state, { entry: JSON.stringify(action.payload) });
+      const entry = action.payload as Entry;
+      updateEntryInState(state, { entry: JSON.stringify(entry) });
       setStatusInState(state, "idle");
     });
     builder.addCase(saveEntry.rejected, (state, action) => {

@@ -115,6 +115,8 @@ export function ActivityContextPicker(props: Props) {
           value={
             props.selectedItems.length
               ? props.selectedItems.map((item) => item.id)
+              : canMultiSelect
+              ? []
               : ""
           }
           label={label()}
