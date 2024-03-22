@@ -5,7 +5,7 @@ import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { PoopColor } from "@/types/PoopColor";
 import { PoopColorId } from "@/enums/PoopColorId";
 import { PoopConsistency } from "@/types/PoopConsistency";
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 import { TemperatureMethod } from "@/types/TemperatureMethod";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 

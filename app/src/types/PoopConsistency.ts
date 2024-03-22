@@ -1,6 +1,6 @@
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 
 export interface PoopConsistency {
-  id: PoopConsistencyId;
+  id: PoopTextureId;
   label: string;
 }

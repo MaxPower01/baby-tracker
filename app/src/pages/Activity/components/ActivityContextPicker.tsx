@@ -112,7 +112,11 @@ export function ActivityContextPicker(props: Props) {
           id="activity-context"
           multiple={canMultiSelect}
           labelId="activity-context-label"
-          value={props.selectedItems.map((item) => item.id)}
+          value={
+            props.selectedItems.length
+              ? props.selectedItems.map((item) => item.id)
+              : ""
+          }
           label={label()}
           onChange={handleSelectedItemsChange}
           open={selectIsOpen}

@@ -1,4 +1,4 @@
-export enum PoopConsistencyId {
+export enum PoopTextureId {
   Normal = 1,
   Meconium = 2,
   Soft = 3,

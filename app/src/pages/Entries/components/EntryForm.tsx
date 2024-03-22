@@ -26,12 +26,13 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
+import { PageId } from "@/enums/PageId";
 import { PoopAmountPicker } from "@/components/PoopAmountPicker";
 import { PoopColor } from "@/types/PoopColor";
 import { PoopColorId } from "@/enums/PoopColorId";
 import PoopColorPicker from "@/components/PoopColorPicker";
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
 import { PoopConsistencyPicker } from "@/components/PoopConsistencyPicker";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -45,7 +46,6 @@ import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
-import { dispatch } from "d3";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
@@ -56,10 +56,16 @@ import { entryTypeHasTemperature } from "@/pages/Entry/utils/entryTypeHasTempera
 import { entryTypeHasUrine } from "@/pages/Entry/utils/entryTypeHasUrine";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import getPath from "@/utils/getPath";
+import { getTimestamp } from "@/utils/getTimestamp";
 import { getTitleForEntryType } from "@/utils/utils";
 import { parseEnumValue } from "@/utils/parseEnumValue";
-import { saveEntry } from "@/state/slices/entriesSlice";
+import { saveEntry } from "@/state/entriesSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "@/components/SnackbarProvider";
 
 type EntryFormProps = {
   entry: Entry;
@@ -67,13 +73,21 @@ type EntryFormProps = {
 
 export default function EntryForm(props: EntryFormProps) {
   const { user } = useAuthentication();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const name = getTitleForEntryType(props.entry.entryType);
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >([]);
-  const [startDate, setStartDate] = useState<Dayjs>(dayjs());
-  const [startTime, setStartTime] = useState<Dayjs>(dayjs());
+  // startDate from seconds timestamp
+  const initialStartDate = getDateFromTimestamp(props.entry.startTimestamp);
+  const initialEndDate = getDateFromTimestamp(props.entry.endTimestamp);
+  const [startDate, setStartDate] = useState<Dayjs>(dayjs(initialStartDate));
+  const [startTime, setStartTime] = useState<Dayjs>(dayjs(initialStartDate));
+  const [endDate, setEndDate] = useState<Dayjs>(dayjs(initialEndDate));
+  const [endTime, setEndTime] = useState<Dayjs>(dayjs(initialEndDate));
   const startDateTime = useMemo(() => {
     const date = startDate.startOf("day");
     date.hour(startTime.hour());
@@ -81,8 +95,6 @@ export default function EntryForm(props: EntryFormProps) {
     date.second(startTime.second());
     return date;
   }, [startDate, startTime]);
-  const [endDate, setEndDate] = useState<Dayjs>(dayjs());
-  const [endTime, setEndTime] = useState<Dayjs>(dayjs());
   const endDateTime = useMemo(() => {
     const date = endDate.startOf("day");
     date.hour(endTime.hour());
@@ -90,19 +102,27 @@ export default function EntryForm(props: EntryFormProps) {
     date.second(endTime.second());
     return date;
   }, [endDate, endTime]);
-  const [note, setNote] = useState("");
-  const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const [note, setNote] = useState(props.entry.note);
+  const [imageURLs, setImageURLs] = useState<string[]>(props.entry.imageURLs);
   const [isUploading, setIsUploading] = useState(false);
-  const [weight, setWeight] = useState(0);
-  const [size, setSize] = useState(0);
-  const [leftStopwatchTime, setLeftStopwatchTime] = useState(0);
-  const [rightStopwatchTime, setRightStopwatchTime] = useState(0);
+  const [weight, setWeight] = useState(props.entry.weight ?? 0);
+  const [size, setSize] = useState(props.entry.size ?? 0);
+  const [leftStopwatchTime, setLeftStopwatchTime] = useState(
+    props.entry.leftTime ?? 0
+  );
+  const [rightStopwatchTime, setRightStopwatchTime] = useState(
+    props.entry.rightTime ?? 0
+  );
   const stopwatchTime = useMemo(
     () => leftStopwatchTime + rightStopwatchTime,
     [leftStopwatchTime, rightStopwatchTime]
   );
-  const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(false);
-  const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(false);
+  const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(
+    props.entry.leftStopwatchIsRunning
+  );
+  const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(
+    props.entry.rightStopwatchIsRunning
+  );
   const stopwatchIsRunning = useMemo(
     () => leftStopwatchIsRunning || rightStopwatchIsRunning,
     [leftStopwatchIsRunning, rightStopwatchIsRunning]
@@ -118,35 +138,36 @@ export default function EntryForm(props: EntryFormProps) {
         : leftStopwatchLastUpdateTime ?? rightStopwatchLastUpdateTime,
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
   );
-  const [temperature, setTemperature] = useState(0);
+  const [temperature, setTemperature] = useState(props.entry.temperature ?? 0);
   const [temperatureMethodId, setTemperatureMethodId] =
-    useState<TemperatureMethodId | null>(null);
+    useState<TemperatureMethodId | null>(props.entry.temperatureMethodId);
   const [nasalHygieneIds, setNasalHygieneIds] = useState<NasalHygieneId[]>([]);
-  const [leftVolume, setLeftVolume] = useState(0);
-  const [rightVolume, setRightVollume] = useState(0);
+  const [leftVolume, setLeftVolume] = useState(props.entry.leftVolume ?? 0);
+  const [rightVolume, setRightVollume] = useState(props.entry.rightVolume ?? 0);
   const volume = useMemo(
     () => leftVolume + rightVolume,
     [leftVolume, rightVolume]
   );
-  const [urineAmount, setUrineAmount] = useState(0);
-  const [poopAmount, setPoopAmount] = useState(0);
+  const [urineAmount, setUrineAmount] = useState(props.entry.urineAmount ?? 0);
+  const [poopAmount, setPoopAmount] = useState(props.entry.poopAmount ?? 0);
   const [poopConsistencyId, setPoopConsistencyId] =
-    useState<PoopConsistencyId | null>(null);
-  const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(null);
+    useState<PoopTextureId | null>(props.entry.poopTextureId);
+  const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(
+    props.entry.poopColorId
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   const save = useCallback(() => {
-    return new Promise((resolve, reject) => {
+    return new Promise<boolean>(async (resolve, reject) => {
       try {
         if (isSaving || user == null) {
-          return;
+          return resolve(false);
         }
         setIsSaving(true);
         const entry: Entry = {
-          id: undefined,
           entryType: props.entry.entryType,
-          startTimestamp: Timestamp.fromDate(startDateTime.toDate()),
-          endTimestamp: Timestamp.fromDate(endDateTime.toDate()),
+          startTimestamp: getTimestamp(startDateTime.toDate()),
+          endTimestamp: getTimestamp(endDateTime.toDate()),
           note: note,
           imageURLs: imageURLs,
           activityContexts: selectedActivityContexts,
@@ -155,25 +176,34 @@ export default function EntryForm(props: EntryFormProps) {
           weight: weight,
           size: size,
           temperature: temperature,
-          temperatureMethodId: temperatureMethodId ?? undefined,
+          temperatureMethodId: temperatureMethodId,
           leftTime: leftStopwatchTime,
           leftStopwatchIsRunning: leftStopwatchIsRunning,
           rightTime: rightStopwatchTime,
           rightStopwatchIsRunning: rightStopwatchIsRunning,
           urineAmount: urineAmount,
           poopAmount: poopAmount,
-          poopColorId: poopColorId ?? undefined,
-          poopTextureId: poopConsistencyId ?? undefined,
+          poopColorId: poopColorId,
+          poopTextureId: poopConsistencyId,
           nasalHygieneIds: nasalHygieneIds,
+          createdTimestamp: props.entry.createdTimestamp,
+          editedTimestamp: props.entry.editedTimestamp,
+          createdBy: user.uid,
+          editedBy: props.entry.editedBy,
         };
-        // dispatch(saveEntry({
-        //   entry: entry,
-        //   user: user
-        // }));
+        await dispatch(saveEntry({ entry, user })).unwrap();
         setIsSaving(false);
-        resolve(entry);
+        return resolve(true);
       } catch (error) {
-        reject(error);
+        setIsSaving(false);
+        showSnackbar({
+          id: "save-entry-error",
+          isOpen: true,
+          message:
+            "Une erreur s'est produite lors de l'enregistrement de l'entrée.",
+          severity: "error",
+        });
+        return reject(error);
       }
     });
   }, [
@@ -203,8 +233,14 @@ export default function EntryForm(props: EntryFormProps) {
 
   const handleSubmit = useCallback(() => {
     save()
-      .then((entry) => {
-        console.log("Entry saved", entry);
+      .then((success) => {
+        if (success) {
+          navigate(
+            getPath({
+              page: PageId.Home,
+            })
+          );
+        }
       })
       .catch((error) => {
         console.error("Error saving entry", error);

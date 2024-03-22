@@ -29,7 +29,7 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 import { RootState } from "@/state/store";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
@@ -43,8 +43,8 @@ import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  value: PoopConsistencyId | null;
-  setValue: React.Dispatch<React.SetStateAction<PoopConsistencyId | null>>;
+  value: PoopTextureId | null;
+  setValue: React.Dispatch<React.SetStateAction<PoopTextureId | null>>;
 };
 
 export function PoopConsistencyPicker(props: Props) {
@@ -86,7 +86,7 @@ export function PoopConsistencyPicker(props: Props) {
 
   const items = useSelector(selectPoopConsistencyTypes);
 
-  const renderValue = (selected: PoopConsistencyId | null) => {
+  const renderValue = (selected: PoopTextureId | null) => {
     if (selected === null) {
       return "";
     }
@@ -102,7 +102,7 @@ export function PoopConsistencyPicker(props: Props) {
           labelId="temperature-method-picker-label"
           value={props.value ?? ""}
           label={label()}
-          onChange={(e) => props.setValue(e.target.value as PoopConsistencyId)}
+          onChange={(e) => props.setValue(e.target.value as PoopTextureId)}
           renderValue={renderValue}
         >
           {items.map((item) => {

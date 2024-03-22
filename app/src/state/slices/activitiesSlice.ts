@@ -120,14 +120,15 @@ export const selectActivityContexts = (state: RootState) =>
     (a, b) => a.order - b.order
   );
 
-export const selectActivityContextsOfType = (
-  state: RootState,
-  type: ActivityContextType | null
-) => {
-  return [...state.activitiesReducer.activityContexts]
-    .filter((a) => a.type === type)
-    .toSorted((a, b) => a.order - b.order);
-};
+export const selectActivityContextsOfType = createSelector(
+  (state: RootState) => state.activitiesReducer.activityContexts,
+  (_: RootState, type: ActivityContextType | null) => type,
+  (activityContexts, type) => {
+    return [...activityContexts]
+      .filter((a) => a.type == type)
+      .toSorted((a, b) => a.order - b.order);
+  }
+);
 
 export const selectTemperatureMethods = (state: RootState) =>
   state.activitiesReducer.temperatureMethods;

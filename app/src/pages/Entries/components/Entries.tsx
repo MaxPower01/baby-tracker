@@ -22,6 +22,7 @@ import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { MenuProvider } from "@/components/MenuProvider";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/state/slices/activitiesSlice";
 import { useEntries } from "@/pages/Entries/components/EntriesProvider";
@@ -140,7 +141,7 @@ export default function Entries(props: Props) {
               }
               const firstEntry = dayEntries.entries[0];
               // const startDate = new Date(firstEntry.startTimestamp);
-              const startDate = firstEntry.startTimestamp.toDate();
+              const startDate = getDateFromTimestamp(firstEntry.startTimestamp);
 
               const entriesByTime = groupEntriesByTime({
                 entries: dayEntries.entries,

@@ -1,5 +1,5 @@
 import { PoopColorId } from "@/enums/PoopColorId";
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 import { getPoopColorValue } from "@/utils/getPoopColorValue";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 

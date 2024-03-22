@@ -112,10 +112,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
       });
       setIsLoading(false);
       entries.sort((a, b) => {
-        return (
-          b.startTimestamp.toDate().getTime() -
-          a.startTimestamp.toDate().getTime()
-        );
+        return b.startTimestamp - a.startTimestamp;
       });
       return [...entries];
     },
@@ -137,10 +134,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
           }
         });
         newEntries.sort((a, b) => {
-          return (
-            b.startTimestamp.toDate().getTime() -
-            a.startTimestamp.toDate().getTime()
-          );
+          return b.startTimestamp - a.startTimestamp;
         });
         return [...newEntries];
       });
@@ -199,10 +193,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
             });
           });
           newEntries.sort((a, b) => {
-            return (
-              b.startTimestamp.toDate().getTime() -
-              a.startTimestamp.toDate().getTime()
-            );
+            return b.startTimestamp - a.startTimestamp;
           });
           return [...newEntries];
         });

@@ -1,6 +1,7 @@
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 /* -------------------------------------------------------------------------- */
@@ -47,7 +48,7 @@ export function groupEntriesByDate(entries: Entry[]): {
     a.startTimestamp > b.startTimestamp ? a : b
   );
   // const mostRecentDate = new Date(mostRecentEntry.startTimestamp);
-  const mostRecentDate = mostRecentEntry.startTimestamp.toDate();
+  const mostRecentDate = getDateFromTimestamp(mostRecentEntry.startTimestamp);
   const mostRecentYear = mostRecentDate.getFullYear();
   for (let i = currentYear; i >= mostRecentYear; i--) {
     const yearEntries = {
@@ -66,7 +67,7 @@ export function groupEntriesByDate(entries: Entry[]): {
           dayNumber: k,
           entries: entries.filter((entry) => {
             // const startDate = new Date(entry.startTimestamp);
-            const startDate = entry.startTimestamp.toDate();
+            const startDate = getDateFromTimestamp(entry.startTimestamp);
             return (
               startDate.getFullYear() === i &&
               startDate.getMonth() === j &&
@@ -102,18 +103,17 @@ export function groupEntriesByTime(params: {
   if (!entries || entries.length === 0) return result;
   // Sort entries by timestamp, from most recent to least recent
   const sortedEntries = entries.sort(
-    (a, b) =>
-      b.startTimestamp.toDate().getTime() - a.startTimestamp.toDate().getTime()
+    (a, b) => b.startTimestamp - a.startTimestamp
   );
   // let lastDate = new Date(sortedEntries[0].startTimestamp);
-  let lastDate = sortedEntries[0].startTimestamp.toDate();
+  let lastDate = getDateFromTimestamp(sortedEntries[0].startTimestamp);
   let currentGroup = {
     entries: [] as Entry[],
   };
   for (let i = 0; i < sortedEntries.length; i++) {
     const entry = entries[i];
     // const entryDate = new Date(entry.startTimestamp);
-    const entryDate = entry.startTimestamp.toDate();
+    const entryDate = getDateFromTimestamp(entry.startTimestamp);
     const previousEntryDate = lastDate;
     const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
     const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);

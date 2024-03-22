@@ -5,29 +5,44 @@ import { PoopColor } from "@/types/PoopColor";
 import { PoopTexure } from "@/types/PoopTexure";
 import { Stopwatch } from "@/types/Stopwatch";
 import { Tag } from "@/pages/Tags/models/Tag";
-import { Timestamp } from "firebase/firestore";
 
 export interface Entry {
   id?: string;
   entryType: EntryType;
-  startTimestamp: Timestamp;
-  endTimestamp: Timestamp;
+  /**
+   * Represents the start date of the entry in seconds since the epoch.
+   */
+  startTimestamp: number;
+  /**
+   * Represents the end date of the entry in seconds since the epoch.
+   */
+  endTimestamp: number;
+  /**
+   * Represents the created date of the entry in seconds since the epoch.
+   */
+  createdTimestamp: number | null;
+  /**
+   * Represents the edited date of the entry in seconds since the epoch.
+   */
+  editedTimestamp: number | null;
+  createdBy: string;
+  editedBy: string;
   note: string;
   imageURLs: string[];
   activityContexts: ActivityContext[];
-  leftVolume?: number;
-  rightVolume?: number;
-  weight?: number;
-  size?: number;
-  temperature?: number;
-  temperatureMethodId?: number;
-  leftTime?: number;
-  leftStopwatchIsRunning?: boolean;
-  rightTime?: number;
-  rightStopwatchIsRunning?: boolean;
-  urineAmount?: number;
-  poopAmount?: number;
-  poopColorId?: number;
-  poopTextureId?: number;
-  nasalHygieneIds?: number[];
+  leftVolume: number | null;
+  rightVolume: number | null;
+  weight: number | null;
+  size: number | null;
+  temperature: number | null;
+  temperatureMethodId: number | null;
+  leftTime: number | null;
+  leftStopwatchIsRunning: boolean;
+  rightTime: number | null;
+  rightStopwatchIsRunning: boolean;
+  urineAmount: number | null;
+  poopAmount: number | null;
+  poopColorId: number | null;
+  poopTextureId: number | null;
+  nasalHygieneIds: number[] | null;
 }

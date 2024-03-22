@@ -1,29 +1,29 @@
-import { PoopConsistencyId } from "@/enums/PoopConsistencyId";
+import { PoopTextureId } from "@/enums/PoopTextureId";
 
 export function getPoopConsistencyTypeName(
-  poopConsistency: PoopConsistencyId | null | undefined
+  poopConsistency: PoopTextureId | null | undefined
 ) {
   if (poopConsistency === null || poopConsistency === undefined) {
     return "";
   }
   switch (poopConsistency) {
-    case PoopConsistencyId.Normal:
+    case PoopTextureId.Normal:
       return "Normal";
-    case PoopConsistencyId.Meconium:
+    case PoopTextureId.Meconium:
       return "Méconium";
-    case PoopConsistencyId.Soft:
+    case PoopTextureId.Soft:
       return "Mou";
-    case PoopConsistencyId.Liquid:
+    case PoopTextureId.Liquid:
       return "Liquide";
-    case PoopConsistencyId.Thick:
+    case PoopTextureId.Thick:
       return "Épais";
-    case PoopConsistencyId.Lumpy:
+    case PoopTextureId.Lumpy:
       return "Grumeleux";
-    case PoopConsistencyId.UndigestedPieces:
+    case PoopTextureId.UndigestedPieces:
       return "Morceaux non digérés";
-    case PoopConsistencyId.VeryLiquid:
+    case PoopTextureId.VeryLiquid:
       return "Très liquide (diarrhée)";
-    case PoopConsistencyId.VeryThick:
+    case PoopTextureId.VeryThick:
       return "Très épaisse (constipation)";
     default:
       return "";
