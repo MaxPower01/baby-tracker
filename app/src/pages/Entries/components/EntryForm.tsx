@@ -139,9 +139,6 @@ export default function EntryForm(props: EntryFormProps) {
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
   );
   const [temperature, setTemperature] = useState(props.entry.temperature ?? 0);
-  const [temperatureMethodId, setTemperatureMethodId] =
-    useState<TemperatureMethodId | null>(props.entry.temperatureMethodId);
-  const [nasalHygieneIds, setNasalHygieneIds] = useState<NasalHygieneId[]>([]);
   const [leftVolume, setLeftVolume] = useState(props.entry.leftVolume ?? 0);
   const [rightVolume, setRightVollume] = useState(props.entry.rightVolume ?? 0);
   const volume = useMemo(
@@ -177,7 +174,6 @@ export default function EntryForm(props: EntryFormProps) {
           weight: weight,
           size: size,
           temperature: temperature,
-          temperatureMethodId: temperatureMethodId,
           leftTime: leftStopwatchTime,
           leftStopwatchIsRunning: leftStopwatchIsRunning,
           rightTime: rightStopwatchTime,
@@ -186,7 +182,6 @@ export default function EntryForm(props: EntryFormProps) {
           poopAmount: poopAmount,
           poopColorId: poopColorId,
           poopTextureId: poopConsistencyId,
-          nasalHygieneIds: nasalHygieneIds,
           createdTimestamp: props.entry.createdTimestamp,
           editedTimestamp: props.entry.editedTimestamp,
           createdBy: user.uid,
@@ -218,7 +213,6 @@ export default function EntryForm(props: EntryFormProps) {
     weight,
     size,
     temperature,
-    temperatureMethodId,
     leftStopwatchTime,
     leftStopwatchIsRunning,
     rightStopwatchTime,
@@ -227,7 +221,6 @@ export default function EntryForm(props: EntryFormProps) {
     poopAmount,
     poopColorId,
     poopConsistencyId,
-    nasalHygieneIds,
     isSaving,
     user,
   ]);
@@ -257,7 +250,6 @@ export default function EntryForm(props: EntryFormProps) {
     weight,
     size,
     temperature,
-    temperatureMethodId,
     leftStopwatchTime,
     leftStopwatchIsRunning,
     rightStopwatchTime,
@@ -266,7 +258,6 @@ export default function EntryForm(props: EntryFormProps) {
     poopAmount,
     poopColorId,
     poopConsistencyId,
-    nasalHygieneIds,
     isSaving,
     save,
     user,
@@ -343,27 +334,9 @@ export default function EntryForm(props: EntryFormProps) {
         )}
 
         {entryTypeHasTemperature(props.entry.entryType) && (
-          <>
-            <Section title="temperature-method">
-              <TemperatureMethodPicker
-                value={temperatureMethodId}
-                setValue={setTemperatureMethodId}
-              />
-            </Section>
-
-            <Section title="temperature">
-              <SectionTitle title="Température" />
-              <TemperatureInput value={temperature} setValue={setTemperature} />
-            </Section>
-          </>
-        )}
-
-        {entryTypeHasNasalHygiene(props.entry.entryType) && (
-          <Section title="nasal-hygiene">
-            <NasalHygieneTypesPicker
-              values={nasalHygieneIds}
-              setValues={setNasalHygieneIds}
-            />
+          <Section title="temperature">
+            <SectionTitle title="Température" />
+            <TemperatureInput value={temperature} setValue={setTemperature} />
           </Section>
         )}
 

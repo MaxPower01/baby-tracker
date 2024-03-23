@@ -39,6 +39,12 @@ export function getActivityContextPickerPlaceholder(
     case ActivityContextType.Symptom:
       result = "Symptômes";
       break;
+    case ActivityContextType.NasalHygiene:
+      result = "Type de soin nasal";
+      break;
+    case ActivityContextType.Temperature:
+      result = "Type de température";
+      break;
     default:
       break;
   }

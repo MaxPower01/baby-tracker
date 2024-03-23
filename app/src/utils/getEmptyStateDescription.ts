@@ -24,6 +24,10 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
     "Suivez chacun des repas solides de votre bébé en notant les aliments consommés";
   const symptomDescription =
     "Suivez facilement les symptômes de votre bébé pour une meilleure compréhension de sa santé";
+  const temperatureDescription =
+    "Surveillez la température de votre bébé pour vérifier quand il est malade";
+  const nasalHygieneDescription =
+    "Tenez un registre des soins nasaux de votre bébé";
   if (props.type != null) {
     switch (props.type) {
       case EntryType.Medicine:
@@ -45,7 +49,12 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
       case EntryType.SolidFood:
         return solidFoodDescription;
       case EntryType.Symptom:
+      case EntryType.Hospital:
         return symptomDescription;
+      case EntryType.Temperature:
+        return temperatureDescription;
+      case EntryType.NasalHygiene:
+        return nasalHygieneDescription;
       default:
         return defaultDescription;
     }
@@ -73,6 +82,10 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
           return solidFoodDescription;
         case ActivityContextType.Symptom:
           return symptomDescription;
+        case ActivityContextType.Temperature:
+          return temperatureDescription;
+        case ActivityContextType.NasalHygiene:
+          return nasalHygieneDescription;
         default:
           return defaultDescription;
       }

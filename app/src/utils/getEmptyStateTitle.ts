@@ -16,6 +16,8 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
   const bottleFeedingTitle = "Aucun type de lait ou préparation défini";
   const solidFoodTitle = "Aucun type d'aliment défini";
   const symptomTitle = "Aucun symptôme défini";
+  const temperatureTitle = "Aucun type de prise de température défini";
+  const nasalHygieneTitle = "Aucun type de soin nasal défini";
   if (props.type != null) {
     switch (props.type) {
       case EntryType.Medicine:
@@ -37,7 +39,12 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
       case EntryType.SolidFood:
         return solidFoodTitle;
       case EntryType.Symptom:
+      case EntryType.Hospital:
         return symptomTitle;
+      case EntryType.Temperature:
+        return temperatureTitle;
+      case EntryType.NasalHygiene:
+        return nasalHygieneTitle;
       default:
         return defaultTitle;
     }
@@ -65,6 +72,10 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
           return solidFoodTitle;
         case ActivityContextType.Symptom:
           return symptomTitle;
+        case ActivityContextType.Temperature:
+          return temperatureTitle;
+        case ActivityContextType.NasalHygiene:
+          return nasalHygieneTitle;
         default:
           return defaultTitle;
       }

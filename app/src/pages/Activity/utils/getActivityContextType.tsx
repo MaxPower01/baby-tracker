@@ -38,7 +38,14 @@ export function getActivityContextType(
       result = ActivityContextType.SolidFood;
       break;
     case EntryType.Symptom:
+    case EntryType.Hospital:
       result = ActivityContextType.Symptom;
+      break;
+    case EntryType.NasalHygiene:
+      result = ActivityContextType.NasalHygiene;
+      break;
+    case EntryType.Temperature:
+      result = ActivityContextType.Temperature;
       break;
     default:
       break;

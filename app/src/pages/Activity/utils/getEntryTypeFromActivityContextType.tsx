@@ -36,6 +36,12 @@ export function getEntryTypeFromActivityContextType(
     case ActivityContextType.Symptom:
       result = EntryType.Symptom;
       break;
+    case ActivityContextType.NasalHygiene:
+      result = EntryType.NasalHygiene;
+      break;
+    case ActivityContextType.Temperature:
+      result = EntryType.Temperature;
+      break;
     default:
       break;
   }

@@ -40,6 +40,12 @@ export function getActivityContextPickerNewItemLabel(
     case ActivityContextType.Symptom:
       result = "Ajouter un symptôme";
       break;
+    case ActivityContextType.NasalHygiene:
+      result = "Ajouter un type de soin nasal";
+      break;
+    case ActivityContextType.Temperature:
+      result = "Ajouter un type de température";
+      break;
     default:
       break;
   }

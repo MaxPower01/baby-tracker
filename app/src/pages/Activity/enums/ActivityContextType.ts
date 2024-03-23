@@ -9,4 +9,6 @@ export enum ActivityContextType {
   BottleFeeding = 8,
   SolidFood = 9,
   Symptom = 10,
+  NasalHygiene = 11,
+  Temperature = 12,
 }

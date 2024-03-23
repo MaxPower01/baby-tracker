@@ -36,7 +36,14 @@ export function getActivityContextDrawerAddItemPlaceholder(
       result = "Ajouter un type de nourriture solide";
       break;
     case EntryType.Symptom:
+    case EntryType.Hospital:
       result = "Ajouter un symptôme";
+      break;
+    case EntryType.NasalHygiene:
+      result = "Ajouter un type de soin nasal";
+      break;
+    case EntryType.Temperature:
+      result = "Ajouter un type de température";
       break;
     default:
       break;

@@ -34,7 +34,14 @@ export function getActivityContextDrawerTitle(entryType: EntryType) {
       result = "Types de nourriture solide";
       break;
     case EntryType.Symptom:
+    case EntryType.Hospital:
       result = "Symptômes";
+      break;
+    case EntryType.NasalHygiene:
+      result = "Types de soin nasal";
+      break;
+    case EntryType.Temperature:
+      result = "Types de température";
       break;
     default:
       break;

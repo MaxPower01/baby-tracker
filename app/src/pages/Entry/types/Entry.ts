@@ -36,7 +36,6 @@ export interface Entry {
   weight: number | null;
   size: number | null;
   temperature: number | null;
-  temperatureMethodId: number | null;
   leftTime: number | null;
   leftStopwatchIsRunning: boolean;
   rightTime: number | null;
@@ -45,5 +44,4 @@ export interface Entry {
   poopAmount: number | null;
   poopColorId: number | null;
   poopTextureId: number | null;
-  nasalHygieneIds: number[] | null;
 }

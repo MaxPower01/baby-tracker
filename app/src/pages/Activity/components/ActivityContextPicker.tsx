@@ -12,7 +12,7 @@ import {
   Stack,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
@@ -24,6 +24,7 @@ import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activi
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
+import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
 import { selectActivityContextsOfType } from "@/state/slices/activitiesSlice";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
@@ -47,7 +48,14 @@ export function ActivityContextPicker(props: Props) {
   const newItemLabel =
     getActivityContextPickerNewItemLabel(activityContextType);
   const theme = useTheme();
-  const label = () => {
+  const entryTypeForActivityIcon = useMemo(() => {
+    if (activityContextType == null) {
+      return null;
+    }
+    console.log(getEntryTypeFromActivityContextType(activityContextType));
+    return getEntryTypeFromActivityContextType(activityContextType);
+  }, [activityContextType]);
+  const label = (entryType: EntryType | null) => {
     return (
       <Stack
         direction={"row"}
@@ -59,17 +67,19 @@ export function ActivityContextPicker(props: Props) {
           position: "relative",
         }}
       >
-        <ActivityIcon
-          type={props.entryType}
-          sx={{
-            fontSize: "1.5em",
-            position: "absolute",
-            left: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            opacity: theme.opacity.tertiary,
-          }}
-        />
+        {entryType != null && (
+          <ActivityIcon
+            type={entryType}
+            sx={{
+              fontSize: "1.5em",
+              position: "absolute",
+              left: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              opacity: theme.opacity.tertiary,
+            }}
+          />
+        )}
         <Box
           sx={{
             marginLeft: 1,
@@ -107,7 +117,9 @@ export function ActivityContextPicker(props: Props) {
   return (
     <>
       <FormControl fullWidth variant="outlined">
-        <InputLabel id="activity-context-label">{label()}</InputLabel>
+        <InputLabel id="activity-context-label">
+          {label(entryTypeForActivityIcon)}
+        </InputLabel>
         <Select
           id="activity-context"
           multiple={canMultiSelect}
@@ -119,7 +131,7 @@ export function ActivityContextPicker(props: Props) {
               ? []
               : ""
           }
-          label={label()}
+          label={label(entryTypeForActivityIcon)}
           onChange={handleSelectedItemsChange}
           open={selectIsOpen}
           onOpen={handleOpenSelect}

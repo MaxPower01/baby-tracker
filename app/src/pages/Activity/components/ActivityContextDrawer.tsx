@@ -73,6 +73,7 @@ import { deviceIsMobile } from "@/utils/deviceIsMobile";
 import { getActivityContextDrawerAddItemPlaceholder } from "@/pages/Activity/utils/getActivityContextDrawerAddItemPlaceholder";
 import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivityContextDrawerTitle";
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
+import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
@@ -438,6 +439,10 @@ export function ActivityContextDrawer(props: Props) {
     setDialogOpened(false);
   }, [localItems, itemToDelete]);
 
+  const entryTypeForActivityIcon = useMemo(() => {
+    return getEntryTypeFromActivityContextType(activityContextType);
+  }, [activityContextType]);
+
   return (
     <>
       <SwipeableDrawer
@@ -459,13 +464,15 @@ export function ActivityContextDrawer(props: Props) {
           <Container maxWidth={CSSBreakpoint.Small} disableGutters>
             <Toolbar>
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                <ActivityIcon
-                  type={props.type}
-                  sx={{
-                    flexShrink: 0,
-                    fontSize: "1.75em",
-                  }}
-                />
+                {entryTypeForActivityIcon != null && (
+                  <ActivityIcon
+                    type={entryTypeForActivityIcon}
+                    sx={{
+                      flexShrink: 0,
+                      fontSize: "1.75em",
+                    }}
+                  />
+                )}
                 <Typography variant="h6">{drawerTitle}</Typography>
               </Stack>
               <Box sx={{ flexGrow: 1 }} />
