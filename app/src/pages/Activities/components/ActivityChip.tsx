@@ -2,98 +2,55 @@ import { Chip, Stack, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
+import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { getActivityChipLabel } from "@/utils/getActivityChipLabel";
+import { getActivityName } from "@/utils/getActivityName";
 import { useSelector } from "react-redux";
 
 type Props = {
-  activity: ActivityModel;
-  onClick?: (type: ActivityType) => void;
+  entryType: EntryType;
+  onClick?: (type: EntryType) => void;
   isSelected?: boolean;
-  isFilled?: boolean;
-  size?: "small" | "medium";
-  textColor?: string;
-  isDisabled?: boolean;
-  overrideText?: string;
+  /**
+   * If provided, will override the text of the chip
+   * with a summary of the entries. If not provided,
+   * the activity name will be used.
+   */
+  entries?: Entry[];
 };
 
-export default function ActivityChip({
-  activity,
-  onClick,
-  isSelected,
-  isFilled,
-  size,
-  textColor,
-  isDisabled,
-  overrideText,
-}: Props) {
+export default function ActivityChip(props: Props) {
   const theme = useTheme();
+  const label = props.entries?.length
+    ? getActivityChipLabel(props.entries)
+    : getActivityName(props.entryType);
   return (
     <Chip
-      key={`${activity.type}-${activity.type}`}
-      label={
-        <Stack
-          direction={"row"}
-          justifyContent={"flex-start"}
-          alignItems={"center"}
-        >
-          <Typography variant={"caption"} fontWeight={500} color={textColor}>
-            {overrideText ?? activity.name}
-          </Typography>
-          {isSelected == true && (
-            <CheckIcon
-              sx={{
-                marginRight: 0,
-                marginLeft: 1,
-                fontSize: "1.15em",
-                color: theme.palette.primary.main,
-              }}
-            />
-          )}
-        </Stack>
-      }
-      sx={{
-        border: "1px solid",
-        borderColor: isSelected
-          ? theme.palette.primary.main
-          : theme.palette.divider,
-        backgroundColor: isSelected
-          ? `${theme.palette.primary.main}30`
-          : undefined,
-      }}
       icon={
-        <>
-          {/* {isSelected == true && (
-            <CheckIcon
-              sx={{
-                marginRight: 0,
-                marginLeft: 1,
-                fontSize: "1.15em" : "1.35em",
-                color: theme.palette.primary.main,
-              }}
-            />
-          )} */}
-          <ActivityIcon
-            type={activity.type as any}
-            sx={{
-              marginRight: size === "small" ? -0.5 : -1,
-              marginLeft: 0.5,
-              fontSize: "1.15em",
-              color: textColor,
-            }}
-          />
-        </>
+        <ActivityIcon
+          type={props.entryType as any}
+          sx={{
+            fontSize: "1.75em",
+            marginLeft: 0.5,
+          }}
+        />
       }
-      disabled={isDisabled}
-      onClick={(e) => {
-        e.preventDefault();
-        if (onClick) {
-          onClick(activity.type);
+      label={label}
+      sx={{
+        "& .MuiChip-label": {
+          color: props.isSelected
+            ? theme.customPalette.text.primary
+            : theme.customPalette.text.tertiary,
+        },
+      }}
+      variant={props.isSelected ? "filled" : "outlined"}
+      onClick={() => {
+        if (props.onClick) {
+          props.onClick(props.entryType);
         }
       }}
-      size={size}
-      variant={isSelected || isFilled ? "filled" : "outlined"}
     />
   );
 }

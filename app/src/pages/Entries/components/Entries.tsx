@@ -12,7 +12,6 @@ import {
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 import { useEffect, useMemo, useState } from "react";
 
-import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";

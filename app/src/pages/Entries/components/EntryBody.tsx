@@ -17,7 +17,6 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
@@ -26,7 +25,6 @@ import EntryModel from "@/pages/Entry/models/EntryModel";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
-import SubActivityChip from "@/pages/Activities/components/SubActivityChip";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import poopMarks from "@/utils/poopMarks";
