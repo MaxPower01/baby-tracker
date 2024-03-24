@@ -55,7 +55,7 @@ export function DateEntriesHeader(props: Props) {
             "&::-webkit-scrollbar": {
               display: "none",
             },
-            paddingBottom: 1,
+            // paddingBottom: 1,
           }}
         >
           <Stack

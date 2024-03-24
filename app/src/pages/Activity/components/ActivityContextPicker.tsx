@@ -52,7 +52,6 @@ export function ActivityContextPicker(props: Props) {
     if (activityContextType == null) {
       return null;
     }
-    console.log(getEntryTypeFromActivityContextType(activityContextType));
     return getEntryTypeFromActivityContextType(activityContextType);
   }, [activityContextType]);
   const label = (entryType: EntryType | null) => {

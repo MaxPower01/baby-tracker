@@ -89,17 +89,19 @@ export default function EntryForm(props: EntryFormProps) {
   const [endDate, setEndDate] = useState<Dayjs>(dayjs(initialEndDate));
   const [endTime, setEndTime] = useState<Dayjs>(dayjs(initialEndDate));
   const startDateTime = useMemo(() => {
-    const date = startDate.startOf("day");
-    date.hour(startTime.hour());
-    date.minute(startTime.minute());
-    date.second(startTime.second());
+    const date = startDate.toDate();
+    const time = startTime.toDate();
+    date.setHours(time.getHours());
+    date.setMinutes(time.getMinutes());
+    date.setSeconds(time.getSeconds());
     return date;
   }, [startDate, startTime]);
   const endDateTime = useMemo(() => {
-    const date = endDate.startOf("day");
-    date.hour(endTime.hour());
-    date.minute(endTime.minute());
-    date.second(endTime.second());
+    const date = endDate.toDate();
+    const time = endTime.toDate();
+    date.setHours(time.getHours());
+    date.setMinutes(time.getMinutes());
+    date.setSeconds(time.getSeconds());
     return date;
   }, [endDate, endTime]);
   const [note, setNote] = useState(props.entry.note);
@@ -164,8 +166,8 @@ export default function EntryForm(props: EntryFormProps) {
         const entry: Entry = {
           babyId: props.entry.babyId,
           entryType: props.entry.entryType,
-          startTimestamp: getTimestamp(startDateTime.toDate()),
-          endTimestamp: getTimestamp(endDateTime.toDate()),
+          startTimestamp: getTimestamp(startDateTime),
+          endTimestamp: getTimestamp(endDateTime),
           note: note,
           imageURLs: imageURLs,
           activityContexts: selectedActivityContexts,

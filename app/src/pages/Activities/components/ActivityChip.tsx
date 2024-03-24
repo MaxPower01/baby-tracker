@@ -43,6 +43,7 @@ export default function ActivityChip(props: Props) {
           color: props.isSelected
             ? theme.customPalette.text.primary
             : theme.customPalette.text.tertiary,
+          paddingLeft: 0.5,
         },
       }}
       variant={props.isSelected ? "filled" : "outlined"}

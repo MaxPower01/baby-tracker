@@ -101,7 +101,7 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
         setChildren(newChildren);
       })
       .catch((error) => {
-        console.log("Error getting documents: ", error);
+        console.error("Error getting documents: ", error);
       })
       .finally(() => {
         setIsLoading(false);

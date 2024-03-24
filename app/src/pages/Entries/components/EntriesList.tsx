@@ -86,7 +86,7 @@ export default function EntriesList(props: Props) {
               return (
                 <Stack
                   key={key}
-                  spacing={1}
+                  spacing={2}
                   sx={{
                     width: "100%",
                   }}
@@ -100,7 +100,7 @@ export default function EntriesList(props: Props) {
                       backgroundColor: theme.palette.background.default,
                       width: "100%",
                     }}
-                    spacing={1}
+                    spacing={2}
                   >
                     <DateEntriesHeader date={date} entries={entriesOfDate} />
                     <DateEntries entries={entriesOfDate} />

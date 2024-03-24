@@ -30,7 +30,9 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
+import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import getPath from "@/utils/getPath";
+import { selectRecentEntries } from "@/state/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +40,6 @@ import { useSelector } from "react-redux";
 
 type Props = {
   entries: Entry[];
-  allEntries: Entry[];
   onFilterEntriesButtonClick?: (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     activityType: ActivityType
@@ -47,7 +48,8 @@ type Props = {
 
 export default function EntriesCard(props: Props) {
   const navigate = useNavigate();
-  const { entries, allEntries } = props;
+  const { entries } = props;
+  const allEntries = useSelector(selectRecentEntries);
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -171,18 +173,18 @@ export default function EntriesCard(props: Props) {
                             : "",
                         }}
                       >
-                        {/* <ActivityIcon
-                            activity={entry.entryType}
-                            sx={{
-                              fontSize: "3.5em",
-                              transform:
-                                entry.activity.hasSides &&
-                                entry.leftTime &&
-                                !entry.rightTime
-                                  ? "scaleX(-1)"
-                                  : "scaleX(1)",
-                            }}
-                          /> */}
+                        <ActivityIcon
+                          type={entry.entryType}
+                          sx={{
+                            fontSize: "3.5em",
+                            transform:
+                              entryTypeHasSides(entry.entryType) &&
+                              entry.leftTime &&
+                              !entry.rightTime
+                                ? "scaleX(-1)"
+                                : "scaleX(1)",
+                          }}
+                        />
                       </Box>
                       <Stack
                         direction={"row"}

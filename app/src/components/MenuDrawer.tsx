@@ -70,7 +70,6 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
       .then((result: any) => {
         // Access code successfully generated and returned
         const accessCode = result.data.accessCode;
-        console.log("Access code:", accessCode);
       })
       .catch((error: any) => {
         // Error occurred during function execution
