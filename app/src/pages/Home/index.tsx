@@ -137,7 +137,7 @@ export function HomePage() {
             <ActivitiesWidget entries={entries} />
           </Section>
           <Section>
-            <EntriesList entries={entries} dateHeaders />
+            <EntriesList entries={entries} groupByDate />
           </Section>
         </>
       )}

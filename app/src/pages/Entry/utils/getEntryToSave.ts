@@ -25,9 +25,6 @@ export function getEntryToSave(entry: Entry, babyId: string): Entry {
   if (newEntry.temperature === 0) {
     newEntry.temperature = null;
   }
-  if (newEntry.temperatureMethodId === 0) {
-    newEntry.temperatureMethodId = null;
-  }
   if (newEntry.leftTime === 0) {
     newEntry.leftTime = null;
   }
@@ -39,6 +36,8 @@ export function getEntryToSave(entry: Entry, babyId: string): Entry {
   }
   if (newEntry.poopAmount === 0) {
     newEntry.poopAmount = null;
+    newEntry.poopColorId = null;
+    newEntry.poopTextureId = null;
   }
   if (newEntry.poopColorId === 0) {
     newEntry.poopColorId = null;

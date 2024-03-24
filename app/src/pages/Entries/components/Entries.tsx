@@ -162,7 +162,7 @@ export default function Entries(props: Props) {
                       backgroundColor: theme.palette.background.default,
                     }}
                   >
-                    <DateHeader startDate={startDate} />
+                    <DateHeader date={startDate} />
                   </Stack>
 
                   <Stack

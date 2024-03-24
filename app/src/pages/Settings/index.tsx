@@ -230,7 +230,7 @@ export function SettingsPage() {
         </VerticalStack>
 
         <VerticalStack>
-          <ItemLabel label={"Intervalles de groupement"} />
+          <ItemLabel label={"Intervalle de regroupement"} />
           <FormControl
             variant="outlined"
             sx={{

@@ -12,11 +12,11 @@ import { useSelector } from "react-redux";
 
 type Props = {
   sx?: SxProps;
-  startDate: Date;
+  date: Date;
 };
 
 export function DateHeader(props: Props) {
-  const { startDate, sx } = props;
+  const { date: date, sx } = props;
   const theme = useTheme();
   return (
     <Box
@@ -59,7 +59,7 @@ export function DateHeader(props: Props) {
             }}
           >
             <Typography textAlign={"center"} fontWeight={600} variant={"h6"}>
-              {startDate.toLocaleDateString("fr-CA", {
+              {date.toLocaleDateString("fr-CA", {
                 day: "numeric",
               })}
             </Typography>
@@ -80,7 +80,7 @@ export function DateHeader(props: Props) {
               }}
             >
               {upperCaseFirst(
-                startDate.toLocaleDateString("fr-CA", {
+                date.toLocaleDateString("fr-CA", {
                   weekday: "long",
                 })
               )}
@@ -94,7 +94,7 @@ export function DateHeader(props: Props) {
               }}
             >
               {upperCaseFirst(
-                startDate.toLocaleDateString("fr-CA", {
+                date.toLocaleDateString("fr-CA", {
                   month: "long",
                   year: "numeric",
                 })
