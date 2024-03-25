@@ -1,7 +1,7 @@
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
-import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 
 export function getActivityChipLabel(entries: Entry[]) {
@@ -15,14 +15,18 @@ export function getActivityChipLabel(entries: Entry[]) {
       return acc + (entry.leftVolume ?? 0) + (entry.rightVolume ?? 0);
     }, 0);
     // TODO: Use the correct unit for the volume
-    result += ` • ${totalVolume}ml`;
+    if (totalVolume > 0) {
+      result += ` • ${totalVolume}ml`;
+    }
   }
   if (entryTypeHasStopwatch(entryType)) {
     const totalTime = entries.reduce((acc, entry) => {
       return acc + (entry.leftTime ?? 0) + (entry.rightTime ?? 0);
     }, 0);
-    const totalDuration = formatStopwatchTime(totalTime, true);
-    result += ` • ${totalDuration}`;
+    if (totalTime > 0) {
+      const totalDuration = formatStopwatchTime(totalTime, true);
+      result += ` • ${totalDuration}`;
+    }
   }
   return result;
 }

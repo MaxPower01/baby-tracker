@@ -55,7 +55,6 @@ export function DateEntriesHeader(props: Props) {
             "&::-webkit-scrollbar": {
               display: "none",
             },
-            // paddingBottom: 1,
           }}
         >
           <Stack
@@ -64,10 +63,6 @@ export function DateEntriesHeader(props: Props) {
             alignItems={"flex-start"}
             spacing={1}
           >
-            {/* <ActivityChip
-              entryType={props.entries[0].entryType}
-              entries={props.entries}
-            /> */}
             {Object.keys(entriesByEntryType).map((entryType) => {
               return (
                 <ActivityChip
