@@ -31,22 +31,22 @@ const defaultState: EntriesState = {
 
 export const fetchRecentEntries = createAsyncThunk(
   "entries/fetchInitialEntries",
-  async (_, { dispatch, getState }) => {
+  async (_, thunkAPI) => {
     const { latestRecentEntriesFetchedTimestamp: lastFetchTimestamp } = (
-      getState() as RootState
+      thunkAPI.getState() as RootState
     ).entriesReducer;
-    const now = Date.now();
+    const newTimestamp = getTimestamp(new Date());
     if (
       lastFetchTimestamp &&
-      now - lastFetchTimestamp < RECENT_DATA_FETCH_COOLDOWN
+      newTimestamp - lastFetchTimestamp < RECENT_DATA_FETCH_COOLDOWN
     ) {
       return;
     }
     try {
       // const response = await fetchEntries();
-      dispatch(
+      thunkAPI.dispatch(
         setLastFetchTimestamp({
-          timestamp: now,
+          timestamp: newTimestamp,
         })
       );
       // return response.data;
