@@ -1,5 +1,23 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
+import {
+  RECENT_DATA_AGE_LIMIT_IN_MILLISECONDS,
+  RECENT_DATA_AGE_LIMIT_IN_SECONDS,
+} from "@/constants/RECENT_DATA_AGE_LIMIT";
+import {
+  RECENT_DATA_FETCH_COOLDOWN_IN_MILLISECONDS,
+  RECENT_DATA_FETCH_COOLDOWN_IN_SECONDS,
+} from "@/constants/RECENT_DATA_FETCH_COOLDOWN";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import {
   getInitialState,
   isNullOrWhiteSpace,
@@ -11,8 +29,6 @@ import CustomUser from "@/pages/Authentication/types/CustomUser";
 import EntriesState from "@/pages/Entries/types/EntriesState";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
-import { RECENT_DATA_AGE_LIMIT } from "@/constants/RECENT_DATA_AGE_LIMIT";
-import { RECENT_DATA_FETCH_COOLDOWN } from "@/constants/RECENT_DATA_FETCH_COOLDOWN";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { createSelector } from "@reduxjs/toolkit";
@@ -30,28 +46,64 @@ const defaultState: EntriesState = {
 };
 
 export const fetchRecentEntries = createAsyncThunk(
-  "entries/fetchInitialEntries",
-  async (_, thunkAPI) => {
-    const { latestRecentEntriesFetchedTimestamp: lastFetchTimestamp } = (
-      thunkAPI.getState() as RootState
-    ).entriesReducer;
-    const newTimestamp = getTimestamp(new Date());
-    if (
-      lastFetchTimestamp &&
-      newTimestamp - lastFetchTimestamp < RECENT_DATA_FETCH_COOLDOWN
-    ) {
-      return;
-    }
+  "entries/fetchRecentEntries",
+  async (
+    props: {
+      user: CustomUser;
+    },
+    thunkAPI
+  ) => {
     try {
-      // const response = await fetchEntries();
+      const { user } = props;
+      const selectedChild = user?.selectedChild ?? "";
+      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+        return thunkAPI.rejectWithValue("User or selected child is null");
+      }
+      const {
+        entries: currentEntries,
+        latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
+      } = (thunkAPI.getState() as RootState).entriesReducer;
+      const newTimestamp = getTimestamp(new Date());
+      const limitTimestamp = newTimestamp - RECENT_DATA_AGE_LIMIT_IN_SECONDS;
+      const anyRecentEntries = currentEntries.some(
+        (entry) => entry.startTimestamp >= limitTimestamp
+      );
+      if (
+        lastFetchTimestamp &&
+        newTimestamp - lastFetchTimestamp <
+          RECENT_DATA_FETCH_COOLDOWN_IN_SECONDS &&
+        anyRecentEntries
+      ) {
+        return thunkAPI.rejectWithValue("Cooldown not elapsed");
+      }
       thunkAPI.dispatch(
         setLastFetchTimestamp({
           timestamp: newTimestamp,
         })
       );
-      // return response.data;
-    } catch (err) {
-      // Gérer l'erreur
+      const q = query(
+        collection(db, `children/${selectedChild}/entries`),
+        where("startDate", ">=", limitTimestamp),
+        orderBy("startDate", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return thunkAPI.fulfillWithValue([]);
+      }
+      const entries: Entry[] = [];
+      querySnapshot.forEach((doc) => {
+        const entry: Entry = {
+          id: doc.id,
+          ...(doc.data() as Entry),
+        };
+        entries.push(entry);
+      });
+      entries.sort((a, b) => {
+        return b.startTimestamp - a.startTimestamp;
+      });
+      return thunkAPI.fulfillWithValue(entries);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -337,6 +389,7 @@ const slice = createSlice({
       setStatusInState(state, "idle");
     });
     builder.addCase(fetchRecentEntries.rejected, (state, action) => {
+      console.error("Error fetching recent entries: ", action.payload);
       setStatusInState(state, "idle");
     });
     builder.addCase(saveEntry.pending, (state, action) => {
@@ -348,6 +401,7 @@ const slice = createSlice({
       setStatusInState(state, "idle");
     });
     builder.addCase(saveEntry.rejected, (state, action) => {
+      console.error("Error saving entry: ", action.payload);
       setStatusInState(state, "idle");
     });
   },
