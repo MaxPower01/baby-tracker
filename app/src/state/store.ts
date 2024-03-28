@@ -1,7 +1,7 @@
 import activitiesReducer from "@/state/slices/activitiesSlice";
 import appReducer from "@/state/slices/appSlice";
 import { configureStore } from "@reduxjs/toolkit";
-import entriesReducer from "@/state/entriesSlice";
+import entriesReducer from "@/state/slices/entriesSlice";
 import logger from "redux-logger";
 import settingsReducer from "@/state/slices/settingsSlice";
 

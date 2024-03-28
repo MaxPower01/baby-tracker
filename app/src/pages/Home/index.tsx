@@ -15,7 +15,7 @@ import {
   selectEntriesStatus,
   selectRecentEntries,
   updateEntries,
-} from "@/state/entriesSlice";
+} from "@/state/slices/entriesSlice";
 import {
   collection,
   onSnapshot,

@@ -1,8 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
+import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
@@ -17,7 +18,28 @@ type Props = {
   textColor?: string;
 };
 
-export default function EntryHeader(props: Props) {
+// function EntryHeaderSubtitle(props: Props) {
+//   const theme = useTheme();
+//   const hasPoop = entryTypeHasPoop(props.entry.entryType);
+//   const hasUrine
+//   if (entryTypeHasPoop(props.entry.entryType)) {
+//   return (
+//     <Typography
+//       variant={"body2"}
+//       fontWeight={400}
+//       sx={{
+//         color: props.textColor,
+//         opacity: theme.opacity.secondary,
+//       }}
+//     >
+//       {subtitle}
+//     </Typography>
+//   );
+
+// }
+
+export function EntryHeader(props: Props) {
+  const theme = useTheme();
   let title = getActivityName(props.entry.entryType);
   let titleSuffix: "left" | "right" | null = null;
   if (entryTypeHasSides(props.entry.entryType)) {
@@ -42,7 +64,7 @@ export default function EntryHeader(props: Props) {
   }
   const startDate = getDateFromTimestamp(props.entry.startTimestamp);
   const endDate = getDateFromTimestamp(props.entry.endTimestamp);
-  let subtitle = startDate.toLocaleTimeString("fr-CA", {
+  let caption = startDate.toLocaleTimeString("fr-CA", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -51,12 +73,12 @@ export default function EntryHeader(props: Props) {
       props.entry.leftStopwatchIsRunning ||
       props.entry.rightStopwatchIsRunning
     ) {
-      subtitle += " - en cours";
+      caption += " - en cours";
     } else {
       const isDifferentDay = startDate.getDate() !== endDate.getDate();
       const isDifferentMonth = startDate.getMonth() !== endDate.getMonth();
       const isDifferentYear = startDate.getFullYear() !== endDate.getFullYear();
-      subtitle += ` – ${endDate.toLocaleTimeString("fr-CA", {
+      caption += ` – ${endDate.toLocaleTimeString("fr-CA", {
         minute: "2-digit",
         hour: "2-digit",
         day: isDifferentDay || isDifferentMonth ? "numeric" : undefined,
@@ -81,17 +103,28 @@ export default function EntryHeader(props: Props) {
           variant={"caption"}
           sx={{
             lineHeight: 1,
-            opacity: 0.6,
+            opacity: theme.opacity.tertiary,
             color: props.textColor,
           }}
         >
-          {subtitle}
+          {caption}
         </Typography>
         <Typography
           variant={"body1"}
           fontWeight={600}
           sx={{
             color: props.textColor,
+            opacity: theme.opacity.primary,
+          }}
+        >
+          {title}
+        </Typography>
+        <Typography
+          variant={"body2"}
+          fontWeight={400}
+          sx={{
+            color: props.textColor,
+            opacity: theme.opacity.secondary,
           }}
         >
           {title}

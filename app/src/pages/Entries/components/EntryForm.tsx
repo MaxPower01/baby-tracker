@@ -61,7 +61,7 @@ import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { getTitleForEntryType } from "@/utils/utils";
 import { parseEnumValue } from "@/utils/parseEnumValue";
-import { saveEntry } from "@/state/entriesSlice";
+import { saveEntry } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
