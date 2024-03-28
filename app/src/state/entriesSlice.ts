@@ -83,8 +83,8 @@ export const fetchRecentEntries = createAsyncThunk(
       );
       const q = query(
         collection(db, `children/${selectedChild}/entries`),
-        where("startDate", ">=", limitTimestamp),
-        orderBy("startDate", "desc")
+        where("startTimestamp", ">=", limitTimestamp),
+        orderBy("startTimestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
@@ -386,6 +386,10 @@ const slice = createSlice({
       setStatusInState(state, "loading");
     });
     builder.addCase(fetchRecentEntries.fulfilled, (state, action) => {
+      const entries = action.payload as Entry[];
+      setEntriesInState(state, {
+        entries: entries.map((e) => JSON.stringify(e)),
+      });
       setStatusInState(state, "idle");
     });
     builder.addCase(fetchRecentEntries.rejected, (state, action) => {
