@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from "@mui/material";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
-import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
+import { EntrySubtitle } from "@/pages/Entries/components/EntrySubtitle";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
@@ -17,26 +17,6 @@ type Props = {
   hideIcon?: boolean;
   textColor?: string;
 };
-
-// function EntryHeaderSubtitle(props: Props) {
-//   const theme = useTheme();
-//   const hasPoop = entryTypeHasPoop(props.entry.entryType);
-//   const hasUrine
-//   if (entryTypeHasPoop(props.entry.entryType)) {
-//   return (
-//     <Typography
-//       variant={"body2"}
-//       fontWeight={400}
-//       sx={{
-//         color: props.textColor,
-//         opacity: theme.opacity.secondary,
-//       }}
-//     >
-//       {subtitle}
-//     </Typography>
-//   );
-
-// }
 
 export function EntryHeader(props: Props) {
   const theme = useTheme();
@@ -119,16 +99,7 @@ export function EntryHeader(props: Props) {
         >
           {title}
         </Typography>
-        <Typography
-          variant={"body2"}
-          fontWeight={400}
-          sx={{
-            color: props.textColor,
-            opacity: theme.opacity.secondary,
-          }}
-        >
-          {title}
-        </Typography>
+        <EntrySubtitle entry={props.entry} textColor={props.textColor} />
       </Stack>
     </Stack>
   );

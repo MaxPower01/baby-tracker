@@ -125,10 +125,10 @@ export default function EntriesCard(props: Props) {
                       <Box
                         sx={{
                           position: "absolute",
-                          top: "3em",
+                          top: "3.65em",
                           left: "calc(2.25em - 2px)",
                           height: "100%",
-                          opacity: 0.5,
+                          // opacity: 0.5,
                           paddingTop: 2.5,
                           paddingBottom: 2.5,
                           // display: "none" : undefined,
@@ -241,7 +241,7 @@ export default function EntriesCard(props: Props) {
                         entry={entry}
                         previousEntry={previousEntry}
                         sx={{
-                          paddingTop: 0,
+                          paddingTop: 1,
                         }}
                       />
                     </Stack>

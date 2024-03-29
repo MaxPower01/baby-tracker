@@ -38,5 +38,26 @@ type Props = {
 };
 
 export default function EntryBody(props: Props) {
-  return null;
+  const theme = useTheme();
+  return (
+    <Stack
+      spacing={0.5}
+      sx={{
+        ...props.sx,
+        width: "100%",
+      }}
+    >
+      {!isNullOrWhiteSpace(props.entry.note) && (
+        <Typography
+          variant={"body2"}
+          sx={{
+            opacity: theme.opacity.tertiary,
+            fontWeight: 400,
+          }}
+        >
+          {props.entry.note}
+        </Typography>
+      )}
+    </Stack>
+  );
 }
