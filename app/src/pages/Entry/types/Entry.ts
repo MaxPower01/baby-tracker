@@ -38,8 +38,10 @@ export interface Entry {
   temperature: number | null;
   leftTime: number | null;
   leftStopwatchIsRunning: boolean;
+  leftStopwatchLastUpdateTime: number | null;
   rightTime: number | null;
   rightStopwatchIsRunning: boolean;
+  rightStopwatchLastUpdateTime: number | null;
   urineAmount: number | null;
   poopAmount: number | null;
   poopColorId: number | null;

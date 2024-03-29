@@ -1,8 +1,10 @@
+import React, { useEffect, useMemo } from "react";
 import { Stack, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeCanHaveMultipleContexts } from "@/pages/Entry/utils/entryTypeCanHaveMultipleContexts";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
@@ -15,6 +17,7 @@ import { formatSize } from "@/utils/formatSize";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { formatVolume } from "@/utils/formatVolume";
 import { formatWeight } from "@/utils/formatWeight";
+import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
 type Props = {
@@ -24,6 +27,24 @@ type Props = {
 
 export function EntrySubtitle(props: Props) {
   const theme = useTheme();
+  const [leftTime, setLeftTime] = React.useState(
+    getEntryTime(props.entry, "left", true)
+  );
+  const [rightTime, setRightTime] = React.useState(
+    getEntryTime(props.entry, "right", true)
+  );
+  const totalTime = useMemo(() => leftTime + rightTime, [leftTime, rightTime]);
+  const hasStopwatch = entryTypeHasStopwatch(props.entry.entryType);
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (hasStopwatch && entryHasStopwatchRunning(props.entry)) {
+      intervalId = setInterval(() => {
+        setLeftTime(getEntryTime(props.entry, "left", true));
+        setRightTime(getEntryTime(props.entry, "right", true));
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [props.entry, hasStopwatch]);
   const hasPoop =
     entryTypeHasPoop(props.entry.entryType) &&
     (props.entry.poopAmount ?? 0) > 0;
@@ -82,11 +103,7 @@ export function EntrySubtitle(props: Props) {
     const contextsLabel = props.entry.activityContexts
       .map((context) => context.name)
       .join(" • ");
-    if (isNullOrWhiteSpace(subtitle)) {
-      subtitle = contextsLabel;
-    } else {
-      subtitle += ` • ${contextsLabel}`;
-    }
+    subtitle = contextsLabel;
   }
   let volumeDisplayed = false;
   const hasVolume = entryTypeHasVolume(props.entry.entryType);
@@ -102,11 +119,7 @@ export function EntrySubtitle(props: Props) {
   }
   let timeDisplayed = false;
   if (!volumeDisplayed) {
-    const hasStopwatch = entryTypeHasStopwatch(props.entry.entryType);
     if (hasStopwatch) {
-      const leftTime = props.entry.leftTime ?? 0;
-      const rightTime = props.entry.rightTime ?? 0;
-      const totalTime = leftTime + rightTime;
       if (totalTime > 0) {
         if (!isNullOrWhiteSpace(subtitle)) {
           subtitle += " • ";

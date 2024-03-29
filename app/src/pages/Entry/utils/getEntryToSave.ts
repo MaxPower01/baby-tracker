@@ -45,5 +45,11 @@ export function getEntryToSave(entry: Entry, babyId: string): Entry {
   if (newEntry.poopTextureId === 0) {
     newEntry.poopTextureId = null;
   }
+  if (newEntry.leftStopwatchLastUpdateTime === 0) {
+    newEntry.leftStopwatchLastUpdateTime = null;
+  }
+  if (newEntry.rightStopwatchLastUpdateTime === 0) {
+    newEntry.rightStopwatchLastUpdateTime = null;
+  }
   return newEntry;
 }

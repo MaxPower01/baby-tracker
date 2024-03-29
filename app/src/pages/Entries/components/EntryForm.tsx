@@ -57,6 +57,7 @@ import { entryTypeHasUrine } from "@/pages/Entry/utils/entryTypeHasUrine";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { getTitleForEntryType } from "@/utils/utils";
@@ -109,15 +110,11 @@ export default function EntryForm(props: EntryFormProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [weight, setWeight] = useState(props.entry.weight ?? 0);
   const [size, setSize] = useState(props.entry.size ?? 0);
-  const [leftStopwatchTime, setLeftStopwatchTime] = useState(
-    props.entry.leftTime ?? 0
+  const [leftTime, setLeftTime] = useState(
+    getEntryTime(props.entry, "left", true)
   );
-  const [rightStopwatchTime, setRightStopwatchTime] = useState(
-    props.entry.rightTime ?? 0
-  );
-  const stopwatchTime = useMemo(
-    () => leftStopwatchTime + rightStopwatchTime,
-    [leftStopwatchTime, rightStopwatchTime]
+  const [rightTime, setRightTime] = useState(
+    getEntryTime(props.entry, "right", true)
   );
   const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(
     props.entry.leftStopwatchIsRunning
@@ -164,6 +161,7 @@ export default function EntryForm(props: EntryFormProps) {
         }
         setIsSaving(true);
         const entry: Entry = {
+          id: props.entry.id,
           babyId: props.entry.babyId,
           entryType: props.entry.entryType,
           startTimestamp: getTimestamp(startDateTime),
@@ -176,10 +174,12 @@ export default function EntryForm(props: EntryFormProps) {
           weight: weight,
           size: size,
           temperature: temperature,
-          leftTime: leftStopwatchTime,
+          leftTime: leftTime,
           leftStopwatchIsRunning: leftStopwatchIsRunning,
-          rightTime: rightStopwatchTime,
+          leftStopwatchLastUpdateTime: leftStopwatchLastUpdateTime,
+          rightTime: rightTime,
           rightStopwatchIsRunning: rightStopwatchIsRunning,
+          rightStopwatchLastUpdateTime: rightStopwatchLastUpdateTime,
           urineAmount: urineAmount,
           poopAmount: poopAmount,
           poopColorId: poopColorId,
@@ -215,9 +215,9 @@ export default function EntryForm(props: EntryFormProps) {
     weight,
     size,
     temperature,
-    leftStopwatchTime,
+    leftTime,
     leftStopwatchIsRunning,
-    rightStopwatchTime,
+    rightTime,
     rightStopwatchIsRunning,
     urineAmount,
     poopAmount,
@@ -252,9 +252,9 @@ export default function EntryForm(props: EntryFormProps) {
     weight,
     size,
     temperature,
-    leftStopwatchTime,
+    leftTime,
     leftStopwatchIsRunning,
-    rightStopwatchTime,
+    rightTime,
     rightStopwatchIsRunning,
     urineAmount,
     poopAmount,
@@ -401,10 +401,10 @@ export default function EntryForm(props: EntryFormProps) {
             <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryType)}
-              leftTime={leftStopwatchTime}
-              setLeftTime={setLeftStopwatchTime}
-              rightTime={rightStopwatchTime}
-              setRightTime={setRightStopwatchTime}
+              leftTime={leftTime}
+              setLeftTime={setLeftTime}
+              rightTime={rightTime}
+              setRightTime={setRightTime}
               leftIsRunning={leftStopwatchIsRunning}
               setLeftIsRunning={setLeftStopwatchIsRunning}
               rightIsRunning={rightStopwatchIsRunning}

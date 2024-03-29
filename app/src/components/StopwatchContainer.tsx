@@ -133,15 +133,6 @@ export function StopwatchContainer(props: Props) {
   const minutes = useMemo(() => Math.floor((time % 3600000) / 60000), [time]);
   const hours = useMemo(() => Math.floor(time / 3600000), [time]);
 
-  // const handleStartStop = () => {
-  //   onChange({
-  //     time: !isRunning && time == 0 ? 1000 : time,
-  //     isRunning: !isRunning,
-  //     lastUpdateTime: Date.now(),
-  //     isStartStop: true,
-  //   });
-  // };
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     let newSeconds = seconds;
@@ -172,12 +163,6 @@ export function StopwatchContainer(props: Props) {
     if (newHours > 99) {
       newHours = 99;
     }
-    // onChange({
-    //   time: newSeconds * 1000 + newMinutes * 60000 + newHours * 3600000,
-    //   isRunning,
-    //   lastUpdateTime: Date.now(),
-    //   isStartStop: false,
-    // });
   };
 
   const textfieldStyle: SxProps = {
@@ -188,18 +173,13 @@ export function StopwatchContainer(props: Props) {
       border: "none !important",
     },
     flex: 1,
-    // transform: "translateX(-0.5em)",
   };
 
   const textFieldVariant: TextFieldVariants = "outlined";
 
   const inputStyle: SxProps = {
     "& input": {
-      // textAlign: "center",
-      // fontSize: "2em",
       fontWeight: "bold",
-      // width: "2em",
-      // maxWidth: "5em",
       color: theme.palette.primary.main,
     },
   };
@@ -226,15 +206,6 @@ export function StopwatchContainer(props: Props) {
             width: "100%",
           }}
         >
-          {/* {props.size === "big" && (
-            <Typography
-              variant="body1"
-              color={theme.customPalette.text.tertiary}
-              textAlign={"center"}
-            >
-              Durée
-            </Typography>
-          )} */}
           <Typography
             variant="h4"
             color={theme.customPalette.text.primary}
@@ -328,17 +299,6 @@ export function StopwatchContainer(props: Props) {
                   },
                 }}
                 InputProps={{
-                  // endAdornment: (
-                  //   <InputAdornment position="end">h</InputAdornment>
-                  // ),
-                  // onFocus: (event) => {
-                  // if (inputsAreReadOnly) {
-                  //   event.target.blur();
-                  // } else {
-                  //   // event.target.select();
-                  // }
-                  // },
-                  // readOnly: inputsAreReadOnly,
                   "aria-valuemin": 0,
                   "aria-colcount": 2,
                   sx: {
@@ -372,17 +332,6 @@ export function StopwatchContainer(props: Props) {
                   },
                 }}
                 InputProps={{
-                  // endAdornment: (
-                  //   <InputAdornment position="end">min</InputAdornment>
-                  // ),
-                  // onFocus: (event) => {
-                  // if (inputsAreReadOnly) {
-                  //   event.target.blur();
-                  // } else {
-                  //   // event.target.select();
-                  // }
-                  // },
-                  // readOnly: inputsAreReadOnly,
                   "aria-valuemin": 0,
                   "aria-valuemax": 59,
                   "aria-colcount": 2,
