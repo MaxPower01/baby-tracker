@@ -32,39 +32,39 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
+import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 import { useNavigate } from "react-router-dom";
 
 export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const addParentFunction = httpsCallable(functions, "addParent");
   const navigate = useNavigate();
   const { user, signOut } = useAuthentication();
-  const { children } = useChildren();
+  const { babies } = useBabies();
   const theme = useTheme();
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
   const [email, setEmail] = useState("");
 
-  const selectedChild = useMemo(() => {
-    return user?.selectedChild ?? "";
-  }, [user, children]);
+  const babyId = useMemo(() => {
+    return user?.babyId ?? "";
+  }, [user, babies]);
 
-  const selectedChildName = useMemo(() => {
-    if (children == null || isNullOrWhiteSpace(selectedChild)) return "";
-    return children.find((child) => child.id === selectedChild)?.name ?? "";
-  }, [selectedChild, children]);
+  const babyName = useMemo(() => {
+    if (babies == null || isNullOrWhiteSpace(babyId)) return "";
+    return babies.find((baby) => baby.id === babyId)?.name ?? "";
+  }, [babyId, babies]);
 
   const handleAddParent = useCallback(() => {
     if (
       user == null ||
-      isNullOrWhiteSpace(selectedChild) ||
+      isNullOrWhiteSpace(babyId) ||
       isNullOrWhiteSpace(email)
     ) {
       handleDialogClose();
       return;
     }
     addParentFunction({
-      childId: selectedChild,
+      babyId: babyId,
       parentEmail: email,
     })
       .then((result: any) => {
@@ -78,7 +78,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
         console.error("Error:", errorCode, errorMessage);
       });
     handleDialogClose();
-  }, [selectedChild, user, addParentFunction, email]);
+  }, [babyId, user, addParentFunction, email]);
 
   const avatarWidth = 100;
   const avatarFontSize = avatarWidth / 2.5;
@@ -176,7 +176,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 />
                 <Typography variant="body1">Ma famille</Typography>
               </Button>
-              {!isNullOrWhiteSpace(selectedChild) && (
+              {!isNullOrWhiteSpace(babyId) && (
                 <Button
                   variant="text"
                   fullWidth
@@ -328,7 +328,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
       >
         <DialogTitle id="add-parent-dialog-title">
           Ajouter un parent
-          {!isNullOrWhiteSpace(selectedChild) && " pour " + selectedChildName}
+          {!isNullOrWhiteSpace(babyId) && " pour " + babyName}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="add-parent-dialog-description">

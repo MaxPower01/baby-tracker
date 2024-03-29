@@ -86,15 +86,15 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const getEntries = useCallback(
     async (params: { timePeriod: TimePeriodId }) => {
-      const selectedChild = user?.selectedChild ?? "";
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      const babyId = user?.babyId ?? "";
+      if (user == null || isNullOrWhiteSpace(babyId)) {
         setEntries([]);
         setIsLoading(false);
         return [];
       }
       const endAtTimestamp = Timestamp.fromDate(getDateFor(params.timePeriod));
       const q = query(
-        collection(db, `children/${selectedChild}/entries`),
+        collection(db, `babies/${babyId}/entries`),
         where("startDate", ">=", endAtTimestamp),
         orderBy("startDate", "desc")
       );
@@ -139,14 +139,14 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
         return [...newEntries];
       });
     });
-    const selectedChild = user?.selectedChild ?? "";
-    if (user == null || isNullOrWhiteSpace(selectedChild)) {
+    const babyId = user?.babyId ?? "";
+    if (user == null || isNullOrWhiteSpace(babyId)) {
       return;
     }
     const now = new Date();
     const endAtTimestamp = Timestamp.fromDate(getDateFor(TimePeriodId.TwoDays));
     const q = query(
-      collection(db, `children/${selectedChild}/entries`),
+      collection(db, `babies/${babyId}/entries`),
       where("startDate", ">=", endAtTimestamp),
       orderBy("startDate", "desc")
     );
@@ -204,25 +204,25 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
 
   const deleteEntry = useCallback(
     async (entryId: string) => {
-      const selectedChild = user?.selectedChild ?? "";
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      const babyId = user?.babyId ?? "";
+      if (user == null || isNullOrWhiteSpace(babyId)) {
         return;
       }
-      await deleteDoc(doc(db, `children/${selectedChild}/entries`, entryId));
+      await deleteDoc(doc(db, `babies/${babyId}/entries`, entryId));
     },
     [user]
   );
 
   const saveEntry = useCallback(
     async (entry: Entry) => {
-      const selectedChild = user?.selectedChild ?? "";
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      const babyId = user?.babyId ?? "";
+      if (user == null || isNullOrWhiteSpace(babyId)) {
         return null;
       }
       const { id, ...rest } = entry;
       if (id == null) {
         const docRef = await addDoc(
-          collection(db, `children/${selectedChild}/entries`),
+          collection(db, `babies/${babyId}/entries`),
           {
             ...rest,
             createdDate: Timestamp.fromDate(new Date()),
@@ -234,7 +234,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
         );
         return docRef.id;
       } else {
-        await setDoc(doc(db, `children/${selectedChild}/entries/${id}`), {
+        await setDoc(doc(db, `babies/${babyId}/entries/${id}`), {
           ...rest,
           editedDate: Timestamp.fromDate(new Date()),
           editedBy: {

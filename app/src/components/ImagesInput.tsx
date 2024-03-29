@@ -38,7 +38,7 @@ export function ImagesInput(props: Props) {
         return new Promise<void>((resolve, reject) => {
           const storageRef = ref(
             storage,
-            `child/${user?.selectedChild ?? ""}/images/${file.name}`
+            `child/${user?.babyId ?? ""}/images/${file.name}` // TODO: Eventually, rename "child" to "baby"
           );
           const uploadTask = uploadBytesResumable(storageRef, file);
 

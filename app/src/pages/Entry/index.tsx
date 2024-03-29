@@ -25,8 +25,8 @@ export function EntryPage() {
     () => !entryTypeIsValid(entryType),
     [entryType]
   );
-  if (user == null || isNullOrWhiteSpace(user?.selectedChild)) {
-    console.error("No selected child while trying to create an entry");
+  if (user == null || isNullOrWhiteSpace(user?.babyId)) {
+    console.error("No selected baby while trying to create an entry");
     return null;
   }
   if (isNewEntry && invalidEntryType) {
@@ -35,7 +35,7 @@ export function EntryPage() {
     return null;
   }
   const entry: Entry | null = isNewEntry
-    ? getDefaultEntry(entryType, user.selectedChild)
+    ? getDefaultEntry(entryType, user.babyId)
     : useSelector((state: RootState) =>
         state.entriesReducer.entries.find((entry) => entry.id === entryId)
       ) ?? null;

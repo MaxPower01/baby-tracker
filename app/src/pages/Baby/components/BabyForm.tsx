@@ -38,8 +38,8 @@ import { db, storage } from "@/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Baby from "@/pages/Authentication/types/Baby";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
-import Child from "@/pages/Authentication/types/Child";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
@@ -50,7 +50,7 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
+import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -100,7 +100,7 @@ function ItemLabel(props: ItemLabelProps) {
 }
 
 type Props = {
-  child?: Child;
+  baby?: Baby;
 };
 
 export default function BabyForm(props: Props) {
@@ -110,7 +110,7 @@ export default function BabyForm(props: Props) {
   const avatarFontSize = avatarWidth / 2.5;
   const { user, setUser } = useAuthentication();
 
-  const initialChild: Child = props.child ?? {
+  const initialBaby: Baby = props.baby ?? {
     id: "",
     name: "",
     birthDate: new Date(),
@@ -122,13 +122,13 @@ export default function BabyForm(props: Props) {
     avatar: "",
   };
 
-  const [child, setChild] = useState<Child>(initialChild);
+  const [baby, setBaby] = useState<Baby>(initialBaby);
 
-  const { saveChild } = useChildren();
+  const { saveBaby } = useBabies();
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const [name, setName] = useState(child.name);
+  const [name, setName] = useState(baby.name);
   const [nameError, setNameError] = useState("");
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -149,17 +149,17 @@ export default function BabyForm(props: Props) {
     }
   }, [name]);
 
-  const [avatar, setAvatar] = useState(child.avatar);
+  const [avatar, setAvatar] = useState(baby.avatar);
   const [imageIsUploading, setImageIsUploading] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
   const uploadImage = useCallback(
     async (image: File) => {
-      const selectedChild = user?.selectedChild ?? "";
-      if (image == null || isNullOrWhiteSpace(selectedChild)) return;
+      const babyId = user?.babyId ?? "";
+      if (image == null || isNullOrWhiteSpace(babyId)) return;
       const storageRef = ref(
         storage,
-        `child/${selectedChild}/images/profile-pictures/${image.name}`
+        `child/${babyId}/images/profile-pictures/${image.name}` // TODO: Eventually, rename "child" to "baby"
       );
       const uploadTask = uploadBytesResumable(storageRef, image);
       setImageUploadProgress(0);
@@ -207,7 +207,7 @@ export default function BabyForm(props: Props) {
     [imageIsUploading, user, uploadImage]
   );
 
-  const [sex, setSex] = useState(child.sex);
+  const [sex, setSex] = useState(baby.sex);
   const [sexError, setSexError] = useState("");
   const handleSexChange = (event: SelectChangeEvent<string>) => {
     setSex(event.target.value);
@@ -223,33 +223,33 @@ export default function BabyForm(props: Props) {
     return theme.palette.divider;
   }, [sex]);
 
-  const [birthDate, setBirthDate] = useState<Dayjs>(dayjs(child.birthDate));
+  const [birthDate, setBirthDate] = useState<Dayjs>(dayjs(baby.birthDate));
   const handleBirthDateChange = (date: Dayjs | null) => {
     if (date) {
       setBirthDate(date);
     }
   };
 
-  const [weight, setWeight] = useState(child.birthWeight ?? 0);
+  const [weight, setWeight] = useState(baby.birthWeight ?? 0);
 
-  const [size, setSize] = useState(child.birthSize ?? 0);
+  const [size, setSize] = useState(baby.birthSize ?? 0);
   const [headCircumference, setHeadCircumference] = useState(
-    child.birthHeadCircumference ?? 0
+    baby.birthHeadCircumference ?? 0
   );
 
   const save = useCallback(async () => {
-    const newChild = Object.assign({}, child);
-    newChild.name = name;
-    newChild.birthDate = birthDate.toDate();
-    newChild.sex = sex;
-    newChild.birthSize = size == 0 ? 0 : Math.round(size * 100) / 100;
-    newChild.birthWeight = weight == 0 ? 0 : Math.round(weight * 100) / 100;
-    newChild.birthHeadCircumference =
+    const newBaby = Object.assign({}, baby);
+    newBaby.name = name;
+    newBaby.birthDate = birthDate.toDate();
+    newBaby.sex = sex;
+    newBaby.birthSize = size == 0 ? 0 : Math.round(size * 100) / 100;
+    newBaby.birthWeight = weight == 0 ? 0 : Math.round(weight * 100) / 100;
+    newBaby.birthHeadCircumference =
       headCircumference == 0 ? 0 : Math.round(headCircumference * 100) / 100;
-    newChild.avatar = avatar;
+    newBaby.avatar = avatar;
     setIsSaving(true);
-    saveChild(newChild)
-      .then((savedChild) => {
+    saveBaby(newBaby)
+      .then(() => {
         navigate(
           getPath({
             page: PageId.Home,
@@ -260,7 +260,7 @@ export default function BabyForm(props: Props) {
         // });
       })
       .catch((error) => {
-        console.error("Error saving child: ", error);
+        console.error("Error saving baby: ", error);
         // enqueueSnackbar("Erreur lors de la sauvegarde de l'enfant", {
         //     variant: "error",
         // });
@@ -269,8 +269,8 @@ export default function BabyForm(props: Props) {
         setIsSaving(false);
       });
   }, [
-    saveChild,
-    child,
+    saveBaby,
+    baby,
     isSaving,
     name,
     birthDate,
@@ -287,7 +287,7 @@ export default function BabyForm(props: Props) {
       return;
     }
     setIsSaving(true);
-    const newChild: Child = {
+    const newBaby: Baby = {
       id: "",
       name: name,
       birthDate: birthDate.toDate(),
@@ -298,16 +298,16 @@ export default function BabyForm(props: Props) {
       birthSize: size,
       birthWeight: weight,
     };
-    const { id, birthDate: newBirthDate, ...childData } = newChild;
-    addDoc(collection(db, "children"), {
+    const { id, birthDate: newBirthDate, ...rest } = newBaby;
+    addDoc(collection(db, "babies"), {
       birthDate: Timestamp.fromDate(newBirthDate),
-      ...childData,
+      ...rest,
     })
       .then((docRef) => {
         const userRef = doc(db, "users", user.uid);
         updateDoc(userRef, {
-          selectedChild: docRef.id,
-          children: arrayUnion(docRef.id),
+          babyId: docRef.id,
+          babies: arrayUnion(docRef.id),
         }).then(() => {
           setUser((prev) => {
             if (!prev) {
@@ -315,16 +315,16 @@ export default function BabyForm(props: Props) {
             }
             return {
               ...prev,
-              selectedChild: docRef.id,
-              children: [
-                ...prev.children,
+              babyId: docRef.id,
+              babies: [
+                ...prev.babies,
                 {
                   id: docRef.id,
                   name: name,
                   birthDate: birthDate.toDate(),
                   sex: sex,
                 },
-              ] as Child[],
+              ] as Baby[],
             };
           });
           navigate(
@@ -335,14 +335,14 @@ export default function BabyForm(props: Props) {
         });
       })
       .catch((error) => {
-        console.error("Error creating child: ", error);
+        console.error("Error creating baby: ", error);
       })
       .finally(() => {
         setIsSaving(false);
       });
   }, [
-    saveChild,
-    child,
+    saveBaby,
+    baby,
     isSaving,
     name,
     birthDate,
@@ -354,18 +354,18 @@ export default function BabyForm(props: Props) {
   ]);
 
   const handleSubmit = useCallback(async () => {
-    if (!child || !saveChild || isSaving) {
+    if (!baby || !saveBaby || isSaving) {
       return;
     }
 
-    if (isNullOrWhiteSpace(child.id)) {
+    if (isNullOrWhiteSpace(baby.id)) {
       await create();
     } else {
       await save();
     }
   }, [
-    saveChild,
-    child,
+    saveBaby,
+    baby,
     isSaving,
     name,
     birthDate,
@@ -379,7 +379,7 @@ export default function BabyForm(props: Props) {
 
   const handleUploadImageButtonClick = () => {
     if (document && document.getElementById) {
-      const input = document.getElementById("child-form-image-upload");
+      const input = document.getElementById("baby-form-image-upload");
       if (input) {
         input.click();
       }
@@ -426,17 +426,17 @@ export default function BabyForm(props: Props) {
               <LinearProgressWithLabel value={imageUploadProgress} />
             </Box>
           )}
-          {!isNullOrWhiteSpace(user?.selectedChild) && (
+          {!isNullOrWhiteSpace(user?.babyId) && (
             <>
               <input
-                id="child-form-image-upload"
+                id="baby-form-image-upload"
                 type="file"
                 accept="image/*"
                 multiple={true}
                 onChange={async (e) => await handleImageInputClick(e)}
                 style={{ display: "none" }}
               />
-              <label htmlFor="child-form-image-upload">
+              <label htmlFor="baby-form-image-upload">
                 <Button variant="text" onClick={handleUploadImageButtonClick}>
                   Définir la photo de profil
                 </Button>
@@ -581,7 +581,7 @@ export default function BabyForm(props: Props) {
               >
                 {isSaving == true ? (
                   <LoadingIndicator size={theme.typography.button.fontSize} />
-                ) : isNullOrWhiteSpace(child.id) == true ? (
+                ) : isNullOrWhiteSpace(baby.id) == true ? (
                   "Enregistrer"
                 ) : (
                   "Enregistrer"

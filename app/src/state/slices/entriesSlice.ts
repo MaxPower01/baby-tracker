@@ -49,14 +49,12 @@ export const fetchRecentEntries = createAsyncThunk(
   "entries/fetchRecentEntries",
   async (
     props: {
-      user: CustomUser;
+      babyId: string;
     },
     thunkAPI
   ) => {
     try {
-      const { user } = props;
-      const selectedChild = user?.selectedChild ?? "";
-      if (user == null || isNullOrWhiteSpace(selectedChild)) {
+      if (isNullOrWhiteSpace(props.babyId)) {
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
       const {
@@ -82,7 +80,7 @@ export const fetchRecentEntries = createAsyncThunk(
         })
       );
       const q = query(
-        collection(db, `children/${selectedChild}/entries`),
+        collection(db, `babies/${props.babyId}/entries`),
         where("startTimestamp", ">=", limitTimestamp),
         orderBy("startTimestamp", "desc")
       );
@@ -118,11 +116,11 @@ export const saveEntry = createAsyncThunk(
     thunkAPI
   ) => {
     const { entry, user } = props;
-    const selectedChild = user?.selectedChild ?? "";
-    if (user == null || isNullOrWhiteSpace(selectedChild)) {
-      return thunkAPI.rejectWithValue("User or selected child is null");
+    const babyId = user?.babyId ?? "";
+    if (user == null || isNullOrWhiteSpace(babyId)) {
+      return thunkAPI.rejectWithValue("User or selected baby is null");
     }
-    const entryToSave = getEntryToSave(entry, selectedChild);
+    const entryToSave = getEntryToSave(entry, babyId);
     const { id, ...rest } = entryToSave;
     let newId = id;
     if (isNullOrWhiteSpace(id)) {
@@ -134,7 +132,7 @@ export const saveEntry = createAsyncThunk(
           editedBy: "",
         };
         const docRef = await addDoc(
-          collection(db, `children/${entryToSave.babyId}/entries`),
+          collection(db, `babies/${entryToSave.babyId}/entries`),
           entryToAdd
         );
         newId = docRef.id;
@@ -149,7 +147,7 @@ export const saveEntry = createAsyncThunk(
           editedBy: user.uid,
         };
         await setDoc(
-          doc(db, `children/${entryToSave.babyId}/entries/${id}`),
+          doc(db, `babies/${entryToSave.babyId}/entries/${id}`),
           entryToUpdate
         );
       } catch (error) {

@@ -15,19 +15,19 @@ import {
   useState,
 } from "react";
 
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
 import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
-interface ChildrenContext {
-  children: Child[] | null;
+interface BabiesContext {
+  babies: Baby[] | null;
   isLoading: boolean;
-  saveChild: (child: Child) => Promise<Child>;
+  saveBaby: (baby: Baby) => Promise<Baby>;
 }
 
-const Context = createContext(null) as React.Context<ChildrenContext | null>;
+const Context = createContext(null) as React.Context<BabiesContext | null>;
 
-export function useChildren() {
+export function useBabies() {
   const entries = useContext(Context);
   if (entries == null) {
     throw new Error(
@@ -37,33 +37,33 @@ export function useChildren() {
   return entries;
 }
 
-export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
+export function BabiesProvider(props: React.PropsWithChildren<{}>) {
   const { user } = useAuthentication();
-  const [children, setChildren] = useState<Child[] | null>(null);
+  const [babies, setBabies] = useState<Baby[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const saveChild = useCallback(
-    (child: Child) => {
-      return new Promise<Child>((resolve, reject) => {
+  const saveBaby = useCallback(
+    (baby: Baby) => {
+      return new Promise<Baby>((resolve, reject) => {
         if (!user) {
           reject("User not logged in");
           return;
         }
-        if (!child) {
-          reject("Child not provided");
+        if (!baby) {
+          reject("Baby not provided");
           return;
         }
-        const { id, birthDate, ...childData } = child;
+        const { id, birthDate, ...rest } = baby;
         if (!id) {
-          reject("Child id not provided");
+          reject("Baby id not provided");
           return;
         }
-        setDoc(doc(db, "children", id), {
-          ...childData,
+        setDoc(doc(db, "babies", id), {
+          ...rest,
           birthDate: Timestamp.fromDate(birthDate),
         })
           .then(() => {
-            resolve(child);
+            resolve(baby);
           })
           .catch((error) => {
             reject(error);
@@ -78,13 +78,13 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
       setIsLoading(false);
       return;
     }
-    const collectionRef = collection(db, `children`); // TODO: Use query to filter by user instead of watching all children
-    const newChildren: Child[] = [];
+    const collectionRef = collection(db, `babies`); // TODO: Use query to filter by user instead of watching all babies
+    const newBabies: Baby[] = [];
     getDocs(collectionRef)
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.data().parents?.includes(user.uid)) {
-            const child: Child = {
+            const baby: Baby = {
               id: doc.id,
               name: doc.data().name,
               parents: doc.data().parents,
@@ -95,10 +95,10 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
               birthWeight: doc.data().birthWeight,
               avatar: doc.data().avatar,
             };
-            newChildren.push(child);
+            newBabies.push(baby);
           }
         });
-        setChildren(newChildren);
+        setBabies(newBabies);
       })
       .catch((error) => {
         console.error("Error getting documents: ", error);
@@ -108,12 +108,12 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
       });
 
     const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
-      const addedChildren: Child[] = [];
-      const modifiedChildren: Child[] = [];
-      const removedChildren: Child[] = [];
+      const addedBabies: Baby[] = [];
+      const modifiedBabies: Baby[] = [];
+      const removedBabies: Baby[] = [];
       snapshot.docChanges().forEach((change) => {
         if (change.doc.data() != null) {
-          const child: Child = {
+          const baby: Baby = {
             id: change.doc.id,
             name: change.doc.data().name,
             parents: change.doc.data().parents,
@@ -124,36 +124,34 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
             birthWeight: change.doc.data().birthWeight,
             avatar: change.doc.data().avatar,
           };
-          if (child.parents?.includes(user.uid)) {
+          if (baby.parents?.includes(user.uid)) {
             if (change.type === "added") {
-              addedChildren.push(child);
+              addedBabies.push(baby);
             } else if (change.type === "modified") {
-              modifiedChildren.push(child);
+              modifiedBabies.push(baby);
             } else if (change.type === "removed") {
-              removedChildren.push(child);
+              removedBabies.push(baby);
             }
           }
         }
       });
       if (
-        addedChildren.length > 0 ||
-        modifiedChildren.length > 0 ||
-        removedChildren.length > 0
+        addedBabies.length > 0 ||
+        modifiedBabies.length > 0 ||
+        removedBabies.length > 0
       ) {
-        setChildren((prevChildren) => {
-          let newChildren = prevChildren == null ? [] : [...prevChildren];
-          removedChildren.forEach((removedEntry) => {
-            newChildren = newChildren.filter(
-              (entry) => entry.id !== removedEntry.id
-            );
+        setBabies((prevBaby) => {
+          let newBaby = prevBaby == null ? [] : [...prevBaby];
+          removedBabies.forEach((removedEntry) => {
+            newBaby = newBaby.filter((entry) => entry.id !== removedEntry.id);
           });
-          addedChildren.forEach((addedEntry) => {
-            if (!newChildren.some((entry) => entry.id === addedEntry.id)) {
-              newChildren.push(addedEntry);
+          addedBabies.forEach((addedEntry) => {
+            if (!newBaby.some((entry) => entry.id === addedEntry.id)) {
+              newBaby.push(addedEntry);
             }
           });
-          modifiedChildren.forEach((modifiedEntry) => {
-            newChildren = newChildren.map((entry) => {
+          modifiedBabies.forEach((modifiedEntry) => {
+            newBaby = newBaby.map((entry) => {
               if (entry.id == modifiedEntry.id) {
                 return modifiedEntry;
               }
@@ -163,19 +161,19 @@ export function ChildrenProvider(props: React.PropsWithChildren<{}>) {
           // newChildren.sort((a, b) => {
           //   return b.startDate.getTime() - a.startDate.getTime();
           // });
-          return [...newChildren];
+          return [...newBaby];
         });
       }
     });
   }, [user]);
 
-  const context: ChildrenContext = useMemo(
+  const context: BabiesContext = useMemo(
     () => ({
-      children,
+      babies,
       isLoading,
-      saveChild,
+      saveBaby,
     }),
-    [children, isLoading, user, saveChild]
+    [babies, isLoading, user, saveBaby]
   );
 
   return <Context.Provider value={context} {...props} />;

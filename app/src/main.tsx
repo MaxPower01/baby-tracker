@@ -3,8 +3,8 @@ import "@/main.scss";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { App } from "@/components/App";
 import { AuthenticationProvider } from "@/pages/Authentication/components/AuthenticationProvider";
+import { BabiesProvider } from "@/pages/Baby/components/BabiesProvider";
 import { BrowserRouter } from "react-router-dom";
-import { ChildrenProvider } from "@/pages/Baby/components/ChildrenProvider";
 import CssBaseline from "@mui/material/CssBaseline";
 import { EntriesProvider } from "@/pages/Entries/components/EntriesProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <StoreProvider>
       <AuthenticationProvider>
-        <ChildrenProvider>
+        <BabiesProvider>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
             adapterLocale="fr-ca"
@@ -32,7 +32,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               </SnackbarProvider>
             </ThemeProvider>
           </LocalizationProvider>
-        </ChildrenProvider>
+        </BabiesProvider>
       </AuthenticationProvider>
     </StoreProvider>
   </React.StrictMode>

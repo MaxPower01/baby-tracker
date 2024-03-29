@@ -8,7 +8,7 @@ type Props = {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function ChildLanding({ setShowForm }: Props) {
+export function BabiesLanding({ setShowForm }: Props) {
   const theme = useTheme();
   return (
     <Stack spacing={4}>

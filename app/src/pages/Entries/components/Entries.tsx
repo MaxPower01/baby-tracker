@@ -176,10 +176,7 @@ export default function Entries(props: Props) {
                         <MenuProvider
                           key={`${timeEntries.entries[0].startTimestamp}`}
                         >
-                          <EntriesCard
-                            entries={timeEntries.entries}
-                            allEntries={entries}
-                          />
+                          <EntriesCard entries={timeEntries.entries} />
                         </MenuProvider>
                       );
                     })}

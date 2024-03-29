@@ -1,4 +1,4 @@
-export default interface Child {
+export default interface Baby {
   id: string;
   name: string;
   sex: string;

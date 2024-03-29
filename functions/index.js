@@ -42,21 +42,21 @@ initializeApp();
 //   return event.data.ref.set({ uppercase }, { merge: true });
 // });
 
-// // Loop through all documents in the collection "children/{childId}/entries"
+// // Loop through all documents in the collection "babies/{babyId}/entries"
 // // and convert the field "startDate" from a string to a date
 // exports.convertStartDateOnAllEntries = onRequest(async (req, res) => {
-//   const children = await getFirestore().collection("children").get();
-//   children.forEach(async (child) => {
+//   const babies = await getFirestore().collection("babies").get();
+//   babies.forEach(async (baby) => {
 //     const entries = await getFirestore()
-//       .collection("children")
-//       .doc(child.id)
+//       .collection("babies")
+//       .doc(baby.id)
 //       .collection("entries")
 //       .get();
 //     entries.forEach(async (entry) => {
 //       const startDate = new Date(entry.data().startDate);
 //       await getFirestore()
-//         .collection("children")
-//         .doc(child.id)
+//         .collection("babies")
+//         .doc(baby.id)
 //         .collection("entries")
 //         .doc(entry.id)
 //         .update({ startDate: startDate });
@@ -65,15 +65,15 @@ initializeApp();
 //   res.json({ result: `Converted startDate to date for all entries.` });
 // });
 
-// // Loop through all documents in the collection "children/{childId}/entries"
+// // Loop through all documents in the collection "babies/{babyId}/entries"
 // // and create a new propety called "endDate".
 // // The value of "endDate" is computed from the value of "startDate" and "time".
 // exports.setEndDateOnAllEntries = onRequest(async (req, res) => {
-//   const children = await getFirestore().collection("children").get();
-//   children.forEach(async (child) => {
+//   const babies = await getFirestore().collection("babies").get();
+//   babies.forEach(async (baby) => {
 //     const entries = await getFirestore()
-//       .collection("children")
-//       .doc(child.id)
+//       .collection("babies")
+//       .doc(baby.id)
 //       .collection("entries")
 //       .get();
 //     entries.forEach(async (entry) => {
@@ -113,8 +113,8 @@ initializeApp();
 //       }
 
 //       await getFirestore()
-//         .collection("children")
-//         .doc(child.id)
+//         .collection("babies")
+//         .doc(baby.id)
 //         .collection("entries")
 //         .doc(entry.id)
 //         .update({ endDate: endDate });
@@ -130,29 +130,29 @@ exports.addParent = onCall(async (request) => {
   }
 
   // Data passed from the client.
-  const { childId, parentEmail } = request.data;
+  const { babyId, parentEmail } = request.data;
   // Authentication / user information is automatically added to the request.
   const uid = request.auth.uid;
   const name = request.auth.token.name || null;
   const picture = request.auth.token.picture || null;
   const email = request.auth.token.email || null;
 
-  if (!childId || !parentEmail) {
+  if (!babyId || !parentEmail) {
     throw new HttpsError(
       "invalid-argument",
-      "Missing child ID or parent email."
+      "Missing baby ID or parent email."
     );
   }
 
-  // Check the user doc to see if its "selectedChild" field matches the childId
+  // Check the user doc to see if its "babyId" field matches the babyId provided
   const userRef = getFirestore().collection("users").doc(uid);
   const userSnapshot = await userRef.get();
   const userData = userSnapshot.data();
-  const selectedChild = userData.selectedChild;
-  if (selectedChild !== childId) {
+  const userBabyId = userData.babyId;
+  if (userBabyId !== babyId) {
     throw new HttpsError(
       "permission-denied",
-      "User does not have permission to add parent to this child."
+      "User does not have permission to add parent to this baby."
     );
   }
 
@@ -169,52 +169,52 @@ exports.addParent = onCall(async (request) => {
       `Parent user does not exist with email: ${parentEmail}`
     );
   }
-  // Check if child is already within the "children" array
-  const isChildAlreadyAdded = parentUserData.children.some(
-    (child) => child.id === childId
+  // Check if baby is already within the "babies" array
+  const babyAlreadyAdded = parentUserData.babies.some(
+    (baby) => baby.id === babyId
   );
-  if (isChildAlreadyAdded) {
+  if (babyAlreadyAdded) {
     throw new HttpsError(
       "already-exists",
-      "Parent already has access to this child."
+      "Parent already has access to this baby."
     );
   }
 
-  // Retrieve child document
-  const childRef = getFirestore().collection("children").doc(childId);
-  const childSnapshot = await childRef.get();
-  if (!childSnapshot.exists) {
-    throw new HttpsError("not-found", "Child document does not exist.");
+  // Retrieve baby document
+  const babyDocRef = getFirestore().collection("babies").doc(babyId);
+  const babyDocSnap = await babyDocRef.get();
+  if (!babyDocSnap.exists) {
+    throw new HttpsError("not-found", "Baby document does not exist.");
   }
-  const childData = childSnapshot.data();
+  const babyData = babyDocSnap.data();
   // Check if parent email is already present
-  const isParentAlreadyAdded = childData.parents.some(
+  const isParentAlreadyAdded = babyData.parents.some(
     (parent) => parent === parentUserData.uid
   );
   if (isParentAlreadyAdded) {
     throw new HttpsError("already-exists", "Parent email already added.");
   }
 
-  // Parent exists and child exists, so add parent to child's parents array and child to parent's children array
-  const updatedParents = [...childData.parents, parentUserData.uid];
-  await childRef.update({ parents: updatedParents });
-  const updatedChildren = [...parentUserData.children, childSnapshot.id];
+  // Parent exists and baby exists, so add parent to baby's parents array and baby to parent's babies array
+  const updatedParents = [...babyData.parents, parentUserData.uid];
+  await babyDocRef.update({ parents: updatedParents });
+  const updatedBabies = [...parentUserData.babies, babyDocSnap.id];
   await getFirestore()
     .collection("users")
     .doc(parentUserData.uid)
-    .update({ children: updatedChildren, selectedChild: childSnapshot.id });
+    .update({ babies: updatedBabies, babyId: babyDocSnap.id });
 
-  //   if (!childSnapshot.exists) {
+  //   if (!babySnapshot.exists) {
   //     throw new functions.https.HttpsError(
   //       "not-found",
-  //       "Child document does not exist."
+  //       "baby document does not exist."
   //     );
   //   }
 
-  //   const childData = childSnapshot.data();
+  //   const babyData = babySnapshot.data();
 
   // Check if parent email is already present
-  //   const isParentAlreadyAdded = childData.parents.some(
+  //   const isParentAlreadyAdded = babyData.parents.some(
   //     (parent) => parent.email === parentEmail
   //   );
   //   if (isParentAlreadyAdded) {
@@ -227,17 +227,17 @@ exports.addParent = onCall(async (request) => {
   // Generate access code
   //   const accessCode = "TEST";
 
-  // Add the new parent to the child's parents array
+  // Add the new parent to the baby's parents array
   //   const updatedParents = [
-  //     ...childData.parents,
+  //     ...babyData.parents,
   //     {
   //       email: parentEmail,
   //       accessCode: accessCode,
   //     },
   //   ];
 
-  // Update child document with the new parent
-  //   await childRef.update({ parents: updatedParents });
+  // Update baby document with the new parent
+  //   await babyRef.update({ parents: updatedParents });
 
   // Return the access code to the client-side code
   return { success: true };

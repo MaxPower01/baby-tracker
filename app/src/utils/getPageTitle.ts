@@ -24,9 +24,9 @@ export default function getPageTitle(pathname: string) {
       return "Paramètres";
     case PageId.EntryTypes:
       return "Activités";
-    case PageId.Child:
-      const childId = pathname.substring(1).split("/")[1];
-      if (childId) {
+    case PageId.Baby:
+      const babyId = pathname.substring(1).split("/")[1];
+      if (babyId) {
         return "Modifier un enfant";
       }
       return "Ajouter un enfant";

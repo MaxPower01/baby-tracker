@@ -1,9 +1,9 @@
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
 import { User } from "firebase/auth";
 import UserPreferences from "@/pages/Authentication/types/UserPreferences";
 
 export default interface CustomUser extends User {
-  selectedChild: string;
-  children: Child[];
+  babyId: string;
+  babies: Baby[];
   preferences: UserPreferences;
 }

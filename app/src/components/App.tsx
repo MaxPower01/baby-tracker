@@ -6,6 +6,7 @@ import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
 import { TopBar } from "@/components/TopBar";
 import { fetchRecentEntries } from "@/state/slices/entriesSlice";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEffect } from "react";
@@ -15,6 +16,7 @@ let didInitUser = false;
 
 export function App() {
   const { user } = useAuthentication();
+  const babyId = user?.babyId ?? "";
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -25,10 +27,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (user?.selectedChild != null && !didInitUser) {
+    if (!isNullOrWhiteSpace(babyId) && !didInitUser) {
       didInitUser = true;
       // Code here will run only once per app load if the user is not null
-      dispatch(fetchRecentEntries({ user }));
+      dispatch(fetchRecentEntries({ babyId }));
     }
   }, [user]);
 

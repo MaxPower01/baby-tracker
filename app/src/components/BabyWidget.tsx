@@ -1,12 +1,12 @@
 import { Avatar, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
+import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 
 type Props = {
   sx?: SxProps;
@@ -14,13 +14,13 @@ type Props = {
 
 export function BabyWidget(props: Props) {
   const { user } = useAuthentication();
-  const { children } = useChildren();
+  const { babies } = useBabies();
   const theme = useTheme();
 
-  if (user == null || children == null) {
+  if (user == null || babies == null) {
     return <LoadingIndicator />;
   }
-  const getBabyAgeLabel = (baby: Child) => {
+  const getBabyAgeLabel = (baby: Baby) => {
     const age = formatBabyAge(baby.birthDate);
     if (isNullOrWhiteSpace(age)) {
       return baby.name;
@@ -34,7 +34,7 @@ export function BabyWidget(props: Props) {
         ...props.sx,
       }}
     >
-      {children.map((baby) => {
+      {babies.map((baby) => {
         let avatarBackgroundColor = "#62CB5C";
         if (baby.sex == "female") {
           avatarBackgroundColor = "#EE64EC";

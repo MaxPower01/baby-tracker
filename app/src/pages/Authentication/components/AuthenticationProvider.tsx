@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 import isDevelopment from "@/utils/isDevelopment";
 
@@ -25,36 +25,35 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   // Store the user in a state variable
 
   const [user, setUser] = useState<CustomUser | null>(null);
-  const [children, setChildren] = useState<Child[]>([]);
+  const [babies, setBabies] = useState<Baby[]>([]);
 
   const fetchUserDoc = (user: User) => {
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef)
       .then((docSnap) => {
-        const userData = docSnap.data();
-        if (userData != null) {
-          setUser(userData as CustomUser);
-          if (userData?.children) {
-            const newChildren: Child[] = [];
-            docSnap.data()?.children.forEach(async (childId: string) => {
-              const childRef = doc(db, "children", childId);
-              const childDocSnap = await getDoc(childRef);
-              const childData = childDocSnap.data();
-              if (childData) {
-                const { birthDate, ...childDataWithoutBirthDate } = childData;
+        if (docSnap.data() != null) {
+          setUser(docSnap.data() as CustomUser);
+          if (docSnap.data()?.babies) {
+            const newBabies: Baby[] = [];
+            docSnap.data()?.babies.forEach(async (babyId: string) => {
+              const docRef = doc(db, "babies", babyId);
+              const docSnap = await getDoc(docRef);
+              const docData = docSnap.data();
+              if (docData) {
+                const { birthDate, ...rest } = docData;
                 const parsedBirthDate = birthDate.toDate();
                 if (parsedBirthDate) {
-                  newChildren.push({
-                    id: childId,
+                  newBabies.push({
+                    id: babyId,
                     birthDate: parsedBirthDate as Date,
-                    ...(childDataWithoutBirthDate as any),
+                    ...(rest as any),
                   });
                 } else {
                   throw new Error("Birth date is null");
                 }
               }
             });
-            setChildren(newChildren);
+            setBabies(newBabies);
           }
         } else {
           setUser(null);
@@ -135,8 +134,8 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           lastSignInTime: user.metadata.lastSignInTime,
         };
         if (isNewUser) {
-          data.selectedChild = "";
-          data.children = [];
+          data.babyId = "";
+          data.babies = [];
         }
         await setDoc(userRef, data, { merge: true });
         if (!isNewUser) {
@@ -168,7 +167,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       googleSignInWithPopup,
       signOut,
     };
-  }, [user, children]);
+  }, [user, babies]);
 
   return (
     <AuthenticationContext.Provider

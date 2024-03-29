@@ -60,8 +60,8 @@ type Props = {
 
 export function BottomBar(props: Props) {
   const { user } = useAuthentication();
-  const selectedChild = useMemo(() => {
-    return user?.selectedChild ?? "";
+  const babyId = useMemo(() => {
+    return user?.babyId ?? "";
   }, [user]);
   const navigate = useNavigate();
 
@@ -118,7 +118,7 @@ export function BottomBar(props: Props) {
       color: "primary",
       isFloatingActionButton: true,
       sx: {
-        display: isNullOrWhiteSpace(selectedChild) ? "none" : undefined,
+        display: isNullOrWhiteSpace(babyId) ? "none" : undefined,
         opacity: undefined,
       },
     },
@@ -148,7 +148,7 @@ export function BottomBar(props: Props) {
     },
   ];
 
-  if (pageId === PageId.Entry || pageId === PageId.Child) {
+  if (pageId === PageId.Entry || pageId === PageId.Baby) {
     return null;
   }
 

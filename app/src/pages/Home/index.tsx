@@ -52,10 +52,10 @@ export function HomePage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user?.selectedChild != null) {
+    if (user?.babyId != null) {
       const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
       const q = query(
-        collection(db, `children/${user.selectedChild}/entries`),
+        collection(db, `babies/${user.babyId}/entries`),
         where("startDate", ">=", rangeStartTimestamp),
         orderBy("startDate", "desc")
       );
@@ -101,9 +101,9 @@ export function HomePage() {
 
       return () => unsubscribe();
     }
-  }, [user?.selectedChild]);
+  }, [user?.babyId]);
 
-  if (user?.selectedChild == null) {
+  if (user?.babyId == null) {
     return <LoadingIndicator />;
   }
 
@@ -113,8 +113,8 @@ export function HomePage() {
         onClick={() =>
           navigate(
             getPath({
-              page: PageId.Child,
-              id: user.selectedChild,
+              page: PageId.Baby,
+              id: user.babyId,
             })
           )
         }

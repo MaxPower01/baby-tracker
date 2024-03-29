@@ -12,13 +12,13 @@ import { PageId } from "@/enums/PageId";
 import { formatDateTime } from "@/utils/utils";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
+import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function FamilyPage() {
   const { user } = useAuthentication();
-  const { children } = useChildren();
+  const { babies } = useBabies();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -31,10 +31,10 @@ export function FamilyPage() {
         width: "100%",
       }}
     >
-      {children != null &&
-        children.map((child) => (
+      {babies != null &&
+        babies.map((baby) => (
           <Card
-            key={child.id}
+            key={baby.id}
             sx={{
               width: "100%",
             }}
@@ -43,8 +43,8 @@ export function FamilyPage() {
               onClick={() => {
                 navigate(
                   getPath({
-                    page: PageId.Child,
-                    id: child.id,
+                    page: PageId.Baby,
+                    id: baby.id,
                   })
                 );
               }}
@@ -59,18 +59,18 @@ export function FamilyPage() {
                   }}
                   spacing={1}
                 >
-                  {child.id == user?.selectedChild && (
+                  {baby.id == user?.babyId && (
                     <CheckIcon
                       sx={{ marginLeft: 1, color: theme.palette.primary.main }}
                     />
                   )}
                   <Stack
-                    key={child.id}
+                    key={baby.id}
                     sx={{
                       width: "100%",
                     }}
                   >
-                    <Typography variant={"h6"}>{child.name}</Typography>
+                    <Typography variant={"h6"}>{baby.name}</Typography>
                     <Typography
                       variant={"body2"}
                       color={theme.customPalette.text.secondary}
@@ -80,9 +80,9 @@ export function FamilyPage() {
                         }
                       }
                     >
-                      {child.sex == "male" ? "Garçon" : "Fille"} •{" "}
-                      {child.sex == "male" ? "Né" : "Née"} le{" "}
-                      {child.birthDate.toLocaleString("fr-ca", {
+                      {baby.sex == "male" ? "Garçon" : "Fille"} •{" "}
+                      {baby.sex == "male" ? "Né" : "Née"} le{" "}
+                      {baby.birthDate.toLocaleString("fr-ca", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -90,24 +90,22 @@ export function FamilyPage() {
                         hour: "numeric",
                         minute: "numeric",
                       })}
-                      {child.birthWeight != null && child.birthWeight > 0 && (
+                      {baby.birthWeight != null && baby.birthWeight > 0 && (
                         <span>
                           {" "}
                           • Poids de naissance:{" "}
-                          {Math.round((child.birthWeight / 1000) * 100) /
-                            100}{" "}
-                          kg /{" "}
-                          {Math.round((child.birthWeight / 453.592) * 100) /
-                            100}{" "}
+                          {Math.round((baby.birthWeight / 1000) * 100) / 100} kg
+                          /{" "}
+                          {Math.round((baby.birthWeight / 453.592) * 100) / 100}{" "}
                           lbs
                         </span>
                       )}
-                      {child.birthSize != null && child.birthSize > 0 && (
+                      {baby.birthSize != null && baby.birthSize > 0 && (
                         <span>
                           {" "}
                           • Taille de naissance:{" "}
-                          {Math.round((child.birthSize / 10) * 100) / 100} cm /{" "}
-                          {Math.round((child.birthSize / 25.4) * 100) / 100}{" "}
+                          {Math.round((baby.birthSize / 10) * 100) / 100} cm /{" "}
+                          {Math.round((baby.birthSize / 25.4) * 100) / 100}{" "}
                           pouces
                         </span>
                       )}

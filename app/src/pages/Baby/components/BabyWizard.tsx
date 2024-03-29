@@ -25,8 +25,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Baby from "@/pages/Authentication/types/Baby";
 import BabyForm from "@/pages/Baby/components/BabyForm";
-import Child from "@/pages/Authentication/types/Child";
 import { PageId } from "@/enums/PageId";
 import { SexId } from "@/enums/SexId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
@@ -35,7 +35,7 @@ import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
-export default function ChildWizard() {
+export function BabyWizard() {
   const navigate = useNavigate();
   const { user, setUser } = useAuthentication();
   const [step, setStep] = useState(1);
@@ -89,7 +89,7 @@ export default function ChildWizard() {
     if (!user || !birthDate) {
       return;
     }
-    addDoc(collection(db, "children"), {
+    addDoc(collection(db, "babies"), {
       name: name,
       birthDate: Timestamp.fromDate(birthDate.toDate()),
       sex,
@@ -97,8 +97,8 @@ export default function ChildWizard() {
     }).then((docRef) => {
       const userRef = doc(db, "users", user.uid);
       updateDoc(userRef, {
-        selectedChild: docRef.id,
-        children: arrayUnion(docRef.id),
+        babyId: docRef.id,
+        babies: arrayUnion(docRef.id),
       }).then(() => {
         setUser((prev) => {
           if (!prev) {
@@ -106,16 +106,16 @@ export default function ChildWizard() {
           }
           return {
             ...prev,
-            selectedChild: docRef.id,
-            children: [
-              ...prev.children,
+            babyId: docRef.id,
+            babies: [
+              ...prev.babies,
               {
                 id: docRef.id,
                 name: name,
                 birthDate: birthDate.toDate(),
                 sex: sex,
               },
-            ] as Child[],
+            ] as Baby[],
           };
         });
         navigate(

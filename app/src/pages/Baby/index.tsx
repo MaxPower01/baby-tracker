@@ -1,29 +1,29 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 
+import { BabiesLanding } from "@/pages/Baby/components/BabiesLanding";
 import BabyForm from "@/pages/Baby/components/BabyForm";
-import ChildLanding from "@/pages/Baby/components/ChildLanding";
-import ChildWizard from "@/pages/Baby/components/ChildWizard";
+import { BabyWizard } from "@/pages/Baby/components/BabyWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
-import { useChildren } from "@/pages/Baby/components/ChildrenProvider";
+import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 import { useParams } from "react-router-dom";
 
-export default function ChildPage() {
-  const { childId } = useParams();
-  const { children, isLoading } = useChildren();
+export function BabyPage() {
+  const { babyId } = useParams();
+  const { babies, isLoading } = useBabies();
   const theme = useTheme();
-  const child = useMemo(
-    () => children?.find((child) => child.id === childId),
-    [children, childId]
+  const baby = useMemo(
+    () => babies?.find((b) => b.id === babyId),
+    [babies, babyId]
   );
   const [showForm, setShowForm] = useState(false);
 
-  if (childId != null) {
+  if (babyId != null) {
     if (isLoading) {
       return <LoadingIndicator />;
     }
-    if (child == null) {
+    if (baby == null) {
       return (
         <Typography
           variant={"body1"}
@@ -34,12 +34,12 @@ export default function ChildPage() {
         </Typography>
       );
     }
-    return <BabyForm child={child} />;
+    return <BabyForm baby={baby} />;
   }
 
   if (showForm) {
     return <BabyForm />;
   }
 
-  return <ChildLanding setShowForm={setShowForm} />;
+  return <BabiesLanding setShowForm={setShowForm} />;
 }

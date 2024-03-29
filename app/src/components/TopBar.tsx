@@ -39,7 +39,7 @@ export function TopBar(props: Props) {
   }, [pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
-    return pageName === PageId.Entry || pageName === PageId.Child;
+    return pageName === PageId.Entry || pageName === PageId.Baby;
   }, [pageName]);
 
   // const shouldRenderDeleteEntryButton = useMemo(() => {
@@ -75,9 +75,12 @@ export function TopBar(props: Props) {
       <Container maxWidth={CSSBreakpoint.Small}>
         <Toolbar disableGutters>
           {shouldRenderBackButton && (
-            <IconButton onClick={handleBackButtonClick} sx={{
-              marginRight: 1
-            }}>
+            <IconButton
+              onClick={handleBackButtonClick}
+              sx={{
+                marginRight: 1,
+              }}
+            >
               <ArrowBackIcon />
             </IconButton>
           )}
