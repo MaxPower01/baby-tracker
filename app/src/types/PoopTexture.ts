@@ -1,6 +1,6 @@
 import { PoopTextureId } from "@/enums/PoopTextureId";
 
-export interface PoopConsistency {
+export interface PoopTexture {
   id: PoopTextureId;
   label: string;
 }

@@ -1,13 +1,13 @@
 import { PoopColorId } from "@/enums/PoopColorId";
 import { PoopTextureId } from "@/enums/PoopTextureId";
-import { getPoopColorValue } from "@/utils/getPoopColorValue";
+import { getPoopColor } from "@/utils/getPoopColor";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 export function getDefaultPoopColors() {
   let result = [];
   for (const value in PoopColorId) {
     if (!isNaN(Number(value))) {
-      const { label, value: colorValue } = getPoopColorValue(
+      const { name: label, value: colorValue } = getPoopColor(
         parseEnumValue(value, PoopColorId)
       );
       result.push({

@@ -1,12 +1,12 @@
 import { PoopTextureId } from "@/enums/PoopTextureId";
 
-export function getPoopConsistencyTypeName(
-  poopConsistency: PoopTextureId | null | undefined
+export function getPoopTextureName(
+  poopTexture: PoopTextureId | null | undefined
 ) {
-  if (poopConsistency === null || poopConsistency === undefined) {
+  if (poopTexture === null || poopTexture === undefined) {
     return "";
   }
-  switch (poopConsistency) {
+  switch (poopTexture) {
     case PoopTextureId.Normal:
       return "Normal";
     case PoopTextureId.Meconium:
@@ -24,7 +24,7 @@ export function getPoopConsistencyTypeName(
     case PoopTextureId.VeryLiquid:
       return "Très liquide (diarrhée)";
     case PoopTextureId.VeryThick:
-      return "Très épaisse (constipation)";
+      return "Très épais (constipation)";
     default:
       return "";
   }

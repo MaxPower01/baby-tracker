@@ -1,14 +1,14 @@
 import { PoopTextureId } from "@/enums/PoopTextureId";
-import { getPoopConsistencyTypeName } from "@/utils/getPoopConsistencyTypeName";
+import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getDefaultPoopConsistencyTypes() {
+export function getDefaultPoopTextureIds() {
   let result = [];
   for (const value in PoopTextureId) {
     if (!isNaN(Number(value))) {
       result.push({
         id: Number(value),
-        label: getPoopConsistencyTypeName(parseEnumValue(value, PoopTextureId)),
+        label: getPoopTextureName(parseEnumValue(value, PoopTextureId)),
       });
     }
   }

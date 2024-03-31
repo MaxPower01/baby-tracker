@@ -31,8 +31,8 @@ import { PoopAmountPicker } from "@/components/PoopAmountPicker";
 import { PoopColor } from "@/types/PoopColor";
 import { PoopColorId } from "@/enums/PoopColorId";
 import PoopColorPicker from "@/components/PoopColorPicker";
-import { PoopConsistencyPicker } from "@/components/PoopConsistencyPicker";
 import { PoopTextureId } from "@/enums/PoopTextureId";
+import { PoopTexturePicker } from "@/components/PoopTexturePicker";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -384,7 +384,7 @@ export default function EntryForm(props: EntryFormProps) {
               EntryType.Poop && <SectionTitle title="Caca" />} */}
             <PoopAmountPicker value={poopAmount} setValue={setPoopAmount} />
             {poopAmount > 0 && (
-              <PoopConsistencyPicker
+              <PoopTexturePicker
                 value={poopConsistencyId}
                 setValue={setPoopConsistencyId}
               />

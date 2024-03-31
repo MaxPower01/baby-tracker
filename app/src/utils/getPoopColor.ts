@@ -1,8 +1,9 @@
 import { PoopColorId } from "@/enums/PoopColorId";
 
-export function getPoopColorValue(poopColorId: PoopColorId | null | undefined) {
+export function getPoopColor(poopColorId: PoopColorId | null | undefined) {
   let result = {
-    label: "",
+    id: "",
+    name: "",
     value: "",
   };
   if (poopColorId === null || poopColorId === undefined) {
@@ -11,44 +12,51 @@ export function getPoopColorValue(poopColorId: PoopColorId | null | undefined) {
   switch (poopColorId) {
     case PoopColorId.Yellow:
       result = {
-        label: "Jaune",
-        value: "#E1AD01",
+        id: "yellow",
+        name: "Jaune",
+        value: "#DAB600",
       };
       break;
     case PoopColorId.Brown:
       result = {
-        label: "Brun",
-        value: "#8B4513",
+        id: "brown",
+        name: "Brun",
+        value: "#A55E55",
       };
       break;
     case PoopColorId.DarkBrown:
       result = {
-        label: "Brun foncé",
-        value: "#2C1900",
+        id: "dark-brown",
+        name: "Brun foncé",
+        value: "#69322B",
       };
       break;
     case PoopColorId.Green:
       result = {
-        label: "Vert",
-        value: "#6B8E23",
+        id: "green",
+        name: "Vert",
+        value: "#838E0B",
       };
       break;
     case PoopColorId.Orange:
       result = {
-        label: "Orange",
-        value: "#FFA500",
+        id: "orange",
+        name: "Orange",
+        value: "#F59B00",
       };
       break;
     case PoopColorId.Red:
       result = {
-        label: "Rouge",
-        value: "#FF0000",
+        id: "red",
+        name: "Rouge",
+        value: "#F53100",
       };
       break;
     case PoopColorId.White:
       result = {
-        label: "Blanc",
-        value: "#D3D3D3",
+        id: "white",
+        name: "Blanc",
+        value: "#D9D9D9",
       };
       break;
     default:

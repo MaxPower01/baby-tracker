@@ -18,6 +18,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { formatVolume } from "@/utils/formatVolume";
 import { formatWeight } from "@/utils/formatWeight";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
+import { getPoopColor } from "@/utils/getPoopColor";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
 type Props = {
@@ -60,6 +61,8 @@ export function EntrySubtitle(props: Props) {
       { length: props.entry.urineAmount ?? 0 },
       (_, i) => i
     );
+    const poopColor = getPoopColor(props.entry.poopColorId);
+    const poopColorId = poopColor?.id ?? "";
     return (
       <Stack direction={"row"} spacing={1}>
         {urineArray.length > 0 && (
@@ -82,6 +85,7 @@ export function EntrySubtitle(props: Props) {
               <ActivityIcon
                 key={index}
                 type={EntryType.Poop}
+                color={poopColorId}
                 sx={{
                   fontSize: theme.typography.body1.fontSize,
                   opacity: theme.opacity.secondary,

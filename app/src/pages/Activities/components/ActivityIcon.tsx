@@ -69,8 +69,11 @@ function PlayIcon() {
   return <ReactSVG src="/icons/play.svg" className="ActivityIcon" />;
 }
 
-function PoopIcon() {
-  return <ReactSVG src="/icons/poop.svg" className="ActivityIcon" />;
+function PoopIcon(props: { color?: string }) {
+  const src = props.color
+    ? `/icons/poop-${props.color.toLowerCase()}.svg`
+    : "/icons/poop.svg";
+  return <ReactSVG src={src} className="ActivityIcon" />;
 }
 
 function PoopIconOutlined() {
@@ -183,6 +186,7 @@ type ActivityIconProps = {
   sx?: SxProps | undefined;
   outlined?: boolean;
   monochrome?: boolean;
+  color?: string;
 };
 
 export default function ActivityIcon(props: ActivityIconProps) {
@@ -230,7 +234,7 @@ export default function ActivityIcon(props: ActivityIconProps) {
             if (props.monochrome) {
               return <PoopIconMonochrome />;
             }
-            return <PoopIcon />;
+            return <PoopIcon color={props.color} />;
           case ActivityType.Regurgitation:
             return <RegurgitationIcon />;
           case ActivityType.Size:

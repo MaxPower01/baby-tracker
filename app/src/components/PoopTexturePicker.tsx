@@ -17,7 +17,7 @@ import React, { useState } from "react";
 import {
   selectActivityContexts,
   selectActivityContextsOfType,
-  selectPoopConsistencyTypes,
+  selectPoopTextures,
   selectTemperatureMethods,
 } from "@/state/slices/activitiesSlice";
 
@@ -36,7 +36,7 @@ import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activi
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
-import { getPoopConsistencyTypeName } from "@/utils/getPoopConsistencyTypeName";
+import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { getTemperatureMethodName } from "@/utils/getTemperatureMethodName";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 import { useSelector } from "react-redux";
@@ -47,7 +47,7 @@ type Props = {
   setValue: React.Dispatch<React.SetStateAction<PoopTextureId | null>>;
 };
 
-export function PoopConsistencyPicker(props: Props) {
+export function PoopTexturePicker(props: Props) {
   const theme = useTheme();
   const label = () => {
     return (
@@ -84,22 +84,22 @@ export function PoopConsistencyPicker(props: Props) {
     );
   };
 
-  const items = useSelector(selectPoopConsistencyTypes);
+  const items = useSelector(selectPoopTextures);
 
   const renderValue = (selected: PoopTextureId | null) => {
     if (selected === null) {
       return "";
     }
-    return getPoopConsistencyTypeName(selected);
+    return getPoopTextureName(selected);
   };
 
   return (
     <>
       <FormControl fullWidth variant="outlined">
-        <InputLabel id="temperature-method-picker-label">{label()}</InputLabel>
+        <InputLabel id="poop-texture-picker-label">{label()}</InputLabel>
         <Select
-          id="temperature-method-picker"
-          labelId="temperature-method-picker-label"
+          id="poop-texture-picker"
+          labelId="poop-texture-picker-label"
           value={props.value ?? ""}
           label={label()}
           onChange={(e) => props.setValue(e.target.value as PoopTextureId)}

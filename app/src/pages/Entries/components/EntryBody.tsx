@@ -22,12 +22,16 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
+import { EntryType } from "@/pages/Entries/enums/EntryType";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
+import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { getPoopColor } from "@/utils/getPoopColor";
+import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import poopMarks from "@/utils/poopMarks";
+import { selectPoopTextures } from "@/state/slices/activitiesSlice";
 import urineMarks from "@/utils/urineMarks";
 import { useSelector } from "react-redux";
 
@@ -39,6 +43,18 @@ type Props = {
 
 export default function EntryBody(props: Props) {
   const theme = useTheme();
+  let poopTextureLabel = "";
+  let poopTextureName = "";
+  if (entryTypeHasPoop(props.entry.entryType)) {
+    if (props.entry.poopTextureId != null) {
+      poopTextureName = getPoopTextureName(props.entry.poopTextureId);
+    }
+    if (props.entry.entryType == EntryType.Poop) {
+      poopTextureLabel = `Consistance:`;
+    } else {
+      poopTextureLabel = `Consistance du caca:`;
+    }
+  }
   return (
     <Stack
       spacing={0.5}
@@ -58,6 +74,32 @@ export default function EntryBody(props: Props) {
           {props.entry.note}
         </Typography>
       )}
+      {!isNullOrWhiteSpace(poopTextureLabel) &&
+        !isNullOrWhiteSpace(poopTextureName) && (
+          <Box>
+            <Typography
+              variant={"body2"}
+              sx={{
+                opacity: theme.opacity.tertiary,
+                fontWeight: 400,
+                display: "inline",
+              }}
+            >
+              {poopTextureLabel}
+            </Typography>
+            <Typography
+              variant={"body2"}
+              sx={{
+                opacity: theme.opacity.secondary,
+                fontWeight: 400,
+                display: "inline",
+              }}
+            >
+              {" "}
+              {poopTextureName}
+            </Typography>
+          </Box>
+        )}
     </Stack>
   );
 }
