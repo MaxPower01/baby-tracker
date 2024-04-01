@@ -59,7 +59,7 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
         return defaultDescription;
     }
   }
-  if (props.context === EmptyStateContext.ActivityContextDrawer) {
+  if (props.context == EmptyStateContext.ActivityContextDrawer) {
     if (props.activityContextType != null) {
       switch (props.activityContextType) {
         case ActivityContextType.Medicine:
@@ -90,6 +90,8 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
           return defaultDescription;
       }
     }
+  } else if (props.context == EmptyStateContext.Entries) {
+    return "Commencez dès maintenant à enregistrer l’activité de votre bébé";
   }
   return defaultDescription;
 }

@@ -49,7 +49,7 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
         return defaultTitle;
     }
   }
-  if (props.context === EmptyStateContext.ActivityContextDrawer) {
+  if (props.context == EmptyStateContext.ActivityContextDrawer) {
     if (props.activityContextType != null) {
       switch (props.activityContextType) {
         case ActivityContextType.Medicine:
@@ -80,6 +80,8 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
           return defaultTitle;
       }
     }
+  } else if (props.context == EmptyStateContext.Entries) {
+    return "Aucune entrée pour le moment";
   }
   return defaultTitle;
 }

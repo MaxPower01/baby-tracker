@@ -27,6 +27,8 @@ import { useEffect, useState } from "react";
 
 import ActivitiesWidget from "@/pages/Activities/components/ActivitiesWidget";
 import { BabyWidget } from "@/components/BabyWidget";
+import { EmptyState } from "@/components/EmptyState";
+import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import Entries from "@/pages/Entries/components/Entries";
 import EntriesList from "@/pages/Entries/components/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -39,6 +41,7 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
@@ -103,7 +106,7 @@ export function HomePage() {
     }
   }, [user?.babyId]);
 
-  if (user?.babyId == null) {
+  if (user?.babyId == null || isNullOrWhiteSpace(user?.babyId)) {
     return <LoadingIndicator />;
   }
 
@@ -129,8 +132,10 @@ export function HomePage() {
         />
       </Section>
 
-      {entriesStatus === "loading" && entries.length === 0 ? (
+      {entriesStatus === "loading" ? (
         <LoadingIndicator />
+      ) : entries.length === 0 ? (
+        <EmptyState context={EmptyStateContext.Entries} />
       ) : (
         <>
           <Section>
