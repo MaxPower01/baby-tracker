@@ -1,13 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  RECENT_DATA_AGE_LIMIT_IN_MILLISECONDS,
-  RECENT_DATA_AGE_LIMIT_IN_SECONDS,
-} from "@/constants/RECENT_DATA_AGE_LIMIT";
-import {
-  RECENT_DATA_FETCH_COOLDOWN_IN_MILLISECONDS,
-  RECENT_DATA_FETCH_COOLDOWN_IN_SECONDS,
-} from "@/constants/RECENT_DATA_FETCH_COOLDOWN";
-import {
   Timestamp,
   addDoc,
   collection,
@@ -23,16 +15,22 @@ import {
   isNullOrWhiteSpace,
   setLocalState,
 } from "@/utils/utils";
+import {
+  recentAgeDataLimitInSeconds,
+  recentDataFetchCooldownInSeconds,
+} from "@/utils/constants";
 
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
-import EntriesState from "@/pages/Entries/types/EntriesState";
+import EntriesState from "@/types/EntriesState";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { createSelector } from "@reduxjs/toolkit";
 import { db } from "@/firebase";
+import { getDefaultOrderedEntryTypes } from "@/pages/Entry/utils/getDefaultOrderedEntryTypes";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { getTimestamp } from "@/utils/getTimestamp";
@@ -41,6 +39,7 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
+  orderedEntryTypes: getDefaultOrderedEntryTypes(),
   latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
@@ -62,14 +61,13 @@ export const fetchRecentEntries = createAsyncThunk(
         latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
       } = (thunkAPI.getState() as RootState).entriesReducer;
       const newTimestamp = getTimestamp(new Date());
-      const limitTimestamp = newTimestamp - RECENT_DATA_AGE_LIMIT_IN_SECONDS;
+      const limitTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
       const anyRecentEntries = currentEntries.some(
         (entry) => entry.startTimestamp >= limitTimestamp
       );
       if (
         lastFetchTimestamp &&
-        newTimestamp - lastFetchTimestamp <
-          RECENT_DATA_FETCH_COOLDOWN_IN_SECONDS &&
+        newTimestamp - lastFetchTimestamp < recentDataFetchCooldownInSeconds &&
         anyRecentEntries
       ) {
         return thunkAPI.rejectWithValue("Cooldown not elapsed");
@@ -438,5 +436,8 @@ export const selectRecentEntries = createSelector(
     }
   }
 );
+
+export const selectOrderedEntryTypes = (state: RootState) =>
+  state.entriesReducer.orderedEntryTypes;
 
 export default slice.reducer;

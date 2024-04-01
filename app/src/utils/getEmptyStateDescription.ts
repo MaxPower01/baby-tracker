@@ -1,7 +1,7 @@
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EmptyStateProps } from "@/components/EmptyState";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export function getEmptyStateDescription(props: EmptyStateProps) {
   const defaultDescription = "Revenez plus tard";
@@ -30,30 +30,30 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
     "Tenez un registre des soins nasaux de votre bébé";
   if (props.type != null) {
     switch (props.type) {
-      case EntryType.Medicine:
+      case EntryTypeId.Medicine:
         return medicineDescription;
-      case EntryType.VitaminsAndSupplements:
+      case EntryTypeId.VitaminsAndSupplements:
         return vitaminsAndSupplementsDescription;
-      case EntryType.BabyCare:
+      case EntryTypeId.BabyCare:
         return babyCareDescription;
-      case EntryType.Vaccine:
+      case EntryTypeId.Vaccine:
         return vaccineDescription;
-      case EntryType.Activity:
+      case EntryTypeId.Activity:
         return activityDescription;
-      case EntryType.Sleep:
+      case EntryTypeId.Sleep:
         return sleepDescription;
-      case EntryType.BabyMash:
+      case EntryTypeId.BabyMash:
         return babyMashDescription;
-      case EntryType.BottleFeeding:
+      case EntryTypeId.BottleFeeding:
         return bottleFeedingDescription;
-      case EntryType.SolidFood:
+      case EntryTypeId.SolidFood:
         return solidFoodDescription;
-      case EntryType.Symptom:
-      case EntryType.Hospital:
+      case EntryTypeId.Symptom:
+      case EntryTypeId.Hospital:
         return symptomDescription;
-      case EntryType.Temperature:
+      case EntryTypeId.Temperature:
         return temperatureDescription;
-      case EntryType.NasalHygiene:
+      case EntryTypeId.NasalHygiene:
         return nasalHygieneDescription;
       default:
         return defaultDescription;

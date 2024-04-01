@@ -1,5 +1,5 @@
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { Timestamp } from "firebase/firestore";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { isNullOrWhiteSpace } from "@/utils/utils";
@@ -12,7 +12,7 @@ export function getDefaultEntry(
   if (isNullOrWhiteSpace(entryType) || typeof entryType !== "string") {
     return null;
   }
-  const parsedEntryType = parseEnumValue(entryType, EntryType);
+  const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
   if (parsedEntryType === null) {
     return null;
   }
@@ -20,7 +20,7 @@ export function getDefaultEntry(
   let result: Entry = {
     id: "",
     babyId: babyId,
-    entryType: parsedEntryType,
+    entryTypeId: parsedEntryType,
     activityContexts: [],
     startTimestamp: timestamp,
     endTimestamp: timestamp,

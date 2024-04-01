@@ -1,4 +1,4 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export function entryTypeIsValid(type: any) {
   if (!type) {
@@ -8,7 +8,7 @@ export function entryTypeIsValid(type: any) {
     type = parseInt(type);
   }
   if (typeof type === "number") {
-    return Object.values(EntryType).includes(type);
+    return Object.values(EntryTypeId).includes(type);
   }
   return false;
 }

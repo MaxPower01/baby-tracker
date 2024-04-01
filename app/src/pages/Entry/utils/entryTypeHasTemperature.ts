@@ -1,8 +1,8 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
-const entryTypesWithTemperature = [EntryType.Temperature];
+const entryTypesWithTemperature = [EntryTypeId.Temperature];
 
-export function entryTypeHasTemperature(entryType: EntryType) {
+export function entryTypeHasTemperature(entryType: EntryTypeId) {
   try {
     if (typeof entryType === "string") {
       const parsed = parseInt(entryType);
@@ -10,7 +10,7 @@ export function entryTypeHasTemperature(entryType: EntryType) {
         return entryTypesWithTemperature.includes(parsed);
       } else {
         return entryTypesWithTemperature.includes(
-          EntryType[entryType as keyof typeof EntryType]
+          EntryTypeId[entryType as keyof typeof EntryTypeId]
         );
       }
     }

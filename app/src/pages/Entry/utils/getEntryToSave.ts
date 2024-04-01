@@ -1,5 +1,5 @@
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export function getEntryToSave(entry: Entry, babyId: string): Entry {
   const newEntry = { ...entry };

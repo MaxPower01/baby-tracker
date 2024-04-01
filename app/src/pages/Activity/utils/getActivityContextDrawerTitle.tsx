@@ -1,46 +1,46 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getActivityContextDrawerTitle(entryType: EntryType) {
+export function getActivityContextDrawerTitle(entryType: EntryTypeId) {
   let result = "";
-  const parsedEntryType = parseEnumValue(entryType, EntryType);
+  const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
   if (parsedEntryType === null) return result;
   switch (parsedEntryType) {
-    case EntryType.Medicine:
+    case EntryTypeId.Medicine:
       result = "Médicaments";
       break;
-    case EntryType.VitaminsAndSupplements:
+    case EntryTypeId.VitaminsAndSupplements:
       result = "Vitamines et suppléments";
       break;
-    case EntryType.BabyCare:
+    case EntryTypeId.BabyCare:
       result = "Soins de bébé";
       break;
-    case EntryType.Vaccine:
+    case EntryTypeId.Vaccine:
       result = "Vaccins";
       break;
-    case EntryType.Activity:
+    case EntryTypeId.Activity:
       result = "Activités";
       break;
-    case EntryType.Sleep:
+    case EntryTypeId.Sleep:
       result = "Lieux de sommeil";
       break;
-    case EntryType.BabyMash:
+    case EntryTypeId.BabyMash:
       result = "Types de purée";
       break;
-    case EntryType.BottleFeeding:
+    case EntryTypeId.BottleFeeding:
       result = "Types de lait ou préparation";
       break;
-    case EntryType.SolidFood:
+    case EntryTypeId.SolidFood:
       result = "Types de nourriture solide";
       break;
-    case EntryType.Symptom:
-    case EntryType.Hospital:
+    case EntryTypeId.Symptom:
+    case EntryTypeId.Hospital:
       result = "Symptômes";
       break;
-    case EntryType.NasalHygiene:
+    case EntryTypeId.NasalHygiene:
       result = "Types de soin nasal";
       break;
-    case EntryType.Temperature:
+    case EntryTypeId.Temperature:
       result = "Types de température";
       break;
     default:

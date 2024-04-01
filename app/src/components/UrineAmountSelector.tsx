@@ -1,7 +1,7 @@
 import { Rating, Stack, Typography, styled, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import React from "react";
@@ -43,11 +43,11 @@ export default function UrineAmountSelector(props: Props) {
         name="urine-amount-selector"
         size="large"
         icon={
-          <ActivityIcon type={EntryType.Urine} sx={{ fontSize: "1.5em" }} />
+          <ActivityIcon type={EntryTypeId.Urine} sx={{ fontSize: "1.5em" }} />
         }
         emptyIcon={
           <ActivityIcon
-            type={EntryType.Urine}
+            type={EntryTypeId.Urine}
             monochrome
             sx={{ fontSize: "1.5em", opacity: theme.opacity.disabled }}
           />

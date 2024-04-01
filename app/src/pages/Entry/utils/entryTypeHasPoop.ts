@@ -1,8 +1,8 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
-const entryTypesWithPoop = [EntryType.Diaper, EntryType.Poop];
+const entryTypesWithPoop = [EntryTypeId.Diaper, EntryTypeId.Poop];
 
-export function entryTypeHasPoop(entryType: EntryType) {
+export function entryTypeHasPoop(entryType: EntryTypeId) {
   try {
     if (typeof entryType === "string") {
       const parsed = parseInt(entryType);
@@ -10,7 +10,7 @@ export function entryTypeHasPoop(entryType: EntryType) {
         return entryTypesWithPoop.includes(parsed);
       } else {
         return entryTypesWithPoop.includes(
-          EntryType[entryType as keyof typeof EntryType]
+          EntryTypeId[entryType as keyof typeof EntryTypeId]
         );
       }
     }

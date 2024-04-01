@@ -28,7 +28,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { RootState } from "@/state/store";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
@@ -60,7 +60,7 @@ export function NasalHygieneTypesPicker(props: Props) {
         }}
       >
         <ActivityIcon
-          type={EntryType.NasalHygiene}
+          type={EntryTypeId.NasalHygiene}
           sx={{
             fontSize: "1.5em",
             position: "absolute",

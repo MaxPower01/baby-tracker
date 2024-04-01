@@ -18,7 +18,7 @@ import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AddIcon from "@mui/icons-material/Add";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { RootState } from "@/state/store";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
@@ -30,7 +30,7 @@ import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  entryType: EntryType;
+  entryType: EntryTypeId;
   selectedItems: ActivityContext[];
   setSelectedItems: React.Dispatch<React.SetStateAction<ActivityContext[]>>;
 };
@@ -54,7 +54,7 @@ export function ActivityContextPicker(props: Props) {
     }
     return getEntryTypeFromActivityContextType(activityContextType);
   }, [activityContextType]);
-  const label = (entryType: EntryType | null) => {
+  const label = (entryType: EntryTypeId | null) => {
     return (
       <Stack
         direction={"row"}

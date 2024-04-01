@@ -85,7 +85,7 @@ export default function EntriesCard(props: Props) {
             .find(
               (e) =>
                 e.id != entry.id &&
-                e.entryType == entry.entryType &&
+                e.entryTypeId == entry.entryTypeId &&
                 e.startTimestamp < entry.startTimestamp
             );
 
@@ -174,11 +174,11 @@ export default function EntriesCard(props: Props) {
                         }}
                       >
                         <ActivityIcon
-                          type={entry.entryType}
+                          type={entry.entryTypeId}
                           sx={{
                             fontSize: "3.5em",
                             transform:
-                              entryTypeHasSides(entry.entryType) &&
+                              entryTypeHasSides(entry.entryTypeId) &&
                               entry.leftTime &&
                               !entry.rightTime
                                 ? "scaleX(-1)"

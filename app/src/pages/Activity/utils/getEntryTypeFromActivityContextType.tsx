@@ -1,46 +1,46 @@
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export function getEntryTypeFromActivityContextType(
   activityContextType: ActivityContextType
-): EntryType | null {
-  let result: EntryType | null = null;
+): EntryTypeId | null {
+  let result: EntryTypeId | null = null;
   switch (activityContextType) {
     case ActivityContextType.Medicine:
-      result = EntryType.Medicine;
+      result = EntryTypeId.Medicine;
       break;
     case ActivityContextType.VitaminsAndSupplements:
-      result = EntryType.VitaminsAndSupplements;
+      result = EntryTypeId.VitaminsAndSupplements;
       break;
     case ActivityContextType.BabyCare:
-      result = EntryType.BabyCare;
+      result = EntryTypeId.BabyCare;
       break;
     case ActivityContextType.Vaccine:
-      result = EntryType.Vaccine;
+      result = EntryTypeId.Vaccine;
       break;
     case ActivityContextType.Activity:
-      result = EntryType.Activity;
+      result = EntryTypeId.Activity;
       break;
     case ActivityContextType.Sleep:
-      result = EntryType.Sleep;
+      result = EntryTypeId.Sleep;
       break;
     case ActivityContextType.BabyMash:
-      result = EntryType.BabyMash;
+      result = EntryTypeId.BabyMash;
       break;
     case ActivityContextType.BottleFeeding:
-      result = EntryType.BottleFeeding;
+      result = EntryTypeId.BottleFeeding;
       break;
     case ActivityContextType.SolidFood:
-      result = EntryType.SolidFood;
+      result = EntryTypeId.SolidFood;
       break;
     case ActivityContextType.Symptom:
-      result = EntryType.Symptom;
+      result = EntryTypeId.Symptom;
       break;
     case ActivityContextType.NasalHygiene:
-      result = EntryType.NasalHygiene;
+      result = EntryTypeId.NasalHygiene;
       break;
     case ActivityContextType.Temperature:
-      result = EntryType.Temperature;
+      result = EntryTypeId.Temperature;
       break;
     default:
       break;

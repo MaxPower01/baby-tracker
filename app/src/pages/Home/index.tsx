@@ -38,6 +38,7 @@ import { PageId } from "@/enums/PageId";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
+import { bottomBarNewEntryFabId } from "@/utils/constants";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
@@ -106,6 +107,13 @@ export function HomePage() {
     }
   }, [user?.babyId]);
 
+  const handleEmptyStateClick = () => {
+    const targetButton = document.getElementById(bottomBarNewEntryFabId);
+    if (targetButton) {
+      targetButton.click();
+    }
+  };
+
   if (user?.babyId == null || isNullOrWhiteSpace(user?.babyId)) {
     return <LoadingIndicator />;
   }
@@ -132,20 +140,22 @@ export function HomePage() {
         />
       </Section>
 
-      {entriesStatus === "loading" ? (
-        <LoadingIndicator />
-      ) : entries.length === 0 ? (
-        <EmptyState context={EmptyStateContext.Entries} />
-      ) : (
-        <>
-          <Section>
-            <ActivitiesWidget entries={entries} />
-          </Section>
-          <Section>
-            <EntriesList entries={entries} groupByDate />
-          </Section>
-        </>
-      )}
+      <Section>
+        <ActivitiesWidget entries={entries} />
+      </Section>
+
+      <Section>
+        {entriesStatus === "loading" ? (
+          <LoadingIndicator />
+        ) : entries.length === 0 ? (
+          <EmptyState
+            context={EmptyStateContext.Entries}
+            onClick={handleEmptyStateClick}
+          />
+        ) : (
+          <EntriesList entries={entries} groupByDate />
+        )}
+      </Section>
     </SectionStack>
   );
 }

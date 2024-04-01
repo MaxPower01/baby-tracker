@@ -1,11 +1,11 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-const nasalHygieneTypes = [EntryType.NasalHygiene];
+const nasalHygieneTypes = [EntryTypeId.NasalHygiene];
 
-export function entryTypeHasNasalHygiene(entryType: EntryType) {
+export function entryTypeHasNasalHygiene(entryType: EntryTypeId) {
   try {
-    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
     if (parsedEntryType === null) return false;
     return nasalHygieneTypes.includes(parsedEntryType);
   } catch (error) {

@@ -23,6 +23,7 @@ import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
+import { bottomBarNewEntryFabId } from "@/utils/constants";
 import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
@@ -73,7 +74,7 @@ export function BottomBar(props: Props) {
     };
   }, [location.pathname]);
 
-  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
+  const [newEntryDrawerIsOpen, setNewEntryDrawerIsOpen] = useState(false);
   const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
 
   const theme = useTheme();
@@ -111,8 +112,8 @@ export function BottomBar(props: Props) {
       color: "primary",
     },
     {
-      id: "new-entry",
-      onClick: () => setActivitiesDrawerIsOpen(true),
+      id: bottomBarNewEntryFabId,
+      onClick: () => setNewEntryDrawerIsOpen(true),
       IconWrapper: FloatingActionButton,
       Icon: AddIcon,
       color: "primary",
@@ -215,6 +216,7 @@ export function BottomBar(props: Props) {
                 sx,
               }) => (
                 <IconWrapper
+                  id={id}
                   key={id}
                   color={color}
                   onClick={onClick}
@@ -256,8 +258,8 @@ export function BottomBar(props: Props) {
           </Stack>
 
           <NewEntryDrawer
-            isOpen={activitiesDrawerIsOpen}
-            onClose={() => setActivitiesDrawerIsOpen(false)}
+            isOpen={newEntryDrawerIsOpen}
+            onClose={() => setNewEntryDrawerIsOpen(false)}
           />
 
           <MenuDrawer

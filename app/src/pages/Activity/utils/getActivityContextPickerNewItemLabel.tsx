@@ -1,5 +1,5 @@
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 export function getActivityContextPickerNewItemLabel(

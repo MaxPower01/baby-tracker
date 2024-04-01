@@ -20,17 +20,17 @@ type Props = {
 
 export function EntryHeader(props: Props) {
   const theme = useTheme();
-  let title = getActivityName(props.entry.entryType);
+  let title = getActivityName(props.entry.entryTypeId);
   let titleSuffix: "left" | "right" | null = null;
-  if (entryTypeHasSides(props.entry.entryType)) {
-    if (entryTypeHasVolume(props.entry.entryType)) {
+  if (entryTypeHasSides(props.entry.entryTypeId)) {
+    if (entryTypeHasVolume(props.entry.entryTypeId)) {
       const hasLeftVolume = props.entry.leftVolume != null;
       const hasRightVolume = props.entry.rightVolume != null;
       const hasBothVolume = hasLeftVolume && hasRightVolume;
       if (!hasBothVolume) {
         titleSuffix = hasLeftVolume ? "left" : "right";
       }
-    } else if (entryTypeHasStopwatch(props.entry.entryType)) {
+    } else if (entryTypeHasStopwatch(props.entry.entryTypeId)) {
       const hasLeftTime = props.entry.leftTime != null;
       const hasRightTime = props.entry.rightTime != null;
       const hasBothTime = hasLeftTime && hasRightTime;
@@ -75,7 +75,7 @@ export function EntryHeader(props: Props) {
             fontSize: "80%",
           }}
         >
-          <ActivityIcon type={props.entry.entryType} />
+          <ActivityIcon type={props.entry.entryTypeId} />
         </Box>
       )}
       <Stack spacing={0.25}>

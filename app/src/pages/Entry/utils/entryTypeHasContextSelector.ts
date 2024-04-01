@@ -1,25 +1,25 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 const entryTypesWithContextSelector = [
-  EntryType.Medicine,
-  EntryType.VitaminsAndSupplements,
-  EntryType.BabyCare,
-  EntryType.Vaccine,
-  EntryType.Activity,
-  EntryType.Sleep,
-  EntryType.BabyMash,
-  EntryType.BottleFeeding,
-  EntryType.SolidFood,
-  EntryType.Symptom,
-  EntryType.Hospital,
-  EntryType.NasalHygiene,
-  EntryType.Temperature,
+  EntryTypeId.Medicine,
+  EntryTypeId.VitaminsAndSupplements,
+  EntryTypeId.BabyCare,
+  EntryTypeId.Vaccine,
+  EntryTypeId.Activity,
+  EntryTypeId.Sleep,
+  EntryTypeId.BabyMash,
+  EntryTypeId.BottleFeeding,
+  EntryTypeId.SolidFood,
+  EntryTypeId.Symptom,
+  EntryTypeId.Hospital,
+  EntryTypeId.NasalHygiene,
+  EntryTypeId.Temperature,
 ];
 
-export function entryTypeHasContextSelector(entryType: EntryType) {
+export function entryTypeHasContextSelector(entryType: EntryTypeId) {
   try {
-    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
     if (parsedEntryType === null) return false;
     return entryTypesWithContextSelector.includes(parsedEntryType);
   } catch (error) {

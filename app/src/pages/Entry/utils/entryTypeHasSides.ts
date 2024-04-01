@@ -1,11 +1,11 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
-const typesWithSides = [EntryType.BreastFeeding, EntryType.MilkExtraction];
+const typesWithSides = [EntryTypeId.BreastFeeding, EntryTypeId.MilkExtraction];
 
-export function entryTypeHasSides(entryType: EntryType) {
+export function entryTypeHasSides(entryType: EntryTypeId) {
   try {
-    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
     if (parsedEntryType === null) return false;
     return typesWithSides.includes(parsedEntryType);
   } catch (error) {

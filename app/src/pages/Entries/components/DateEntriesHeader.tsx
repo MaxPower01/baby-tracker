@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/material";
 import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import { DateHeader } from "@/components/DateHeader";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 
 type Props = {
@@ -15,19 +15,19 @@ export function DateEntriesHeader(props: Props) {
   const entries = [...props.entries];
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
-    if (entry.entryType === EntryType.Diaper) {
+    if (entry.entryTypeId === EntryTypeId.Diaper) {
       if ((entry.poopAmount ?? 0) > 0) {
         entries.push({
           ...entry,
           id: `${entry.id}-poop`,
-          entryType: EntryType.Poop,
+          entryTypeId: EntryTypeId.Poop,
         });
       }
       if ((entry.urineAmount ?? 0) > 0) {
         entries.push({
           ...entry,
           id: `${entry.id}-urine`,
-          entryType: EntryType.Urine,
+          entryTypeId: EntryTypeId.Urine,
         });
       }
     }
@@ -35,10 +35,10 @@ export function DateEntriesHeader(props: Props) {
   const entriesByEntryType: Record<string, Entry[]> | null =
     entries.length > 0
       ? entries.reduce((acc, entry) => {
-          if (!acc[entry.entryType]) {
-            acc[entry.entryType] = [];
+          if (!acc[entry.entryTypeId]) {
+            acc[entry.entryTypeId] = [];
           }
-          acc[entry.entryType].push(entry);
+          acc[entry.entryTypeId].push(entry);
           return acc;
         }, {} as Record<string, Entry[]>)
       : {};

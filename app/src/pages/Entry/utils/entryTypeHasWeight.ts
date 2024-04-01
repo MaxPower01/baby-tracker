@@ -1,8 +1,8 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
-const entryTypesWithWeight = [EntryType.Weight];
+const entryTypesWithWeight = [EntryTypeId.Weight];
 
-export function entryTypeHasWeight(entryType: EntryType) {
+export function entryTypeHasWeight(entryType: EntryTypeId) {
   try {
     if (typeof entryType === "string") {
       const parsed = parseInt(entryType);
@@ -10,7 +10,7 @@ export function entryTypeHasWeight(entryType: EntryType) {
         return entryTypesWithWeight.includes(parsed);
       } else {
         return entryTypesWithWeight.includes(
-          EntryType[entryType as keyof typeof EntryType]
+          EntryTypeId[entryType as keyof typeof EntryTypeId]
         );
       }
     }

@@ -27,7 +27,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { RootState } from "@/state/store";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
@@ -59,7 +59,7 @@ export function TemperatureMethodPicker(props: Props) {
         }}
       >
         <ActivityIcon
-          type={EntryType.Temperature}
+          type={EntryTypeId.Temperature}
           sx={{
             fontSize: "1.5em",
             position: "absolute",

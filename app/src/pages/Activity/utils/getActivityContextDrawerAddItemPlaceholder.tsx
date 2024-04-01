@@ -1,48 +1,48 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 export function getActivityContextDrawerAddItemPlaceholder(
-  entryType: EntryType
+  entryType: EntryTypeId
 ) {
   let result = "";
-  const parsedEntryType = parseEnumValue(entryType, EntryType);
+  const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
   if (parsedEntryType === null) return result;
   switch (parsedEntryType) {
-    case EntryType.Medicine:
+    case EntryTypeId.Medicine:
       result = "Ajouter un médicament";
       break;
-    case EntryType.VitaminsAndSupplements:
+    case EntryTypeId.VitaminsAndSupplements:
       result = "Ajouter une vitamine ou un supplément";
       break;
-    case EntryType.BabyCare:
+    case EntryTypeId.BabyCare:
       result = "Ajouter un soin de bébé";
       break;
-    case EntryType.Vaccine:
+    case EntryTypeId.Vaccine:
       result = "Ajouter un vaccin";
       break;
-    case EntryType.Activity:
+    case EntryTypeId.Activity:
       result = "Ajouter un type d'activité";
       break;
-    case EntryType.Sleep:
+    case EntryTypeId.Sleep:
       result = "Ajouter un lieu de sommeil";
       break;
-    case EntryType.BabyMash:
+    case EntryTypeId.BabyMash:
       result = "Ajouter un type de purée";
       break;
-    case EntryType.BottleFeeding:
+    case EntryTypeId.BottleFeeding:
       result = "Ajouter un type de lait ou préparation";
       break;
-    case EntryType.SolidFood:
+    case EntryTypeId.SolidFood:
       result = "Ajouter un type de nourriture solide";
       break;
-    case EntryType.Symptom:
-    case EntryType.Hospital:
+    case EntryTypeId.Symptom:
+    case EntryTypeId.Hospital:
       result = "Ajouter un symptôme";
       break;
-    case EntryType.NasalHygiene:
+    case EntryTypeId.NasalHygiene:
       result = "Ajouter un type de soin nasal";
       break;
-    case EntryType.Temperature:
+    case EntryTypeId.Temperature:
       result = "Ajouter un type de température";
       break;
     default:

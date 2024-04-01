@@ -3,7 +3,7 @@ import { Stack, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeCanHaveMultipleContexts } from "@/pages/Entry/utils/entryTypeCanHaveMultipleContexts";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
@@ -35,7 +35,7 @@ export function EntrySubtitle(props: Props) {
     getEntryTime(props.entry, "right", true)
   );
   const totalTime = useMemo(() => leftTime + rightTime, [leftTime, rightTime]);
-  const hasStopwatch = entryTypeHasStopwatch(props.entry.entryType);
+  const hasStopwatch = entryTypeHasStopwatch(props.entry.entryTypeId);
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (hasStopwatch && entryHasStopwatchRunning(props.entry)) {
@@ -47,10 +47,10 @@ export function EntrySubtitle(props: Props) {
     return () => clearInterval(intervalId);
   }, [props.entry, hasStopwatch]);
   const hasPoop =
-    entryTypeHasPoop(props.entry.entryType) &&
+    entryTypeHasPoop(props.entry.entryTypeId) &&
     (props.entry.poopAmount ?? 0) > 0;
   const hasUrine =
-    entryTypeHasUrine(props.entry.entryType) &&
+    entryTypeHasUrine(props.entry.entryTypeId) &&
     (props.entry.urineAmount ?? 0) > 0;
   if (hasPoop || hasUrine) {
     const poopArray = Array.from(
@@ -70,7 +70,7 @@ export function EntrySubtitle(props: Props) {
             {urineArray.map((_, index) => (
               <ActivityIcon
                 key={index}
-                type={EntryType.Urine}
+                type={EntryTypeId.Urine}
                 sx={{
                   fontSize: theme.typography.body1.fontSize,
                   opacity: theme.opacity.secondary,
@@ -84,7 +84,7 @@ export function EntrySubtitle(props: Props) {
             {poopArray.map((_, index) => (
               <ActivityIcon
                 key={index}
-                type={EntryType.Poop}
+                type={EntryTypeId.Poop}
                 color={poopColorId}
                 sx={{
                   fontSize: theme.typography.body1.fontSize,
@@ -99,10 +99,10 @@ export function EntrySubtitle(props: Props) {
   }
   let subtitle = "";
   const hasContext =
-    entryTypeHasContextSelector(props.entry.entryType) &&
+    entryTypeHasContextSelector(props.entry.entryTypeId) &&
     props.entry.activityContexts.length > 0;
   const canHaveMultipleContexts =
-    hasContext && entryTypeCanHaveMultipleContexts(props.entry.entryType);
+    hasContext && entryTypeCanHaveMultipleContexts(props.entry.entryTypeId);
   if (hasContext) {
     const contextsLabel = props.entry.activityContexts
       .map((context) => context.name)
@@ -110,7 +110,7 @@ export function EntrySubtitle(props: Props) {
     subtitle = contextsLabel;
   }
   let volumeDisplayed = false;
-  const hasVolume = entryTypeHasVolume(props.entry.entryType);
+  const hasVolume = entryTypeHasVolume(props.entry.entryTypeId);
   const totalVolume = hasVolume
     ? (props.entry.leftVolume ?? 0) + (props.entry.rightVolume ?? 0)
     : 0;
@@ -135,7 +135,8 @@ export function EntrySubtitle(props: Props) {
   }
   let weightDisplayed = false;
   const hasWeight =
-    entryTypeHasWeight(props.entry.entryType) && (props.entry.weight ?? 0) > 0;
+    entryTypeHasWeight(props.entry.entryTypeId) &&
+    (props.entry.weight ?? 0) > 0;
   if (hasWeight) {
     const weight = props.entry.weight ?? 0;
     if (weight > 0) {
@@ -148,7 +149,7 @@ export function EntrySubtitle(props: Props) {
   }
   let sizeDisplayed = false;
   const hasSize =
-    entryTypeHasSize(props.entry.entryType) && (props.entry.size ?? 0) > 0;
+    entryTypeHasSize(props.entry.entryTypeId) && (props.entry.size ?? 0) > 0;
   if (hasSize) {
     const size = props.entry.size ?? 0;
     if (size > 0) {

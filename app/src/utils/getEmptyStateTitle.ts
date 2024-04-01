@@ -1,7 +1,7 @@
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EmptyStateProps } from "@/components/EmptyState";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export function getEmptyStateTitle(props: EmptyStateProps) {
   const defaultTitle = "Rien à voir ici pour le moment";
@@ -20,30 +20,30 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
   const nasalHygieneTitle = "Aucun type de soin nasal défini";
   if (props.type != null) {
     switch (props.type) {
-      case EntryType.Medicine:
+      case EntryTypeId.Medicine:
         return medicineTitle;
-      case EntryType.VitaminsAndSupplements:
+      case EntryTypeId.VitaminsAndSupplements:
         return vitaminsAndSupplementsTitle;
-      case EntryType.BabyCare:
+      case EntryTypeId.BabyCare:
         return babyCareTitle;
-      case EntryType.Vaccine:
+      case EntryTypeId.Vaccine:
         return vaccineTitle;
-      case EntryType.Activity:
+      case EntryTypeId.Activity:
         return activityTitle;
-      case EntryType.Sleep:
+      case EntryTypeId.Sleep:
         return sleepTitle;
-      case EntryType.BabyMash:
+      case EntryTypeId.BabyMash:
         return babyMashTitle;
-      case EntryType.BottleFeeding:
+      case EntryTypeId.BottleFeeding:
         return bottleFeedingTitle;
-      case EntryType.SolidFood:
+      case EntryTypeId.SolidFood:
         return solidFoodTitle;
-      case EntryType.Symptom:
-      case EntryType.Hospital:
+      case EntryTypeId.Symptom:
+      case EntryTypeId.Hospital:
         return symptomTitle;
-      case EntryType.Temperature:
+      case EntryTypeId.Temperature:
         return temperatureTitle;
-      case EntryType.NasalHygiene:
+      case EntryTypeId.NasalHygiene:
         return nasalHygieneTitle;
       default:
         return defaultTitle;

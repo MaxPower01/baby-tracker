@@ -4,7 +4,7 @@ import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType"
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EmptyStatePeriod } from "@/enums/EmptyStatePeriod";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
@@ -14,7 +14,7 @@ import { getEntryTypeForEmptyState } from "@/utils/getEntryTypeForEmptyState";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
 export type EmptyStateProps = {
-  type?: EntryType;
+  type?: EntryTypeId;
   period?: EmptyStatePeriod;
   context: EmptyStateContext;
   activityContextType?: ActivityContextType;

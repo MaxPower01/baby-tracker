@@ -22,7 +22,7 @@ import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
@@ -45,11 +45,11 @@ export default function EntryBody(props: Props) {
   const theme = useTheme();
   let poopTextureLabel = "";
   let poopTextureName = "";
-  if (entryTypeHasPoop(props.entry.entryType)) {
+  if (entryTypeHasPoop(props.entry.entryTypeId)) {
     if (props.entry.poopTextureId != null) {
       poopTextureName = getPoopTextureName(props.entry.poopTextureId);
     }
-    if (props.entry.entryType == EntryType.Poop) {
+    if (props.entry.entryTypeId == EntryTypeId.Poop) {
       poopTextureLabel = `Consistance:`;
     } else {
       poopTextureLabel = `Consistance du caca:`;

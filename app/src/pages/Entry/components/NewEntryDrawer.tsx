@@ -1,36 +1,51 @@
 import {
   Box,
+  Button,
   Container,
   Divider,
   IconButton,
+  Stack,
   SwipeableDrawer,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 
-import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
+import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
+import { selectOrderedEntryTypes } from "@/state/slices/entriesSlice";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export function NewEntryDrawer(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
   const navigate = useNavigate();
-
-  const handleItemClick = (type: ActivityType) => {
+  const theme = useTheme();
+  const handleItemClick = (entryType: EntryTypeId) => {
     navigate(
       getPath({
         page: PageId.Entry,
-        params: { type: type.toString() },
+        params: { type: entryType.toString() },
       })
     );
+    props.onClose();
   };
+
+  const orderedEntryTypes = useSelector(selectOrderedEntryTypes);
+
+  if (orderedEntryTypes.length === 0) {
+    return null;
+  }
+
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -81,12 +96,72 @@ export function NewEntryDrawer(props: {
             },
           }}
         >
-          <ActivityButtons
-            onClick={(type: ActivityType) => {
-              handleItemClick(type);
-              props.onClose();
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 1,
             }}
-          />
+          >
+            {orderedEntryTypes.map((entryType) => {
+              const buttonLabel = getEntryTypeName(entryType);
+              return (
+                <Button
+                  onClick={() => {
+                    handleItemClick(entryType);
+                  }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    color: theme.customPalette.text.primary,
+                    paddingTop: 2,
+                    paddingBottom: 2,
+                  }}
+                >
+                  <Stack
+                    spacing={1}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                      flexGrow: 1,
+                    }}
+                  >
+                    <>
+                      <ActivityIcon
+                        type={entryType}
+                        sx={{
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          flexGrow: 1,
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          className="ActivityButton__Typography"
+                          variant="button"
+                          textAlign="center"
+                          fontWeight={"bold"}
+                          lineHeight={1.2}
+                          sx={{
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {buttonLabel}
+                        </Typography>
+                      </Box>
+                    </>
+                  </Stack>
+                </Button>
+              );
+            })}
+          </Box>
         </Box>
       </Container>
     </SwipeableDrawer>

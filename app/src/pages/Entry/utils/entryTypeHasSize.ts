@@ -1,8 +1,8 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
-const entryTypesWithSize = [EntryType.Size, EntryType.HeadCircumference];
+const entryTypesWithSize = [EntryTypeId.Size, EntryTypeId.HeadCircumference];
 
-export function entryTypeHasSize(entryType: EntryType) {
+export function entryTypeHasSize(entryType: EntryTypeId) {
   try {
     if (typeof entryType === "string") {
       const parsed = parseInt(entryType);
@@ -10,7 +10,7 @@ export function entryTypeHasSize(entryType: EntryType) {
         return entryTypesWithSize.includes(parsed);
       } else {
         return entryTypesWithSize.includes(
-          EntryType[entryType as keyof typeof EntryType]
+          EntryTypeId[entryType as keyof typeof EntryTypeId]
         );
       }
     }

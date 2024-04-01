@@ -1,22 +1,22 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 const typesWithStopwatch = [
-  EntryType.BreastFeeding,
-  EntryType.MilkExtraction,
-  EntryType.Walk,
-  EntryType.Sleep,
-  EntryType.Hiccups,
-  EntryType.AwakeTime,
-  EntryType.Activity,
-  EntryType.Bath,
-  EntryType.BellyTime,
-  EntryType.Play,
+  EntryTypeId.BreastFeeding,
+  EntryTypeId.MilkExtraction,
+  EntryTypeId.Walk,
+  EntryTypeId.Sleep,
+  EntryTypeId.Hiccups,
+  EntryTypeId.AwakeTime,
+  EntryTypeId.Activity,
+  EntryTypeId.Bath,
+  EntryTypeId.BellyTime,
+  EntryTypeId.Play,
 ];
 
-export function entryTypeHasStopwatch(entryType: EntryType) {
+export function entryTypeHasStopwatch(entryType: EntryTypeId) {
   try {
-    const parsedEntryType = parseEnumValue(entryType, EntryType);
+    const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
     if (parsedEntryType === null) return false;
     return typesWithStopwatch.includes(parsedEntryType);
   } catch (error) {

@@ -4,14 +4,14 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import CheckIcon from "@mui/icons-material/Check";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { getActivityChipLabel } from "@/utils/getActivityChipLabel";
 import { getActivityName } from "@/utils/getActivityName";
 import { useSelector } from "react-redux";
 
 type Props = {
-  entryType: EntryType;
-  onClick?: (type: EntryType) => void;
+  entryType: EntryTypeId;
+  onClick?: (type: EntryTypeId) => void;
   isSelected?: boolean;
   /**
    * If provided, will override the text of the chip

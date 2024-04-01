@@ -1,7 +1,10 @@
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
-export function getActivityName(type: EntryTypeId) {
-  switch (type) {
+export function getEntryTypeName(entryType: EntryTypeId): string {
+  const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
+  if (parsedEntryType === null) return "";
+  switch (parsedEntryType) {
     case EntryTypeId.Bath:
       return "Bain";
     case EntryTypeId.BottleFeeding:
@@ -79,6 +82,6 @@ export function getActivityName(type: EntryTypeId) {
     case EntryTypeId.BellyTime:
       return "Temps sur le ventre";
     default:
-      return "";
+      return "_";
   }
 }

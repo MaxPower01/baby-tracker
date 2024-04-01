@@ -1,11 +1,11 @@
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EmptyStateProps } from "@/components/EmptyState";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
 
 export function getEntryTypeForEmptyState(
   props: EmptyStateProps
-): EntryType | null {
+): EntryTypeId | null {
   if (props.type != null) {
     return props.type;
   }

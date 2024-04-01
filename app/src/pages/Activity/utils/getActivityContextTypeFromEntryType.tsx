@@ -1,49 +1,49 @@
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
 export function getActivityContextTypeFromEntryType(
-  entryType: EntryType
+  entryType: EntryTypeId
 ): ActivityContextType | null {
   let result: ActivityContextType | null = null;
-  const parsedEntryType = parseEnumValue(entryType, EntryType);
+  const parsedEntryType = parseEnumValue(entryType, EntryTypeId);
   if (parsedEntryType === null) return result;
   switch (parsedEntryType) {
-    case EntryType.Medicine:
+    case EntryTypeId.Medicine:
       result = ActivityContextType.Medicine;
       break;
-    case EntryType.VitaminsAndSupplements:
+    case EntryTypeId.VitaminsAndSupplements:
       result = ActivityContextType.VitaminsAndSupplements;
       break;
-    case EntryType.BabyCare:
+    case EntryTypeId.BabyCare:
       result = ActivityContextType.BabyCare;
       break;
-    case EntryType.Vaccine:
+    case EntryTypeId.Vaccine:
       result = ActivityContextType.Vaccine;
       break;
-    case EntryType.Activity:
+    case EntryTypeId.Activity:
       result = ActivityContextType.Activity;
       break;
-    case EntryType.Sleep:
+    case EntryTypeId.Sleep:
       result = ActivityContextType.Sleep;
       break;
-    case EntryType.BabyMash:
+    case EntryTypeId.BabyMash:
       result = ActivityContextType.BabyMash;
       break;
-    case EntryType.BottleFeeding:
+    case EntryTypeId.BottleFeeding:
       result = ActivityContextType.BottleFeeding;
       break;
-    case EntryType.SolidFood:
+    case EntryTypeId.SolidFood:
       result = ActivityContextType.SolidFood;
       break;
-    case EntryType.Symptom:
-    case EntryType.Hospital:
+    case EntryTypeId.Symptom:
+    case EntryTypeId.Hospital:
       result = ActivityContextType.Symptom;
       break;
-    case EntryType.NasalHygiene:
+    case EntryTypeId.NasalHygiene:
       result = ActivityContextType.NasalHygiene;
       break;
-    case EntryType.Temperature:
+    case EntryTypeId.Temperature:
       result = ActivityContextType.Temperature;
       break;
     default:

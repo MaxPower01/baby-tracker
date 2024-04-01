@@ -65,7 +65,7 @@ import DragHandleIcon from "@mui/icons-material/DragHandle";
 import EditIcon from "@mui/icons-material/Edit";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { RootState } from "@/state/store";
@@ -86,7 +86,7 @@ const StyledFab = styled(Fab)({
 });
 
 type Props = {
-  type: EntryType;
+  type: EntryTypeId;
   isOpen: boolean;
   onClose: () => void;
   selectedItems: ActivityContext[];

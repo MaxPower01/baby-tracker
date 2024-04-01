@@ -20,7 +20,7 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { ImagesInput } from "@/components/ImagesInput";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { NasalHygieneId } from "@/enums/NasalHygieneId";
@@ -58,9 +58,9 @@ import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
-import { getTitleForEntryType } from "@/utils/utils";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 import { saveEntry } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
@@ -78,7 +78,7 @@ export default function EntryForm(props: EntryFormProps) {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
-  const name = getTitleForEntryType(props.entry.entryType);
+  const name = getEntryTypeName(props.entry.entryTypeId);
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >([]);
@@ -163,7 +163,7 @@ export default function EntryForm(props: EntryFormProps) {
         const entry: Entry = {
           id: props.entry.id,
           babyId: props.entry.babyId,
-          entryType: props.entry.entryType,
+          entryTypeId: props.entry.entryTypeId,
           startTimestamp: getTimestamp(startDateTime),
           endTimestamp: getTimestamp(endDateTime),
           note: note,
@@ -284,7 +284,7 @@ export default function EntryForm(props: EntryFormProps) {
           <Section title="header">
             <Stack justifyContent={"center"} alignItems={"center"}>
               <ActivityIcon
-                type={props.entry.entryType}
+                type={props.entry.entryTypeId}
                 sx={{
                   fontSize: "5em",
                 }}
@@ -297,7 +297,7 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Section>
 
-          {entryTypeHasStopwatch(props.entry.entryType) ? (
+          {entryTypeHasStopwatch(props.entry.entryTypeId) ? (
             <Section title="range">
               <DateTimeRangePicker
                 startDate={startDate}
@@ -325,28 +325,28 @@ export default function EntryForm(props: EntryFormProps) {
           )}
         </Stack>
 
-        {entryTypeHasContextSelector(props.entry.entryType) && (
+        {entryTypeHasContextSelector(props.entry.entryTypeId) && (
           <Section title="context">
             <ActivityContextPicker
-              entryType={props.entry.entryType}
+              entryType={props.entry.entryTypeId}
               selectedItems={selectedActivityContexts}
               setSelectedItems={setSelectedActivityContexts}
             />
           </Section>
         )}
 
-        {entryTypeHasTemperature(props.entry.entryType) && (
+        {entryTypeHasTemperature(props.entry.entryTypeId) && (
           <Section title="temperature">
             <SectionTitle title="Température" />
             <TemperatureInput value={temperature} setValue={setTemperature} />
           </Section>
         )}
 
-        {entryTypeHasVolume(props.entry.entryType) && (
+        {entryTypeHasVolume(props.entry.entryTypeId) && (
           <Section title="volume">
             <SectionTitle title="Quantité" />
             <VolumeInputContainer
-              hasSides={entryTypeHasSides(props.entry.entryType)}
+              hasSides={entryTypeHasSides(props.entry.entryTypeId)}
               leftValue={leftVolume}
               setLeftValue={setLeftVolume}
               rightValue={rightVolume}
@@ -355,19 +355,19 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
-        {entryTypeHasWeight(props.entry.entryType) && (
+        {entryTypeHasWeight(props.entry.entryTypeId) && (
           <Section title="weight">
             <WeightInput value={weight} setValue={setWeight} />
           </Section>
         )}
 
-        {entryTypeHasSize(props.entry.entryType) && (
+        {entryTypeHasSize(props.entry.entryTypeId) && (
           <Section title="size">
             <SizeInput value={size} setValue={setSize} />
           </Section>
         )}
 
-        {entryTypeHasUrine(props.entry.entryType) && (
+        {entryTypeHasUrine(props.entry.entryTypeId) && (
           <Section title="urine">
             {/* {parseEnumValue(props.entry.entryType, EntryType) !=
               EntryType.Urine && <SectionTitle title="Pipi" />} */}
@@ -378,7 +378,7 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
-        {entryTypeHasPoop(props.entry.entryType) && (
+        {entryTypeHasPoop(props.entry.entryTypeId) && (
           <Section title="poop">
             {/* {parseEnumValue(props.entry.entryType, EntryType) !=
               EntryType.Poop && <SectionTitle title="Caca" />} */}
@@ -395,12 +395,12 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
-        {entryTypeHasStopwatch(props.entry.entryType) && (
+        {entryTypeHasStopwatch(props.entry.entryTypeId) && (
           <Section title="stopwatch">
             <SectionTitle title="Durée" />
             <StopwatchContainer
               size="big"
-              hasSides={entryTypeHasSides(props.entry.entryType)}
+              hasSides={entryTypeHasSides(props.entry.entryTypeId)}
               leftTime={leftTime}
               setLeftTime={setLeftTime}
               rightTime={rightTime}

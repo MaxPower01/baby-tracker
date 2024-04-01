@@ -1,4 +1,4 @@
-export enum EntryType {
+export enum EntryTypeId {
   BottleFeeding = 1,
   BreastFeeding = 2,
   Cry = 3,

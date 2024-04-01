@@ -1,12 +1,12 @@
-import { EntryType } from "@/pages/Entries/enums/EntryType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 const entryTypesWithVolume = [
-  EntryType.Medicine,
-  EntryType.BottleFeeding,
-  EntryType.MilkExtraction,
+  EntryTypeId.Medicine,
+  EntryTypeId.BottleFeeding,
+  EntryTypeId.MilkExtraction,
 ];
 
-export function entryTypeHasVolume(entryType: EntryType) {
+export function entryTypeHasVolume(entryType: EntryTypeId) {
   try {
     if (typeof entryType === "string") {
       const parsed = parseInt(entryType);
@@ -14,7 +14,7 @@ export function entryTypeHasVolume(entryType: EntryType) {
         return entryTypesWithVolume.includes(parsed);
       } else {
         return entryTypesWithVolume.includes(
-          EntryType[entryType as keyof typeof EntryType]
+          EntryTypeId[entryType as keyof typeof EntryTypeId]
         );
       }
     }
