@@ -19,8 +19,6 @@ export function getPoopTextureName(
       return "Épais";
     case PoopTextureId.Lumpy:
       return "Grumeleux";
-    case PoopTextureId.UndigestedPieces:
-      return "Morceaux non digérés";
     case PoopTextureId.VeryLiquid:
       return "Très liquide (diarrhée)";
     case PoopTextureId.VeryThick:

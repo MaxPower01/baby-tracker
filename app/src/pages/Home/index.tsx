@@ -25,12 +25,12 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-import ActivitiesWidget from "@/pages/Activities/components/ActivitiesWidget";
 import { BabyWidget } from "@/components/BabyWidget";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import Entries from "@/pages/Entries/components/Entries";
 import EntriesList from "@/pages/Entries/components/EntriesList";
+import { EntriesWidget } from "@/pages/Entries/components/EntriesWidget";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { MenuProvider } from "@/components/MenuProvider";
@@ -55,6 +55,7 @@ export function HomePage() {
   const entriesStatus = useSelector(selectEntriesStatus);
   const dispatch = useAppDispatch();
 
+  // TODO: Subscribe to entries changes only if user is Premium
   useEffect(() => {
     if (user?.babyId != null) {
       const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
@@ -141,7 +142,7 @@ export function HomePage() {
       </Section>
 
       <Section>
-        <ActivitiesWidget entries={entries} />
+        <EntriesWidget entries={entries} />
       </Section>
 
       <Section>

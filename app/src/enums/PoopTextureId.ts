@@ -8,7 +8,6 @@ export enum PoopTextureId {
    * Grumeleux
    */
   Lumpy = 5,
-  UndigestedPieces = 7,
   /**
    * Diarrhée
    */

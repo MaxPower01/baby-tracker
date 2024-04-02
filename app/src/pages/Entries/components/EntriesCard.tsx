@@ -75,7 +75,7 @@ export default function EntriesCard(props: Props) {
 
   return (
     <>
-      <Card elevation={0} sx={{}}>
+      <Card>
         {entries.map((entry, entryIndex) => {
           const nextEntryExists = entryIndex < entries.length - 1;
           const stopwatchRunning = entryHasStopwatchRunning(entry);
@@ -102,7 +102,7 @@ export default function EntriesCard(props: Props) {
                 }}
                 sx={{
                   borderRadius: 0,
-                  backgroundColor: "transparent",
+                  // backgroundColor: "transparent",
                 }}
                 component={Box}
               >

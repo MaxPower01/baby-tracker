@@ -83,6 +83,9 @@ export function ThemeProvider(props: ThemeProviderProps) {
       createTheme({
         typography: {
           fontFamily: "'Noto Sans', sans-serif",
+          button: {
+            fontFamily: "'Noto Sans', sans-serif",
+          },
         },
         palette: {
           mode: themeMode,
