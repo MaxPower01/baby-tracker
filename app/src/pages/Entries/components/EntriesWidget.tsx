@@ -9,7 +9,11 @@ import {
   useTheme,
   useThemeProps,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  saveEntry,
+  selectOrderedEntryTypes,
+} from "@/state/slices/entriesSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -20,7 +24,8 @@ import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
-import { selectOrderedEntryTypes } from "@/state/slices/entriesSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -222,13 +227,16 @@ type ItemFooterProps = {
 
 function ItemFooter(props: ItemFooterProps) {
   const theme = useTheme();
-  if (props.mostRecentEntryOfType == null) {
-    return null;
-  }
-  const elapsedTime = getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
-  const stopwatchIsRunning = entryHasStopwatchRunning(
-    props.mostRecentEntryOfType
-  );
+  const dispatch = useAppDispatch();
+  const { user } = useAuthentication();
+  const elapsedTime =
+    props.mostRecentEntryOfType == null
+      ? null
+      : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
+  const stopwatchIsRunning =
+    props.mostRecentEntryOfType == null
+      ? false
+      : entryHasStopwatchRunning(props.mostRecentEntryOfType);
   const [leftTime, setLeftTime] = React.useState(
     props.mostRecentEntryOfType?.leftTime ?? 0
   );
@@ -247,6 +255,57 @@ function ItemFooter(props: ItemFooterProps) {
   const [rightLastUpdateTime, setRightLastUpdateTime] = React.useState(
     props.mostRecentEntryOfType?.rightStopwatchLastUpdateTime ?? null
   );
+  const [isSaving, setIsSaving] = useState(false);
+  const handlePlayPause = useCallback(
+    (
+      side: "right" | "left",
+      time: number,
+      isRunning: boolean,
+      lastUpdateTime: number | null
+    ) => {
+      return new Promise<boolean>(async (resolve, reject) => {
+        try {
+          if (isSaving || user == null || props.mostRecentEntryOfType == null) {
+            return resolve(false);
+          }
+          setIsSaving(true);
+          const entry: Entry = {
+            ...props.mostRecentEntryOfType,
+            leftTime: side === "left" ? time : leftTime,
+            leftStopwatchIsRunning: side === "left" ? isRunning : leftIsRunning,
+            leftStopwatchLastUpdateTime:
+              side === "left" ? lastUpdateTime : leftLastUpdateTime,
+            rightTime: side === "right" ? time : rightTime,
+            rightStopwatchIsRunning:
+              side === "right" ? isRunning : rightIsRunning,
+            rightStopwatchLastUpdateTime:
+              side === "right" ? lastUpdateTime : rightLastUpdateTime,
+          };
+          await dispatch(saveEntry({ entry, user })).unwrap();
+          setIsSaving(false);
+          return resolve(true);
+        } catch (error) {
+          setIsSaving(false);
+          return reject(error);
+        }
+      });
+    },
+    [
+      isSaving,
+      user,
+      props.mostRecentEntryOfType,
+      leftTime,
+      leftIsRunning,
+      leftLastUpdateTime,
+      rightTime,
+      rightIsRunning,
+      rightLastUpdateTime,
+    ]
+  );
+
+  const showStopwatch =
+    stopwatchIsRunning || (elapsedTime?.seconds ?? 0) <= 60 * 5;
+  const showElapsedTime = !showStopwatch && elapsedTime != null;
 
   return (
     <Box
@@ -255,38 +314,44 @@ function ItemFooter(props: ItemFooterProps) {
         width: props.width,
       }}
     >
-      {stopwatchIsRunning && (
+      {props.mostRecentEntryOfType == null ? null : (
         <Stack
           sx={{
             width: "100%",
           }}
         >
-          <StopwatchContainer
-            leftIsRunning={leftIsRunning}
-            setLeftIsRunning={setLeftIsRunning}
-            rightIsRunning={rightIsRunning}
-            setRightIsRunning={setRightIsRunning}
-            leftLastUpdateTime={leftLastUpdateTime}
-            setLeftLastUpdateTime={setLeftLastUpdateTime}
-            rightLastUpdateTime={rightLastUpdateTime}
-            setRightLastUpdateTime={setRightLastUpdateTime}
-            size="small"
-            hasSides={entryTypeHasSides(props.entryType)}
-            leftTime={leftTime}
-            setLeftTime={setLeftTime}
-            rightTime={rightTime}
-            setRightTime={setRightTime}
-          />
-          <Typography
-            variant={"body2"}
-            sx={{
-              textAlign: "center",
-              color: theme.customPalette.text.tertiary,
-              lineHeight: 1.2,
-            }}
-          >
-            {elapsedTime.label}
-          </Typography>
+          {showStopwatch && (
+            <StopwatchContainer
+              leftIsRunning={leftIsRunning}
+              setLeftIsRunning={setLeftIsRunning}
+              rightIsRunning={rightIsRunning}
+              setRightIsRunning={setRightIsRunning}
+              leftLastUpdateTime={leftLastUpdateTime}
+              setLeftLastUpdateTime={setLeftLastUpdateTime}
+              rightLastUpdateTime={rightLastUpdateTime}
+              setRightLastUpdateTime={setRightLastUpdateTime}
+              size="small"
+              hasSides={entryTypeHasSides(props.entryType)}
+              leftTime={leftTime}
+              setLeftTime={setLeftTime}
+              rightTime={rightTime}
+              setRightTime={setRightTime}
+              onPlayPause={handlePlayPause}
+            />
+          )}
+
+          {showElapsedTime && (
+            <Typography
+              variant={"body2"}
+              sx={{
+                textAlign: "center",
+                color: theme.customPalette.text.tertiary,
+                lineHeight: 1.2,
+              }}
+            >
+              {elapsedTime.label}
+            </Typography>
+          )}
         </Stack>
       )}
     </Box>

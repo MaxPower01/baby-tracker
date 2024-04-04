@@ -45,6 +45,12 @@ type Props = {
   setLeftLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
   rightLastUpdateTime: number | null;
   setRightLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
+  onPlayPause?: (
+    side: "left" | "right",
+    time: number,
+    isRunning: boolean,
+    lastUpdateTime: number | null
+  ) => void;
 };
 
 export function StopwatchContainer(props: Props) {
@@ -239,6 +245,11 @@ export function StopwatchContainer(props: Props) {
             lastUpdateTime={props.leftLastUpdateTime}
             setLastUpdateTime={props.setLeftLastUpdateTime}
             hideTimeLabel={!props.hasSides}
+            onPlayPause={(time, isRunning, lastUpdateTime) => {
+              if (props.onPlayPause) {
+                props.onPlayPause("left", time, isRunning, lastUpdateTime);
+              }
+            }}
           />
 
           {props.hasSides && (
@@ -251,6 +262,12 @@ export function StopwatchContainer(props: Props) {
               setIsRunning={props.setRightIsRunning}
               lastUpdateTime={props.rightLastUpdateTime}
               setLastUpdateTime={props.setRightLastUpdateTime}
+              hideTimeLabel={false}
+              onPlayPause={(time, isRunning, lastUpdateTime) => {
+                if (props.onPlayPause) {
+                  props.onPlayPause("right", time, isRunning, lastUpdateTime);
+                }
+              }}
             />
           )}
         </Stack>

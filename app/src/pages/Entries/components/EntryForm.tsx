@@ -82,7 +82,6 @@ export default function EntryForm(props: EntryFormProps) {
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >([]);
-  // startDate from seconds timestamp
   const initialStartDate = getDateFromTimestamp(props.entry.startTimestamp);
   const initialEndDate = getDateFromTimestamp(props.entry.endTimestamp);
   const [startDate, setStartDate] = useState<Dayjs>(dayjs(initialStartDate));

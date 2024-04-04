@@ -17,13 +17,24 @@ type Props = {
   setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
   lastUpdateTime: number | null;
   setLastUpdateTime: React.Dispatch<React.SetStateAction<number | null>>;
+  onPlayPause?: (
+    time: number,
+    isRunning: boolean,
+    lastUpdateTime: number | null
+  ) => void;
 };
 
 export function Stopwatch(props: Props) {
   const handleButtonClick = () => {
-    props.setTime(!props.isRunning && props.time == 0 ? 1000 : props.time);
-    props.setIsRunning(!props.isRunning);
-    props.setLastUpdateTime(Date.now());
+    const newTime = !props.isRunning && props.time == 0 ? 1000 : props.time;
+    const newIsRunning = !props.isRunning;
+    const newLastUpdateTime = Date.now();
+    props.setTime(newTime);
+    props.setLastUpdateTime(newLastUpdateTime);
+    props.setIsRunning(newIsRunning);
+    if (props.onPlayPause) {
+      props.onPlayPause(newTime, newIsRunning, newLastUpdateTime);
+    }
   };
 
   return (

@@ -8,9 +8,14 @@ type ElapsedTimeResult = {
   seconds: number;
 };
 
-export function getTimeElapsedSinceLastEntry(entry: Entry): ElapsedTimeResult {
+export function getTimeElapsedSinceLastEntry(
+  entry: Entry,
+  from: "start" | "end" = "end"
+): ElapsedTimeResult {
   const now = new Date();
-  const previous = getDateFromTimestamp(entry.startTimestamp);
+  const previous = getDateFromTimestamp(
+    from === "start" ? entry.startTimestamp : entry.endTimestamp
+  );
   const diff = now.getTime() - previous.getTime();
   const diffInSeconds = Math.floor(diff / 1000);
   if (diffInSeconds < 60) {
