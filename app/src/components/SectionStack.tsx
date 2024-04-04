@@ -5,7 +5,7 @@ import React from "react";
 export function SectionStack(props: React.PropsWithChildren<{ sx?: SxProps }>) {
   return (
     <Stack
-      spacing={4}
+      spacing={2}
       alignItems="center"
       sx={{
         width: "100%",

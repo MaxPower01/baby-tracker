@@ -107,6 +107,7 @@ export function NewEntryDrawer(props: {
               const buttonLabel = getEntryTypeName(entryType);
               return (
                 <Button
+                  key={entryType}
                   onClick={() => {
                     handleItemClick(entryType);
                   }}

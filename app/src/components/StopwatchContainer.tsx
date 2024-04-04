@@ -207,8 +207,13 @@ export function StopwatchContainer(props: Props) {
           }}
         >
           <Typography
-            variant="h4"
-            color={theme.customPalette.text.primary}
+            variant={props.size === "big" ? "h4" : "body2"}
+            color={
+              props.size === "big"
+                ? theme.customPalette.text.primary
+                : theme.palette.primary.main
+            }
+            fontWeight={props.size === "big" ? undefined : 600}
             textAlign={"center"}
           >
             {timeLabel}
