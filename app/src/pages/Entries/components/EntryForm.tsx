@@ -38,6 +38,7 @@ import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SizeInput } from "@/components/SizeInput";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
+import { StopwatchTimePicker } from "@/components/StopwatchTimePicker";
 import { TemperatureInput } from "@/components/TemperatureInput";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
@@ -114,6 +115,23 @@ export default function EntryForm(props: EntryFormProps) {
   );
   const [rightTime, setRightTime] = useState(
     getEntryTime(props.entry, "right", true)
+  );
+  const handleStopwatchTimeChange = useCallback(
+    (
+      side: "left" | "right",
+      timeInSeconds: React.SetStateAction<number> | number
+    ) => {
+      let totalSeconds = typeof timeInSeconds === "number" ? timeInSeconds : 0;
+      if (side === "left") {
+        setLeftTime(timeInSeconds);
+        totalSeconds += rightTime;
+      } else {
+        setRightTime(timeInSeconds);
+        totalSeconds += leftTime;
+      }
+      // Add totalTime to the endDateTime
+    },
+    [leftTime, rightTime]
   );
   const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(
     props.entry.leftStopwatchIsRunning
@@ -397,13 +415,14 @@ export default function EntryForm(props: EntryFormProps) {
         {entryTypeHasStopwatch(props.entry.entryTypeId) && (
           <Section title="stopwatch">
             <SectionTitle title="Durée" />
+            <StopwatchTimePicker time={leftTime} setTime={setLeftTime} />
             <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryTypeId)}
               leftTime={leftTime}
-              setLeftTime={setLeftTime}
+              setLeftTime={(time) => handleStopwatchTimeChange("left", time)}
               rightTime={rightTime}
-              setRightTime={setRightTime}
+              setRightTime={(time) => handleStopwatchTimeChange("right", time)}
               leftIsRunning={leftStopwatchIsRunning}
               setLeftIsRunning={setLeftStopwatchIsRunning}
               rightIsRunning={rightStopwatchIsRunning}

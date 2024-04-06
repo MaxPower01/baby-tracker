@@ -53,7 +53,6 @@ import {
   updateActivityContexts,
 } from "@/state/slices/activitiesSlice";
 
-import ActivityButtons from "@/pages/Activities/components/ActivityButtons";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";

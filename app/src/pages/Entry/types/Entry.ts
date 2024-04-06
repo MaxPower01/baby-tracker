@@ -35,9 +35,15 @@ export interface Entry {
   weight: number | null;
   size: number | null;
   temperature: number | null;
+  /**
+   * Represents the duration of the left stopwatch in milliseconds.
+   */
   leftTime: number | null;
   leftStopwatchIsRunning: boolean;
   leftStopwatchLastUpdateTime: number | null;
+  /**
+   * Represents the duration of the right stopwatch in milliseconds.
+   */
   rightTime: number | null;
   rightStopwatchIsRunning: boolean;
   rightStopwatchLastUpdateTime: number | null;

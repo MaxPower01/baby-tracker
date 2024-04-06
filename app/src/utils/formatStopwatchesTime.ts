@@ -1,18 +1,20 @@
 /**
  * Formats an array of milliseconds into a string of the format "hh:mm:ss" or "<hour> s <minute> m <second> s"
- * @param time Array of milliseconds
+ * @param timeInMilliseconds Array of milliseconds
  * @returns String of the format "mm:ss"
  */
 
 export default function formatStopwatchesTime(
-  time: number[],
+  timeInMilliseconds: number[],
   showLetters = false,
   showSeconds = true,
   hideHoursIfZero = true,
   roundSeconds = false
 ) {
-  const totalTime = Math.floor(time.reduce((a, b) => a + b, 0));
-  if (totalTime === 0) {
+  const totalMilliSeconds = Math.floor(
+    timeInMilliseconds.reduce((a, b) => a + b, 0)
+  );
+  if (totalMilliSeconds === 0) {
     if (showLetters) {
       return "0 s";
     }
@@ -21,9 +23,9 @@ export default function formatStopwatchesTime(
     }
     return "00:00:00";
   }
-  let seconds = Math.floor((totalTime % 60000) / 1000);
-  let minutes = Math.floor((totalTime % 3600000) / 60000);
-  let hours = Math.floor(totalTime / 3600000);
+  let seconds = Math.floor((totalMilliSeconds % 60000) / 1000);
+  let minutes = Math.floor((totalMilliSeconds % 3600000) / 60000);
+  let hours = Math.floor(totalMilliSeconds / 3600000);
   if (roundSeconds) {
     if (minutes > 15) {
       seconds = Math.round(seconds / 60) * 60;
