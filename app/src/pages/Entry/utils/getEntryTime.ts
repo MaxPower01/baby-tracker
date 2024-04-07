@@ -15,14 +15,16 @@ export function getEntryTime(
     if (upToDate && entry.leftStopwatchIsRunning) {
       const now = Date.now();
       const delta = now - (entry.leftStopwatchLastUpdateTime || now);
-      return (entry.leftTime ?? 0) + delta;
+      const roundedDelta = Math.round(delta / 1000) * 1000;
+      return (entry.leftTime ?? 0) + roundedDelta;
     }
     return entry.leftTime ?? 0;
   } else if (side === "right") {
     if (upToDate && entry.rightStopwatchIsRunning) {
       const now = Date.now();
       const delta = now - (entry.rightStopwatchLastUpdateTime || now);
-      return (entry.rightTime ?? 0) + delta;
+      const roundedDelta = Math.round(delta / 1000) * 1000;
+      return (entry.rightTime ?? 0) + roundedDelta;
     }
     return entry.rightTime ?? 0;
   }

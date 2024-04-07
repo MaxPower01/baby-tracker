@@ -154,7 +154,6 @@ export function BottomBar(props: Props) {
   }
 
   // items.forEach((item) => {
-  //   console.log(item);
   //   if (item.sx && Object.keys(item.sx).includes("opacity")) {
   //     // Assign the sx property to the theme.opacity.tertiary value
   //     item.sx = { ...item.sx, opacity: theme.opacity.tertiary };

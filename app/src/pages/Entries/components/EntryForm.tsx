@@ -415,7 +415,6 @@ export default function EntryForm(props: EntryFormProps) {
         {entryTypeHasStopwatch(props.entry.entryTypeId) && (
           <Section title="stopwatch">
             <SectionTitle title="Durée" />
-            <StopwatchTimePicker time={leftTime} setTime={setLeftTime} />
             <StopwatchContainer
               size="big"
               hasSides={entryTypeHasSides(props.entry.entryTypeId)}

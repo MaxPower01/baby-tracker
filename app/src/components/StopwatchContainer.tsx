@@ -28,6 +28,7 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
 import { Stopwatch } from "@/components/Stopwatch";
+import { StopwatchTimePicker } from "@/components/StopwatchTimePicker";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 
 type Props = {
@@ -112,7 +113,8 @@ export function StopwatchContainer(props: Props) {
         const now = Date.now();
         if (props.leftIsRunning) {
           const leftDelta = now - (lastUpdateTime ?? now);
-          const newLeftTime = props.leftTime + leftDelta;
+          const roundedLeftDelta = Math.round(leftDelta / 1000) * 1000;
+          const newLeftTime = props.leftTime + roundedLeftDelta;
           onLeftChange({
             time: newLeftTime,
             isRunning: props.leftIsRunning,
@@ -122,7 +124,8 @@ export function StopwatchContainer(props: Props) {
         }
         if (props.rightIsRunning) {
           const rightDelta = now - (lastUpdateTime ?? now);
-          const newRightTime = props.rightTime + rightDelta;
+          const roundedRightDelta = Math.round(rightDelta / 1000) * 1000;
+          const newRightTime = props.rightTime + roundedRightDelta;
           onRightChange({
             time: newRightTime,
             isRunning: props.rightIsRunning,
@@ -208,22 +211,43 @@ export function StopwatchContainer(props: Props) {
         }}
       >
         <Stack
+          direction={"row"}
+          justifyContent={"center"}
+          alignItems={"center"}
           sx={{
             width: "100%",
           }}
         >
-          <Typography
-            variant={props.size === "big" ? "h4" : "body2"}
-            color={
-              props.size === "big"
-                ? theme.customPalette.text.primary
-                : theme.palette.primary.main
-            }
-            fontWeight={props.size === "big" ? undefined : 600}
-            textAlign={"center"}
+          <Box
+            sx={{
+              position: "relative",
+            }}
           >
-            {timeLabel}
-          </Typography>
+            <Typography
+              variant={props.size === "big" ? "h4" : "body2"}
+              color={
+                props.size === "big"
+                  ? theme.customPalette.text.primary
+                  : theme.palette.primary.main
+              }
+              fontWeight={props.size === "big" ? undefined : 600}
+              textAlign={"center"}
+            >
+              {timeLabel}
+            </Typography>
+            <StopwatchTimePicker
+              time={props.leftTime}
+              setTime={props.setLeftTime}
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0,
+              }}
+            />
+          </Box>
         </Stack>
 
         <Stack
