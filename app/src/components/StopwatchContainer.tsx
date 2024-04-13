@@ -210,45 +210,47 @@ export function StopwatchContainer(props: Props) {
           width: "100%",
         }}
       >
-        <Stack
-          direction={"row"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Box
+        {props.size === "big" && (
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
             sx={{
-              position: "relative",
+              width: "100%",
             }}
           >
-            <Typography
-              variant={props.size === "big" ? "h4" : "body2"}
-              color={
-                props.size === "big"
-                  ? theme.customPalette.text.primary
-                  : theme.palette.primary.main
-              }
-              fontWeight={props.size === "big" ? undefined : 600}
-              textAlign={"center"}
-            >
-              {timeLabel}
-            </Typography>
-            <StopwatchTimePicker
-              time={props.leftTime}
-              setTime={props.setLeftTime}
+            <Box
               sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                opacity: 0,
+                position: "relative",
               }}
-            />
-          </Box>
-        </Stack>
+            >
+              <Typography
+                variant={props.size === "big" ? "h4" : "body2"}
+                color={
+                  props.size === "big"
+                    ? theme.customPalette.text.primary
+                    : theme.palette.primary.main
+                }
+                fontWeight={props.size === "big" ? undefined : 600}
+                textAlign={"center"}
+              >
+                {timeLabel}
+              </Typography>
+              <StopwatchTimePicker
+                time={props.leftTime}
+                setTime={props.setLeftTime}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                }}
+              />
+            </Box>
+          </Stack>
+        )}
 
         <Stack
           direction={"row"}
@@ -268,7 +270,8 @@ export function StopwatchContainer(props: Props) {
             setIsRunning={props.setLeftIsRunning}
             lastUpdateTime={props.leftLastUpdateTime}
             setLastUpdateTime={props.setLeftLastUpdateTime}
-            hideTimeLabel={!props.hasSides}
+            hideTimeLabel={!props.hasSides || props.size === "small"}
+            showTitle={props.size === "small"}
             onPlayPause={(time, isRunning, lastUpdateTime) => {
               if (props.onPlayPause) {
                 props.onPlayPause("left", time, isRunning, lastUpdateTime);
@@ -286,7 +289,8 @@ export function StopwatchContainer(props: Props) {
               setIsRunning={props.setRightIsRunning}
               lastUpdateTime={props.rightLastUpdateTime}
               setLastUpdateTime={props.setRightLastUpdateTime}
-              hideTimeLabel={false}
+              hideTimeLabel={props.size === "small"}
+              showTitle={props.size === "small"}
               onPlayPause={(time, isRunning, lastUpdateTime) => {
                 if (props.onPlayPause) {
                   props.onPlayPause("right", time, isRunning, lastUpdateTime);

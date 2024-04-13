@@ -21,3 +21,9 @@ export const recentDataFetchCooldownInMilliseconds =
   recentDataFetchCooldownInSeconds * 1000;
 
 export const bottomBarNewEntryFabId = "bottom-bar-new-entry-fab";
+
+/**
+ * The time in seconds after which the stopwatch should still be displayed after stopping it.
+ * This is to allow the user to restart the stopwatch if they accidentally stopped it and want to continue.
+ */
+export const stopwatchDisplayTimeAfterStopInSeconds = 60 * 5;

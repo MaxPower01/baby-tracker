@@ -18,14 +18,18 @@ import {
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
+import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
+import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -124,11 +128,20 @@ type ItemBodyProps = {
 
 function ItemBody(props: ItemBodyProps) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const name = getEntryTypeName(props.entryType);
   const stopwatchIsRunning =
     props.mostRecentEntryOfType == null
       ? false
       : entryHasStopwatchRunning(props.mostRecentEntryOfType);
+  const elapsedTime =
+    props.mostRecentEntryOfType == null
+      ? null
+      : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
+  const showStopwatch =
+    stopwatchIsRunning ||
+    (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
+      stopwatchDisplayTimeAfterStopInSeconds;
   return (
     <Box
       key={props.entryType}
@@ -142,19 +155,24 @@ function ItemBody(props: ItemBodyProps) {
         height: "100%",
         padding: `${props.padding}px`,
         width: props.width,
+        order: showStopwatch ? -1 : undefined,
       }}
     >
       <Card
         sx={{
           border: "1px solid",
-          borderColor: stopwatchIsRunning
-            ? (`${theme.palette.primary.main}50` as string)
+          borderColor: showStopwatch
+            ? (`${theme.palette.primary.main}${
+                stopwatchIsRunning ? 50 : 35
+              }` as string)
             : "transparent",
           backgroundColor: stopwatchIsRunning
             ? `${theme.palette.primary.main}30`
             : undefined,
-          boxShadow: stopwatchIsRunning
-            ? `0 0 5px 0px ${theme.palette.primary.main}`
+          boxShadow: showStopwatch
+            ? `0 0 5px 0px ${theme.palette.primary.main}${
+                stopwatchIsRunning ? "" : 50
+              }`
             : undefined,
           borderRadius: 1,
           flexGrow: 1,
@@ -164,6 +182,19 @@ function ItemBody(props: ItemBodyProps) {
         <CardActionArea
           sx={{
             height: "100%",
+          }}
+          onClick={() => {
+            navigate(
+              getPath({
+                id: stopwatchIsRunning
+                  ? props.mostRecentEntryOfType?.id
+                  : undefined,
+                page: PageId.Entry,
+                params: {
+                  type: props.entryType.toString(),
+                },
+              })
+            );
           }}
         >
           <CardContent
@@ -304,7 +335,9 @@ function ItemFooter(props: ItemFooterProps) {
   );
 
   const showStopwatch =
-    stopwatchIsRunning || (elapsedTime?.seconds ?? 0) <= 60 * 5;
+    stopwatchIsRunning ||
+    (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
+      stopwatchDisplayTimeAfterStopInSeconds;
   const showElapsedTime = !showStopwatch && elapsedTime != null;
 
   return (
@@ -312,6 +345,7 @@ function ItemFooter(props: ItemFooterProps) {
       key={props.entryType}
       sx={{
         width: props.width,
+        order: showStopwatch ? -1 : undefined,
       }}
     >
       {props.mostRecentEntryOfType == null ? null : (

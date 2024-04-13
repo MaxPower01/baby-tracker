@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme } from "@mui/material";
+import { Button, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 import PauseIcon from "@mui/icons-material/Pause";
@@ -12,6 +12,7 @@ type Props = {
   label?: string;
   hideTimeLabel?: boolean;
   time: number;
+  showTitle?: boolean;
   setTime: React.Dispatch<React.SetStateAction<number>>;
   isRunning: boolean;
   setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +26,13 @@ type Props = {
 };
 
 export function Stopwatch(props: Props) {
+  const theme = useTheme();
+  const timeLabel = formatStopwatchTime(props.time);
+  // Get first letter of the label:
+  const title =
+    props.label && !isNullOrWhiteSpace(props.label)
+      ? `${timeLabel} (${props.label[0].toUpperCase()})`
+      : timeLabel;
   const handleButtonClick = () => {
     const newTime = !props.isRunning && props.time == 0 ? 1000 : props.time;
     const newIsRunning = !props.isRunning;
@@ -38,14 +46,35 @@ export function Stopwatch(props: Props) {
   };
 
   return (
-    <StopwatchButton
-      time={props.time}
-      isRunning={props.isRunning}
-      size={props.size}
-      label={props.label}
-      handleClick={handleButtonClick}
-      type="play/pause"
-      hideTimeLabel={props.hideTimeLabel}
-    />
+    <Stack
+      direction="column"
+      spacing={0.5}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      {props.showTitle && (
+        <Typography
+          variant={props.size === "big" ? "h4" : "body2"}
+          color={
+            props.size === "big"
+              ? theme.customPalette.text.primary
+              : theme.palette.primary.main
+          }
+          fontWeight={props.size === "big" ? undefined : 600}
+          textAlign={"center"}
+        >
+          {title}
+        </Typography>
+      )}
+      <StopwatchButton
+        time={props.time}
+        isRunning={props.isRunning}
+        size={props.size}
+        label={props.label}
+        handleClick={handleButtonClick}
+        type="play/pause"
+        hideTimeLabel={props.hideTimeLabel}
+      />
+    </Stack>
   );
 }
