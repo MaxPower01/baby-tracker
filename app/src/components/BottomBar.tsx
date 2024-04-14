@@ -124,13 +124,13 @@ export function BottomBar(props: Props) {
       },
     },
     {
-      id: "entries",
-      onClick: () => navigate(getPath({ page: PageId.Entries })),
-      label: getPageTitle(getPath({ page: PageId.Entries })),
+      id: "history",
+      onClick: () => navigate(getPath({ page: PageId.History })),
+      label: getPageTitle(getPath({ page: PageId.History })),
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
       color: "inherit",
-      isCurrentPage: pageId === PageId.Entries,
+      isCurrentPage: pageId === PageId.History,
       sx: {
         opacity: undefined,
       },

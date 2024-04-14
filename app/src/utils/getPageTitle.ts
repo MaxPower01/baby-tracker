@@ -8,8 +8,8 @@ export default function getPageTitle(pathname: string) {
       return "Accueil";
     case PageId.Graphics:
       return "Graphiques";
-    case PageId.Entries:
-      return "Entrées";
+    case PageId.History:
+      return "Historique";
     case PageId.Entry:
       const entryId = pathname.substring(1).split("/")[1];
       if (entryId) {

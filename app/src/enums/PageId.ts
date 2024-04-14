@@ -1,7 +1,7 @@
 export enum PageId {
   Home = "home",
   Graphics = "graphics",
-  Entries = "entries",
+  History = "history",
   Entry = "entry",
   Authentication = "authentication",
   Family = "family",

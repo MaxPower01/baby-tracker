@@ -46,7 +46,7 @@ export function PrivateRoutes() {
               element={<GraphicsPage />}
             />
             <Route
-              path={getPath({ page: PageId.Entries })}
+              path={getPath({ page: PageId.History })}
               element={<HistoryPage />}
             />
             <Route
