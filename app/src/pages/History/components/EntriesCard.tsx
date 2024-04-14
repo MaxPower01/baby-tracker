@@ -16,6 +16,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {
+  deleteEntryInDB,
+  selectRecentEntries,
+} from "@/state/slices/entriesSlice";
 import { useCallback, useState } from "react";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
@@ -27,13 +31,14 @@ import EntryBody from "@/pages/History/components/EntryBody";
 import { EntryHeader } from "@/pages/History/components/EntryHeader";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import getPath from "@/utils/getPath";
-import { selectRecentEntries } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -46,16 +51,25 @@ type Props = {
   ) => void;
 };
 
-export default function EntriesCard(props: Props) {
+export function EntriesCard(props: Props) {
   const navigate = useNavigate();
   const { entries } = props;
+  const dispatch = useAppDispatch();
+  const { user } = useAuthentication();
+  const babyId = user?.babyId ?? "";
   const allEntries = useSelector(selectRecentEntries);
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
   const [menuEntry, setMenuEntry] = useState<Entry | null>(null);
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const handleDialogClose = () => setDialogOpened(false);
+  const [deleteEntrydialogIsOpen, setDeleteEntryDialogIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleDeleteEntryDialogClose = useCallback(() => {
+    if (isDeleting) {
+      return;
+    }
+    setDeleteEntryDialogIsOpen(false);
+  }, [isDeleting]);
   // const { deleteEntry } = useEntries();
 
   const handleDeleteButtonClick = (
@@ -63,15 +77,24 @@ export default function EntriesCard(props: Props) {
   ) => {
     closeMenu(e);
     if (!menuEntry) return;
-    setDialogOpened(true);
+    setDeleteEntryDialogIsOpen(true);
   };
 
-  const handleDeleteEntry = useCallback(() => {
-    if (menuEntry?.id == null) return;
-    // deleteEntry(menuEntry.id).then(() => {
-    //   handleDialogClose();
-    // });
-  }, [menuEntry]);
+  const handleDeleteEntry = useCallback(async () => {
+    if (menuEntry?.id == null || user?.babyId == null) {
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      await dispatch(
+        deleteEntryInDB({ entryId: menuEntry.id, babyId: user.babyId })
+      ).unwrap();
+      setIsDeleting(false);
+      handleDeleteEntryDialogClose();
+    } catch (error) {
+      setIsDeleting(false);
+    }
+  }, [menuEntry, user, dispatch, handleDeleteEntryDialogClose]);
 
   return (
     <>
@@ -189,7 +212,7 @@ export default function EntriesCard(props: Props) {
                       <Stack
                         direction={"row"}
                         justifyContent={"space-between"}
-                        alignItems={"flex-start"}
+                        alignItems={"center"}
                         spacing={2}
                         sx={{
                           flexGrow: 1,
@@ -274,8 +297,8 @@ export default function EntriesCard(props: Props) {
       </Menu>
 
       <Dialog
-        open={dialogOpened}
-        onClose={handleDialogClose}
+        open={deleteEntrydialogIsOpen}
+        onClose={handleDeleteEntryDialogClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -288,11 +311,44 @@ export default function EntriesCard(props: Props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} autoFocus>
+          <Button
+            onClick={handleDeleteEntryDialogClose}
+            autoFocus
+            sx={{
+              height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+            }}
+            disabled={isDeleting}
+          >
             Annuler
           </Button>
-          <Button variant="contained" color="error" onClick={handleDeleteEntry}>
-            Supprimer
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDeleteEntry}
+            disabled={isDeleting}
+            sx={{
+              height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+            }}
+          >
+            <Typography variant="button">Supprimer l'entrée</Typography>
+            <Box
+              sx={{
+                display: isDeleting ? "flex" : "none",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <LoadingIndicator
+                size={`calc(${theme.typography.button.fontSize} * 2)`}
+              />
+            </Box>
           </Button>
         </DialogActions>
       </Dialog>

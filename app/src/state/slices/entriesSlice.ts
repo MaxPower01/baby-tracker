@@ -3,6 +3,7 @@ import {
   Timestamp,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -44,7 +45,7 @@ const defaultState: EntriesState = {
   status: "idle",
 };
 
-export const fetchRecentEntries = createAsyncThunk(
+export const fetchRecentEntriesFromDB = createAsyncThunk(
   "entries/fetchRecentEntries",
   async (
     props: {
@@ -73,7 +74,7 @@ export const fetchRecentEntries = createAsyncThunk(
         return thunkAPI.rejectWithValue("Cooldown not elapsed");
       }
       thunkAPI.dispatch(
-        setLastFetchTimestamp({
+        setLastFetchTimestampInState({
           timestamp: newTimestamp,
         })
       );
@@ -104,7 +105,7 @@ export const fetchRecentEntries = createAsyncThunk(
   }
 );
 
-export const saveEntry = createAsyncThunk(
+export const saveEntryInDB = createAsyncThunk(
   "entries/saveEntry",
   async (
     props: {
@@ -157,7 +158,27 @@ export const saveEntry = createAsyncThunk(
   }
 );
 
-function addEntryToState(
+export const deleteEntryInDB = createAsyncThunk(
+  "entries/deleteEntry",
+  async (
+    props: {
+      entryId: string;
+      babyId: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      await deleteDoc(
+        doc(db, `babies/${props.babyId}/entries/${props.entryId}`)
+      );
+      return thunkAPI.fulfillWithValue(props.entryId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+function _addEntryToState(
   state: EntriesState,
   payload: {
     entry: string;
@@ -174,7 +195,7 @@ function addEntryToState(
   }
 }
 
-function addEntriesToState(
+function _addEntriesToState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -183,14 +204,14 @@ function addEntriesToState(
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    addEntryToState(state, { entry: JSON.stringify(entry) }, true);
+    _addEntryToState(state, { entry: JSON.stringify(entry) }, true);
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function updateEntryInState(
+function _updateEntryInState(
   state: EntriesState,
   payload: {
     entry: string;
@@ -202,14 +223,14 @@ function updateEntryInState(
   if (index !== -1) {
     state.entries[index] = entry;
   } else {
-    addEntryToState(state, payload, true);
+    _addEntryToState(state, payload, true);
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function updateEntriesInState(
+function _updateEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -218,14 +239,14 @@ function updateEntriesInState(
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    updateEntryInState(state, { entry: JSON.stringify(entry) }, true);
+    _updateEntryInState(state, { entry: JSON.stringify(entry) }, true);
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function removeEntryFromState(
+function _removeEntryFromState(
   state: EntriesState,
   payload: {
     id: string;
@@ -241,7 +262,7 @@ function removeEntryFromState(
   }
 }
 
-function removeEntriesFromState(
+function _removeEntriesFromState(
   state: EntriesState,
   payload: {
     ids: string[];
@@ -260,7 +281,7 @@ function removeEntriesFromState(
   }
 }
 
-function setEntriesInState(
+function _setEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -274,14 +295,14 @@ function setEntriesInState(
   }
 }
 
-function resetState(state: EntriesState, preventLocalStorageUpdate = false) {
+function _resetState(state: EntriesState, preventLocalStorageUpdate = false) {
   Object.assign(state, defaultState);
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function setLastFetchTimestampInState(
+function _setLastFetchTimestampInState(
   state: EntriesState,
   payload: {
     timestamp: number;
@@ -294,9 +315,9 @@ function setLastFetchTimestampInState(
   }
 }
 
-function setStatusInState(
+function _setStatusInState(
   state: EntriesState,
-  status: "idle" | "loading" | "saving",
+  status: "idle" | "busy" | "busy",
   preventLocalStorageUpdate = false
 ) {
   state.status = status;
@@ -309,114 +330,126 @@ const slice = createSlice({
   name: StoreReducerName.Entries,
   initialState: getInitialState(key, defaultState),
   reducers: {
-    addEntry: (
+    addEntryInState: (
       state,
       action: PayloadAction<{
         entry: string;
       }>
     ) => {
-      addEntryToState(state, action.payload);
+      _addEntryToState(state, action.payload);
     },
-    addEntries: (
+    addEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      addEntriesToState(state, action.payload);
+      _addEntriesToState(state, action.payload);
     },
-    updateEntry: (
+    updateEntryInState: (
       state,
       action: PayloadAction<{
         entry: string;
       }>
     ) => {
-      updateEntryInState(state, action.payload);
+      _updateEntryInState(state, action.payload);
     },
-    updateEntries: (
+    updateEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      updateEntriesInState(state, action.payload);
+      _updateEntriesInState(state, action.payload);
     },
-    removeEntry: (
+    removeEntryFromState: (
       state,
       action: PayloadAction<{
         id: string;
       }>
     ) => {
-      removeEntryFromState(state, action.payload);
+      _removeEntryFromState(state, action.payload);
     },
-    removeEntries: (
+    removeEntriesFromState: (
       state,
       action: PayloadAction<{
         ids: string[];
       }>
     ) => {
-      removeEntriesFromState(state, action.payload);
+      _removeEntriesFromState(state, action.payload);
     },
-    setEntries: (
+    setEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      setEntriesInState(state, action.payload);
+      _setEntriesInState(state, action.payload);
     },
-    resetEntriesState: (state) => {
-      resetState(state);
+    resetState: (state) => {
+      _resetState(state);
     },
-    setLastFetchTimestamp: (
+    setLastFetchTimestampInState: (
       state,
       action: PayloadAction<{
         timestamp: number;
       }>
     ) => {
-      setLastFetchTimestampInState(state, action.payload);
+      _setLastFetchTimestampInState(state, action.payload);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchRecentEntries.pending, (state, action) => {
-      setStatusInState(state, "loading");
+    builder.addCase(fetchRecentEntriesFromDB.pending, (state, action) => {
+      _setStatusInState(state, "busy");
     });
-    builder.addCase(fetchRecentEntries.fulfilled, (state, action) => {
+    builder.addCase(fetchRecentEntriesFromDB.fulfilled, (state, action) => {
       const entries = action.payload as Entry[];
-      setEntriesInState(state, {
+      _setEntriesInState(state, {
         entries: entries.map((e) => JSON.stringify(e)),
       });
-      setStatusInState(state, "idle");
+      _setStatusInState(state, "idle");
     });
-    builder.addCase(fetchRecentEntries.rejected, (state, action) => {
+    builder.addCase(fetchRecentEntriesFromDB.rejected, (state, action) => {
       console.error("Error fetching recent entries: ", action.payload);
-      setStatusInState(state, "idle");
+      _setStatusInState(state, "idle");
     });
-    builder.addCase(saveEntry.pending, (state, action) => {
-      setStatusInState(state, "saving");
+    builder.addCase(saveEntryInDB.pending, (state, action) => {
+      _setStatusInState(state, "busy");
     });
-    builder.addCase(saveEntry.fulfilled, (state, action) => {
+    builder.addCase(saveEntryInDB.fulfilled, (state, action) => {
       const entry = action.payload as Entry;
-      updateEntryInState(state, { entry: JSON.stringify(entry) });
-      setStatusInState(state, "idle");
+      _updateEntryInState(state, { entry: JSON.stringify(entry) });
+      _setStatusInState(state, "idle");
     });
-    builder.addCase(saveEntry.rejected, (state, action) => {
+    builder.addCase(saveEntryInDB.rejected, (state, action) => {
       console.error("Error saving entry: ", action.payload);
-      setStatusInState(state, "idle");
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(deleteEntryInDB.pending, (state, action) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(deleteEntryInDB.fulfilled, (state, action) => {
+      const entryId = action.payload as string;
+      _removeEntryFromState(state, { id: entryId });
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(deleteEntryInDB.rejected, (state, action) => {
+      console.error("Error deleting entry: ", action.payload);
+      _setStatusInState(state, "idle");
     });
   },
 });
 
 export const {
-  updateEntry,
-  resetEntriesState,
-  removeEntry,
-  addEntries,
-  addEntry,
-  removeEntries,
-  setEntries,
-  setLastFetchTimestamp,
-  updateEntries,
+  updateEntryInState,
+  resetState,
+  removeEntryFromState,
+  addEntriesInState,
+  addEntryInState,
+  removeEntriesFromState,
+  setEntriesInState,
+  setLastFetchTimestampInState,
+  updateEntriesInState,
 } = slice.actions;
 
 export const selectEntries = (state: RootState) => state.entriesReducer.entries;

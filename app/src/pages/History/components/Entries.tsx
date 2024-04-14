@@ -16,7 +16,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
 import { DateHeader } from "@/components/DateHeader";
-import EntriesCard from "@/pages/History/components/EntriesCard";
+import { EntriesCard } from "@/pages/History/components/EntriesCard";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { MenuProvider } from "@/components/MenuProvider";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -32,7 +32,7 @@ type Props = {
   title?: string;
 };
 
-export default function Entries(props: Props) {
+export function Entries(props: Props) {
   const { entries, status } = useEntries();
 
   const theme = useTheme();
@@ -70,13 +70,13 @@ export default function Entries(props: Props) {
   }, []);
 
   const entriesByDate = useMemo(() => {
-    if (status === "loading" || !entries) {
+    if (status === "busy" || !entries) {
       return null;
     }
     return groupEntriesByDate(entries);
   }, [entries]);
 
-  if (status === "loading") {
+  if (status === "busy") {
     return (
       <Box
         sx={{

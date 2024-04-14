@@ -34,7 +34,7 @@ interface EntriesContext {
   getEntries: (params: { timePeriod: TimePeriodId }) => Promise<Entry[]>;
   deleteEntry: (entryId: string) => Promise<void>;
   saveEntry: (entry: Entry) => Promise<string | null>;
-  status: "loading" | "idle";
+  status: "busy" | "idle";
 }
 
 const Context = createContext(null) as React.Context<EntriesContext | null>;
@@ -256,7 +256,7 @@ export function EntriesProvider(props: React.PropsWithChildren<{}>) {
       getEntries,
       deleteEntry,
       saveEntry,
-      status: isLoading ? "loading" : "idle",
+      status: isLoading ? "busy" : "idle",
     }),
     [entries, setEntries, isLoading, getEntries, deleteEntry, saveEntry]
   );

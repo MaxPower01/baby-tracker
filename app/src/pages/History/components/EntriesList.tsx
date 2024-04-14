@@ -15,16 +15,17 @@ import { DateEntries } from "@/pages/History/components/DateEntries";
 import { DateEntriesHeader } from "@/pages/History/components/DateEntriesHeader";
 import { DateHeader } from "@/components/DateHeader";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { MenuProvider } from "@/components/MenuProvider";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 
 type Props = {
   entries: Entry[];
-  groupByDate?: boolean;
+  // groupByDate?: boolean;
 };
 
-export default function EntriesList(props: Props) {
+export function EntriesList(props: Props) {
   if (props.entries.length === 0) {
     return null;
   }
@@ -64,9 +65,10 @@ export default function EntriesList(props: Props) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  if (props.groupByDate) {
-    const entriesByDate = groupEntriesByDate(props.entries);
-    return (
+  // if (props.groupByDate) {
+  const entriesByDate = groupEntriesByDate(props.entries);
+  return (
+    <MenuProvider>
       <Stack
         sx={{
           width: "100%",
@@ -111,13 +113,14 @@ export default function EntriesList(props: Props) {
           });
         })}
       </Stack>
-    );
-  }
-  return (
-    <Stack>
-      {props.entries.map((entry, index) => {
-        return <div key={index}>Entry: {entry.id}</div>;
-      })}
-    </Stack>
+    </MenuProvider>
   );
+  // }
+  // return (
+  //   <Stack>
+  //     {props.entries.map((entry, index) => {
+  //       return <div key={index}>Entry: {entry.id}</div>;
+  //     })}
+  //   </Stack>
+  // );
 }

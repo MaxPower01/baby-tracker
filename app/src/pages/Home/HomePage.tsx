@@ -10,11 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  addEntries,
-  removeEntries,
+  addEntriesInState,
+  removeEntriesFromState,
   selectEntriesStatus,
   selectRecentEntries,
-  updateEntries,
+  updateEntriesInState,
 } from "@/state/slices/entriesSlice";
 import {
   collection,
@@ -28,8 +28,7 @@ import { useEffect, useState } from "react";
 import { BabyWidget } from "@/components/BabyWidget";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import Entries from "@/pages/History/components/Entries";
-import EntriesList from "@/pages/History/components/EntriesList";
+import { EntriesList } from "@/pages/History/components/EntriesList";
 import { EntriesWidget } from "@/pages/History/components/EntriesWidget";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -83,21 +82,21 @@ export function HomePage() {
         });
         if (removedEntries.length > 0) {
           dispatch(
-            removeEntries({
+            removeEntriesFromState({
               ids: removedEntries.map((entry) => entry.id ?? ""),
             })
           );
         }
         if (modifiedEntries.length > 0) {
           dispatch(
-            updateEntries({
+            updateEntriesInState({
               entries: modifiedEntries.map((entry) => JSON.stringify(entry)),
             })
           );
         }
         if (addedEntries.length > 0) {
           dispatch(
-            addEntries({
+            addEntriesInState({
               entries: addedEntries.map((entry) => JSON.stringify(entry)),
             })
           );
@@ -146,7 +145,7 @@ export function HomePage() {
       </Section>
 
       <Section>
-        {entriesStatus === "loading" ? (
+        {entriesStatus === "busy" ? (
           <LoadingIndicator />
         ) : entries.length === 0 ? (
           <EmptyState
@@ -154,7 +153,7 @@ export function HomePage() {
             onClick={handleEmptyStateClick}
           />
         ) : (
-          <EntriesList entries={entries} groupByDate />
+          <EntriesList entries={entries} /*groupByDate*/ />
         )}
       </Section>
     </SectionStack>

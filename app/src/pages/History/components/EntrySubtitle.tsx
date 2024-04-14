@@ -168,6 +168,10 @@ export function EntrySubtitle(props: Props) {
     }
   }
 
+  if (isNullOrWhiteSpace(subtitle)) {
+    return null;
+  }
+
   return (
     <Typography
       variant={"body2"}

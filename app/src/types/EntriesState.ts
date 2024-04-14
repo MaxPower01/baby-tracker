@@ -4,6 +4,6 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 export default interface EntriesState {
   entries: Array<Entry>;
   orderedEntryTypes: Array<EntryTypeId>;
-  status: "idle" | "loading" | "saving";
+  status: "idle" | "busy";
   latestRecentEntriesFetchedTimestamp: number | null;
 }

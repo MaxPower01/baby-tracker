@@ -1,6 +1,5 @@
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import Entries from "@/pages/History/components/Entries";
 import { Section } from "@/components/Section";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";

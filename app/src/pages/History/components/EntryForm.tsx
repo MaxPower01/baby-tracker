@@ -64,7 +64,7 @@ import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { parseEnumValue } from "@/utils/parseEnumValue";
-import { saveEntry } from "@/state/slices/entriesSlice";
+import { saveEntryInDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
@@ -236,7 +236,7 @@ export default function EntryForm(props: EntryFormProps) {
           createdBy: user.uid,
           editedBy: props.entry.editedBy,
         };
-        await dispatch(saveEntry({ entry, user })).unwrap();
+        await dispatch(saveEntryInDB({ entry, user })).unwrap();
         setIsSaving(false);
         return resolve(true);
       } catch (error) {

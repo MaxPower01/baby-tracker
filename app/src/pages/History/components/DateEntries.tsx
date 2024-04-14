@@ -1,4 +1,4 @@
-import EntriesCard from "@/pages/History/components/EntriesCard";
+import { EntriesCard } from "@/pages/History/components/EntriesCard";
 import { Entry } from "@/pages/Entry/types/Entry";
 import React from "react";
 import { Stack } from "@mui/material";

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  saveEntry,
+  saveEntryInDB,
   selectOrderedEntryTypes,
 } from "@/state/slices/entriesSlice";
 
@@ -335,7 +335,7 @@ function ItemFooter(props: ItemFooterProps) {
             rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
             endTimestamp: newEndTimestamp,
           };
-          await dispatch(saveEntry({ entry, user })).unwrap();
+          await dispatch(saveEntryInDB({ entry, user })).unwrap();
           setIsSaving(false);
           return resolve(true);
         } catch (error) {
@@ -417,6 +417,8 @@ function ItemFooter(props: ItemFooterProps) {
               entry={props.mostRecentEntryOfType}
               sx={{
                 textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             />
           )}
