@@ -17,7 +17,7 @@ import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { useSelector } from "react-redux";
 
-// import { selectEditingEntryId } from "@/pages/Entries/state/entriesSlice";
+// import { selectEditingEntryId } from "@/pages/History/state/entriesSlice";
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 

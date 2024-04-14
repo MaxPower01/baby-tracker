@@ -1,7 +1,7 @@
 import { Entry } from "@/pages/Entry/types/Entry";
-import EntryBody from "@/pages/Entries/components/EntryBody";
-import EntryFooter from "@/pages/Entries/components/EntryFooter";
-import { EntryHeader } from "@/pages/Entries/components/EntryHeader";
+import EntryBody from "@/pages/History/components/EntryBody";
+import EntryFooter from "@/pages/History/components/EntryFooter";
+import { EntryHeader } from "@/pages/History/components/EntryHeader";
 import { Stack } from "@mui/material";
 
 type Props = {

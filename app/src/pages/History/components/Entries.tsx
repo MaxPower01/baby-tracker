@@ -16,7 +16,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CheckIcon from "@mui/icons-material/Check";
 import { DateHeader } from "@/components/DateHeader";
-import EntriesCard from "@/pages/Entries/components/EntriesCard";
+import EntriesCard from "@/pages/History/components/EntriesCard";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { MenuProvider } from "@/components/MenuProvider";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -24,7 +24,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 import { selectActivities } from "@/state/slices/activitiesSlice";
-import { useEntries } from "@/pages/Entries/components/EntriesProvider";
+import { useEntries } from "@/pages/History/components/EntriesProvider";
 import { useSelector } from "react-redux";
 
 type Props = {

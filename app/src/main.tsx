@@ -6,7 +6,7 @@ import { AuthenticationProvider } from "@/pages/Authentication/components/Authen
 import { BabiesProvider } from "@/pages/Baby/components/BabiesProvider";
 import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
-import { EntriesProvider } from "@/pages/Entries/components/EntriesProvider";
+import { EntriesProvider } from "@/pages/History/components/EntriesProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";

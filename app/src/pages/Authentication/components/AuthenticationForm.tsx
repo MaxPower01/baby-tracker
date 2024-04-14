@@ -8,7 +8,7 @@ import { useAuthentication } from "@/pages/Authentication/hooks/useAuthenticatio
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-// import useEntries from "@/pages/Entries/hooks/useEntries";
+// import useEntries from "@/pages/History/hooks/useEntries";
 
 // import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 // import { doc, setDoc } from "firebase/firestore";

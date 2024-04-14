@@ -3,10 +3,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ActivitiesPage from "@/pages/Activities/ActivitiesPage";
 import AuthenticationPage from "@/pages/Authentication";
 import { BabyPage } from "@/pages/Baby/BabyPage";
-import { EntriesPage } from "@/pages/Entries/EntriesPage";
 import { EntryPage } from "@/pages/Entry/EntryPage";
 import { FamilyPage } from "@/pages/Family/FamilyPage";
 import { GraphicsPage } from "@/pages/Graphics/GraphicsPage";
+import { HistoryPage } from "@/pages/History/HistoryPage";
 import { HomePage } from "@/pages/Home/HomePage";
 import { PageId } from "@/enums/PageId";
 import { SettingsPage } from "@/pages/Settings/SettingsPage";
@@ -47,7 +47,7 @@ export function PrivateRoutes() {
             />
             <Route
               path={getPath({ page: PageId.Entries })}
-              element={<EntriesPage />}
+              element={<HistoryPage />}
             />
             <Route
               path={getPath({ page: PageId.Authentication })}
