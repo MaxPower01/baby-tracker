@@ -131,7 +131,7 @@ export default function EntryForm(props: EntryFormProps) {
       setEndDate(dayjs(newEndDateTime));
       setEndTime(dayjs(newEndDateTime));
     },
-    [leftTime, rightTime]
+    [startDateTime, leftTime, rightTime]
   );
   const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(
     props.entry.leftStopwatchIsRunning
