@@ -20,12 +20,14 @@ import React, { useState } from "react";
 import {
   selectGroupEntriesBy,
   selectGroupEntriesInterval,
+  selectIntervalMethodByEntryTypeId,
   selectShowPoopQuantityInHomePage,
   selectShowUrineQuantityInHomePage,
   selectThemeMode,
   selectWeightUnit,
   updateGroupEntriesBy,
   updateGroupEntriesInterval,
+  updateGroupingIntervalByEntryTypeId,
   updateShowPoopQuantityInHomePage,
   updateShowUrineQuantityInHomePage,
   updateThemeMode,
@@ -39,9 +41,11 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
+import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
 import { ReactSVG } from "react-svg";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import isDevelopment from "@/utils/isDevelopment";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
@@ -110,11 +114,12 @@ function ItemDescription(props: { text: string }) {
 export function SettingsPage() {
   const dispatch = useAppDispatch();
 
-  const initialTheme = useSelector(selectThemeMode);
-  const [theme, setTheme] = useState(initialTheme);
+  const theme = useTheme();
+  const initialThemeMode = useSelector(selectThemeMode);
+  const [themeMode, setThemeMode] = useState(initialThemeMode);
   const handleThemeChange = (event: SelectChangeEvent<ThemeMode>) => {
     const newValue = event.target.value as ThemeMode;
-    setTheme(newValue);
+    setThemeMode(newValue);
     dispatch(updateThemeMode(newValue));
   };
 
@@ -173,6 +178,10 @@ export function SettingsPage() {
     dispatch(updateShowUrineQuantityInHomePage(newValue));
   };
 
+  const intervalMethodByEntryTypeId = useSelector(
+    selectIntervalMethodByEntryTypeId
+  );
+
   return (
     <Container maxWidth={CSSBreakpoint.ExtraSmall}>
       <Stack
@@ -181,6 +190,77 @@ export function SettingsPage() {
         }}
         spacing={4}
       >
+        <Stack spacing={2}>
+          <Stack spacing={0}>
+            <Typography variant={"h6"} gutterBottom>
+              Calcul du temps écoulé entre 2 entrées
+            </Typography>
+            <Typography
+              variant={"body2"}
+              sx={{
+                color: theme.customPalette.text.tertiary,
+              }}
+            >
+              Pour chaque type d'entrée où vous enregistrez un début et une fin,
+              vous pouvez choisir comment calculer le temps écoulé entre 2
+              entrées.
+            </Typography>
+          </Stack>
+          <Stack spacing={2}>
+            {intervalMethodByEntryTypeId.map((intervalMethod, index) => {
+              const name = getEntryTypeName(intervalMethod.entryTypeId);
+              return (
+                <Stack key={index} spacing={1}>
+                  <Stack
+                    direction={"row"}
+                    justifyContent={"flex-start"}
+                    alignItems={"center"}
+                    spacing={0.5}
+                  >
+                    <ActivityIcon
+                      type={intervalMethod.entryTypeId}
+                      sx={{
+                        fontSize: theme.typography.h5.fontSize,
+                      }}
+                    />
+                    <Typography
+                      variant={"body2"}
+                      color={theme.customPalette.text.secondary}
+                    >
+                      {name}
+                    </Typography>
+                  </Stack>
+                  <FormControl variant="outlined">
+                    <Select
+                      id="grouping-intervals-select"
+                      value={intervalMethod.method}
+                      onChange={(event) => {
+                        dispatch(
+                          updateGroupingIntervalByEntryTypeId({
+                            entryTypeId: intervalMethod.entryTypeId,
+                            method: event.target.value as IntervalMethod,
+                          })
+                        );
+                      }}
+                      size="small"
+                      sx={{
+                        fontSize: theme.typography.body2.fontSize,
+                        color: theme.customPalette.text.tertiary,
+                      }}
+                    >
+                      <MenuItem value={IntervalMethod.BeginningToBeginning}>
+                        Depuis le début de l'entrée précédente
+                      </MenuItem>
+                      <MenuItem value={IntervalMethod.EndToBeginning}>
+                        Depuis la fin de l'entrée précédente
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Stack>
         {/* <VerticalStack>
           <InputLabel
             id="theme-select-label"
@@ -207,7 +287,7 @@ export function SettingsPage() {
           </FormControl>
         </VerticalStack> */}
 
-        <VerticalStack>
+        {/* <VerticalStack>
           <ItemLabel label={"Grouper les entrées rapprochées"} />
           <FormControl variant="outlined">
             <Select
@@ -227,9 +307,9 @@ export function SettingsPage() {
               <MenuItem value={GroupEntriesBy.TwoHours}>2 heures</MenuItem>
             </Select>
           </FormControl>
-        </VerticalStack>
+        </VerticalStack> */}
 
-        <VerticalStack>
+        {/* <VerticalStack>
           <ItemLabel label={"Intervalle de regroupement"} />
           <FormControl
             variant="outlined"
@@ -250,24 +330,8 @@ export function SettingsPage() {
                 Entre la fin et le début
               </MenuItem>
             </Select>
-            {/* <RadioGroup
-              id="grouping-intervals-select"
-              value={groupEntriesInterval}
-              onChange={handleGroupEntriesIntervalChange}
-            >
-              <FormControlLabel
-                value={GroupEntriesInterval.BetweenBeginnings}
-                control={<Radio />}
-                label="Entre le début des entrées"
-              />
-              <FormControlLabel
-                value={GroupEntriesInterval.BetweenEndsAndBeginnings}
-                control={<Radio />}
-                label="Entre la fin et le début"
-              />
-            </RadioGroup> */}
           </FormControl>
-        </VerticalStack>
+        </VerticalStack> */}
 
         {/* <VerticalStack>
           <ItemLabel label={"Unité de poids"} />
@@ -283,7 +347,7 @@ export function SettingsPage() {
           </FormControl>
         </VerticalStack> */}
 
-        <VerticalStack>
+        {/* <VerticalStack>
           <ItemLabel
             label={
               "Afficher les quantités de pipi et de caca sur la page d'accueil"
@@ -335,7 +399,7 @@ export function SettingsPage() {
               />
             </FormControl>
           </Stack>
-        </VerticalStack>
+        </VerticalStack> */}
       </Stack>
     </Container>
   );

@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {
+  selectIntervalMethodByEntryTypeId,
   selectShowPoopQuantityInHomePage,
   selectShowUrineQuantityInHomePage,
 } from "@/state/slices/settingsSlice";
@@ -23,6 +24,7 @@ import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ScaleIcon from "@mui/icons-material/Scale";
 import StraightenIcon from "@mui/icons-material/Straighten";
@@ -30,6 +32,7 @@ import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getPoopColor } from "@/utils/getPoopColor";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
+import { getPreviousEntryLabelPrefix } from "@/utils/getPreviousEntryLabelPrefix";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectPoopTextures } from "@/state/slices/activitiesSlice";
 import urineMarks from "@/utils/urineMarks";
@@ -55,6 +58,36 @@ export default function EntryBody(props: Props) {
       poopTextureLabel = `Consistance du caca:`;
     }
   }
+  const intervalMethodByEntryTypeId = useSelector(
+    selectIntervalMethodByEntryTypeId
+  );
+
+  let timeSincePreviousEntry = null;
+  if (props.previousEntry != null) {
+    const method = intervalMethodByEntryTypeId.find(
+      (x) => x.entryTypeId == props.entry.entryTypeId
+    )?.method;
+    let previousEntryTimestamp = props.previousEntry.startTimestamp;
+    if (method) {
+      previousEntryTimestamp =
+        method == IntervalMethod.BeginningToBeginning
+          ? props.previousEntry.startTimestamp
+          : props.previousEntry.endTimestamp;
+    }
+    const currentEntryTimestamp = props.entry.startTimestamp;
+    const differenceInMilliseconds =
+      currentEntryTimestamp * 1000 - previousEntryTimestamp * 1000;
+    const time =
+      (props.previousEntry.leftTime ?? 0) +
+      (props.previousEntry.rightTime ?? 0);
+    const duration = time > 0 ? formatStopwatchTime(time, false) : null;
+    timeSincePreviousEntry = {
+      prefix: getPreviousEntryLabelPrefix(props.entry.entryTypeId),
+      time: formatStopwatchTime(differenceInMilliseconds, true, false),
+      duration: duration,
+    };
+  }
+
   return (
     <Stack
       spacing={0.5}
@@ -100,6 +133,26 @@ export default function EntryBody(props: Props) {
             </Typography>
           </Box>
         )}
+      {timeSincePreviousEntry != null && (
+        <Typography
+          variant={"caption"}
+          sx={{
+            opacity: theme.opacity.disabled,
+            fontWeight: 300,
+            display: "inline",
+          }}
+        >
+          {timeSincePreviousEntry.prefix}{" "}
+          <span
+            style={{
+              fontWeight: 400,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {timeSincePreviousEntry.time}
+          </span>
+        </Typography>
+      )}
     </Stack>
   );
 }

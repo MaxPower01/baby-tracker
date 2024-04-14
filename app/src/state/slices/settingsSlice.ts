@@ -4,14 +4,17 @@ import { getInitialState, setLocalState } from "@/utils/utils";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import EntriesState from "@/types/EntriesState";
 import EntryModel from "@/pages/Entry/models/EntryModel";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
+import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import SettingsState from "@/pages/Settings/types/SettingsState";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
+import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 
 const key = LocalStorageKey.SettingsState;
 
@@ -22,6 +25,7 @@ const defaultState: SettingsState = {
   weightUnit: WeightUnit.Pound,
   showPoopQuantityInHomePage: true,
   showUrineQuantityInHomePage: true,
+  intervalMethodByEntryTypeId: getDefaulIntervalMethodByEntryTypeId(),
 };
 
 const parser = (state: SettingsState) => {
@@ -84,6 +88,26 @@ const slice = createSlice({
       state.showUrineQuantityInHomePage = action.payload;
       setLocalState(key, state);
     },
+    updateGroupingIntervalByEntryTypeId: (
+      state,
+      action: PayloadAction<{
+        entryTypeId: EntryTypeId;
+        method: IntervalMethod;
+      }>
+    ) => {
+      const index = state.intervalMethodByEntryTypeId.findIndex(
+        (x) => x.entryTypeId == action.payload.entryTypeId
+      );
+      if (index !== -1) {
+        state.intervalMethodByEntryTypeId[index].method = action.payload.method;
+      } else {
+        state.intervalMethodByEntryTypeId.push({
+          entryTypeId: action.payload.entryTypeId,
+          method: action.payload.method,
+        });
+      }
+      setLocalState(key, state);
+    },
   },
 });
 
@@ -94,6 +118,7 @@ export const {
   updateWeightUnit,
   updateShowPoopQuantityInHomePage,
   updateShowUrineQuantityInHomePage,
+  updateGroupingIntervalByEntryTypeId,
 } = slice.actions;
 
 export const selectGroupEntriesBy = (state: RootState) =>
@@ -113,5 +138,8 @@ export const selectShowPoopQuantityInHomePage = (state: RootState) =>
 
 export const selectShowUrineQuantityInHomePage = (state: RootState) =>
   state.settingsReducer.showUrineQuantityInHomePage;
+
+export const selectIntervalMethodByEntryTypeId = (state: RootState) =>
+  state.settingsReducer.intervalMethodByEntryTypeId;
 
 export default slice.reducer;
