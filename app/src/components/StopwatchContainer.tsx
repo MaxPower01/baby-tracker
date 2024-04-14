@@ -342,7 +342,11 @@ export function StopwatchContainer(props: Props) {
         <Stack
           direction={"row"}
           justifyContent={
-            props.size === "big" ? "space-between" : "space-around"
+            props.size === "big"
+              ? props.hasSides
+                ? "space-between"
+                : "center"
+              : "space-around"
           }
           alignItems={"center"}
           spacing={2}

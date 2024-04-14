@@ -17,6 +17,7 @@ import {
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntrySubtitle } from "@/pages/History/components/EntrySubtitle";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
@@ -73,7 +74,7 @@ export function EntriesWidget(props: Props) {
           },
         }}
       >
-        <Stack spacing={1}>
+        <Stack>
           <Stack
             direction={"row"}
             sx={{
@@ -362,6 +363,7 @@ function ItemFooter(props: ItemFooterProps) {
       (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
         stopwatchDisplayTimeAfterStopInSeconds);
   const showElapsedTime = !showStopwatch && elapsedTime != null;
+  const showSubtitle = !showStopwatch;
 
   return (
     <Box
@@ -404,11 +406,19 @@ function ItemFooter(props: ItemFooterProps) {
               sx={{
                 textAlign: "center",
                 color: theme.customPalette.text.tertiary,
-                lineHeight: 1.2,
               }}
             >
               {elapsedTime.label}
             </Typography>
+          )}
+
+          {showSubtitle && (
+            <EntrySubtitle
+              entry={props.mostRecentEntryOfType}
+              sx={{
+                textAlign: "center",
+              }}
+            />
           )}
         </Stack>
       )}

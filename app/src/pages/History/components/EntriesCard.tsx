@@ -189,6 +189,7 @@ export default function EntriesCard(props: Props) {
                       <Stack
                         direction={"row"}
                         justifyContent={"space-between"}
+                        alignItems={"flex-start"}
                         spacing={2}
                         sx={{
                           flexGrow: 1,

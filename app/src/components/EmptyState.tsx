@@ -13,33 +13,48 @@ import { getEmptyStateTitle } from "@/utils/getEmptyStateTitle";
 import { getEntryTypeForEmptyState } from "@/utils/getEntryTypeForEmptyState";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 
+type EmptyStateOverrideProps = {
+  title?: string;
+  description?: string;
+  stickerSource?: string;
+};
+
 export type EmptyStateProps = {
   type?: EntryTypeId;
   period?: EmptyStatePeriod;
   context: EmptyStateContext;
   activityContextType?: ActivityContextType;
   onClick?: () => void;
+  override?: EmptyStateOverrideProps;
 };
 
 export function EmptyState(props: EmptyStateProps) {
+  const theme = useTheme();
   let shouldRender = false;
   let buttonLabel = "";
-  const title = getEmptyStateTitle(props);
-  const description = getEmptyStateDescription(props);
-  const theme = useTheme();
-  const entryType = getEntryTypeForEmptyState(props);
+  let title = getEmptyStateTitle(props);
+  let description = getEmptyStateDescription(props);
   let stickerSource = "";
-  if (props.context === EmptyStateContext.ActivityContextDrawer) {
-    if (props.activityContextType != null) {
-      buttonLabel = getActivityContextPickerNewItemLabel(
-        props.activityContextType
-      );
+  let entryType = getEntryTypeForEmptyState(props);
+  if (props.override != null) {
+    title = props.override.title ?? title;
+    description = props.override.description ?? "";
+    stickerSource = props.override.stickerSource ?? "";
+    entryType = null;
+    shouldRender = true;
+  } else {
+    if (props.context === EmptyStateContext.ActivityContextDrawer) {
+      if (props.activityContextType != null) {
+        buttonLabel = getActivityContextPickerNewItemLabel(
+          props.activityContextType
+        );
+        shouldRender = true;
+      }
+    } else if (props.context === EmptyStateContext.Entries) {
+      buttonLabel = "Ajouter une entrée";
+      stickerSource = "/stickers/empty-state--entries.svg";
       shouldRender = true;
     }
-  } else if (props.context === EmptyStateContext.Entries) {
-    buttonLabel = "Ajouter une entrée";
-    stickerSource = "/stickers/empty-state--entries.svg";
-    shouldRender = true;
   }
   if (!shouldRender) {
     return null;

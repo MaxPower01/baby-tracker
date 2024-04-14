@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Stack, Typography, useTheme } from "@mui/material";
+import { Stack, SxProps, Typography, useTheme } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -24,6 +24,7 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 type Props = {
   entry: Entry;
   textColor?: string;
+  sx?: SxProps;
 };
 
 export function EntrySubtitle(props: Props) {
@@ -64,7 +65,13 @@ export function EntrySubtitle(props: Props) {
     const poopColor = getPoopColor(props.entry.poopColorId);
     const poopColorId = poopColor?.id ?? "";
     return (
-      <Stack direction={"row"} spacing={1}>
+      <Stack
+        direction={"row"}
+        spacing={1}
+        sx={{
+          ...props.sx,
+        }}
+      >
         {urineArray.length > 0 && (
           <Stack direction={"row"}>
             {urineArray.map((_, index) => (
@@ -168,6 +175,7 @@ export function EntrySubtitle(props: Props) {
       sx={{
         color: props.textColor,
         opacity: theme.opacity.secondary,
+        ...props.sx,
       }}
     >
       {subtitle}
