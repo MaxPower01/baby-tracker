@@ -47,6 +47,7 @@ import UrineAmountSelector from "@/components/UrineAmountSelector";
 import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
+import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
@@ -117,19 +118,18 @@ export default function EntryForm(props: EntryFormProps) {
     getEntryTime(props.entry, "right", true)
   );
   const handleStopwatchTimeChange = useCallback(
-    (
-      side: "left" | "right",
-      timeInSeconds: React.SetStateAction<number> | number
-    ) => {
-      let totalSeconds = typeof timeInSeconds === "number" ? timeInSeconds : 0;
+    (side: "left" | "right", time: React.SetStateAction<number> | number) => {
+      let totalTime = typeof time === "number" ? time : 0;
       if (side === "left") {
-        setLeftTime(timeInSeconds);
-        totalSeconds += rightTime;
+        setLeftTime(time);
+        totalTime += rightTime;
       } else {
-        setRightTime(timeInSeconds);
-        totalSeconds += leftTime;
+        setRightTime(time);
+        totalTime += leftTime;
       }
-      // Add totalTime to the endDateTime
+      const newEndDateTime = computeEndDate(startDateTime, totalTime);
+      setEndDate(dayjs(newEndDateTime));
+      setEndTime(dayjs(newEndDateTime));
     },
     [leftTime, rightTime]
   );
@@ -139,6 +139,19 @@ export default function EntryForm(props: EntryFormProps) {
   const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(
     props.entry.rightStopwatchIsRunning
   );
+  const handleStopwatchIsRunningChange = useCallback(
+    (
+      side: "left" | "right",
+      isRunning: React.SetStateAction<boolean> | boolean
+    ) => {
+      if (side === "left") {
+        setLeftStopwatchIsRunning(isRunning);
+      } else {
+        setRightStopwatchIsRunning(isRunning);
+      }
+    },
+    [leftStopwatchIsRunning, rightStopwatchIsRunning]
+  );
   const stopwatchIsRunning = useMemo(
     () => leftStopwatchIsRunning || rightStopwatchIsRunning,
     [leftStopwatchIsRunning, rightStopwatchIsRunning]
@@ -147,6 +160,23 @@ export default function EntryForm(props: EntryFormProps) {
     useState<number | null>(null);
   const [rightStopwatchLastUpdateTime, setRightStopwatchLastUpdateTime] =
     useState<number | null>(null);
+  const handleStopwatchLastUpdateTimeChange = useCallback(
+    (
+      side: "left" | "right",
+      lastUpdateTime: React.SetStateAction<number | null> | number | null
+    ) => {
+      if (side === "left") {
+        setLeftStopwatchLastUpdateTime(
+          typeof lastUpdateTime === "number" ? lastUpdateTime : null
+        );
+      } else {
+        setRightStopwatchLastUpdateTime(
+          typeof lastUpdateTime === "number" ? lastUpdateTime : null
+        );
+      }
+    },
+    [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
+  );
   const lastStopwatchUpdateTime = useMemo(
     () =>
       leftStopwatchLastUpdateTime && rightStopwatchLastUpdateTime
@@ -423,13 +453,21 @@ export default function EntryForm(props: EntryFormProps) {
               rightTime={rightTime}
               setRightTime={(time) => handleStopwatchTimeChange("right", time)}
               leftIsRunning={leftStopwatchIsRunning}
-              setLeftIsRunning={setLeftStopwatchIsRunning}
+              setLeftIsRunning={(isRunning) =>
+                handleStopwatchIsRunningChange("left", isRunning)
+              }
               rightIsRunning={rightStopwatchIsRunning}
-              setRightIsRunning={setRightStopwatchIsRunning}
+              setRightIsRunning={(isRunning) =>
+                handleStopwatchIsRunningChange("right", isRunning)
+              }
               leftLastUpdateTime={leftStopwatchLastUpdateTime}
-              setLeftLastUpdateTime={setLeftStopwatchLastUpdateTime}
+              setLeftLastUpdateTime={(lastUpdateTime) =>
+                handleStopwatchLastUpdateTimeChange("left", lastUpdateTime)
+              }
               rightLastUpdateTime={rightStopwatchLastUpdateTime}
-              setRightLastUpdateTime={setRightStopwatchLastUpdateTime}
+              setRightLastUpdateTime={(lastUpdateTime) =>
+                handleStopwatchLastUpdateTimeChange("right", lastUpdateTime)
+              }
             />
           </Section>
         )}

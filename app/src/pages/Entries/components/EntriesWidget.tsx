@@ -20,12 +20,15 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
+import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
+import { getTimestamp } from "@/utils/getTimestamp";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -300,17 +303,32 @@ function ItemFooter(props: ItemFooterProps) {
             return resolve(false);
           }
           setIsSaving(true);
+          const newLeftTime = side === "left" ? time : leftTime;
+          const newRightTime = side === "right" ? time : rightTime;
+          const totalTime = newLeftTime + newRightTime;
+          const newLeftStopwatchIsRunning =
+            side === "left" ? isRunning : leftIsRunning;
+          const newRightStopwatchIsRunning =
+            side === "right" ? isRunning : rightIsRunning;
+          const newLeftStopwatchLastUpdateTime =
+            side === "left" ? lastUpdateTime : leftLastUpdateTime;
+          const newRightStopwatchLastUpdateTime =
+            side === "right" ? lastUpdateTime : rightLastUpdateTime;
+          const startDate = getDateFromTimestamp(
+            props.mostRecentEntryOfType.startTimestamp
+          );
+          const newEndTimestamp = getTimestamp(
+            computeEndDate(startDate, totalTime)
+          );
           const entry: Entry = {
             ...props.mostRecentEntryOfType,
-            leftTime: side === "left" ? time : leftTime,
-            leftStopwatchIsRunning: side === "left" ? isRunning : leftIsRunning,
-            leftStopwatchLastUpdateTime:
-              side === "left" ? lastUpdateTime : leftLastUpdateTime,
-            rightTime: side === "right" ? time : rightTime,
-            rightStopwatchIsRunning:
-              side === "right" ? isRunning : rightIsRunning,
-            rightStopwatchLastUpdateTime:
-              side === "right" ? lastUpdateTime : rightLastUpdateTime,
+            leftTime: newLeftTime,
+            leftStopwatchIsRunning: newLeftStopwatchIsRunning,
+            leftStopwatchLastUpdateTime: newLeftStopwatchLastUpdateTime,
+            rightTime: newRightTime,
+            rightStopwatchIsRunning: newRightStopwatchIsRunning,
+            rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
+            endTimestamp: newEndTimestamp,
           };
           await dispatch(saveEntry({ entry, user })).unwrap();
           setIsSaving(false);
