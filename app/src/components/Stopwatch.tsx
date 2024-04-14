@@ -28,11 +28,11 @@ type Props = {
 export function Stopwatch(props: Props) {
   const theme = useTheme();
   const timeLabel = formatStopwatchTime(props.time);
-  // Get first letter of the label:
-  const title =
-    props.label && !isNullOrWhiteSpace(props.label)
-      ? `${timeLabel} (${props.label[0].toUpperCase()})`
-      : timeLabel;
+  const title = timeLabel;
+  // const title =
+  //   props.label && !isNullOrWhiteSpace(props.label)
+  //     ? `${timeLabel} (${props.label[0].toUpperCase()})`
+  //     : timeLabel;
   const handleButtonClick = () => {
     const newTime = !props.isRunning && props.time == 0 ? 1000 : props.time;
     const newIsRunning = !props.isRunning;

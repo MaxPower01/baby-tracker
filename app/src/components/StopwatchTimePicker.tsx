@@ -21,6 +21,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 
 type Props = {
+  id?: string;
   time: number;
   setTime: (time: number) => void;
   sx?: SxProps;
@@ -67,6 +68,7 @@ export function StopwatchTimePicker(props: Props) {
   return (
     <>
       <Box
+        id={props.id}
         onClick={() => {
           setDialogIsOpen(true);
         }}

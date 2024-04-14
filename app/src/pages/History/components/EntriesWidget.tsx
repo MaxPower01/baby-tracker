@@ -23,6 +23,7 @@ import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
+import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
@@ -111,6 +112,7 @@ export function EntriesWidget(props: Props) {
                   key={entryType}
                   entryType={entryType}
                   width={itemWidth}
+                  padding={itemPadding}
                   mostRecentEntryOfType={mostRecentEntryByType[entryType]}
                 />
               );
@@ -142,9 +144,10 @@ function ItemBody(props: ItemBodyProps) {
       ? null
       : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
   const showStopwatch =
-    stopwatchIsRunning ||
-    (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
-      stopwatchDisplayTimeAfterStopInSeconds;
+    entryTypeHasStopwatch(props.entryType) &&
+    (stopwatchIsRunning ||
+      (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
+        stopwatchDisplayTimeAfterStopInSeconds);
   return (
     <Box
       key={props.entryType}
@@ -257,6 +260,7 @@ type ItemFooterProps = {
   entryType: EntryTypeId;
   mostRecentEntryOfType: Entry | undefined;
   width: string;
+  padding: number;
 };
 
 function ItemFooter(props: ItemFooterProps) {
@@ -353,9 +357,10 @@ function ItemFooter(props: ItemFooterProps) {
   );
 
   const showStopwatch =
-    stopwatchIsRunning ||
-    (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
-      stopwatchDisplayTimeAfterStopInSeconds;
+    entryTypeHasStopwatch(props.entryType) &&
+    (stopwatchIsRunning ||
+      (elapsedTime?.seconds ?? stopwatchDisplayTimeAfterStopInSeconds) <
+        stopwatchDisplayTimeAfterStopInSeconds);
   const showElapsedTime = !showStopwatch && elapsedTime != null;
 
   return (
@@ -364,6 +369,7 @@ function ItemFooter(props: ItemFooterProps) {
       sx={{
         width: props.width,
         order: showStopwatch ? -1 : undefined,
+        padding: `${props.padding}px`,
       }}
     >
       {props.mostRecentEntryOfType == null ? null : (

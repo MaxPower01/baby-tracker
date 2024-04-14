@@ -26,10 +26,12 @@ import { useEffect, useMemo, useState } from "react";
 
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 import PauseIcon from "@mui/icons-material/Pause";
 import { Stopwatch } from "@/components/Stopwatch";
 import { StopwatchTimePicker } from "@/components/StopwatchTimePicker";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   size: "big" | "small";
@@ -56,12 +58,13 @@ type Props = {
 
 export function StopwatchContainer(props: Props) {
   const time = props.leftTime + props.rightTime;
-  const isRunning = props.leftIsRunning || props.rightIsRunning;
-  const timeLabel = formatStopwatchTime(time);
+  const title = formatStopwatchTime(time);
   const lastUpdateTime =
     props.leftLastUpdateTime && props.rightLastUpdateTime
       ? Math.max(props.leftLastUpdateTime, props.rightLastUpdateTime)
       : props.leftLastUpdateTime ?? props.rightLastUpdateTime;
+
+  const stopwatchContainerId = `stopwatch-container-${uuid()}`;
 
   const onLeftChange = (params: {
     time: number;
@@ -219,42 +222,128 @@ export function StopwatchContainer(props: Props) {
               width: "100%",
             }}
           >
-            <Box
+            <Stack
+              direction={"row"}
+              justifyContent={"space-around"}
+              alignItems={"center"}
               sx={{
-                position: "relative",
+                width: "100%",
               }}
             >
-              <Typography
-                variant={props.size === "big" ? "h4" : "body2"}
-                color={
-                  props.size === "big"
-                    ? theme.customPalette.text.primary
-                    : theme.palette.primary.main
-                }
-                fontWeight={props.size === "big" ? undefined : 600}
-                textAlign={"center"}
-              >
-                {timeLabel}
-              </Typography>
-              <StopwatchTimePicker
-                time={props.leftTime}
-                setTime={props.setLeftTime}
+              {props.hasSides && (
+                <IconButton
+                  sx={{
+                    position: "relative",
+                  }}
+                >
+                  <EditIcon />
+                  <StopwatchTimePicker
+                    time={props.leftTime}
+                    setTime={props.setLeftTime}
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                </IconButton>
+              )}
+              <Box
                 sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
+                  position: "relative",
                 }}
-              />
-            </Box>
+              >
+                <Stack
+                  direction={"row"}
+                  spacing={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant={props.size === "big" ? "h4" : "body2"}
+                    color={
+                      props.size === "big"
+                        ? theme.customPalette.text.primary
+                        : theme.palette.primary.main
+                    }
+                    fontWeight={props.size === "big" ? undefined : 600}
+                    textAlign={"center"}
+                  >
+                    {title}
+                  </Typography>
+                  {!props.hasSides && (
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        right: 0,
+                        transform: `translateX(calc(100% + ${theme.spacing(
+                          1
+                        )}))`,
+                      }}
+                      onClick={() => {
+                        const stopwatchContainer =
+                          document.getElementById(stopwatchContainerId);
+                        if (stopwatchContainer) {
+                          stopwatchContainer.click();
+                        }
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                </Stack>
+                {!props.hasSides && (
+                  <StopwatchTimePicker
+                    id={stopwatchContainerId}
+                    time={props.leftTime}
+                    setTime={props.setLeftTime}
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+              </Box>
+              {props.hasSides && (
+                <IconButton
+                  sx={{
+                    position: "relative",
+                  }}
+                >
+                  <EditIcon />
+                  <StopwatchTimePicker
+                    time={props.rightTime}
+                    setTime={props.setRightTime}
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                </IconButton>
+              )}
+            </Stack>
           </Stack>
         )}
 
         <Stack
           direction={"row"}
-          justifyContent={"space-around"}
+          justifyContent={
+            props.size === "big" ? "space-between" : "space-around"
+          }
           alignItems={"center"}
           spacing={2}
           sx={{
