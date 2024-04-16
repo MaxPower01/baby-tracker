@@ -43,6 +43,8 @@ export function getDefaultEntry(
     editedBy: "",
     createdTimestamp: null,
     editedTimestamp: null,
+    leftStopwatchLastUpdateTime: null,
+    rightStopwatchLastUpdateTime: null,
   };
   return result;
 }

@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from "@mui/material";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import EntryModel from "@/pages/Entry/models/EntryModel";
-import { EntrySubtitle } from "@/pages/History/components/EntrySubtitle";
+import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";

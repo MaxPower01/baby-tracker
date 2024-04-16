@@ -52,16 +52,6 @@ export function TopBar(props: Props) {
     navigate(-1);
   };
 
-  // const handleDeleteEntryButtonClick = useCallback(
-  //   (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-  //     if (!editingEntryId) return;
-  //     // TODO: Implement
-  //     // dispatch(removeEntry(editingEntryId));
-  //     navigate(getPath({ page: PageId.Home }));
-  //   },
-  //   [editingEntryId]
-  // );
-
   return (
     <AppBar
       id="topbar"

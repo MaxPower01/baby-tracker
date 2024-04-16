@@ -11,7 +11,6 @@ import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 
 export default interface ActivitiesState {
   activities: string[];
-  activitiesOrder: ActivityType[];
   activityContexts: ActivityContext[];
   temperatureMethods: TemperatureMethod[];
   nasalHygieneTypes: NasalHygiene[];

@@ -558,6 +558,9 @@ export function ActivityContextDrawer(props: Props) {
               )}
 
               {items.length > 0 && editMode && (
+                // react-beautiful-dnd does not support React.StrictMode
+                // See issue #2350 for more details: https://github.com/atlassian/react-beautiful-dnd/issues/2350
+
                 <DragDropContext
                   onDragStart={onDragStart}
                   onDragEnd={onDragEnd}

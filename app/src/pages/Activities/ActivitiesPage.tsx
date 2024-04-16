@@ -14,28 +14,33 @@ import {
   OnDragEndResponder,
   OnDragStartResponder,
 } from "react-beautiful-dnd";
+import React, { useCallback } from "react";
 import {
-  selectActivities,
-  updateActivitiesOrder,
-} from "@/state/slices/activitiesSlice";
+  saveEntryTypesOrderInState,
+  selectEntryTypesOrder,
+} from "@/state/slices/settingsSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import React from "react";
+import { selectActivities } from "@/state/slices/activitiesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 export default function ActivitiesPage() {
-  const initialActivities = useSelector(selectActivities);
+  // const initialActivities = useSelector(selectActivities);
+  // const [activities, setActivities] = React.useState(initialActivities);
 
-  const [activities, setActivities] = React.useState(initialActivities);
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const [localEntryTypesOrder, setLocalEntryTypesOrder] =
+    React.useState(entryTypesOrder);
+  const [isSaving, setIsSaving] = React.useState(false);
 
   const dispatch = useAppDispatch();
 
   const reorder = (
-    list: ActivityModel[],
+    list: EntryTypeId[],
     startIndex: number,
     endIndex: number
   ) => {
@@ -57,20 +62,12 @@ export default function ActivitiesPage() {
     if (!result.destination) {
       return;
     }
-    const newActivities = reorder(
-      activities,
+    const newEntryTypesOrder = reorder(
+      localEntryTypesOrder,
       result.source.index,
       result.destination.index
     );
-    setActivities(newActivities);
-    const newActivitiesOrder = newActivities.map((activity) => activity.type);
-    setTimeout(() => {
-      dispatch(
-        updateActivitiesOrder({
-          activitiesOrder: newActivitiesOrder,
-        })
-      );
-    }, 500);
+    setLocalEntryTypesOrder(newEntryTypesOrder);
   };
 
   const theme = useTheme();
@@ -86,7 +83,20 @@ export default function ActivitiesPage() {
     },
   });
 
-  if (activities.length === 0) {
+  const cancelChanges = useCallback(() => {
+    setLocalEntryTypesOrder(entryTypesOrder);
+  }, [entryTypesOrder, setLocalEntryTypesOrder]);
+
+  const saveChanges = useCallback(() => {
+    setIsSaving(true);
+    // dispatch(updateEntryTypesOrder({ entryTypesOrder: localEntryTypesOrder }))
+    //   .unwrap()
+    //   .then(() => {
+    //     setIsSaving(false);
+    //   });
+  }, [dispatch, localEntryTypesOrder]);
+
+  if (entryTypesOrder.length === 0) {
     return <LoadingIndicator />;
   }
 

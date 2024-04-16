@@ -20,7 +20,7 @@ import { PageId } from "@/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
-import { selectOrderedEntryTypes } from "@/state/slices/entriesSlice";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -40,9 +40,9 @@ export function NewEntryDrawer(props: {
     props.onClose();
   };
 
-  const orderedEntryTypes = useSelector(selectOrderedEntryTypes);
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
 
-  if (orderedEntryTypes.length === 0) {
+  if (entryTypesOrder.length === 0) {
     return null;
   }
 
@@ -103,7 +103,7 @@ export function NewEntryDrawer(props: {
               gap: 1,
             }}
           >
-            {orderedEntryTypes.map((entryType) => {
+            {entryTypesOrder.map((entryType) => {
               const buttonLabel = getEntryTypeName(entryType);
               return (
                 <Button

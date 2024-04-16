@@ -1,7 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivityType from "@/pages/Activity/enums/ActivityType";
+import CustomUser from "@/pages/Authentication/types/CustomUser";
 import EntriesState from "@/types/EntriesState";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
@@ -14,7 +16,10 @@ import SettingsState from "@/pages/Settings/types/SettingsState";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
+import { db } from "@/firebase";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
+import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 
 const key = LocalStorageKey.SettingsState;
 
@@ -26,6 +31,8 @@ const defaultState: SettingsState = {
   showPoopQuantityInHomePage: true,
   showUrineQuantityInHomePage: true,
   intervalMethodByEntryTypeId: getDefaulIntervalMethodByEntryTypeId(),
+  entryTypesOrder: getDefaultEntryTypesOrder(),
+  status: "idle",
 };
 
 const parser = (state: SettingsState) => {
@@ -51,43 +58,60 @@ const parser = (state: SettingsState) => {
   return state;
 };
 
+export const saveEntryTypesOrderInDB = createAsyncThunk(
+  "settings/saveEntryTypesOrder",
+  async (
+    props: {
+      user: CustomUser;
+      entryTypesOrder: EntryTypeId[];
+    },
+    thunkAPI
+  ) => {
+    const { user, entryTypesOrder } = props;
+    if (user == null || user.uid == null) {
+      return thunkAPI.rejectWithValue(
+        "Cannot save entry types order because user or user id is null"
+      );
+    }
+    try {
+      // entryTypesOrder is an array of EntryTypeId stored in the user document
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, {
+        entryTypesOrder,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+    return thunkAPI.fulfillWithValue(entryTypesOrder);
+  }
+);
+
+function _saveEntryTypesOrderInState(
+  state: SettingsState,
+  payload: { entryTypesOrder: EntryTypeId[] },
+  preventLocalStorageUpdate = false
+) {
+  state.entryTypesOrder = payload.entryTypesOrder;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _setStatusInState(
+  state: SettingsState,
+  status: "idle" | "busy" | "busy",
+  preventLocalStorageUpdate = false
+) {
+  state.status = status;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
 const slice = createSlice({
   name: StoreReducerName.Settings,
   initialState: getInitialState(key, defaultState, parser),
   reducers: {
-    updateGroupEntriesBy: (state, action: PayloadAction<GroupEntriesBy>) => {
-      state.groupEntriesBy = action.payload;
-      setLocalState(key, state);
-    },
-    updateGroupEntriesInterval: (
-      state,
-      action: PayloadAction<GroupEntriesInterval>
-    ) => {
-      state.groupEntriesInterval = action.payload;
-      setLocalState(key, state);
-    },
-    updateWeightUnit: (state, action: PayloadAction<WeightUnit>) => {
-      state.weightUnit = action.payload;
-      setLocalState(key, state);
-    },
-    updateThemeMode: (state, action: PayloadAction<ThemeMode>) => {
-      state.themeMode = action.payload;
-      setLocalState(key, state);
-    },
-    updateShowPoopQuantityInHomePage: (
-      state,
-      action: PayloadAction<boolean>
-    ) => {
-      state.showPoopQuantityInHomePage = action.payload;
-      setLocalState(key, state);
-    },
-    updateShowUrineQuantityInHomePage: (
-      state,
-      action: PayloadAction<boolean>
-    ) => {
-      state.showUrineQuantityInHomePage = action.payload;
-      setLocalState(key, state);
-    },
     updateGroupingIntervalByEntryTypeId: (
       state,
       action: PayloadAction<{
@@ -108,17 +132,31 @@ const slice = createSlice({
       }
       setLocalState(key, state);
     },
+    saveEntryTypesOrderInState: (
+      state,
+      action: PayloadAction<{ entryTypesOrder: EntryTypeId[] }>
+    ) => {
+      _saveEntryTypesOrderInState(state, action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(saveEntryTypesOrderInDB.pending, (state) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(saveEntryTypesOrderInDB.fulfilled, (state, action) => {
+      _saveEntryTypesOrderInState(state, { entryTypesOrder: action.payload });
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(saveEntryTypesOrderInDB.rejected, (state, action) => {
+      console.error(action.error);
+      _setStatusInState(state, "idle");
+    });
   },
 });
 
 export const {
-  updateGroupEntriesBy,
-  updateThemeMode,
-  updateGroupEntriesInterval,
-  updateWeightUnit,
-  updateShowPoopQuantityInHomePage,
-  updateShowUrineQuantityInHomePage,
   updateGroupingIntervalByEntryTypeId,
+  saveEntryTypesOrderInState: saveEntryTypesOrderInState,
 } = slice.actions;
 
 export const selectGroupEntriesBy = (state: RootState) =>
@@ -141,5 +179,8 @@ export const selectShowUrineQuantityInHomePage = (state: RootState) =>
 
 export const selectIntervalMethodByEntryTypeId = (state: RootState) =>
   state.settingsReducer.intervalMethodByEntryTypeId;
+
+export const selectEntryTypesOrder = (state: RootState) =>
+  state.settingsReducer.entryTypesOrder;
 
 export default slice.reducer;

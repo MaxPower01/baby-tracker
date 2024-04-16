@@ -28,8 +28,8 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const [babies, setBabies] = useState<Baby[]>([]);
 
   const fetchUserDoc = (user: User) => {
-    const userRef = doc(db, "users", user.uid);
-    getDoc(userRef)
+    const userDocRef = doc(db, "users", user.uid);
+    getDoc(userDocRef)
       .then((docSnap) => {
         if (docSnap.data() != null) {
           setUser(docSnap.data() as CustomUser);

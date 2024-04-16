@@ -6,7 +6,6 @@ import { AuthenticationProvider } from "@/pages/Authentication/components/Authen
 import { BabiesProvider } from "@/pages/Baby/components/BabiesProvider";
 import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
-import { EntriesProvider } from "@/pages/History/components/EntriesProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -15,25 +14,22 @@ import { StoreProvider } from "@/components/StoreProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <StoreProvider>
-      <AuthenticationProvider>
-        <BabiesProvider>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale="fr-ca"
-          >
-            <ThemeProvider>
-              <SnackbarProvider>
-                <CssBaseline />
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </SnackbarProvider>
-            </ThemeProvider>
-          </LocalizationProvider>
-        </BabiesProvider>
-      </AuthenticationProvider>
-    </StoreProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <StoreProvider>
+    <AuthenticationProvider>
+      <BabiesProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr-ca">
+          <ThemeProvider>
+            <SnackbarProvider>
+              <CssBaseline />
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </BabiesProvider>
+    </AuthenticationProvider>
+  </StoreProvider>
+  // </React.StrictMode>
 );

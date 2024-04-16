@@ -1,41 +1,14 @@
-import {
-  Box,
-  Grid,
-  ImageList,
-  ImageListItem,
-  LinearProgress,
-  Slider,
-  Stack,
-  SxProps,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import {
-  selectIntervalMethodByEntryTypeId,
-  selectShowPoopQuantityInHomePage,
-  selectShowUrineQuantityInHomePage,
-} from "@/state/slices/settingsSlice";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Box, Stack, SxProps, Typography, useTheme } from "@mui/material";
 
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
-import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
-import OpacityIcon from "@mui/icons-material/Opacity";
-import ScaleIcon from "@mui/icons-material/Scale";
-import StraightenIcon from "@mui/icons-material/Straighten";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
-import { getPoopColor } from "@/utils/getPoopColor";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { getPreviousEntryLabelPrefix } from "@/utils/getPreviousEntryLabelPrefix";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { selectPoopTextures } from "@/state/slices/activitiesSlice";
-import urineMarks from "@/utils/urineMarks";
+import { selectIntervalMethodByEntryTypeId } from "@/state/slices/settingsSlice";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -44,7 +17,7 @@ type Props = {
   sx?: SxProps | undefined;
 };
 
-export default function EntryBody(props: Props) {
+export function EntryBody(props: Props) {
   const theme = useTheme();
   let poopTextureLabel = "";
   let poopTextureName = "";
@@ -81,9 +54,13 @@ export default function EntryBody(props: Props) {
       (props.previousEntry.leftTime ?? 0) +
       (props.previousEntry.rightTime ?? 0);
     const duration = time > 0 ? formatStopwatchTime(time, false) : null;
+    let timeLabel = formatStopwatchTime(differenceInMilliseconds, true, false);
+    if (isNullOrWhiteSpace(timeLabel)) {
+      timeLabel = "1 min";
+    }
     timeSincePreviousEntry = {
       prefix: getPreviousEntryLabelPrefix(props.entry.entryTypeId),
-      time: formatStopwatchTime(differenceInMilliseconds, true, false),
+      time: timeLabel,
       duration: duration,
     };
   }

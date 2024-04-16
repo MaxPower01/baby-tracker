@@ -1,6 +1,6 @@
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
-export function getDefaultOrderedEntryTypes() {
+export function getDefaultEntryTypesOrder() {
   return [
     EntryTypeId.BreastFeeding,
     EntryTypeId.BottleFeeding,

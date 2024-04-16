@@ -31,7 +31,7 @@ import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { createSelector } from "@reduxjs/toolkit";
 import { db } from "@/firebase";
-import { getDefaultOrderedEntryTypes } from "@/pages/Entry/utils/getDefaultOrderedEntryTypes";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { getTimestamp } from "@/utils/getTimestamp";
@@ -40,7 +40,6 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   entries: [],
-  orderedEntryTypes: getDefaultOrderedEntryTypes(),
   latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
@@ -469,8 +468,5 @@ export const selectRecentEntries = createSelector(
     }
   }
 );
-
-export const selectOrderedEntryTypes = (state: RootState) =>
-  state.entriesReducer.orderedEntryTypes;
 
 export default slice.reducer;

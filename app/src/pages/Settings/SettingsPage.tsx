@@ -25,13 +25,7 @@ import {
   selectShowUrineQuantityInHomePage,
   selectThemeMode,
   selectWeightUnit,
-  updateGroupEntriesBy,
-  updateGroupEntriesInterval,
   updateGroupingIntervalByEntryTypeId,
-  updateShowPoopQuantityInHomePage,
-  updateShowUrineQuantityInHomePage,
-  updateThemeMode,
-  updateWeightUnit,
 } from "@/state/slices/settingsSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
@@ -115,68 +109,68 @@ export function SettingsPage() {
   const dispatch = useAppDispatch();
 
   const theme = useTheme();
-  const initialThemeMode = useSelector(selectThemeMode);
-  const [themeMode, setThemeMode] = useState(initialThemeMode);
-  const handleThemeChange = (event: SelectChangeEvent<ThemeMode>) => {
-    const newValue = event.target.value as ThemeMode;
-    setThemeMode(newValue);
-    dispatch(updateThemeMode(newValue));
-  };
+  // const initialThemeMode = useSelector(selectThemeMode);
+  // const [themeMode, setThemeMode] = useState(initialThemeMode);
+  // const handleThemeChange = (event: SelectChangeEvent<ThemeMode>) => {
+  //   const newValue = event.target.value as ThemeMode;
+  //   setThemeMode(newValue);
+  //   dispatch(updateThemeMode(newValue));
+  // };
 
-  const initialGroupEntriesBy = useSelector(selectGroupEntriesBy);
-  const [groupEntriesBy, setGroupEntries] = useState<GroupEntriesBy>(
-    initialGroupEntriesBy
-  );
-  const handleGroupEntriesByChange = (
-    event: SelectChangeEvent<GroupEntriesBy>
-  ) => {
-    const newValue = event.target.value as GroupEntriesBy;
-    setGroupEntries(newValue);
-    dispatch(updateGroupEntriesBy(newValue));
-  };
+  // const initialGroupEntriesBy = useSelector(selectGroupEntriesBy);
+  // const [groupEntriesBy, setGroupEntries] = useState<GroupEntriesBy>(
+  //   initialGroupEntriesBy
+  // );
+  // const handleGroupEntriesByChange = (
+  //   event: SelectChangeEvent<GroupEntriesBy>
+  // ) => {
+  //   const newValue = event.target.value as GroupEntriesBy;
+  //   setGroupEntries(newValue);
+  //   dispatch(updateGroupEntriesBy(newValue));
+  // };
 
-  const initialGroupEntriesInterval = useSelector(selectGroupEntriesInterval);
-  const [groupEntriesInterval, setGroupEntriesInterval] =
-    useState<GroupEntriesInterval>(initialGroupEntriesInterval);
-  const handleGroupEntriesIntervalChange = (
-    event: SelectChangeEvent<GroupEntriesInterval>
-  ) => {
-    const newValue = event.target.value as GroupEntriesInterval;
-    setGroupEntriesInterval(newValue);
-    dispatch(updateGroupEntriesInterval(newValue));
-  };
+  // const initialGroupEntriesInterval = useSelector(selectGroupEntriesInterval);
+  // const [groupEntriesInterval, setGroupEntriesInterval] =
+  //   useState<GroupEntriesInterval>(initialGroupEntriesInterval);
+  // const handleGroupEntriesIntervalChange = (
+  //   event: SelectChangeEvent<GroupEntriesInterval>
+  // ) => {
+  //   const newValue = event.target.value as GroupEntriesInterval;
+  //   setGroupEntriesInterval(newValue);
+  //   dispatch(updateGroupEntriesInterval(newValue));
+  // };
 
-  const initialWeightUnit = useSelector(selectWeightUnit);
-  const [weightUnit, setWeightUnit] = useState<WeightUnit>(initialWeightUnit);
-  const handleWeightUnitChange = (event: SelectChangeEvent<WeightUnit>) => {
-    const newValue = event.target.value as WeightUnit;
-    setWeightUnit(newValue);
-    dispatch(updateWeightUnit(newValue));
-  };
+  // const initialWeightUnit = useSelector(selectWeightUnit);
+  // const [weightUnit, setWeightUnit] = useState<WeightUnit>(initialWeightUnit);
+  // const handleWeightUnitChange = (event: SelectChangeEvent<WeightUnit>) => {
+  //   const newValue = event.target.value as WeightUnit;
+  //   setWeightUnit(newValue);
+  //   dispatch(updateWeightUnit(newValue));
+  // };
 
-  const initialShowPoopQuantityInHomePage = useSelector(
-    selectShowPoopQuantityInHomePage
-  );
-  const [showPoopQuantityInHomePage, setShowPoopQuantityInHomePage] =
-    useState<boolean>(initialShowPoopQuantityInHomePage);
+  // const initialShowPoopQuantityInHomePage = useSelector(
+  //   selectShowPoopQuantityInHomePage
+  // );
+  // const [showPoopQuantityInHomePage, setShowPoopQuantityInHomePage] =
+  //   useState<boolean>(initialShowPoopQuantityInHomePage);
 
-  const handleShowPoopQuantityInHomePageChange = (checked: boolean) => {
-    const newValue = checked;
-    setShowPoopQuantityInHomePage(newValue);
-    dispatch(updateShowPoopQuantityInHomePage(newValue));
-  };
+  // const handleShowPoopQuantityInHomePageChange = (checked: boolean) => {
+  //   const newValue = checked;
+  //   setShowPoopQuantityInHomePage(newValue);
+  //   dispatch(updateShowPoopQuantityInHomePage(newValue));
+  // };
 
-  const initialShowUrineQuantityInHomePage = useSelector(
-    selectShowUrineQuantityInHomePage
-  );
-  const [showUrineQuantityInHomePage, setShowUrineQuantityInHomePage] =
-    useState<boolean>(initialShowUrineQuantityInHomePage);
+  // const initialShowUrineQuantityInHomePage = useSelector(
+  //   selectShowUrineQuantityInHomePage
+  // );
+  // const [showUrineQuantityInHomePage, setShowUrineQuantityInHomePage] =
+  //   useState<boolean>(initialShowUrineQuantityInHomePage);
 
-  const handleShowUrineQuantityInHomePageChange = (checked: boolean) => {
-    const newValue = checked;
-    setShowUrineQuantityInHomePage(newValue);
-    dispatch(updateShowUrineQuantityInHomePage(newValue));
-  };
+  // const handleShowUrineQuantityInHomePageChange = (checked: boolean) => {
+  //   const newValue = checked;
+  //   setShowUrineQuantityInHomePage(newValue);
+  //   dispatch(updateShowUrineQuantityInHomePage(newValue));
+  // };
 
   const intervalMethodByEntryTypeId = useSelector(
     selectIntervalMethodByEntryTypeId

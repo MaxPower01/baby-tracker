@@ -1,3 +1,4 @@
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
@@ -16,4 +17,6 @@ export default interface SettingsState {
     entryTypeId: EntryTypeId;
     method: IntervalMethod;
   }>;
+  entryTypesOrder: Array<EntryTypeId>;
+  status: "idle" | "busy";
 }

@@ -10,14 +10,10 @@ import {
   useThemeProps,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  saveEntryInDB,
-  selectOrderedEntryTypes,
-} from "@/state/slices/entriesSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntrySubtitle } from "@/pages/History/components/EntrySubtitle";
+import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
@@ -31,6 +27,8 @@ import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
 import { getTimestamp } from "@/utils/getTimestamp";
+import { saveEntryInDB } from "@/state/slices/entriesSlice";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -43,7 +41,7 @@ type Props = {
 
 export function EntriesWidget(props: Props) {
   const theme = useTheme();
-  const orderedEntryTypes = useSelector(selectOrderedEntryTypes);
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const itemPadding = 4;
   const itemWidth = "10em";
   const mostRecentEntryByType = props.entries.reduce((acc, entry) => {
@@ -54,7 +52,7 @@ export function EntriesWidget(props: Props) {
     }
     return acc;
   }, {} as Record<string, Entry>);
-  if (orderedEntryTypes.length === 0) {
+  if (entryTypesOrder.length === 0) {
     return null;
   }
   return (
@@ -80,12 +78,12 @@ export function EntriesWidget(props: Props) {
             sx={{
               display: "grid",
               gap: 0.5,
-              gridTemplateColumns: `${orderedEntryTypes
+              gridTemplateColumns: `${entryTypesOrder
                 .map(() => "1fr")
                 .join(" ")}`,
             }}
           >
-            {orderedEntryTypes.map((entryType, index) => {
+            {entryTypesOrder.map((entryType, index) => {
               return (
                 <ItemBody
                   key={entryType}
@@ -102,12 +100,12 @@ export function EntriesWidget(props: Props) {
             sx={{
               display: "grid",
               gap: 0.5,
-              gridTemplateColumns: `${orderedEntryTypes
+              gridTemplateColumns: `${entryTypesOrder
                 .map(() => "1fr")
                 .join(" ")}`,
             }}
           >
-            {orderedEntryTypes.map((entryType, index) => {
+            {entryTypesOrder.map((entryType, index) => {
               return (
                 <ItemFooter
                   key={entryType}

@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { Entry } from "@/pages/Entry/types/Entry";
-import EntryForm from "@/pages/History/components/EntryForm";
+import EntryForm from "@/pages/Entry/components/EntryForm";
 import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { MenuProvider } from "@/components/MenuProvider";

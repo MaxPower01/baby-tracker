@@ -20,7 +20,6 @@ const key = LocalStorageKey.ActivitiesState;
 
 const defaultState: ActivitiesState = {
   activities: getDefaultActivities().map((a) => a.serialize()),
-  activitiesOrder: getDefaultActivitiesOrder(),
   activityContexts: getDefaultActivityContexts(),
   temperatureMethods: getDefaultTemperatureMethods(),
   nasalHygieneTypes: getDefaultNasalHygieneTypes(),
@@ -32,20 +31,6 @@ const slice = createSlice({
   name: StoreReducerName.Activities,
   initialState: getInitialState(key, defaultState),
   reducers: {
-    updateActivitiesOrder: (
-      state,
-      action: PayloadAction<{ activitiesOrder: ActivityType[] }>
-    ) => {
-      const newActivities = [...state.activities].map((a) => {
-        const activity = ActivityModel.deserialize(a);
-        activity.order = action.payload.activitiesOrder.indexOf(activity.type);
-        return activity;
-      });
-      newActivities.sort((a, b) => a.order - b.order);
-      state.activitiesOrder = action.payload.activitiesOrder;
-      state.activities = [...newActivities].map((a) => a.serialize());
-      setLocalState(key, state);
-    },
     addActivityContext: (
       state,
       action: PayloadAction<{ activityContext: string }>
@@ -99,14 +84,10 @@ const slice = createSlice({
 });
 
 export const {
-  updateActivitiesOrder,
   addActivityContext,
   updateActivityContexts,
   setActivityContextsOfType,
 } = slice.actions;
-
-export const selectActivitiesOrder = (state: RootState) =>
-  state.activitiesReducer.activitiesOrder;
 
 export const selectActivities = createSelector(
   (state: RootState) => state.activitiesReducer.activities,
