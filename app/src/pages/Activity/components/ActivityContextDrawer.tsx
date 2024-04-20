@@ -315,6 +315,7 @@ export function ActivityContextDrawer(props: Props) {
     setIsSaving(true);
     const serializedItems = localItems.map((item) => JSON.stringify(item));
     // Simulating an async call with a timeout
+    // TODO: Save in DB
     setTimeout(() => {
       dispatch(
         setActivityContextsOfType({

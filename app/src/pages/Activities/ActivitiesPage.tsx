@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Card, Stack, Typography, useTheme } from "@mui/material";
 import {
   DragDropContext,
   Draggable,
@@ -16,7 +8,7 @@ import {
 } from "react-beautiful-dnd";
 import React, { useCallback, useEffect } from "react";
 import {
-  saveEntryTypesOrderInState,
+  saveEntryTypesOrderInDB,
   selectEntryTypesOrder,
 } from "@/state/slices/settingsSlice";
 
@@ -25,16 +17,20 @@ import { CustomBottomBar } from "@/components/CustomBottomBar";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
+import getPath from "@/utils/getPath";
 import { selectActivities } from "@/state/slices/activitiesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useLayout } from "@/components/LayoutProvider";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useSnackbar } from "@/components/SnackbarProvider";
 
 export default function ActivitiesPage() {
-  // const initialActivities = useSelector(selectActivities);
-  // const [activities, setActivities] = React.useState(initialActivities);
-
+  const navigate = useNavigate();
+  const { user } = useAuthentication();
   const layout = useLayout();
   useEffect(() => {
     layout.setBottomBarVisibility("hidden");
@@ -42,6 +38,7 @@ export default function ActivitiesPage() {
       layout.setBottomBarVisibility("visible");
     };
   }, []);
+  const { showSnackbar } = useSnackbar();
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const [localEntryTypesOrder, setLocalEntryTypesOrder] =
@@ -94,18 +91,39 @@ export default function ActivitiesPage() {
     },
   });
 
-  const cancelChanges = useCallback(() => {
-    setLocalEntryTypesOrder(entryTypesOrder);
-  }, [entryTypesOrder, setLocalEntryTypesOrder]);
-
   const saveChanges = useCallback(() => {
-    setIsSaving(true);
-    // dispatch(updateEntryTypesOrder({ entryTypesOrder: localEntryTypesOrder }))
-    //   .unwrap()
-    //   .then(() => {
-    //     setIsSaving(false);
-    //   });
-  }, [dispatch, localEntryTypesOrder]);
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        if (isSaving || user == null) {
+          return resolve(false);
+        }
+        setIsSaving(true);
+        await dispatch(
+          saveEntryTypesOrderInDB({
+            user: user,
+            entryTypesOrder: localEntryTypesOrder,
+          })
+        ).unwrap();
+        setIsSaving(false);
+        navigate(
+          getPath({
+            page: PageId.Home,
+          })
+        );
+        return resolve(true);
+      } catch (error) {
+        setIsSaving(false);
+        showSnackbar({
+          id: "save-entry-types-order-error",
+          isOpen: true,
+          message:
+            "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer plus tard.",
+          severity: "error",
+        });
+        return reject(error);
+      }
+    });
+  }, [dispatch, localEntryTypesOrder, isSaving, user, showSnackbar]);
 
   if (entryTypesOrder.length === 0) {
     return <LoadingIndicator />;
@@ -197,7 +215,7 @@ export default function ActivitiesPage() {
       </DragDropContext>
 
       <CustomBottomBar
-        onSaveButtonClick={() => {}}
+        onSaveButtonClick={saveChanges}
         saveButtonDisabled={isSaving}
       />
     </>

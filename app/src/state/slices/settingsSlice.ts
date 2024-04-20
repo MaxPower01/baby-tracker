@@ -156,7 +156,7 @@ const slice = createSlice({
 
 export const {
   updateGroupingIntervalByEntryTypeId,
-  saveEntryTypesOrderInState: saveEntryTypesOrderInState,
+  saveEntryTypesOrderInState,
 } = slice.actions;
 
 export const selectGroupEntriesBy = (state: RootState) =>
