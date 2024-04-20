@@ -10,6 +10,7 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEffect } from "react";
+import { useLayout } from "@/components/LayoutProvider";
 
 let didInit = false;
 let didInitUser = false;

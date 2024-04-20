@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BabiesLanding } from "@/pages/Baby/components/BabiesLanding";
 import BabyForm from "@/pages/Baby/components/BabyForm";
@@ -7,9 +7,18 @@ import { BabyWizard } from "@/pages/Baby/components/BabyWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
 import { useBabies } from "@/pages/Baby/components/BabiesProvider";
+import { useLayout } from "@/components/LayoutProvider";
 import { useParams } from "react-router-dom";
 
 export function BabyPage() {
+  const layout = useLayout();
+  useEffect(() => {
+    layout.setBottomBarVisibility("hidden");
+    return () => {
+      layout.setBottomBarVisibility("visible");
+    };
+  }, []);
+
   const { babyId } = useParams();
   const { babies, isLoading } = useBabies();
   const theme = useTheme();

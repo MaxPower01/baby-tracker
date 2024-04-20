@@ -6,6 +6,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { useEffect, useMemo } from "react";
 
 import CheckIcon from "@mui/icons-material/Check";
 import { PageId } from "@/enums/PageId";
@@ -13,7 +14,7 @@ import { formatDateTime } from "@/utils/utils";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useBabies } from "@/pages/Baby/components/BabiesProvider";
-import { useMemo } from "react";
+import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 
 export function FamilyPage() {
@@ -21,6 +22,13 @@ export function FamilyPage() {
   const { babies } = useBabies();
   const theme = useTheme();
   const navigate = useNavigate();
+  const layout = useLayout();
+  useEffect(() => {
+    layout.setBottomBarVisibility("hidden");
+    return () => {
+      layout.setBottomBarVisibility("visible");
+    };
+  }, []);
 
   return (
     <Stack
@@ -61,7 +69,10 @@ export function FamilyPage() {
                 >
                   {baby.id == user?.babyId && (
                     <CheckIcon
-                      sx={{ marginLeft: 1, color: theme.palette.primary.main }}
+                      sx={{
+                        marginLeft: 1,
+                        color: theme.palette.primary.main,
+                      }}
                     />
                   )}
                   <Stack

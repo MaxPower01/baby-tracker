@@ -40,6 +40,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Baby from "@/pages/Authentication/types/Baby";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
+import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
@@ -548,7 +549,7 @@ export default function BabyForm(props: Props) {
         </Box>
       </Modal>
 
-      <AppBar
+      {/* <AppBar
         position="fixed"
         component={"footer"}
         sx={{
@@ -590,7 +591,12 @@ export default function BabyForm(props: Props) {
             </Stack>
           </Toolbar>
         </Container>
-      </AppBar>
+      </AppBar> */}
+
+      <CustomBottomBar
+        onSaveButtonClick={handleSubmit}
+        saveButtonDisabled={isSaving}
+      />
     </>
   );
 }

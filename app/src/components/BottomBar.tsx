@@ -10,6 +10,7 @@ import {
   styled,
   useTheme,
 } from "@mui/material";
+import { bottomBarId, bottomBarNewEntryFabId } from "@/utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
@@ -23,12 +24,12 @@ import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
-import { bottomBarNewEntryFabId } from "@/utils/constants";
 import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useLayout } from "@/components/LayoutProvider";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -60,6 +61,7 @@ type Props = {
 };
 
 export function BottomBar(props: Props) {
+  const layout = useLayout();
   const { user } = useAuthentication();
   const babyId = useMemo(() => {
     return user?.babyId ?? "";
@@ -149,10 +151,6 @@ export function BottomBar(props: Props) {
     },
   ];
 
-  if (pageId === PageId.Entry || pageId === PageId.Baby) {
-    return null;
-  }
-
   // items.forEach((item) => {
   //   if (item.sx && Object.keys(item.sx).includes("opacity")) {
   //     // Assign the sx property to the theme.opacity.tertiary value
@@ -175,9 +173,13 @@ export function BottomBar(props: Props) {
     }
   }
 
+  if (layout.bottomBarIsVisible === false) {
+    return null;
+  }
+
   return (
     <AppBar
-      id="bottombar"
+      id={bottomBarId}
       {...props}
       position="fixed"
       sx={{

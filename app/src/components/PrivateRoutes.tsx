@@ -58,7 +58,7 @@ export function PrivateRoutes() {
               element={<SettingsPage />}
             />
             <Route
-              path={getPath({ page: PageId.EntryTypes })}
+              path={getPath({ page: PageId.Activities })}
               element={<ActivitiesPage />}
             />
             <Route path={getPath({ page: PageId.Entry })}>

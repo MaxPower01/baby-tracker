@@ -69,7 +69,7 @@ export function NewEntryDrawer(props: {
             <Box sx={{ flexGrow: 1 }} />
             <IconButton
               onClick={() => {
-                navigate(getPath({ page: PageId.EntryTypes }));
+                navigate(getPath({ page: PageId.Activities }));
                 props.onClose();
               }}
             >

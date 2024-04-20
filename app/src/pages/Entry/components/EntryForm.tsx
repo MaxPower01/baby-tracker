@@ -10,13 +10,14 @@ import {
   useTheme,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
+import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -67,6 +68,7 @@ import { parseEnumValue } from "@/utils/parseEnumValue";
 import { saveEntryInDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/components/SnackbarProvider";
 
@@ -75,6 +77,13 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
+  const layout = useLayout();
+  useEffect(() => {
+    layout.setBottomBarVisibility("hidden");
+    return () => {
+      layout.setBottomBarVisibility("visible");
+    };
+  }, []);
   const { user } = useAuthentication();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -488,61 +497,10 @@ export default function EntryForm(props: EntryFormProps) {
         </Section>
       </Stack>
 
-      <AppBar
-        position="fixed"
-        component={"footer"}
-        sx={{
-          top: "auto",
-          bottom: 0,
-          backgroundColor: "background.default",
-          zIndex: (theme) => theme.zIndex.appBar + 1,
-        }}
-        color="transparent"
-      >
-        <Container maxWidth={CSSBreakpoint.Small}>
-          <Toolbar disableGutters>
-            <Stack
-              flexGrow={1}
-              sx={{
-                paddingTop: 2,
-                paddingBottom: 2,
-              }}
-              spacing={2}
-            >
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                fullWidth
-                size="large"
-                disabled={isSaving}
-                sx={{
-                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
-                }}
-              >
-                <Typography variant="button">Enregistrer</Typography>
-                <Box
-                  sx={{
-                    display: isSaving ? "flex" : "none",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <LoadingIndicator
-                    size={`calc(${theme.typography.button.fontSize} * 2)`}
-                  />
-                </Box>
-              </Button>
-            </Stack>
-          </Toolbar>
-        </Container>
-      </AppBar>
+      <CustomBottomBar
+        onSaveButtonClick={handleSubmit}
+        saveButtonDisabled={isSaving}
+      />
     </>
   );
 }

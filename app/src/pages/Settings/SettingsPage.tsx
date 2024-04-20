@@ -16,7 +16,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   selectGroupEntriesBy,
   selectGroupEntriesInterval,
@@ -42,6 +42,7 @@ import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import isDevelopment from "@/utils/isDevelopment";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useLayout } from "@/components/LayoutProvider";
 import { useSelector } from "react-redux";
 
 type VerticalStackProps = {
@@ -106,6 +107,13 @@ function ItemDescription(props: { text: string }) {
 }
 
 export function SettingsPage() {
+  const layout = useLayout();
+  useEffect(() => {
+    layout.setBottomBarVisibility("hidden");
+    return () => {
+      layout.setBottomBarVisibility("visible");
+    };
+  }, []);
   const dispatch = useAppDispatch();
 
   const theme = useTheme();

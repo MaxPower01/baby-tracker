@@ -209,7 +209,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 }}
                 onClick={() => {
                   props.onClose();
-                  navigate(getPath({ page: PageId.EntryTypes }));
+                  navigate(getPath({ page: PageId.Activities }));
                 }}
               >
                 <SortIcon
@@ -242,7 +242,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 <Typography variant="body1">Paramètres</Typography>
               </Button>
             </Stack>
-            <Divider />
+            {/* <Divider />
             <Stack
               sx={{
                 width: "100%",
@@ -286,7 +286,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                   Exporter les entrées récentes
                 </Typography>
               </Button>
-            </Stack>
+            </Stack> */}
             <Divider />
             <Stack
               sx={{

@@ -7,5 +7,5 @@ export enum PageId {
   Family = "family",
   Baby = "baby",
   Settings = "settings",
-  EntryTypes = "entry-types",
+  Activities = "activities",
 }

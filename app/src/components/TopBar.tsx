@@ -39,7 +39,13 @@ export function TopBar(props: Props) {
   }, [pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
-    return pageName === PageId.Entry || pageName === PageId.Baby;
+    return (
+      pageName === PageId.Entry ||
+      pageName === PageId.Baby ||
+      pageName === PageId.Family ||
+      pageName === PageId.Settings ||
+      pageName === PageId.Activities
+    );
   }, [pageName]);
 
   // const shouldRenderDeleteEntryButton = useMemo(() => {

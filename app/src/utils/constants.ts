@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 /**
  * Represents the age limit for recent data in seconds. Data older than this should not be considered recent.
  */
@@ -27,3 +29,6 @@ export const bottomBarNewEntryFabId = "bottom-bar-new-entry-fab";
  * This is to allow the user to restart the stopwatch if they accidentally stopped it and want to continue.
  */
 export const stopwatchDisplayTimeAfterStopInSeconds = 60 * 5;
+
+export const bottomBarId = `bottom-bar-${uuid()}`;
+export const customBottomBarId = `custom-bottom-bar-${uuid()}`;
