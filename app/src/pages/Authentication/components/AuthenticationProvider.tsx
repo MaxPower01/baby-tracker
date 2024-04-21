@@ -60,7 +60,6 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
                     ...(rest as any),
                   });
                   if (docSnap.id == newUser.babyId) {
-                    console.log("🚀 ~ docSnap.id == newUser.babyId:", docData);
                     dispatch(
                       saveActivityContextsInState({
                         activityContexts: (
