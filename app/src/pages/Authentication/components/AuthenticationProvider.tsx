@@ -32,7 +32,8 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     getDoc(userDocRef)
       .then((docSnap) => {
         if (docSnap.data() != null) {
-          setUser(docSnap.data() as CustomUser);
+          const newUser = docSnap.data() as CustomUser;
+          // setUser(docSnap.data() as CustomUser);
           if (docSnap.data()?.babies) {
             const newBabies: Baby[] = [];
             docSnap.data()?.babies.forEach(async (babyId: string) => {
@@ -53,8 +54,9 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
                 }
               }
             });
-            setBabies(newBabies);
+            newUser.babies = newBabies;
           }
+          setUser(newUser);
         } else {
           setUser(null);
         }
