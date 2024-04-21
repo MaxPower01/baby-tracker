@@ -19,6 +19,7 @@ import {
 } from "@/state/slices/settingsSlice";
 import { useEffect, useMemo, useState } from "react";
 
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
 import Baby from "@/pages/Authentication/types/Baby";
@@ -58,6 +59,18 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
                     birthDate: parsedBirthDate as Date,
                     ...(rest as any),
                   });
+                  if (docSnap.id == newUser.babyId) {
+                    console.log("🚀 ~ docSnap.id == newUser.babyId:", docData);
+                    dispatch(
+                      saveActivityContextsInState({
+                        activityContexts: (
+                          docData.activityContexts as ActivityContext[]
+                        ).map((activityContext) =>
+                          JSON.stringify(activityContext)
+                        ),
+                      })
+                    );
+                  }
                 } else {
                   throw new Error("Birth date is null");
                 }
@@ -75,18 +88,6 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
               entryTypesOrder: newUser.entryTypesOrder,
             })
           );
-          console.log("🚀 ~ .then ~ newUser:", newUser);
-          const selectedBaby =
-            newUser?.babies?.find((baby) => baby.id === newUser.babyId) ?? null;
-          if (selectedBaby && selectedBaby?.activityContexts) {
-            dispatch(
-              saveActivityContextsInState({
-                activityContexts: selectedBaby.activityContexts.map(
-                  (activityContext) => JSON.stringify(activityContext)
-                ),
-              })
-            );
-          }
           setUser(newUser);
         } else {
           setUser(null);
