@@ -31,15 +31,13 @@ const defaultState: SettingsState = {
 };
 
 const parser = (state: SettingsState) => {
-  if (!state.themeMode) {
-    state.themeMode = defaultState.themeMode;
-  }
-  if (!state.intervalMethodByEntryTypeId) {
-    state.intervalMethodByEntryTypeId =
-      defaultState.intervalMethodByEntryTypeId;
-  }
-  if (!state.entryTypesOrder) {
-    state.entryTypesOrder = defaultState.entryTypesOrder;
+  if (
+    !state.themeMode ||
+    !state.intervalMethodByEntryTypeId ||
+    !state.entryTypesOrder ||
+    !state.status
+  ) {
+    state = defaultState;
   }
   return state;
 };

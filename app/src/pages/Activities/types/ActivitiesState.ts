@@ -16,4 +16,5 @@ export default interface ActivitiesState {
   nasalHygieneTypes: NasalHygiene[];
   poopTextures: PoopTexture[];
   poopColors: PoopColor[];
+  status: "idle" | "busy";
 }

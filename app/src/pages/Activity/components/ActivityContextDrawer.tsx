@@ -46,11 +46,12 @@ import React, {
   useState,
 } from "react";
 import {
-  addActivityContext,
+  addActivityContextInState,
+  saveActivityContextsInState,
+  saveActivityContextsOfTypeInDB,
+  saveActivityContextsOfTypeInState,
   selectActivityContexts,
   selectActivityContextsOfType,
-  setActivityContextsOfType,
-  updateActivityContexts,
 } from "@/state/slices/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
@@ -76,6 +77,7 @@ import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getE
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import { v4 as uuid } from "uuid";
@@ -95,6 +97,7 @@ type Props = {
 
 export function ActivityContextDrawer(props: Props) {
   const dispatch = useAppDispatch();
+  const { user } = useAuthentication();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const [editMode, setEditMode] = React.useState(false);
@@ -179,7 +182,7 @@ export function ActivityContextDrawer(props: Props) {
             return [...prev, newItem].sort((a, b) => a.order - b.order);
           });
           dispatch(
-            addActivityContext({
+            addActivityContextInState({
               activityContext: JSON.stringify(newItem),
             })
           );
@@ -312,30 +315,45 @@ export function ActivityContextDrawer(props: Props) {
   };
 
   const saveChanges = useCallback(() => {
-    setIsSaving(true);
-    const serializedItems = localItems.map((item) => JSON.stringify(item));
-    // Simulating an async call with a timeout
-    // TODO: Save in DB
-    setTimeout(() => {
-      dispatch(
-        setActivityContextsOfType({
-          activityContexts: serializedItems,
-          type: activityContextType,
-        })
-      );
-      props.setSelectedItems((prev) => {
-        return prev.map((item) => {
-          const updatedItem = localItems.find((i) => i.id === item.id);
-          if (updatedItem) {
-            return updatedItem;
-          }
-          return item;
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        if (isSaving || user == null) {
+          return resolve(false);
+        }
+        const serializedItems = localItems.map((item) => JSON.stringify(item));
+        setIsSaving(true);
+        await dispatch(
+          saveActivityContextsOfTypeInDB({
+            user: user,
+            activityContexts: serializedItems,
+            type: activityContextType,
+          })
+        ).unwrap();
+        props.setSelectedItems((prev) => {
+          return prev.map((item) => {
+            const updatedItem = localItems.find((i) => i.id === item.id);
+            if (updatedItem) {
+              return updatedItem;
+            }
+            return item;
+          });
         });
-      });
-      setIsSaving(false);
-      setEditMode(false);
-    }, 500);
-  }, [items, localItems]);
+        setIsSaving(false);
+        setEditMode(false);
+        return resolve(true);
+      } catch (error) {
+        setIsSaving(false);
+        showSnackbar({
+          id: "save-entry-types-order-error",
+          isOpen: true,
+          message:
+            "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer plus tard.",
+          severity: "error",
+        });
+        return reject(error);
+      }
+    });
+  }, [dispatch, localItems, isSaving, user, showSnackbar]);
 
   const cancelChanges = useCallback(() => {
     setLocalItems(items);

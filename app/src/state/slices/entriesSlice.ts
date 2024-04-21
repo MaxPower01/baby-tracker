@@ -44,6 +44,17 @@ const defaultState: EntriesState = {
   status: "idle",
 };
 
+const parser = (state: EntriesState) => {
+  if (
+    !state.entries ||
+    !state.latestRecentEntriesFetchedTimestamp ||
+    !state.status
+  ) {
+    state = defaultState;
+  }
+  return state;
+};
+
 export const fetchRecentEntriesFromDB = createAsyncThunk(
   "entries/fetchRecentEntries",
   async (

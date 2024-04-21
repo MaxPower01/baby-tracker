@@ -1,13 +1,21 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
+import CustomUser from "@/pages/Authentication/types/CustomUser";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
+import { db } from "@/firebase";
 import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities";
 import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
@@ -25,29 +33,85 @@ const defaultState: ActivitiesState = {
   nasalHygieneTypes: getDefaultNasalHygieneTypes(),
   poopTextures: getDefaultPoopTextureIds(),
   poopColors: getDefaultPoopColors(),
+  status: "idle",
 };
 
-const slice = createSlice({
-  name: StoreReducerName.Activities,
-  initialState: getInitialState(key, defaultState),
-  reducers: {
-    addActivityContext: (
-      state,
-      action: PayloadAction<{ activityContext: string }>
-    ) => {
-      state.activityContexts.push(JSON.parse(action.payload.activityContext));
-      setLocalState(key, state);
+const parser = (state: ActivitiesState) => {
+  if (
+    !state.activities ||
+    !state.activityContexts ||
+    !state.temperatureMethods ||
+    !state.nasalHygieneTypes ||
+    !state.poopTextures ||
+    !state.poopColors ||
+    !state.status
+  ) {
+    state = defaultState;
+  }
+  return state;
+};
+
+function _addActivityContextInState(
+  state: ActivitiesState,
+  payload: { activityContext: string },
+  preventLocalStorageUpdate = false
+) {
+  state.activityContexts.push(JSON.parse(payload.activityContext));
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _saveActivityContextsInState(
+  state: ActivitiesState,
+  payload: { activityContexts: string[] },
+  preventLocalStorageUpdate = false
+) {
+  if (!payload.activityContexts?.length) {
+    return;
+  }
+  const udpatedActivityContexts = payload.activityContexts.map((a) =>
+    JSON.parse(a)
+  );
+  const currentActivityContexts = [...state.activityContexts];
+  udpatedActivityContexts.forEach((updatedActivityContext) => {
+    const index = currentActivityContexts.findIndex(
+      (a) => a.id === updatedActivityContext.id
+    );
+    if (index !== -1) {
+      currentActivityContexts[index] = updatedActivityContext;
+    }
+  });
+  state.activityContexts = currentActivityContexts;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+export const saveActivityContextsInDB = createAsyncThunk(
+  "activities/saveActivityContexts",
+  async (
+    props: {
+      user: CustomUser;
+      activityContexts: string[];
     },
-    updateActivityContexts: (
-      state,
-      action: PayloadAction<{ activityContexts: string[] }>
-    ) => {
-      if (!action.payload.activityContexts?.length) {
+    thunkAPI
+  ) => {
+    const { user, activityContexts } = props;
+    if (user == null || user.uid == null || user.babyId == null) {
+      return thunkAPI.rejectWithValue(
+        "Cannot save entry types order because user, user id or baby id is null"
+      );
+    }
+    let newActivityContexts = [];
+    try {
+      if (!activityContexts?.length) {
         return;
       }
-      const udpatedActivityContexts = action.payload.activityContexts.map((a) =>
+      const udpatedActivityContexts = activityContexts.map((a) =>
         JSON.parse(a)
       );
+      const state = (thunkAPI.getState() as RootState).activitiesReducer;
       const currentActivityContexts = [...state.activityContexts];
       udpatedActivityContexts.forEach((updatedActivityContext) => {
         const index = currentActivityContexts.findIndex(
@@ -57,36 +121,150 @@ const slice = createSlice({
           currentActivityContexts[index] = updatedActivityContext;
         }
       });
-      state.activityContexts = currentActivityContexts;
-      setLocalState(key, state);
+      newActivityContexts = currentActivityContexts;
+      const babyDocRef = doc(db, "babies", user.babyId);
+      await updateDoc(babyDocRef, {
+        activityContexts: newActivityContexts,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+    return thunkAPI.fulfillWithValue(
+      newActivityContexts.map((a) => JSON.stringify(a))
+    );
+  }
+);
+
+function _saveActivityContextsOfTypeInState(
+  state: ActivitiesState,
+  payload: {
+    activityContexts: string[];
+    type: ActivityContextType;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const activityContexts = payload.activityContexts.map((a) => JSON.parse(a));
+  const currentActivityContexts = [...state.activityContexts];
+  const filteredActivityContexts = currentActivityContexts.filter(
+    (a) => a.type !== payload.type
+  );
+  state.activityContexts = [...filteredActivityContexts, ...activityContexts];
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+export const saveActivityContextsOfTypeInDB = createAsyncThunk(
+  "activities/saveActivityContextsOfType",
+  async (
+    props: {
+      user: CustomUser;
+      activityContexts: string[];
+      type: ActivityContextType;
     },
-    setActivityContextsOfType: (
+    thunkAPI
+  ) => {
+    const { user, activityContexts, type } = props;
+    if (user == null || user.uid == null || user.babyId == null) {
+      return thunkAPI.rejectWithValue(
+        "Cannot save entry types order because user, user id or baby id is null"
+      );
+    }
+    let newActivityContexts = [];
+    try {
+      const state = (thunkAPI.getState() as RootState).activitiesReducer;
+      const parsedActivityContexts = activityContexts.map((a) => JSON.parse(a));
+      const currentActivityContexts = [...state.activityContexts];
+      const filteredActivityContexts = currentActivityContexts.filter(
+        (a) => a.type !== type
+      );
+      newActivityContexts = [
+        ...filteredActivityContexts,
+        ...parsedActivityContexts,
+      ];
+      const babyDocRef = doc(db, "babies", user.babyId);
+      await updateDoc(babyDocRef, {
+        activityContexts: newActivityContexts,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+    return thunkAPI.fulfillWithValue(
+      newActivityContexts.map((a) => JSON.stringify(a))
+    );
+  }
+);
+
+function _setStatusInState(
+  state: ActivitiesState,
+  status: "idle" | "busy" | "busy",
+  preventLocalStorageUpdate = false
+) {
+  state.status = status;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+const slice = createSlice({
+  name: StoreReducerName.Activities,
+  initialState: getInitialState(key, defaultState, parser),
+  reducers: {
+    addActivityContextInState: (
+      state,
+      action: PayloadAction<{ activityContext: string }>
+    ) => {
+      _addActivityContextInState(state, action.payload);
+    },
+    saveActivityContextsInState: (
+      state,
+      action: PayloadAction<{ activityContexts: string[] }>
+    ) => {
+      _saveActivityContextsInState(state, action.payload);
+    },
+    saveActivityContextsOfTypeInState: (
       state,
       action: PayloadAction<{
         activityContexts: string[];
         type: ActivityContextType;
       }>
     ) => {
-      const activityContexts = action.payload.activityContexts.map((a) =>
-        JSON.parse(a)
-      );
-      const currentActivityContexts = [...state.activityContexts];
-      const filteredActivityContexts = currentActivityContexts.filter(
-        (a) => a.type !== action.payload.type
-      );
-      state.activityContexts = [
-        ...filteredActivityContexts,
-        ...activityContexts,
-      ];
-      setLocalState(key, state);
+      _saveActivityContextsOfTypeInState(state, action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(saveActivityContextsInDB.pending, (state) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(saveActivityContextsInDB.fulfilled, (state, action) => {
+      const activityContexts = action.payload as string[];
+      _saveActivityContextsInState(state, { activityContexts });
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(saveActivityContextsInDB.rejected, (state) => {
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(saveActivityContextsOfTypeInDB.pending, (state) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(
+      saveActivityContextsOfTypeInDB.fulfilled,
+      (state, action) => {
+        const activityContexts = action.payload as string[];
+        _saveActivityContextsInState(state, { activityContexts });
+        _setStatusInState(state, "idle");
+      }
+    );
+    builder.addCase(saveActivityContextsOfTypeInDB.rejected, (state) => {
+      _setStatusInState(state, "idle");
+    });
   },
 });
 
 export const {
-  addActivityContext,
-  updateActivityContexts,
-  setActivityContextsOfType,
+  addActivityContextInState,
+  saveActivityContextsInState,
+  saveActivityContextsOfTypeInState,
 } = slice.actions;
 
 export const selectActivities = createSelector(
