@@ -24,39 +24,36 @@ import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTy
 const key = LocalStorageKey.SettingsState;
 
 const defaultState: SettingsState = {
-  groupEntriesBy: GroupEntriesBy.ThirtyMinutes,
-  groupEntriesInterval: GroupEntriesInterval.BetweenEndsAndBeginnings,
   themeMode: ThemeMode.Dark,
-  weightUnit: WeightUnit.Pound,
-  showPoopQuantityInHomePage: true,
-  showUrineQuantityInHomePage: true,
   intervalMethodByEntryTypeId: getDefaulIntervalMethodByEntryTypeId(),
   entryTypesOrder: getDefaultEntryTypesOrder(),
   status: "idle",
 };
 
 const parser = (state: SettingsState) => {
-  if (!state.groupEntriesBy) {
-    state.groupEntriesBy = defaultState.groupEntriesBy;
-  }
-  if (!state.groupEntriesInterval) {
-    state.groupEntriesInterval = defaultState.groupEntriesInterval;
-  }
   if (!state.themeMode) {
     state.themeMode = defaultState.themeMode;
   }
-  if (!state.weightUnit) {
-    state.weightUnit = defaultState.weightUnit;
+  if (!state.intervalMethodByEntryTypeId) {
+    state.intervalMethodByEntryTypeId =
+      defaultState.intervalMethodByEntryTypeId;
   }
-  if (state.showPoopQuantityInHomePage === undefined) {
-    state.showPoopQuantityInHomePage = defaultState.showPoopQuantityInHomePage;
-  }
-  if (state.showUrineQuantityInHomePage === undefined) {
-    state.showUrineQuantityInHomePage =
-      defaultState.showUrineQuantityInHomePage;
+  if (!state.entryTypesOrder) {
+    state.entryTypesOrder = defaultState.entryTypesOrder;
   }
   return state;
 };
+
+function _saveEntryTypesOrderInState(
+  state: SettingsState,
+  payload: { entryTypesOrder: EntryTypeId[] },
+  preventLocalStorageUpdate = false
+) {
+  state.entryTypesOrder = payload.entryTypesOrder;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
 
 export const saveEntryTypesOrderInDB = createAsyncThunk(
   "settings/saveEntryTypesOrder",
@@ -74,7 +71,6 @@ export const saveEntryTypesOrderInDB = createAsyncThunk(
       );
     }
     try {
-      // entryTypesOrder is an array of EntryTypeId stored in the user document
       const userDocRef = doc(db, "users", user.uid);
       await updateDoc(userDocRef, {
         entryTypesOrder,
@@ -86,16 +82,51 @@ export const saveEntryTypesOrderInDB = createAsyncThunk(
   }
 );
 
-function _saveEntryTypesOrderInState(
+function _saveIntervalMethodByEntryTypeIdInState(
   state: SettingsState,
-  payload: { entryTypesOrder: EntryTypeId[] },
+  payload: {
+    intervalMethodByEntryTypeId: Array<{
+      entryTypeId: EntryTypeId;
+      method: IntervalMethod;
+    }>;
+  },
   preventLocalStorageUpdate = false
 ) {
-  state.entryTypesOrder = payload.entryTypesOrder;
+  state.intervalMethodByEntryTypeId = payload.intervalMethodByEntryTypeId;
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
+
+export const saveIntervalMethodByEntryTypeIdInDB = createAsyncThunk(
+  "settings/saveIntervalMethodByEntryTypeId",
+  async (
+    props: {
+      user: CustomUser;
+      intervalMethodByEntryTypeId: Array<{
+        entryTypeId: EntryTypeId;
+        method: IntervalMethod;
+      }>;
+    },
+    thunkAPI
+  ) => {
+    const { user, intervalMethodByEntryTypeId } = props;
+    if (user == null || user.uid == null) {
+      return thunkAPI.rejectWithValue(
+        "Cannot save interval method by entry type id because user or user id is null"
+      );
+    }
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, {
+        intervalMethodByEntryTypeId: intervalMethodByEntryTypeId,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+    return thunkAPI.fulfillWithValue({ intervalMethodByEntryTypeId });
+  }
+);
 
 function _setStatusInState(
   state: SettingsState,
@@ -112,25 +143,16 @@ const slice = createSlice({
   name: StoreReducerName.Settings,
   initialState: getInitialState(key, defaultState, parser),
   reducers: {
-    updateGroupingIntervalByEntryTypeId: (
+    saveIntervalMethodByEntryTypeIdInState: (
       state,
       action: PayloadAction<{
-        entryTypeId: EntryTypeId;
-        method: IntervalMethod;
+        intervalMethodByEntryTypeId: Array<{
+          entryTypeId: EntryTypeId;
+          method: IntervalMethod;
+        }>;
       }>
     ) => {
-      const index = state.intervalMethodByEntryTypeId.findIndex(
-        (x) => x.entryTypeId == action.payload.entryTypeId
-      );
-      if (index !== -1) {
-        state.intervalMethodByEntryTypeId[index].method = action.payload.method;
-      } else {
-        state.intervalMethodByEntryTypeId.push({
-          entryTypeId: action.payload.entryTypeId,
-          method: action.payload.method,
-        });
-      }
-      setLocalState(key, state);
+      _saveIntervalMethodByEntryTypeIdInState(state, action.payload);
     },
     saveEntryTypesOrderInState: (
       state,
@@ -151,31 +173,29 @@ const slice = createSlice({
       console.error(action.error);
       _setStatusInState(state, "idle");
     });
+    builder.addCase(saveIntervalMethodByEntryTypeIdInDB.pending, (state) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(
+      saveIntervalMethodByEntryTypeIdInDB.fulfilled,
+      (state, action) => {
+        _saveIntervalMethodByEntryTypeIdInState(state, action.payload);
+        _setStatusInState(state, "idle");
+      }
+    );
+    builder.addCase(saveIntervalMethodByEntryTypeIdInDB.rejected, (state) => {
+      _setStatusInState(state, "idle");
+    });
   },
 });
 
 export const {
-  updateGroupingIntervalByEntryTypeId,
+  saveIntervalMethodByEntryTypeIdInState,
   saveEntryTypesOrderInState,
 } = slice.actions;
 
-export const selectGroupEntriesBy = (state: RootState) =>
-  state.settingsReducer.groupEntriesBy;
-
-export const selectGroupEntriesInterval = (state: RootState) =>
-  state.settingsReducer.groupEntriesInterval;
-
-export const selectWeightUnit = (state: RootState) =>
-  state.settingsReducer.weightUnit;
-
 export const selectThemeMode = (state: RootState) =>
   state.settingsReducer.themeMode;
-
-export const selectShowPoopQuantityInHomePage = (state: RootState) =>
-  state.settingsReducer.showPoopQuantityInHomePage;
-
-export const selectShowUrineQuantityInHomePage = (state: RootState) =>
-  state.settingsReducer.showUrineQuantityInHomePage;
 
 export const selectIntervalMethodByEntryTypeId = (state: RootState) =>
   state.settingsReducer.intervalMethodByEntryTypeId;

@@ -10,11 +10,16 @@ import {
   useThemeProps,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import {
+  selectEntryTypesOrder,
+  selectIntervalMethodByEntryTypeId,
+} from "@/state/slices/settingsSlice";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
 import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
@@ -28,7 +33,6 @@ import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { saveEntryInDB } from "@/state/slices/entriesSlice";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -138,10 +142,25 @@ function ItemBody(props: ItemBodyProps) {
     props.mostRecentEntryOfType == null
       ? false
       : entryHasStopwatchRunning(props.mostRecentEntryOfType);
+  const intervalMethodByEntryTypeId = useSelector(
+    selectIntervalMethodByEntryTypeId
+  );
+  let from: "start" | "end" | undefined = undefined;
+  if (props.mostRecentEntryOfType != null) {
+    const entryTypeId = props.mostRecentEntryOfType.entryTypeId;
+    const intervalMethod = intervalMethodByEntryTypeId.find(
+      (item) => item.entryTypeId === entryTypeId
+    )?.method;
+    if (intervalMethod === IntervalMethod.BeginningToBeginning) {
+      from = "start";
+    } else if (intervalMethod === IntervalMethod.EndToBeginning) {
+      from = "end";
+    }
+  }
   const elapsedTime =
     props.mostRecentEntryOfType == null
       ? null
-      : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
+      : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType, from);
   const showStopwatch =
     entryTypeHasStopwatch(props.entryType) &&
     (stopwatchIsRunning ||

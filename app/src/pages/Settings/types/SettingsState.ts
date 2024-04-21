@@ -8,11 +8,6 @@ import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 
 export default interface SettingsState {
   themeMode: ThemeMode;
-  groupEntriesBy: GroupEntriesBy;
-  groupEntriesInterval: GroupEntriesInterval;
-  weightUnit: WeightUnit;
-  showPoopQuantityInHomePage: boolean;
-  showUrineQuantityInHomePage: boolean;
   intervalMethodByEntryTypeId: Array<{
     entryTypeId: EntryTypeId;
     method: IntervalMethod;
