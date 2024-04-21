@@ -338,7 +338,7 @@ function _setStatusInState(
 
 const slice = createSlice({
   name: StoreReducerName.Entries,
-  initialState: getInitialState(key, defaultState),
+  initialState: getInitialState(key, defaultState, parser),
   reducers: {
     addEntryInState: (
       state,

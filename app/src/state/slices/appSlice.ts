@@ -11,9 +11,16 @@ const defaultState: AppState = {
   colorMode: "system",
 };
 
+const parser = (state: AppState) => {
+  if (!state.colorMode) {
+    state = defaultState;
+  }
+  return state;
+};
+
 const slice = createSlice({
   name: StoreReducerName.App,
-  initialState: getInitialState(key, defaultState),
+  initialState: getInitialState(key, defaultState, parser),
   reducers: {
     resetAppState: (state) => {
       Object.assign(state, defaultState);
