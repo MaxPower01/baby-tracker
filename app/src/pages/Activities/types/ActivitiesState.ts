@@ -10,7 +10,6 @@ import { TemperatureMethod } from "@/types/TemperatureMethod";
 import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
 
 export default interface ActivitiesState {
-  activities: string[];
   activityContexts: ActivityContext[];
   temperatureMethods: TemperatureMethod[];
   nasalHygieneTypes: NasalHygiene[];
