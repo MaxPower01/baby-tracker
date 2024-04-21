@@ -10,7 +10,6 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEffect } from "react";
-import { useLayout } from "@/components/LayoutProvider";
 
 let didInit = false;
 let didInitUser = false;
@@ -33,7 +32,7 @@ export function App() {
       // Code here will run only once per app load if the user is not null
       dispatch(fetchRecentEntriesFromDB({ babyId }));
     }
-  }, [user]);
+  }, [user, babyId, dispatch]);
 
   return (
     <>

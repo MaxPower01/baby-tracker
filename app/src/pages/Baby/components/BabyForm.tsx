@@ -48,6 +48,7 @@ import { SexId } from "@/enums/SexId";
 import { SizeInput } from "@/components/SizeInput";
 import { WeightInput } from "@/components/WeightInput";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
+import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -121,6 +122,7 @@ export default function BabyForm(props: Props) {
     birthSize: 0,
     birthWeight: 0,
     avatar: "",
+    activityContexts: getDefaultActivityContexts(),
   };
 
   const [baby, setBaby] = useState<Baby>(initialBaby);
@@ -298,6 +300,7 @@ export default function BabyForm(props: Props) {
       birthHeadCircumference: headCircumference,
       birthSize: size,
       birthWeight: weight,
+      activityContexts: getDefaultActivityContexts(),
     };
     const { id, birthDate: newBirthDate, ...rest } = newBaby;
     addDoc(collection(db, "babies"), {

@@ -1,3 +1,5 @@
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+
 export default interface Baby {
   id: string;
   name: string;
@@ -8,4 +10,5 @@ export default interface Baby {
   birthSize?: number;
   birthHeadCircumference?: number;
   avatar?: string;
+  activityContexts?: ActivityContext[];
 }

@@ -19,7 +19,7 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { PageId } from "@/enums/PageId";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
 import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
@@ -148,12 +148,12 @@ function ItemBody(props: ItemBodyProps) {
   let from: "start" | "end" | undefined = undefined;
   if (props.mostRecentEntryOfType != null) {
     const entryTypeId = props.mostRecentEntryOfType.entryTypeId;
-    const intervalMethod = intervalMethodByEntryTypeId.find(
+    const intervalMethodId = intervalMethodByEntryTypeId.find(
       (item) => item.entryTypeId === entryTypeId
-    )?.method;
-    if (intervalMethod === IntervalMethod.BeginningToBeginning) {
+    )?.methodId;
+    if (intervalMethodId === IntervalMethodId.BeginningToBeginning) {
       from = "start";
-    } else if (intervalMethod === IntervalMethod.EndToBeginning) {
+    } else if (intervalMethodId === IntervalMethodId.EndToBeginning) {
       from = "end";
     }
   }

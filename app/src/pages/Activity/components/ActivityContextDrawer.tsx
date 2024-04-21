@@ -46,6 +46,7 @@ import React, {
   useState,
 } from "react";
 import {
+  addActivityContextInDB,
   addActivityContextInState,
   saveActivityContextsInState,
   saveActivityContextsOfTypeInDB,
@@ -141,7 +142,10 @@ export function ActivityContextDrawer(props: Props) {
   const saveChangesButtonLabel = "Sauvegarder";
   const cancelChangesButtonLabel = "Annuler";
   const addItem = useCallback(() => {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>(async (resolve, reject) => {
+      if (isSaving || user == null) {
+        return resolve(false);
+      }
       if (isNullOrWhiteSpace(newItemName)) {
         setNewItemName("");
         setError("Le nom ne peut pas être vide.");
@@ -173,41 +177,38 @@ export function ActivityContextDrawer(props: Props) {
         type: activityContextType,
       };
       setIsSaving(true);
-      // Simulating an async call with a timeout
-      setTimeout(() => {
-        let success = true;
-        if (success) {
-          setNewItemName("");
-          setLocalItems((prev) => {
+      try {
+        await dispatch(
+          addActivityContextInDB({
+            user: user,
+            activityContext: JSON.stringify(newItem),
+          })
+        ).unwrap();
+        setNewItemName("");
+        setLocalItems((prev) => {
+          return [...prev, newItem].sort((a, b) => a.order - b.order);
+        });
+        if (props.canMultiSelect) {
+          props.setSelectedItems((prev) => {
             return [...prev, newItem].sort((a, b) => a.order - b.order);
           });
-          dispatch(
-            addActivityContextInState({
-              activityContext: JSON.stringify(newItem),
-            })
-          );
-          if (props.canMultiSelect) {
-            props.setSelectedItems((prev) => {
-              return [...prev, newItem].sort((a, b) => a.order - b.order);
-            });
-          } else {
-            props.setSelectedItems([newItem]);
-          }
         } else {
-          showSnackbar({
-            id: errorSnackbarId,
-            message:
-              "Une erreure s'est produite, veuillez réessayer plus tard.",
-            severity: "error",
-            isOpen: true,
-          });
-          return reject("An error occurred while saving the item.");
+          props.setSelectedItems([newItem]);
         }
+      } catch (error) {
+        showSnackbar({
+          id: errorSnackbarId,
+          message: "Une erreure s'est produite, veuillez réessayer plus tard.",
+          severity: "error",
+          isOpen: true,
+        });
         setIsSaving(false);
-        return resolve(success);
-      }, 500);
+        return reject("An error occurred while saving the item.");
+      }
+      setIsSaving(false);
+      return resolve(true);
     });
-  }, [items, activityContextType, newItemName, error]);
+  }, [items, activityContextType, newItemName, error, user, isSaving]);
 
   const handleMultiSelectChange = (id: string) => {
     props.setSelectedItems((prev) => {
@@ -267,7 +268,7 @@ export function ActivityContextDrawer(props: Props) {
     setNewItemName(event.target.value);
   };
 
-  const addItemAndConfirmIfNeeded = () => {
+  const addItemAndConfirmIfNeeded = useCallback(() => {
     return new Promise<void>((resolve, reject) => {
       addItem()
         .then((success) => {
@@ -282,9 +283,9 @@ export function ActivityContextDrawer(props: Props) {
           return reject(error);
         });
     });
-  };
+  }, [addItem, items, props.canMultiSelect, user, isSaving]);
 
-  const handleEmptyStateClick = () => {
+  const handleEmptyStateClick = useCallback(() => {
     if (newItemName.trim().length === 0) {
       setFocusOnTextfield();
     } else {
@@ -294,25 +295,28 @@ export function ActivityContextDrawer(props: Props) {
           console.error(error);
         });
     }
-  };
+  }, [newItemName, addItemAndConfirmIfNeeded]);
 
-  const handleTextfieldKeyUp = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      addItemAndConfirmIfNeeded()
-        .then(() => {})
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  };
+  const handleTextfieldKeyUp = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "Enter") {
+        addItemAndConfirmIfNeeded()
+          .then(() => {})
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    },
+    [addItemAndConfirmIfNeeded]
+  );
 
-  const handleAddItemButtonClick = () => {
+  const handleAddItemButtonClick = useCallback(() => {
     addItemAndConfirmIfNeeded()
       .then(() => {})
       .catch((error) => {
         console.error(error);
       });
-  };
+  }, [addItemAndConfirmIfNeeded]);
 
   const saveChanges = useCallback(() => {
     return new Promise<boolean>(async (resolve, reject) => {

@@ -42,7 +42,7 @@ export function NewEntryDrawer(props: {
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
 
-  if (entryTypesOrder.length === 0) {
+  if ((entryTypesOrder?.length ?? 0) === 0) {
     return null;
   }
 

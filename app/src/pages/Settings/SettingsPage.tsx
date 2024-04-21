@@ -32,7 +32,7 @@ import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
-import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { PageId } from "@/enums/PageId";
 import { ReactSVG } from "react-svg";
 import { ThemeMode } from "@/enums/ThemeMode";
@@ -141,7 +141,7 @@ export function SettingsPage() {
       })
       .filter((x) => x != null) as Array<{
       entryTypeId: EntryTypeId;
-      method: IntervalMethod;
+      methodId: IntervalMethodId;
     }>
   );
 
@@ -237,7 +237,7 @@ export function SettingsPage() {
                     <FormControl variant="outlined">
                       <Select
                         id="grouping-intervals-select"
-                        value={intervalMethod.method}
+                        value={intervalMethod.methodId}
                         onChange={(event) => {
                           setLocalIntervalMethodByEntryTypeId((prev) => {
                             return entryTypesOrder
@@ -251,15 +251,15 @@ export function SettingsPage() {
                                 ) {
                                   return {
                                     entryTypeId,
-                                    method: event.target
-                                      .value as IntervalMethod,
+                                    methodId: event.target
+                                      .value as IntervalMethodId,
                                   };
                                 }
                                 return prevIntervalMethod ?? null;
                               })
                               .filter((x) => x != null) as Array<{
                               entryTypeId: EntryTypeId;
-                              method: IntervalMethod;
+                              methodId: IntervalMethodId;
                             }>;
                           });
                         }}
@@ -269,10 +269,10 @@ export function SettingsPage() {
                           color: theme.customPalette.text.tertiary,
                         }}
                       >
-                        <MenuItem value={IntervalMethod.BeginningToBeginning}>
+                        <MenuItem value={IntervalMethodId.BeginningToBeginning}>
                           Depuis le début de l'entrée précédente
                         </MenuItem>
-                        <MenuItem value={IntervalMethod.EndToBeginning}>
+                        <MenuItem value={IntervalMethodId.EndToBeginning}>
                           Depuis la fin de l'entrée précédente
                         </MenuItem>
                       </Select>

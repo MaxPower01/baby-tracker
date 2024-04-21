@@ -27,7 +27,6 @@ import { getDefaultTemperatureMethods } from "@/pages/Activities/utils/getDefaul
 const key = LocalStorageKey.ActivitiesState;
 
 const defaultState: ActivitiesState = {
-  activities: getDefaultActivities().map((a) => a.serialize()),
   activityContexts: getDefaultActivityContexts(),
   temperatureMethods: getDefaultTemperatureMethods(),
   nasalHygieneTypes: getDefaultNasalHygieneTypes(),
@@ -38,7 +37,6 @@ const defaultState: ActivitiesState = {
 
 const parser = (state: ActivitiesState) => {
   if (
-    !state.activities ||
     !state.activityContexts ||
     !state.temperatureMethods ||
     !state.nasalHygieneTypes ||
@@ -61,6 +59,37 @@ function _addActivityContextInState(
     setLocalState(key, state);
   }
 }
+
+export const addActivityContextInDB = createAsyncThunk(
+  "activities/addActivityContext",
+  async (
+    props: {
+      user: CustomUser;
+      activityContext: string;
+    },
+    thunkAPI
+  ) => {
+    const { user, activityContext } = props;
+    if (user == null || user.uid == null || user.babyId == null) {
+      return thunkAPI.rejectWithValue(
+        "Cannot save activity context because user, user id or baby id is null"
+      );
+    }
+    let newActivityContexts = [];
+    try {
+      const state = (thunkAPI.getState() as RootState).activitiesReducer;
+      const parsedActivityContext = JSON.parse(activityContext);
+      newActivityContexts = [...state.activityContexts, parsedActivityContext];
+      const babyDocRef = doc(db, "babies", user.babyId);
+      await updateDoc(babyDocRef, {
+        activityContexts: newActivityContexts,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+    return thunkAPI.fulfillWithValue(activityContext);
+  }
+);
 
 function _saveActivityContextsInState(
   state: ActivitiesState,
@@ -258,6 +287,16 @@ const slice = createSlice({
     builder.addCase(saveActivityContextsOfTypeInDB.rejected, (state) => {
       _setStatusInState(state, "idle");
     });
+    builder.addCase(addActivityContextInDB.pending, (state) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(addActivityContextInDB.fulfilled, (state, action) => {
+      _addActivityContextInState(state, { activityContext: action.payload });
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(addActivityContextInDB.rejected, (state) => {
+      _setStatusInState(state, "idle");
+    });
   },
 });
 
@@ -266,13 +305,6 @@ export const {
   saveActivityContextsInState,
   saveActivityContextsOfTypeInState,
 } = slice.actions;
-
-export const selectActivities = createSelector(
-  (state: RootState) => state.activitiesReducer.activities,
-  (activities) => {
-    return [...activities].map((a) => ActivityModel.deserialize(a));
-  }
-);
 
 export const selectActivityContexts = (state: RootState) =>
   state.activitiesReducer.activityContexts.toSorted(

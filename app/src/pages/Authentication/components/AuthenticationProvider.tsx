@@ -13,17 +13,26 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, googleAuthProvider } from "@/firebase";
+import {
+  saveEntryTypesOrderInState,
+  saveIntervalMethodByEntryTypeIdInState,
+} from "@/state/slices/settingsSlice";
 import { useEffect, useMemo, useState } from "react";
 
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
 import Baby from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
+import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import isDevelopment from "@/utils/isDevelopment";
+import { saveActivityContextsInState } from "@/state/slices/activitiesSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 
 export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   // Store the user in a state variable
 
+  const dispatch = useAppDispatch();
   const [user, setUser] = useState<CustomUser | null>(null);
   const [babies, setBabies] = useState<Baby[]>([]);
 
@@ -55,6 +64,28 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
               }
             });
             newUser.babies = newBabies;
+          }
+          dispatch(
+            saveIntervalMethodByEntryTypeIdInState({
+              intervalMethodByEntryTypeId: newUser.intervalMethodByEntryTypeId,
+            })
+          );
+          dispatch(
+            saveEntryTypesOrderInState({
+              entryTypesOrder: newUser.entryTypesOrder,
+            })
+          );
+          console.log("🚀 ~ .then ~ newUser:", newUser);
+          const selectedBaby =
+            newUser?.babies?.find((baby) => baby.id === newUser.babyId) ?? null;
+          if (selectedBaby && selectedBaby?.activityContexts) {
+            dispatch(
+              saveActivityContextsInState({
+                activityContexts: selectedBaby.activityContexts.map(
+                  (activityContext) => JSON.stringify(activityContext)
+                ),
+              })
+            );
           }
           setUser(newUser);
         } else {
@@ -136,17 +167,20 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           lastSignInTime: user.metadata.lastSignInTime,
         };
         if (isNewUser) {
-          data.babyId = "";
-          data.babies = [];
+          (data as CustomUser).babyId = "";
+          (data as CustomUser).babies = [];
+          (data as CustomUser).intervalMethodByEntryTypeId =
+            getDefaulIntervalMethodByEntryTypeId();
+          (data as CustomUser).entryTypesOrder = getDefaultEntryTypesOrder();
         }
         await setDoc(userRef, data, { merge: true });
         if (!isNewUser) {
           await fetchUserDoc(user);
         }
+        return resolve({ user, isNewUser });
       } catch (error: any) {
         return reject(error);
       }
-      return resolve({ user, isNewUser });
     });
   };
 

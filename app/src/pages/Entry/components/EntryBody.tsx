@@ -2,7 +2,7 @@ import { Box, Stack, SxProps, Typography, useTheme } from "@mui/material";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
@@ -37,13 +37,13 @@ export function EntryBody(props: Props) {
 
   let timeSincePreviousEntry = null;
   if (props.previousEntry != null) {
-    const method = intervalMethodByEntryTypeId.find(
+    const methodId = intervalMethodByEntryTypeId.find(
       (x) => x.entryTypeId == props.entry.entryTypeId
-    )?.method;
+    )?.methodId;
     let previousEntryTimestamp = props.previousEntry.startTimestamp;
-    if (method) {
+    if (methodId) {
       previousEntryTimestamp =
-        method == IntervalMethod.BeginningToBeginning
+        methodId == IntervalMethodId.BeginningToBeginning
           ? props.previousEntry.startTimestamp
           : props.previousEntry.endTimestamp;
     }

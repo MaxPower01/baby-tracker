@@ -123,6 +123,7 @@ export function BabiesProvider(props: React.PropsWithChildren<{}>) {
             birthSize: change.doc.data().birthSize,
             birthWeight: change.doc.data().birthWeight,
             avatar: change.doc.data().avatar,
+            activityContexts: change.doc.data().activityContexts,
           };
           if (baby.parents?.includes(user.uid)) {
             if (change.type === "added") {

@@ -9,7 +9,7 @@ import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
-import { IntervalMethod } from "@/pages/Settings/enums/IntervalMethod";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import SettingsState from "@/pages/Settings/types/SettingsState";
@@ -85,7 +85,7 @@ function _saveIntervalMethodByEntryTypeIdInState(
   payload: {
     intervalMethodByEntryTypeId: Array<{
       entryTypeId: EntryTypeId;
-      method: IntervalMethod;
+      methodId: IntervalMethodId;
     }>;
   },
   preventLocalStorageUpdate = false
@@ -103,7 +103,7 @@ export const saveIntervalMethodByEntryTypeIdInDB = createAsyncThunk(
       user: CustomUser;
       intervalMethodByEntryTypeId: Array<{
         entryTypeId: EntryTypeId;
-        method: IntervalMethod;
+        methodId: IntervalMethodId;
       }>;
     },
     thunkAPI
@@ -146,7 +146,7 @@ const slice = createSlice({
       action: PayloadAction<{
         intervalMethodByEntryTypeId: Array<{
           entryTypeId: EntryTypeId;
-          method: IntervalMethod;
+          methodId: IntervalMethodId;
         }>;
       }>
     ) => {
