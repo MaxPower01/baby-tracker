@@ -1,9 +1,4 @@
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
-import { EntryLocation } from "@/types/EntryLocation";
-import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { PoopColor } from "@/types/PoopColor";
-import { Stopwatch } from "@/types/Stopwatch";
-import { Tag } from "@/pages/Tags/models/Tag";
 
 export interface Entry {
   id?: string;
