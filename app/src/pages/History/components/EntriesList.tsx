@@ -68,52 +68,48 @@ export function EntriesList(props: Props) {
   // if (props.groupByDate) {
   const entriesByDate = groupEntriesByDate(props.entries);
   return (
-    <MenuProvider>
-      <Stack
-        sx={{
-          width: "100%",
-        }}
-      >
-        {entriesByDate.years.map((yearEntries) => {
-          return yearEntries.months.map((monthEntries) => {
-            return monthEntries.days.map((dateEntries) => {
-              const entriesOfDate = dateEntries.entries;
-              if (entriesOfDate.length === 0) {
-                return null;
-              }
-              const date = getDateFromTimestamp(
-                entriesOfDate[0].startTimestamp
-              );
-              const key = `${yearEntries.year}-${monthEntries.monthIndex}-${dateEntries.dayNumber}-${entriesOfDate[0].id}`;
-              return (
+    <Stack
+      sx={{
+        width: "100%",
+      }}
+      spacing={4}
+    >
+      {entriesByDate.years.map((yearEntries) => {
+        return yearEntries.months.map((monthEntries) => {
+          return monthEntries.days.map((dateEntries) => {
+            const entriesOfDate = dateEntries.entries;
+            if (entriesOfDate.length === 0) {
+              return null;
+            }
+            const date = getDateFromTimestamp(entriesOfDate[0].startTimestamp);
+            const key = `${yearEntries.year}-${monthEntries.monthIndex}-${dateEntries.dayNumber}-${entriesOfDate[0].id}`;
+            return (
+              <Stack
+                key={key}
+                spacing={2}
+                sx={{
+                  width: "100%",
+                }}
+              >
                 <Stack
-                  key={key}
-                  spacing={2}
                   sx={{
+                    position: topHeight != null ? "sticky" : undefined,
+                    top: topHeight != null ? topHeight.totalHeight : undefined,
+                    zIndex: 2,
+                    backgroundColor: theme.palette.background.default,
                     width: "100%",
                   }}
+                  spacing={2}
                 >
-                  <Stack
-                    sx={{
-                      position: topHeight != null ? "sticky" : undefined,
-                      top:
-                        topHeight != null ? topHeight.totalHeight : undefined,
-                      zIndex: 2,
-                      backgroundColor: theme.palette.background.default,
-                      width: "100%",
-                    }}
-                    spacing={2}
-                  >
-                    <DateEntriesHeader date={date} entries={entriesOfDate} />
-                    <DateEntries entries={entriesOfDate} />
-                  </Stack>
+                  <DateEntriesHeader date={date} entries={entriesOfDate} />
+                  <DateEntries entries={entriesOfDate} />
                 </Stack>
-              );
-            });
+              </Stack>
+            );
           });
-        })}
-      </Stack>
-    </MenuProvider>
+        });
+      })}
+    </Stack>
   );
   // }
   // return (

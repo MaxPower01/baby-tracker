@@ -43,7 +43,7 @@ export function DateEntriesHeader(props: Props) {
         }, {} as Record<string, Entry[]>)
       : {};
   return (
-    <Stack>
+    <Stack spacing={0.5}>
       <DateHeader date={props.date} />
       {entriesByEntryType != null && (
         <Box

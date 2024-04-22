@@ -105,7 +105,7 @@ export function PoopTexturePicker(props: Props) {
           onChange={(e) => props.setValue(e.target.value as PoopTextureId)}
           renderValue={renderValue}
         >
-          {items.map((item) => {
+          {items.map((item: any) => {
             return (
               <MenuItem key={item.id} value={item.id}>
                 <ListItemText primary={item.label} />

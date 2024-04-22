@@ -1,5 +1,6 @@
 import { EntriesCard } from "@/pages/History/components/EntriesCard";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { MenuProvider } from "@/components/MenuProvider";
 import React from "react";
 import { Stack } from "@mui/material";
 import { groupEntriesByTime } from "@/utils/utils";
@@ -28,7 +29,11 @@ export function DateEntries(props: Props) {
         const key = `${entries[0].startTimestamp}-${
           entries[entries.length - 1].endTimestamp
         }-${index}`;
-        return <EntriesCard key={key} entries={entries} />;
+        return (
+          <MenuProvider key={key}>
+            <EntriesCard entries={entries} />
+          </MenuProvider>
+        );
       })}
     </Stack>
   );
