@@ -1,56 +1,32 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Stack, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
-import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { ImagesInput } from "@/components/ImagesInput";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { NasalHygieneId } from "@/enums/NasalHygieneId";
-import { NasalHygieneTypesPicker } from "@/components/NasalHygieneTypesPicker";
 import { NotesInput } from "@/components/NotesInput";
 import { PageId } from "@/enums/PageId";
 import { PoopAmountPicker } from "@/components/PoopAmountPicker";
-import { PoopColor } from "@/types/PoopColor";
 import { PoopColorId } from "@/enums/PoopColorId";
 import PoopColorPicker from "@/components/PoopColorPicker";
 import { PoopTextureId } from "@/enums/PoopTextureId";
 import { PoopTexturePicker } from "@/components/PoopTexturePicker";
 import { Section } from "@/components/Section";
-import { SectionStack } from "@/components/SectionStack";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SizeInput } from "@/components/SizeInput";
 import { StopwatchContainer } from "@/components/StopwatchContainer";
-import { StopwatchTimePicker } from "@/components/StopwatchTimePicker";
 import { TemperatureInput } from "@/components/TemperatureInput";
-import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
-import { TemperatureMethodPicker } from "@/components/TemperatureMethodPicker";
-import { Timestamp } from "firebase/firestore";
 import UrineAmountSelector from "@/components/UrineAmountSelector";
-import { VolumeInput } from "@/components/VolumeInput";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
 import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
-import { entryTypeHasNasalHygiene } from "@/pages/Entry/utils/entryTypeHasNasalHygiene";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
@@ -64,7 +40,6 @@ import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
-import { parseEnumValue } from "@/utils/parseEnumValue";
 import { saveEntryInDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -92,7 +67,7 @@ export default function EntryForm(props: EntryFormProps) {
   const name = getEntryTypeName(props.entry.entryTypeId);
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
-  >([]);
+  >(props.entry.activityContexts ?? []);
   const initialStartDate = getDateFromTimestamp(props.entry.startTimestamp);
   const initialEndDate = getDateFromTimestamp(props.entry.endTimestamp);
   const [startDate, setStartDate] = useState<Dayjs>(dayjs(initialStartDate));

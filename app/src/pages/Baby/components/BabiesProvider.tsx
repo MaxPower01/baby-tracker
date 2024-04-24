@@ -20,8 +20,6 @@ import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 interface BabiesContext {
-  babies: Baby[] | null;
-  isLoading: boolean;
   saveBaby: (baby: Baby) => Promise<Baby>;
 }
 
@@ -73,109 +71,12 @@ export function BabiesProvider(props: React.PropsWithChildren<{}>) {
     [user]
   );
 
-  useEffect(() => {
-    if (!user) {
-      setIsLoading(false);
-      return;
-    }
-    const collectionRef = collection(db, `babies`); // TODO: Use query to filter by user instead of watching all babies
-    const newBabies: Baby[] = [];
-    getDocs(collectionRef)
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          if (doc.data().parents?.includes(user.uid)) {
-            const baby: Baby = {
-              id: doc.id,
-              name: doc.data().name,
-              parents: doc.data().parents,
-              birthDate: doc.data().birthDate.toDate(),
-              sex: doc.data().sex,
-              birthHeadCircumference: doc.data().birthHeadCircumference,
-              birthSize: doc.data().birthSize,
-              birthWeight: doc.data().birthWeight,
-              avatar: doc.data().avatar,
-            };
-            newBabies.push(baby);
-          }
-        });
-        setBabies(newBabies);
-      })
-      .catch((error) => {
-        console.error("Error getting documents: ", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
-      const addedBabies: Baby[] = [];
-      const modifiedBabies: Baby[] = [];
-      const removedBabies: Baby[] = [];
-      snapshot.docChanges().forEach((change) => {
-        if (change.doc.data() != null) {
-          const baby: Baby = {
-            id: change.doc.id,
-            name: change.doc.data().name,
-            parents: change.doc.data().parents,
-            birthDate: change.doc.data().birthDate.toDate(),
-            sex: change.doc.data().sex,
-            birthHeadCircumference: change.doc.data().birthHeadCircumference,
-            birthSize: change.doc.data().birthSize,
-            birthWeight: change.doc.data().birthWeight,
-            avatar: change.doc.data().avatar,
-            activityContexts: change.doc.data().activityContexts,
-          };
-          if (baby.parents?.includes(user.uid)) {
-            if (change.type === "added") {
-              addedBabies.push(baby);
-            } else if (change.type === "modified") {
-              modifiedBabies.push(baby);
-            } else if (change.type === "removed") {
-              removedBabies.push(baby);
-            }
-          }
-        }
-      });
-      if (
-        addedBabies.length > 0 ||
-        modifiedBabies.length > 0 ||
-        removedBabies.length > 0
-      ) {
-        setBabies((prevBaby) => {
-          let newBaby = prevBaby == null ? [] : [...prevBaby];
-          removedBabies.forEach((removedEntry) => {
-            newBaby = newBaby.filter((entry) => entry.id !== removedEntry.id);
-          });
-          addedBabies.forEach((addedEntry) => {
-            if (!newBaby.some((entry) => entry.id === addedEntry.id)) {
-              newBaby.push(addedEntry);
-            }
-          });
-          modifiedBabies.forEach((modifiedEntry) => {
-            newBaby = newBaby.map((entry) => {
-              if (entry.id == modifiedEntry.id) {
-                return modifiedEntry;
-              }
-              return entry;
-            });
-          });
-          // newChildren.sort((a, b) => {
-          //   return b.startDate.getTime() - a.startDate.getTime();
-          // });
-          return [...newBaby];
-        });
-      }
-    });
-  }, [user]);
-
-  const context: BabiesContext = useMemo(
-    () => ({
-      babies,
-      isLoading,
+  const context = useMemo(() => {
+    const result: BabiesContext = {
       saveBaby,
-    }),
-    [babies, isLoading, user, saveBaby]
-  );
+    };
+    return result;
+  }, [babies, isLoading, user, saveBaby]);
 
   return <Context.Provider value={context} {...props} />;
 }

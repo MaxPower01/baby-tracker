@@ -13,13 +13,11 @@ import { PageId } from "@/enums/PageId";
 import { formatDateTime } from "@/utils/utils";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 
 export function FamilyPage() {
   const { user } = useAuthentication();
-  const { babies } = useBabies();
   const theme = useTheme();
   const navigate = useNavigate();
   const layout = useLayout();
@@ -39,8 +37,8 @@ export function FamilyPage() {
         width: "100%",
       }}
     >
-      {babies != null &&
-        babies.map((baby) => (
+      {user?.babies != null &&
+        user.babies.map((baby) => (
           <Card
             key={baby.id}
             sx={{

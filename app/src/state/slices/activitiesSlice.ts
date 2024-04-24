@@ -54,7 +54,13 @@ function _addActivityContextInState(
   payload: { activityContext: string },
   preventLocalStorageUpdate = false
 ) {
-  state.activityContexts.push(JSON.parse(payload.activityContext));
+  const parsedActivityContext = JSON.parse(payload.activityContext);
+  const index = state.activityContexts.findIndex(
+    (a) => a.id === parsedActivityContext.id
+  );
+  if (index === -1) {
+    state.activityContexts.push(parsedActivityContext);
+  }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -102,15 +108,22 @@ function _saveActivityContextsInState(
   const udpatedActivityContexts = payload.activityContexts.map((a) =>
     JSON.parse(a)
   );
-  const currentActivityContexts = [...state.activityContexts];
+  let currentActivityContexts = [...state.activityContexts];
   udpatedActivityContexts.forEach((updatedActivityContext) => {
     const index = currentActivityContexts.findIndex(
       (a) => a.id === updatedActivityContext.id
     );
     if (index !== -1) {
       currentActivityContexts[index] = updatedActivityContext;
+    } else {
+      currentActivityContexts.push(updatedActivityContext);
     }
   });
+  // Make sure that there's no duplicates by checking the id
+  const currentActivityContextsIds = currentActivityContexts.map((a) => a.id);
+  currentActivityContexts = currentActivityContexts.filter(
+    (a, index) => currentActivityContextsIds.indexOf(a.id) === index
+  );
   state.activityContexts = currentActivityContexts;
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);

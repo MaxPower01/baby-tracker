@@ -6,7 +6,7 @@ import BabyForm from "@/pages/Baby/components/BabyForm";
 import { BabyWizard } from "@/pages/Baby/components/BabyWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { ReactSVG } from "react-svg";
-import { useBabies } from "@/pages/Baby/components/BabiesProvider";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useLayout } from "@/components/LayoutProvider";
 import { useParams } from "react-router-dom";
 
@@ -20,18 +20,18 @@ export function BabyPage() {
   }, []);
 
   const { babyId } = useParams();
-  const { babies, isLoading } = useBabies();
+  const { user } = useAuthentication();
   const theme = useTheme();
   const baby = useMemo(
-    () => babies?.find((b) => b.id === babyId),
-    [babies, babyId]
+    () => user?.babies?.find((b) => b.id === babyId),
+    [user?.babies, babyId]
   );
   const [showForm, setShowForm] = useState(false);
 
   if (babyId != null) {
-    if (isLoading) {
-      return <LoadingIndicator />;
-    }
+    // if (isLoading) {
+    //   return <LoadingIndicator />;
+    // }
     if (baby == null) {
       return (
         <Typography

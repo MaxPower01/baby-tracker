@@ -6,7 +6,6 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 
 type Props = {
   sx?: SxProps;
@@ -14,10 +13,9 @@ type Props = {
 
 export function BabyWidget(props: Props) {
   const { user } = useAuthentication();
-  const { babies } = useBabies();
   const theme = useTheme();
 
-  if (user == null || babies == null) {
+  if (user == null || user.babies == null) {
     return <LoadingIndicator />;
   }
   const getBabyAgeLabel = (baby: Baby) => {
@@ -34,7 +32,7 @@ export function BabyWidget(props: Props) {
         ...props.sx,
       }}
     >
-      {babies.map((baby) => {
+      {user.babies.map((baby) => {
         let avatarBackgroundColor = "#62CB5C";
         if (baby.sex == "female") {
           avatarBackgroundColor = "#EE64EC";

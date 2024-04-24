@@ -16,24 +16,27 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // TODO: Uncomment when DnD is done
-  // <React.StrictMode>
-  <StoreProvider>
-    <AuthenticationProvider>
-      <BabiesProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr-ca">
-          <ThemeProvider>
-            <SnackbarProvider>
-              <LayoutProvider>
-                <CssBaseline />
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </LayoutProvider>
-            </SnackbarProvider>
-          </ThemeProvider>
-        </LocalizationProvider>
-      </BabiesProvider>
-    </AuthenticationProvider>
-  </StoreProvider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <StoreProvider>
+      <AuthenticationProvider>
+        <BabiesProvider>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="fr-ca"
+          >
+            <ThemeProvider>
+              <SnackbarProvider>
+                <LayoutProvider>
+                  <CssBaseline />
+                  <BrowserRouter>
+                    <App />
+                  </BrowserRouter>
+                </LayoutProvider>
+              </SnackbarProvider>
+            </ThemeProvider>
+          </LocalizationProvider>
+        </BabiesProvider>
+      </AuthenticationProvider>
+    </StoreProvider>
+  </React.StrictMode>
 );

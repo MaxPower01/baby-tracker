@@ -32,14 +32,12 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 import { useNavigate } from "react-router-dom";
 
 export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const addParentFunction = httpsCallable(functions, "addParent");
   const navigate = useNavigate();
   const { user, signOut } = useAuthentication();
-  const { babies } = useBabies();
   const theme = useTheme();
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
@@ -47,12 +45,12 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
 
   const babyId = useMemo(() => {
     return user?.babyId ?? "";
-  }, [user, babies]);
+  }, [user?.babyId]);
 
   const babyName = useMemo(() => {
-    if (babies == null || isNullOrWhiteSpace(babyId)) return "";
-    return babies.find((baby) => baby.id === babyId)?.name ?? "";
-  }, [babyId, babies]);
+    if (user?.babies == null || isNullOrWhiteSpace(babyId)) return "";
+    return user?.babies.find((baby) => baby.id === babyId)?.name ?? "";
+  }, [babyId, user?.babies]);
 
   const handleAddParent = useCallback(() => {
     if (

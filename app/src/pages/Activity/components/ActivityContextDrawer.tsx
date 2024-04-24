@@ -185,8 +185,13 @@ export function ActivityContextDrawer(props: Props) {
           })
         ).unwrap();
         setNewItemName("");
-        setLocalItems((prev) => {
-          return [...prev, newItem].sort((a, b) => a.order - b.order);
+        setLocalItems((prevItems) => {
+          let newItems = [...prevItems];
+          // Add item only if it's not already in the list
+          if (!newItems.some((item) => item.id === newItem.id)) {
+            newItems.push(newItem);
+          }
+          return [...newItems].sort((a, b) => a.order - b.order);
         });
         if (props.canMultiSelect) {
           props.setSelectedItems((prev) => {
