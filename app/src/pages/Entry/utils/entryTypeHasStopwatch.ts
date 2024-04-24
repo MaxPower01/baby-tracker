@@ -12,6 +12,7 @@ export const entryTypesWithStopwatch = [
   EntryTypeId.Bath,
   EntryTypeId.BellyTime,
   EntryTypeId.Play,
+  EntryTypeId.BottleFeeding,
 ];
 
 export function entryTypeHasStopwatch(entryType: EntryTypeId) {

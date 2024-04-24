@@ -233,7 +233,11 @@ export default function BabyForm(props: Props) {
     }
   };
 
-  const [weight, setWeight] = useState(baby.birthWeight ?? 0);
+  const [weight, setWeight] = useState(
+    baby.birthWeight == null || baby.birthWeight == 0
+      ? 0
+      : baby.birthWeight / 1000
+  );
 
   const [size, setSize] = useState(baby.birthSize ?? 0);
   const [headCircumference, setHeadCircumference] = useState(
@@ -246,10 +250,14 @@ export default function BabyForm(props: Props) {
     newBaby.birthDate = birthDate.toDate();
     newBaby.sex = sex;
     newBaby.birthSize = size == 0 ? 0 : Math.round(size * 100) / 100;
-    newBaby.birthWeight = weight == 0 ? 0 : Math.round(weight * 100) / 100;
+    newBaby.birthWeight =
+      weight == 0 ? 0 : Math.round(weight * 1000 * 100) / 100;
     newBaby.birthHeadCircumference =
       headCircumference == 0 ? 0 : Math.round(headCircumference * 100) / 100;
     newBaby.avatar = avatar;
+    if (newBaby.activityContexts == null) {
+      newBaby.activityContexts = getDefaultActivityContexts();
+    }
     setIsSaving(true);
     saveBaby(newBaby)
       .then(() => {

@@ -42,13 +42,25 @@ export function EntryHeader(props: Props) {
   if (titleSuffix != null) {
     title += ` (${titleSuffix === "left" ? "G" : "D"})`;
   }
-  const startDate = getDateFromTimestamp(props.entry.startTimestamp);
-  const endDate = getDateFromTimestamp(props.entry.endTimestamp);
+  const startTimestamp = useMemo(() => {
+    return props.entry.startTimestamp;
+  }, [props.entry.startTimestamp]);
+  const endTimestamp = useMemo(() => {
+    return entryTypeHasStopwatch(props.entry.entryTypeId)
+      ? props.entry.endTimestamp
+      : props.entry.startTimestamp;
+  }, [
+    props.entry.endTimestamp,
+    props.entry.startTimestamp,
+    props.entry.entryTypeId,
+  ]);
+  const startDate = getDateFromTimestamp(startTimestamp);
+  const endDate = getDateFromTimestamp(endTimestamp);
   let caption = startDate.toLocaleTimeString("fr-CA", {
     hour: "2-digit",
     minute: "2-digit",
   });
-  if (props.entry.startTimestamp !== props.entry.endTimestamp) {
+  if (startTimestamp !== endTimestamp) {
     if (
       props.entry.leftStopwatchIsRunning ||
       props.entry.rightStopwatchIsRunning
