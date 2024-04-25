@@ -124,25 +124,29 @@ export function ImagesInput(props: Props) {
         </Button>
       </label>
       {(props.imageUrls?.length ?? 0) > 0 && (
-        <ImageList>
-          {props.imageUrls.map((imageURL, index) => {
-            return (
-              <ImageListItem
-                key={`${index}-${imageURL}`}
-                sx={{
-                  borderRadius: 1,
-                  overflow: "hidden",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleImageClick(imageURL)}
-              >
-                <img src={`${imageURL}`} loading="lazy" />
-              </ImageListItem>
-            );
-          })}
-        </ImageList>
+        <Box>
+          <ImageList
+            variant="masonry"
+            cols={props.imageUrls.length === 1 ? 1 : 2}
+            gap={8}
+          >
+            {props.imageUrls.map((imageURL, index) => {
+              return (
+                <ImageListItem
+                  key={`${index}-${imageURL}`}
+                  sx={{
+                    borderRadius: 1,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleImageClick(imageURL)}
+                >
+                  <img src={`${imageURL}`} loading="lazy" />
+                </ImageListItem>
+              );
+            })}
+          </ImageList>
+        </Box>
       )}
 
       <Modal

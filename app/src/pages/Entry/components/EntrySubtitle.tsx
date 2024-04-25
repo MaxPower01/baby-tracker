@@ -129,17 +129,17 @@ export function EntrySubtitle(props: Props) {
     volumeDisplayed = true;
   }
   let timeDisplayed = false;
-  if (!volumeDisplayed) {
-    if (hasStopwatch) {
-      if (totalTime > 0) {
-        if (!isNullOrWhiteSpace(subtitle)) {
-          subtitle += " • ";
-        }
-        subtitle += formatStopwatchTime(totalTime);
-        timeDisplayed = true;
+  // if (!volumeDisplayed) {
+  if (hasStopwatch) {
+    if (totalTime > 0) {
+      if (!isNullOrWhiteSpace(subtitle)) {
+        subtitle += " • ";
       }
+      subtitle += formatStopwatchTime(totalTime);
+      timeDisplayed = true;
     }
   }
+  // }
   let weightDisplayed = false;
   const hasWeight =
     entryTypeHasWeight(props.entry.entryTypeId) &&

@@ -1,4 +1,12 @@
-import { Box, Stack, SxProps, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  ImageList,
+  ImageListItem,
+  Stack,
+  SxProps,
+  Typography,
+  useTheme,
+} from "@mui/material";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
@@ -67,23 +75,12 @@ export function EntryBody(props: Props) {
 
   return (
     <Stack
-      spacing={0.5}
+      spacing={1}
       sx={{
         ...props.sx,
         width: "100%",
       }}
     >
-      {!isNullOrWhiteSpace(props.entry.note) && (
-        <Typography
-          variant={"body2"}
-          sx={{
-            opacity: theme.opacity.tertiary,
-            fontWeight: 400,
-          }}
-        >
-          {props.entry.note}
-        </Typography>
-      )}
       {!isNullOrWhiteSpace(poopTextureLabel) &&
         !isNullOrWhiteSpace(poopTextureName) && (
           <Box>
@@ -110,6 +107,40 @@ export function EntryBody(props: Props) {
             </Typography>
           </Box>
         )}
+      {!isNullOrWhiteSpace(props.entry.note) && (
+        <Typography
+          variant={"body2"}
+          sx={{
+            opacity: theme.opacity.tertiary,
+            fontWeight: 400,
+          }}
+          gutterBottom
+        >
+          {props.entry.note}
+        </Typography>
+      )}
+      {(props.entry.imageURLs?.length ?? 0) > 0 && (
+        <Box>
+          <ImageList
+            variant="masonry"
+            cols={props.entry.imageURLs.length === 1 ? 1 : 2}
+            gap={8}
+          >
+            {props.entry.imageURLs.map((imageURL, index) => (
+              <ImageListItem
+                sx={{
+                  borderRadius: 1,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+                key={index}
+              >
+                <img src={imageURL} loading="lazy" />
+              </ImageListItem>
+            ))}
+          </ImageList>
+        </Box>
+      )}
       {timeSincePreviousEntry != null && (
         <Typography
           variant={"caption"}
