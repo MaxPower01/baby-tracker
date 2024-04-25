@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -284,6 +285,7 @@ type ItemFooterProps = {
 function ItemFooter(props: ItemFooterProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { user } = useAuthentication();
   const elapsedTime =
     props.mostRecentEntryOfType == null
@@ -389,6 +391,33 @@ function ItemFooter(props: ItemFooterProps) {
         width: props.width,
         order: showStopwatch ? -1 : undefined,
         padding: `${props.padding}px`,
+        cursor: props.mostRecentEntryOfType == null ? undefined : "pointer",
+        "&:hover":
+          props.mostRecentEntryOfType == null
+            ? undefined
+            : {
+                backgroundColor: theme.palette.action.hover,
+              },
+        transition:
+          props.mostRecentEntryOfType == null
+            ? undefined
+            : theme.transitions.create(["background-color"], {
+                duration: theme.transitions.duration.standard,
+              }),
+      }}
+      onClick={() => {
+        if (props.mostRecentEntryOfType == null) {
+          return;
+        }
+        navigate(
+          getPath({
+            id: props.mostRecentEntryOfType.id,
+            page: PageId.Entry,
+            params: {
+              type: props.entryType.toString(),
+            },
+          })
+        );
       }}
     >
       {props.mostRecentEntryOfType == null ? null : (
@@ -436,6 +465,9 @@ function ItemFooter(props: ItemFooterProps) {
                 textAlign: "center",
                 justifyContent: "center",
                 alignItems: "center",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             />
           )}

@@ -19,6 +19,7 @@ type Props = {
    * the activity name will be used.
    */
   entries?: Entry[];
+  overrideIconOpacity?: number;
 };
 
 export default function ActivityChip(props: Props) {
@@ -34,6 +35,7 @@ export default function ActivityChip(props: Props) {
           sx={{
             fontSize: "1.75em",
             marginLeft: 0.5,
+            opacity: props.overrideIconOpacity ?? undefined,
           }}
         />
       }

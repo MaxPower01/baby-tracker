@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 
 import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import { DateHeader } from "@/components/DateHeader";
@@ -13,6 +13,7 @@ type Props = {
 
 export function DateEntriesHeader(props: Props) {
   const entries = [...props.entries];
+  const theme = useTheme();
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
     if (entry.entryTypeId === EntryTypeId.Diaper) {
@@ -69,6 +70,7 @@ export function DateEntriesHeader(props: Props) {
                   key={entryType}
                   entryType={entryType as any}
                   entries={entriesByEntryType[entryType]}
+                  overrideIconOpacity={theme.opacity.tertiary}
                 />
               );
             })}

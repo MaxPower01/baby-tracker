@@ -184,7 +184,7 @@ export default function EntryForm(props: EntryFormProps) {
   );
   const [isSaving, setIsSaving] = useState(false);
 
-  const save = useCallback(() => {
+  const saveEntry = useCallback(() => {
     return new Promise<boolean>(async (resolve, reject) => {
       try {
         if (isSaving || user == null) {
@@ -259,7 +259,7 @@ export default function EntryForm(props: EntryFormProps) {
   ]);
 
   const handleSubmit = useCallback(() => {
-    save()
+    saveEntry()
       .then((success) => {
         if (success) {
           navigate(
@@ -292,7 +292,7 @@ export default function EntryForm(props: EntryFormProps) {
     poopColorId,
     poopConsistencyId,
     isSaving,
-    save,
+    saveEntry,
     user,
   ]);
 

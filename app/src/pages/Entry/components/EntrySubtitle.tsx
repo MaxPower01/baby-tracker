@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { Stack, SxProps, Typography, useTheme } from "@mui/material";
 
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
@@ -20,6 +21,8 @@ import { formatWeight } from "@/utils/formatWeight";
 import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getPoopColor } from "@/utils/getPoopColor";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { selectActivityContexts } from "@/state/slices/activitiesSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
   entry: Entry;
@@ -37,6 +40,7 @@ export function EntrySubtitle(props: Props) {
   );
   const totalTime = useMemo(() => leftTime + rightTime, [leftTime, rightTime]);
   const hasStopwatch = entryTypeHasStopwatch(props.entry.entryTypeId);
+  const activityContexts = useSelector(selectActivityContexts);
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (hasStopwatch && entryHasStopwatchRunning(props.entry)) {
@@ -67,7 +71,9 @@ export function EntrySubtitle(props: Props) {
     return (
       <Stack
         direction={"row"}
-        spacing={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        flexWrap={"wrap"}
         sx={{
           ...props.sx,
         }}
@@ -108,13 +114,16 @@ export function EntrySubtitle(props: Props) {
   const hasContext =
     entryTypeHasContextSelector(props.entry.entryTypeId) &&
     props.entry.activityContexts.length > 0;
-  const canHaveMultipleContexts =
-    hasContext && entryTypeCanHaveMultipleContexts(props.entry.entryTypeId);
-  if (hasContext) {
-    const contextsLabel = props.entry.activityContexts
-      .map((context) => context.name)
-      .join(" • ");
-    subtitle = contextsLabel;
+  if (hasContext && activityContexts.length > 0) {
+    const activityContextsOfEntry = props.entry.activityContexts
+      .map((context) => activityContexts.find((c) => c.id === context.id))
+      .filter((context) => context != null) as ActivityContext[];
+    if (activityContextsOfEntry.length > 0) {
+      const contextsLabel = activityContextsOfEntry
+        .map((context) => context.name)
+        .join(" • ");
+      subtitle = contextsLabel;
+    }
   }
   let volumeDisplayed = false;
   const hasVolume = entryTypeHasVolume(props.entry.entryTypeId);
