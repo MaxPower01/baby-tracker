@@ -62,34 +62,123 @@ export default function EntryForm(props: EntryFormProps) {
   const { user } = useAuthentication();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  const { showSnackbar } = useSnackbar();
+
+  const hasStopwatch = entryTypeHasStopwatch(props.entry.entryTypeId);
+  const hasSides = entryTypeHasSides(props.entry.entryTypeId);
+
   const name = getEntryTypeName(props.entry.entryTypeId);
+
   const [selectedActivityContexts, setSelectedActivityContexts] = useState<
     ActivityContext[]
   >(props.entry.activityContexts ?? []);
+
   const initialStartDate = getDateFromTimestamp(props.entry.startTimestamp);
   const initialEndDate = getDateFromTimestamp(props.entry.endTimestamp);
+
   const [startDate, setStartDate] = useState<Dayjs>(dayjs(initialStartDate));
   const [startTime, setStartTime] = useState<Dayjs>(dayjs(initialStartDate));
+
   const [endDate, setEndDate] = useState<Dayjs>(dayjs(initialEndDate));
   const [endTime, setEndTime] = useState<Dayjs>(dayjs(initialEndDate));
+
+  const getDateTime = (date: Dayjs, time: Dayjs) => {
+    const newDate = date.toDate();
+    const newTime = time.toDate();
+    newDate.setHours(newTime.getHours());
+    newDate.setMinutes(newTime.getMinutes());
+    newDate.setSeconds(newTime.getSeconds());
+    return newDate;
+  };
+
   const startDateTime = useMemo(() => {
-    const date = startDate.toDate();
-    const time = startTime.toDate();
-    date.setHours(time.getHours());
-    date.setMinutes(time.getMinutes());
-    date.setSeconds(time.getSeconds());
-    return date;
+    return getDateTime(startDate, startTime);
   }, [startDate, startTime]);
+
   const endDateTime = useMemo(() => {
-    const date = endDate.toDate();
-    const time = endTime.toDate();
-    date.setHours(time.getHours());
-    date.setMinutes(time.getMinutes());
-    date.setSeconds(time.getSeconds());
-    return date;
+    return getDateTime(endDate, endTime);
   }, [endDate, endTime]);
+
+  const handleDateTimeChange = useCallback(
+    (
+      source: "datetimepicker" | "stopwatch",
+      target: "start" | "end",
+      type: "date" | "time" | "datetime",
+      value: React.SetStateAction<Dayjs> | Dayjs
+    ) => {
+      if (!dayjs.isDayjs(value)) {
+        return;
+      }
+
+      if (!hasStopwatch) {
+        if (type === "date") {
+          setStartDate(value);
+          setEndDate(value);
+        } else if (type === "time") {
+          setStartTime(value);
+          setEndTime(value);
+        } else {
+          setStartDate(value);
+          setStartTime(value);
+          setEndDate(value);
+          setEndTime(value);
+        }
+        return;
+      }
+
+      let newStartDate = startDate;
+      let newStartTime = startTime;
+      let newEndDate = endDate;
+      let newEndTime = endTime;
+
+      if (target === "start") {
+        if (type === "date") {
+          newStartDate = value;
+        } else if (type === "time") {
+          newStartTime = value;
+        } else {
+          newStartDate = value;
+          newStartTime = value;
+        }
+      } else {
+        if (type === "date") {
+          newEndDate = value;
+        } else if (type === "time") {
+          newEndTime = value;
+        } else {
+          newEndDate = value;
+          newEndTime = value;
+        }
+      }
+
+      const newStartDateTime = getDateTime(newStartDate, newStartTime);
+      const newEndDateTime = getDateTime(newEndDate, newEndTime);
+
+      if (newStartDateTime.getTime() > newEndDateTime.getTime()) {
+        if (target === "start") {
+          newEndDate = newStartDate;
+          newEndTime = newStartTime;
+        } else {
+          newStartDate = newEndDate;
+          newStartTime = newEndTime;
+        }
+      }
+
+      if (source === "datetimepicker" && !hasSides) {
+        const newTotalTime =
+          newEndDateTime.getTime() - newStartDateTime.getTime();
+        handleStopwatchTimeChange("datetimepicker", "left", newTotalTime);
+      }
+
+      setStartDate((prevStartDate) => newStartDate ?? prevStartDate);
+      setStartTime((prevStartTime) => newStartTime ?? prevStartTime);
+      setEndDate((prevEndDate) => newEndDate ?? prevEndDate);
+      setEndTime((prevEndTime) => newEndTime ?? prevEndTime);
+    },
+    [hasStopwatch, startDate, startTime, endDate, endTime, hasSides]
+  );
+
   const [note, setNote] = useState(props.entry.note);
   const [imageURLs, setImageURLs] = useState<string[]>(props.entry.imageURLs);
   const [isUploading, setIsUploading] = useState(false);
@@ -102,20 +191,31 @@ export default function EntryForm(props: EntryFormProps) {
     getEntryTime(props.entry, "right", true)
   );
   const handleStopwatchTimeChange = useCallback(
-    (side: "left" | "right", time: React.SetStateAction<number> | number) => {
+    (
+      source: "stopwatch" | "datetimepicker",
+      target: "left" | "right",
+      time: React.SetStateAction<number> | number
+    ) => {
       let totalTime = typeof time === "number" ? time : 0;
-      if (side === "left") {
+      if (target === "left") {
         setLeftTime(time);
         totalTime += rightTime;
       } else {
         setRightTime(time);
         totalTime += leftTime;
       }
-      const newEndDateTime = computeEndDate(startDateTime, totalTime);
-      setEndDate(dayjs(newEndDateTime));
-      setEndTime(dayjs(newEndDateTime));
+
+      if (source !== "datetimepicker") {
+        const newEndDateTime = computeEndDate(startDateTime, totalTime);
+        handleDateTimeChange(
+          "stopwatch",
+          "end",
+          "datetime",
+          dayjs(newEndDateTime)
+        );
+      }
     },
-    [startDateTime, leftTime, rightTime]
+    [startDateTime, leftTime, rightTime, handleDateTimeChange]
   );
   const [leftStopwatchIsRunning, setLeftStopwatchIsRunning] = useState(
     props.entry.leftStopwatchIsRunning
@@ -328,17 +428,25 @@ export default function EntryForm(props: EntryFormProps) {
             </Stack>
           </Section>
 
-          {entryTypeHasStopwatch(props.entry.entryTypeId) ? (
+          {hasStopwatch ? (
             <Section title="range">
               <DateTimeRangePicker
                 startDate={startDate}
-                setStartDate={setStartDate}
+                setStartDate={(date) => {
+                  handleDateTimeChange("datetimepicker", "start", "date", date);
+                }}
                 startTime={startTime}
-                setStartTime={setStartTime}
+                setStartTime={(time) => {
+                  handleDateTimeChange("datetimepicker", "start", "time", time);
+                }}
                 endDate={endDate}
-                setEndDate={setEndDate}
+                setEndDate={(date) => {
+                  handleDateTimeChange("datetimepicker", "end", "date", date);
+                }}
                 endTime={endTime}
-                setEndTime={setEndTime}
+                setEndTime={(time) => {
+                  handleDateTimeChange("datetimepicker", "end", "time", time);
+                }}
               />
             </Section>
           ) : (
@@ -348,9 +456,13 @@ export default function EntryForm(props: EntryFormProps) {
                 iconPostion="left"
                 align="left"
                 date={startDate}
-                setDate={setStartDate}
+                setDate={(date) => {
+                  handleDateTimeChange("datetimepicker", "start", "date", date);
+                }}
                 time={startTime}
-                setTime={setStartTime}
+                setTime={(time) => {
+                  handleDateTimeChange("datetimepicker", "start", "time", time);
+                }}
               />
             </Section>
           )}
@@ -377,7 +489,7 @@ export default function EntryForm(props: EntryFormProps) {
           <Section title="volume">
             <SectionTitle title="Quantité" />
             <VolumeInputContainer
-              hasSides={entryTypeHasSides(props.entry.entryTypeId)}
+              hasSides={hasSides}
               leftValue={leftVolume}
               setLeftValue={setLeftVolume}
               rightValue={rightVolume}
@@ -426,16 +538,20 @@ export default function EntryForm(props: EntryFormProps) {
           </Section>
         )}
 
-        {entryTypeHasStopwatch(props.entry.entryTypeId) && (
+        {hasStopwatch && (
           <Section title="stopwatch">
             <SectionTitle title="Durée" />
             <StopwatchContainer
               size="big"
-              hasSides={entryTypeHasSides(props.entry.entryTypeId)}
+              hasSides={hasSides}
               leftTime={leftTime}
-              setLeftTime={(time) => handleStopwatchTimeChange("left", time)}
+              setLeftTime={(time) =>
+                handleStopwatchTimeChange("stopwatch", "left", time)
+              }
               rightTime={rightTime}
-              setRightTime={(time) => handleStopwatchTimeChange("right", time)}
+              setRightTime={(time) =>
+                handleStopwatchTimeChange("stopwatch", "right", time)
+              }
               leftIsRunning={leftStopwatchIsRunning}
               setLeftIsRunning={(isRunning) =>
                 handleStopwatchIsRunningChange("left", isRunning)

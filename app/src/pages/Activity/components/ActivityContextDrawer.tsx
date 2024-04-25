@@ -655,7 +655,7 @@ export function ActivityContextDrawer(props: Props) {
                                           size="small"
                                         />
                                       </Stack>
-                                      <IconButton
+                                      {/* <IconButton
                                         onClick={() =>
                                           handleDeleteButtonClick(item)
                                         }
@@ -664,7 +664,7 @@ export function ActivityContextDrawer(props: Props) {
                                         }}
                                       >
                                         <DeleteIcon />
-                                      </IconButton>
+                                      </IconButton> */}
                                     </Stack>
                                   </Box>
                                 </Card>
