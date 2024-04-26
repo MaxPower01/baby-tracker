@@ -14,10 +14,11 @@ const reducer = {
 
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   devTools: process.env.NODE_ENV !== "production",
   preloadedState: undefined,
-  enhancers: [],
+  enhancers: undefined,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
