@@ -1,4 +1,4 @@
-import { EntriesCard } from "@/pages/History/components/EntriesCard";
+import { EntriesCard } from "@/components/EntriesCard";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { MenuProvider } from "@/components/MenuProvider";
 import React from "react";

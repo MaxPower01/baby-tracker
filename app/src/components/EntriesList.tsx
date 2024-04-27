@@ -11,8 +11,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import { DateEntries } from "@/pages/History/components/DateEntries";
-import { DateEntriesHeader } from "@/pages/History/components/DateEntriesHeader";
+import { DateEntries } from "@/components/DateEntries";
+import { DateEntriesHeader } from "@/components/DateEntriesHeader";
 import { DateHeader } from "@/components/DateHeader";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { MenuProvider } from "@/components/MenuProvider";

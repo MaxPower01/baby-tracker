@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
+import { SearchFiltersToolbar } from "@/pages/History/components/SearchFiltersToolbar";
 import { Section } from "@/components/Section";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -12,6 +13,7 @@ export function HistoryPage() {
         width: "100%",
       }}
     >
+      <SearchFiltersToolbar />
       <EmptyState
         context={EmptyStateContext.Entries}
         override={{
