@@ -14,8 +14,9 @@ const reducer = {
 
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(logger as any);
+  },
   devTools: process.env.NODE_ENV !== "production",
   preloadedState: undefined,
   enhancers: undefined,

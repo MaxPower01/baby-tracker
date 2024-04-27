@@ -384,6 +384,9 @@ function ItemFooter(props: ItemFooterProps) {
   const showElapsedTime = !showStopwatch && elapsedTime != null;
   const showSubtitle = !showStopwatch;
 
+  const shouldHandleClick =
+    props.mostRecentEntryOfType != null && !showStopwatch;
+
   return (
     <Box
       key={props.entryType}
@@ -391,22 +394,20 @@ function ItemFooter(props: ItemFooterProps) {
         width: props.width,
         order: showStopwatch ? -1 : undefined,
         padding: `${props.padding}px`,
-        cursor: props.mostRecentEntryOfType == null ? undefined : "pointer",
-        "&:hover":
-          props.mostRecentEntryOfType == null
-            ? undefined
-            : {
-                backgroundColor: theme.palette.action.hover,
-              },
-        transition:
-          props.mostRecentEntryOfType == null
-            ? undefined
-            : theme.transitions.create(["background-color"], {
-                duration: theme.transitions.duration.standard,
-              }),
+        cursor: shouldHandleClick ? "pointer" : undefined,
+        "&:hover": shouldHandleClick
+          ? {
+              backgroundColor: theme.palette.action.hover,
+            }
+          : undefined,
+        transition: shouldHandleClick
+          ? theme.transitions.create(["background-color"], {
+              duration: theme.transitions.duration.standard,
+            })
+          : undefined,
       }}
       onClick={() => {
-        if (props.mostRecentEntryOfType == null) {
+        if (!shouldHandleClick || props.mostRecentEntryOfType == null) {
           return;
         }
         navigate(

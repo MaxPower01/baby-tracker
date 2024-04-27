@@ -73,6 +73,16 @@ export function EntryBody(props: Props) {
     };
   }
 
+  const shouldRender =
+    !isNullOrWhiteSpace(poopTextureLabel) ||
+    !isNullOrWhiteSpace(props.entry.note) ||
+    (props.entry.imageURLs?.length ?? 0) > 0 ||
+    timeSincePreviousEntry != null;
+
+  if (!shouldRender) {
+    return null;
+  }
+
   return (
     <Stack
       spacing={1}

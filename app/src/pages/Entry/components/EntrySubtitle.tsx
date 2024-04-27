@@ -71,7 +71,7 @@ export function EntrySubtitle(props: Props) {
     return (
       <Stack
         direction={"row"}
-        justifyContent={"center"}
+        // justifyContent={"center"}
         alignItems={"center"}
         flexWrap={"wrap"}
         sx={{

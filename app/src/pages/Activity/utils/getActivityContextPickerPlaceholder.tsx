@@ -13,7 +13,7 @@ export function getActivityContextPickerPlaceholder(
       result = "Médicament";
       break;
     case ActivityContextType.VitaminsAndSupplements:
-      result = "Vitamine ou un supplément";
+      result = "Vitamine ou supplément";
       break;
     case ActivityContextType.BabyCare:
       result = "Soin de bébé";

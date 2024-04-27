@@ -130,13 +130,15 @@ export function EntriesCard(props: Props) {
                 component={Box}
               >
                 <CardContent
-                  sx={{
-                    paddingTop: 1,
-                    paddingBottom: 1,
-                    // borderBottom:
-                    //   nextEntryExists && "1px solid" : undefined,
-                    // borderColor: theme.palette.divider,
-                  }}
+                  sx={
+                    {
+                      // paddingTop: 1,
+                      // paddingBottom: 1,
+                      // borderBottom:
+                      //   nextEntryExists && "1px solid" : undefined,
+                      // borderColor: theme.palette.divider,
+                    }
+                  }
                 >
                   <Stack
                     sx={{

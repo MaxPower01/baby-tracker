@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -16,13 +15,8 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
-  InputLabel,
   ListItemText,
   MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Snackbar,
   Stack,
   SwipeableDrawer,
   TextField,
@@ -38,44 +32,30 @@ import {
   OnDragEndResponder,
   OnDragStartResponder,
 } from "react-beautiful-dnd";
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import {
   addActivityContextInDB,
-  addActivityContextInState,
-  saveActivityContextsInState,
   saveActivityContextsOfTypeInDB,
-  saveActivityContextsOfTypeInState,
-  selectActivityContexts,
   selectActivityContextsOfType,
 } from "@/state/slices/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import EditIcon from "@mui/icons-material/Edit";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { PageId } from "@/enums/PageId";
 import { RootState } from "@/state/store";
 import { deviceIsMobile } from "@/utils/deviceIsMobile";
 import { getActivityContextDrawerAddItemPlaceholder } from "@/pages/Activity/utils/getActivityContextDrawerAddItemPlaceholder";
 import { getActivityContextDrawerTitle } from "@/pages/Activity/utils/getActivityContextDrawerTitle";
 import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getActivityContextTypeFromEntryType";
 import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
-import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
