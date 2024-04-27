@@ -45,6 +45,9 @@ const parser = (state: ActivitiesState) => {
     !state.status
   ) {
     state = defaultState;
+  } else {
+    state.poopColors = getDefaultPoopColors();
+    state.poopTextures = getDefaultPoopTextureIds();
   }
   return state;
 };

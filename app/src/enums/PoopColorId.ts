@@ -6,4 +6,5 @@ export enum PoopColorId {
   Orange = 5,
   Red = 6,
   White = 7,
+  LightBrown = 8,
 }

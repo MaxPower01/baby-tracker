@@ -58,4 +58,5 @@ export interface Entry {
   poopAmount: number | null;
   poopColorId: number | null;
   poopTextureId: number | null;
+  poopHasUndigestedPieces: boolean | null;
 }

@@ -59,6 +59,13 @@ export function getPoopColor(poopColorId: PoopColorId | null | undefined) {
         value: "#D9D9D9",
       };
       break;
+    case PoopColorId.LightBrown:
+      result = {
+        id: "light-brown",
+        name: "Brun clair",
+        value: "#96746E",
+      };
+      break;
     default:
       break;
   }

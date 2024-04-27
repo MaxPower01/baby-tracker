@@ -3,6 +3,17 @@ import { PoopTextureId } from "@/enums/PoopTextureId";
 import { getPoopColor } from "@/utils/getPoopColor";
 import { parseEnumValue } from "@/utils/parseEnumValue";
 
+const order = [
+  PoopColorId.LightBrown,
+  PoopColorId.Brown,
+  PoopColorId.DarkBrown,
+  PoopColorId.Red,
+  PoopColorId.Orange,
+  PoopColorId.Yellow,
+  PoopColorId.Green,
+  PoopColorId.White,
+];
+
 export function getDefaultPoopColors() {
   let result = [];
   for (const value in PoopColorId) {
@@ -17,5 +28,6 @@ export function getDefaultPoopColors() {
       });
     }
   }
+  result.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
   return result;
 }

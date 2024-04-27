@@ -29,14 +29,18 @@ export function EntryBody(props: Props) {
   const theme = useTheme();
   let poopTextureLabel = "";
   let poopTextureName = "";
+  let poopHasUndigestedPiecesLabel = "";
   if (entryTypeHasPoop(props.entry.entryTypeId)) {
     if (props.entry.poopTextureId != null) {
       poopTextureName = getPoopTextureName(props.entry.poopTextureId);
     }
-    if (props.entry.entryTypeId == EntryTypeId.Poop) {
-      poopTextureLabel = `Consistance:`;
-    } else {
-      poopTextureLabel = `Consistance du caca:`;
+    // if (props.entry.entryTypeId == EntryTypeId.Poop) {
+    poopTextureLabel = `Consistance:`;
+    // } else {
+    //   poopTextureLabel = `Consistance du caca:`;
+    // }
+    if (props.entry.poopHasUndigestedPieces) {
+      poopHasUndigestedPiecesLabel = `Morceaux non digérés`;
     }
   }
   const intervalMethodByEntryTypeId = useSelector(
@@ -76,6 +80,7 @@ export function EntryBody(props: Props) {
   const shouldRender =
     !isNullOrWhiteSpace(poopTextureLabel) ||
     !isNullOrWhiteSpace(props.entry.note) ||
+    !isNullOrWhiteSpace(poopHasUndigestedPiecesLabel) ||
     (props.entry.imageURLs?.length ?? 0) > 0 ||
     timeSincePreviousEntry != null;
 
@@ -91,6 +96,21 @@ export function EntryBody(props: Props) {
         width: "100%",
       }}
     >
+      {!isNullOrWhiteSpace(poopHasUndigestedPiecesLabel) && (
+        <Box>
+          <Typography
+            variant={"body2"}
+            sx={{
+              opacity: theme.opacity.secondary,
+              fontWeight: 400,
+              display: "inline",
+            }}
+          >
+            {" "}
+            {poopHasUndigestedPiecesLabel}
+          </Typography>
+        </Box>
+      )}
       {!isNullOrWhiteSpace(poopTextureLabel) &&
         !isNullOrWhiteSpace(poopTextureName) && (
           <Box>

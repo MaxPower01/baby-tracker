@@ -51,5 +51,8 @@ export function getEntryToSave(entry: Entry, babyId: string): Entry {
   if (newEntry.rightStopwatchLastUpdateTime === 0) {
     newEntry.rightStopwatchLastUpdateTime = null;
   }
+  if (newEntry.poopHasUndigestedPieces == null) {
+    newEntry.poopHasUndigestedPieces = false;
+  }
   return newEntry;
 }

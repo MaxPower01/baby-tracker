@@ -1,4 +1,11 @@
-import { Stack, Typography, useTheme } from "@mui/material";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -277,6 +284,9 @@ export default function EntryForm(props: EntryFormProps) {
   );
   const [urineAmount, setUrineAmount] = useState(props.entry.urineAmount ?? 0);
   const [poopAmount, setPoopAmount] = useState(props.entry.poopAmount ?? 0);
+  const [poopHasUndigestedPieces, setPoopHasUndigestedPieces] = useState(
+    props.entry.poopHasUndigestedPieces ?? false
+  );
   const [poopConsistencyId, setPoopConsistencyId] =
     useState<PoopTextureId | null>(props.entry.poopTextureId);
   const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(
@@ -319,6 +329,7 @@ export default function EntryForm(props: EntryFormProps) {
           editedTimestamp: props.entry.editedTimestamp,
           createdBy: user.uid,
           editedBy: props.entry.editedBy,
+          poopHasUndigestedPieces: poopHasUndigestedPieces,
         };
         await dispatch(saveEntryInDB({ entry, user })).unwrap();
         setIsSaving(false);
@@ -527,13 +538,34 @@ export default function EntryForm(props: EntryFormProps) {
               EntryType.Poop && <SectionTitle title="Caca" />} */}
             <PoopAmountPicker value={poopAmount} setValue={setPoopAmount} />
             {poopAmount > 0 && (
-              <PoopTexturePicker
-                value={poopConsistencyId}
-                setValue={setPoopConsistencyId}
-              />
-            )}
-            {poopAmount > 0 && (
-              <PoopColorPicker value={poopColorId} setValue={setPoopColorId} />
+              <>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={poopHasUndigestedPieces}
+                      onChange={(e) =>
+                        setPoopHasUndigestedPieces(e.target.checked)
+                      }
+                      name="poopHasUndigested"
+                    />
+                  }
+                  label="Morceaux non digérés"
+                  sx={{
+                    color: poopHasUndigestedPieces
+                      ? theme.palette.text.primary
+                      : theme.palette.text.secondary,
+                  }}
+                />
+                <PoopTexturePicker
+                  value={poopConsistencyId}
+                  setValue={setPoopConsistencyId}
+                />
+                {/* Checkbox with the label "Morceaux non digérés" */}
+                <PoopColorPicker
+                  value={poopColorId}
+                  setValue={setPoopColorId}
+                />
+              </>
             )}
           </Section>
         )}
