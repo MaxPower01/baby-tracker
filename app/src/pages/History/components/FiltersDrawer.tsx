@@ -9,7 +9,12 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  FormControl,
   IconButton,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
   Stack,
   SwipeableDrawer,
   TextField,
@@ -20,9 +25,11 @@ import {
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import GetAppIcon from "@mui/icons-material/GetApp";
@@ -40,8 +47,72 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
-export function FiltersDrawer(props: { isOpen: boolean; onClose: () => void }) {
+type SectionProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+function FiltersSection(props: SectionProps) {
+  return (
+    <Stack spacing={1}>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 600,
+        }}
+      >
+        {props.title}
+      </Typography>
+      {props.children}
+    </Stack>
+  );
+}
+
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export function FiltersDrawer(props: Props) {
   const theme = useTheme();
+
+  const entryTypes = Object.values(EntryTypeId).filter((entryTypeId) => {
+    return typeof entryTypeId !== "string";
+  }) as EntryTypeId[];
+
+  const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
+    []
+  );
+
+  const activitiesSectionTitle = useMemo(() => {
+    if (selectedEntryTypes.length === 0) {
+      return "Activités";
+    } else {
+      return `Activités (${selectedEntryTypes.length})`;
+    }
+  }, [selectedEntryTypes]);
+
+  const toggleEntryType = useCallback(
+    (entryTypeId: EntryTypeId) => {
+      const isSelected = selectedEntryTypes.includes(entryTypeId);
+      if (isSelected) {
+        setSelectedEntryTypes((prev) => {
+          if (!prev || !prev.length) {
+            return prev;
+          } else if (prev.length === 1) {
+            return [];
+          } else {
+            return prev.filter((id) => id !== entryTypeId);
+          }
+        });
+      } else {
+        setSelectedEntryTypes((prev) => {
+          return [...prev, entryTypeId];
+        });
+      }
+    },
+    [selectedEntryTypes]
+  );
 
   return (
     <>
@@ -51,6 +122,7 @@ export function FiltersDrawer(props: { isOpen: boolean; onClose: () => void }) {
         onOpen={() => {}}
         onClose={() => props.onClose()}
         disableSwipeToOpen={true}
+        autoFocus={false}
       >
         <Box
           sx={{
@@ -84,12 +156,54 @@ export function FiltersDrawer(props: { isOpen: boolean; onClose: () => void }) {
             }}
           >
             <Stack
+              spacing={4}
               sx={{
                 paddingTop: 2,
                 paddingBottom: 2,
               }}
             >
-              <Typography variant="body1">Filtres</Typography>
+              <FiltersSection title={activitiesSectionTitle}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 1,
+                  }}
+                >
+                  {entryTypes.map((entryTypeId) => {
+                    return (
+                      <ActivityChip
+                        key={entryTypeId}
+                        entryType={entryTypeId}
+                        isSelected={selectedEntryTypes.includes(entryTypeId)}
+                        onClick={toggleEntryType}
+                      />
+                    );
+                  })}
+                </Box>
+              </FiltersSection>
+
+              <FiltersSection title="Trier par">
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  Bientôt disponible
+                </Typography>
+              </FiltersSection>
+
+              <FiltersSection title="Période">
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  Bientôt disponible
+                </Typography>
+              </FiltersSection>
             </Stack>
           </Box>
         </Container>

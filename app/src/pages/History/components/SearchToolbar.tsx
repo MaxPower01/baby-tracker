@@ -1,9 +1,9 @@
 import { FiltersPicker } from "@/pages/History/components/FiltersPicker";
 import React from "react";
-import { SearchRangePicker } from "@/pages/History/components/SearchRangePicker";
 import { Stack } from "@mui/material";
+import { TimePeriodPicker } from "@/pages/History/components/TimePeriodPicker";
 
-export function SearchFiltersToolbar() {
+export function SearchToolbar() {
   return (
     <Stack
       direction={"row"}
@@ -11,7 +11,7 @@ export function SearchFiltersToolbar() {
       alignItems={"center"}
       spacing={1}
     >
-      <SearchRangePicker
+      <TimePeriodPicker
         sx={{
           flexGrow: 1,
         }}

@@ -12,15 +12,14 @@ import {
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import React from "react";
-import { TemperatureMethodId } from "@/enums/TemperatureMethodId";
-import { getSearchRangePickerItems } from "@/utils/getSearchRangePickerItems";
+import { getTimePeriodPickerItems } from "@/utils/getTimePeriodPickerItems";
 
 type Props = {
   sx?: SxProps;
 };
 
-export function SearchRangePicker(props: Props) {
-  const items = getSearchRangePickerItems();
+export function TimePeriodPicker(props: Props) {
+  const items = getTimePeriodPickerItems();
   const theme = useTheme();
   const [selected, setSelected] = React.useState<string>(
     items?.length ? items[0].id : ""

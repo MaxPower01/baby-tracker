@@ -1,4 +1,4 @@
-export function getSearchRangePickerItems() {
+export function getTimePeriodPickerItems() {
   return [
     {
       id: "today",
