@@ -45,6 +45,7 @@ export function getDefaultEntry(
     editedTimestamp: null,
     leftStopwatchLastUpdateTime: null,
     rightStopwatchLastUpdateTime: null,
+    poopHasUndigestedPieces: false,
   };
   return result;
 }
