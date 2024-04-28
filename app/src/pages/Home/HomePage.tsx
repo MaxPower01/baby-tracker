@@ -60,8 +60,8 @@ export function HomePage() {
       const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
       const q = query(
         collection(db, `babies/${user.babyId}/entries`),
-        where("startDate", ">=", rangeStartTimestamp),
-        orderBy("startDate", "desc")
+        where("startTimestamp", ">=", rangeStartTimestamp),
+        orderBy("startTimestamp", "desc")
       );
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const addedEntries: Entry[] = [];
@@ -102,6 +102,8 @@ export function HomePage() {
           );
         }
       });
+
+      console.log("🚀 ~ unsubscribe ~ unsubscribe:", unsubscribe);
 
       return () => unsubscribe();
     }
