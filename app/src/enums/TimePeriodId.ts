@@ -1,7 +1,9 @@
 export enum TimePeriodId {
-  Day = 1,
-  Week = 2,
-  TwoWeeks = 3,
-  Month = 4,
-  TwoDays = 5,
+  AllTime = 1,
+  Today = 2,
+  Last2Days = 3,
+  Last7Days = 4,
+  Last14Days = 5,
+  Last30Days = 6,
+  Custom = 7,
 }

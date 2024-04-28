@@ -523,7 +523,11 @@ export function ActivityContextDrawer(props: Props) {
               spacing={2}
               justifyContent={"center"}
               alignItems={"center"}
-              sx={{ width: "100%" }}
+              sx={{
+                width: "100%",
+                backgroundColor: "inherit",
+                backgroundImage: "inherit",
+              }}
               flexGrow={1}
             >
               {!editMode && (

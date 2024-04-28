@@ -12,24 +12,24 @@ import {
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import React from "react";
+import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getTimePeriodPickerItems } from "@/utils/getTimePeriodPickerItems";
 
 type Props = {
   sx?: SxProps;
+  value: TimePeriodId;
+  setValue: React.Dispatch<React.SetStateAction<TimePeriodId>>;
 };
 
 export function TimePeriodPicker(props: Props) {
   const items = getTimePeriodPickerItems();
   const theme = useTheme();
-  const [selected, setSelected] = React.useState<string>(
-    items?.length ? items[0].id : ""
-  );
 
-  const renderValue = (selected: string | null) => {
+  const renderValue = (selected: TimePeriodId | null) => {
     if (selected === null) {
       return "";
     }
-    const item = items.find((item) => item.id === selected);
+    const item = items.find((item) => item.id == selected);
     if (item === undefined) {
       return "";
     }
@@ -59,8 +59,10 @@ export function TimePeriodPicker(props: Props) {
         <Select
           id="search-range-picker"
           labelId="search-range-picker-label"
-          value={selected ?? ""}
-          onChange={(e) => setSelected(e.target.value)}
+          value={props.value ?? ""}
+          onChange={(e) => {
+            props.setValue(e.target.value as TimePeriodId);
+          }}
           renderValue={renderValue}
         >
           {items.map((item) => {
