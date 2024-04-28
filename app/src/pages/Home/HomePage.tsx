@@ -103,8 +103,6 @@ export function HomePage() {
         }
       });
 
-      console.log("🚀 ~ unsubscribe ~ unsubscribe:", unsubscribe);
-
       return () => unsubscribe();
     }
   }, [user?.babyId]);
