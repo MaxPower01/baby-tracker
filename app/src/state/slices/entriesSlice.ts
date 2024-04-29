@@ -39,14 +39,16 @@ import { getTimestamp } from "@/utils/getTimestamp";
 const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
-  entries: [],
+  recentEntries: [],
+  oldEntries: [],
   latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
 
 const parser = (state: EntriesState) => {
   if (
-    !state.entries ||
+    !state.recentEntries ||
+    !state.oldEntries ||
     !state.latestRecentEntriesFetchedTimestamp ||
     !state.status
   ) {
@@ -68,7 +70,7 @@ export const fetchRecentEntriesFromDB = createAsyncThunk(
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
       const {
-        entries: currentEntries,
+        recentEntries: currentEntries,
         latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
       } = (thunkAPI.getState() as RootState).entriesReducer;
       const newTimestamp = getTimestamp(new Date());
@@ -196,9 +198,9 @@ function _addEntryToState(
   preventLocalStorageUpdate = false
 ) {
   const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.entries.findIndex((e) => e.id === entry.id);
+  const index = state.recentEntries.findIndex((e) => e.id === entry.id);
   if (index === -1) {
-    state.entries.push(entry);
+    state.recentEntries.push(entry);
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -229,9 +231,9 @@ function _updateEntryInState(
   preventLocalStorageUpdate = false
 ) {
   const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.entries.findIndex((e) => e.id === entry.id);
+  const index = state.recentEntries.findIndex((e) => e.id === entry.id);
   if (index !== -1) {
-    state.entries[index] = entry;
+    state.recentEntries[index] = entry;
   } else {
     _addEntryToState(state, payload, true);
   }
@@ -263,9 +265,9 @@ function _removeEntryFromState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const index = state.entries.findIndex((e) => e.id === payload.id);
+  const index = state.recentEntries.findIndex((e) => e.id === payload.id);
   if (index !== -1) {
-    state.entries.splice(index, 1);
+    state.recentEntries.splice(index, 1);
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -281,9 +283,9 @@ function _removeEntriesFromState(
 ) {
   payload.ids.forEach((id) => {
     if (isNullOrWhiteSpace(id)) return;
-    const index = state.entries.findIndex((e) => e.id === id);
+    const index = state.recentEntries.findIndex((e) => e.id === id);
     if (index !== -1) {
-      state.entries.splice(index, 1);
+      state.recentEntries.splice(index, 1);
     }
   });
   if (!preventLocalStorageUpdate) {
@@ -299,7 +301,7 @@ function _setEntriesInState(
   preventLocalStorageUpdate = false
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
-  state.entries = entries;
+  state.recentEntries = entries;
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -462,22 +464,25 @@ export const {
   updateEntriesInState,
 } = slice.actions;
 
-export const selectEntries = (state: RootState) => state.entriesReducer.entries;
+export const selectRecentEntries = (state: RootState) =>
+  state.entriesReducer.recentEntries;
+export const selectOldEntries = (state: RootState) =>
+  state.entriesReducer.oldEntries;
 export const selectEntriesStatus = (state: RootState) =>
   state.entriesReducer.status;
 
-export const selectRecentEntries = createSelector(
-  (state: RootState) => state.entriesReducer.entries,
-  (entries) => {
-    try {
-      const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
-      return entries.filter(
-        (entry) => entry.startTimestamp >= rangeStartTimestamp
-      );
-    } catch (error) {
-      return [];
-    }
-  }
-);
+// export const selectRecentEntries = createSelector(
+//   (state: RootState) => state.entriesReducer.recentEntries,
+//   (entries) => {
+//     try {
+//       const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
+//       return entries.filter(
+//         (entry) => entry.startTimestamp >= rangeStartTimestamp
+//       );
+//     } catch (error) {
+//       return [];
+//     }
+//   }
+// );
 
 export default slice.reducer;

@@ -37,7 +37,7 @@ export function EntryPage() {
   const entry: Entry | null = isNewEntry
     ? getDefaultEntry(entryType, user.babyId)
     : useSelector((state: RootState) =>
-        state.entriesReducer.entries.find((entry) => entry.id === entryId)
+        state.entriesReducer.recentEntries.find((entry) => entry.id === entryId)
       ) ?? null;
   if (!entry) {
     // TODO: Try to load entry from server
