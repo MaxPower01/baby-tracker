@@ -10,11 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  addEntriesInState,
-  removeEntriesFromState,
+  addRecentEntriesInState,
+  removeRecentEntriesFromState,
   selectEntriesStatus,
   selectRecentEntries,
-  updateEntriesInState,
+  updateRecentEntriesInState,
 } from "@/state/slices/entriesSlice";
 import {
   collection,

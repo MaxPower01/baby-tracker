@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
@@ -6,7 +8,7 @@ import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export function HistoryPage() {
   const [timePeriodId, setTimePeriodId] = useState(TimePeriodId.Today);
@@ -16,6 +18,7 @@ export function HistoryPage() {
   const [selectedSortOrder, setSelectedSortOrder] = useState(
     SortOrderId.DateDesc
   );
+
   return (
     <Stack
       spacing={2}

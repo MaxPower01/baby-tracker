@@ -1,8 +1,8 @@
 import {
-  addEntriesInState,
+  addRecentEntriesInState,
   fetchRecentEntriesFromDB,
-  removeEntriesFromState,
-  updateEntriesInState,
+  removeRecentEntriesFromState,
+  updateRecentEntriesInState,
 } from "@/state/slices/entriesSlice";
 import {
   collection,
@@ -81,7 +81,7 @@ export function App() {
 
         if (removedEntries.length > 0) {
           dispatch(
-            removeEntriesFromState({
+            removeRecentEntriesFromState({
               ids: removedEntries.map((entry) => entry.id ?? ""),
             })
           );
@@ -89,7 +89,7 @@ export function App() {
 
         if (modifiedEntries.length > 0) {
           dispatch(
-            updateEntriesInState({
+            updateRecentEntriesInState({
               entries: modifiedEntries.map((entry) => JSON.stringify(entry)),
             })
           );
@@ -97,7 +97,7 @@ export function App() {
 
         if (addedEntries.length > 0) {
           dispatch(
-            addEntriesInState({
+            addRecentEntriesInState({
               entries: addedEntries.map((entry) => JSON.stringify(entry)),
             })
           );

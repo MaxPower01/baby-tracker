@@ -26,9 +26,9 @@ export function getTimePeriodPickerItems() {
       id: TimePeriodId.Last30Days,
       label: "30 derniers jours",
     },
-    {
-      id: TimePeriodId.Custom,
-      label: "Sélectionner une période",
-    },
+    // {
+    //   id: TimePeriodId.Custom,
+    //   label: "Sélectionner une période",
+    // },
   ];
 }

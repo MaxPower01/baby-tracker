@@ -29,6 +29,7 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
+import { TimePeriodId } from "@/enums/TimePeriodId";
 import { createSelector } from "@reduxjs/toolkit";
 import { db } from "@/firebase";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
@@ -40,7 +41,7 @@ const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
   recentEntries: [],
-  oldEntries: [],
+  historyEntries: [],
   latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
@@ -48,7 +49,7 @@ const defaultState: EntriesState = {
 const parser = (state: EntriesState) => {
   if (
     !state.recentEntries ||
-    !state.oldEntries ||
+    !state.historyEntries ||
     !state.latestRecentEntriesFetchedTimestamp ||
     !state.status
   ) {
@@ -74,9 +75,9 @@ export const fetchRecentEntriesFromDB = createAsyncThunk(
         latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
       } = (thunkAPI.getState() as RootState).entriesReducer;
       const newTimestamp = getTimestamp(new Date());
-      const limitTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
+      const startTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
       const anyRecentEntries = currentEntries.some(
-        (entry) => entry.startTimestamp >= limitTimestamp
+        (entry) => entry.startTimestamp >= startTimestamp
       );
       if (
         lastFetchTimestamp &&
@@ -92,7 +93,70 @@ export const fetchRecentEntriesFromDB = createAsyncThunk(
       );
       const q = query(
         collection(db, `babies/${props.babyId}/entries`),
-        where("startTimestamp", ">=", limitTimestamp),
+        where("startTimestamp", ">=", startTimestamp),
+        orderBy("startTimestamp", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return thunkAPI.fulfillWithValue([]);
+      }
+      const entries: Entry[] = [];
+      querySnapshot.forEach((doc) => {
+        const entry: Entry = {
+          id: doc.id,
+          ...(doc.data() as Entry),
+        };
+        entries.push(entry);
+      });
+      entries.sort((a, b) => {
+        return b.startTimestamp - a.startTimestamp;
+      });
+      return thunkAPI.fulfillWithValue(entries);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchHistoryEntriesFromDB = createAsyncThunk(
+  "entries/fetchHistoryEntries",
+  async (
+    props: {
+      babyId: string;
+      timePeriodId: TimePeriodId;
+      startTimestamp?: number;
+      endTimestamp?: number;
+    },
+    thunkAPI
+  ) => {
+    try {
+      if (isNullOrWhiteSpace(props.babyId)) {
+        return thunkAPI.rejectWithValue("User or selected child is null");
+      }
+      const {
+        recentEntries: currentEntries,
+        latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
+      } = (thunkAPI.getState() as RootState).entriesReducer;
+      const newTimestamp = getTimestamp(new Date());
+      const startTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
+      const anyRecentEntries = currentEntries.some(
+        (entry) => entry.startTimestamp >= startTimestamp
+      );
+      if (
+        lastFetchTimestamp &&
+        newTimestamp - lastFetchTimestamp < recentDataFetchCooldownInSeconds &&
+        anyRecentEntries
+      ) {
+        return thunkAPI.rejectWithValue("Cooldown not elapsed");
+      }
+      thunkAPI.dispatch(
+        setLastFetchTimestampInState({
+          timestamp: newTimestamp,
+        })
+      );
+      const q = query(
+        collection(db, `babies/${props.babyId}/entries`),
+        where("startTimestamp", ">=", startTimestamp),
         orderBy("startTimestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
@@ -190,7 +254,7 @@ export const deleteEntryInDB = createAsyncThunk(
   }
 );
 
-function _addEntryToState(
+function _addRecentEntryToState(
   state: EntriesState,
   payload: {
     entry: string;
@@ -207,7 +271,24 @@ function _addEntryToState(
   }
 }
 
-function _addEntriesToState(
+function _addHistoryEntryToState(
+  state: EntriesState,
+  payload: {
+    entry: string;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const entry = JSON.parse(payload.entry) as Entry;
+  const index = state.historyEntries.findIndex((e) => e.id === entry.id);
+  if (index === -1) {
+    state.historyEntries.push(entry);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _addRecentEntriesToState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -216,14 +297,30 @@ function _addEntriesToState(
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    _addEntryToState(state, { entry: JSON.stringify(entry) }, true);
+    _addRecentEntryToState(state, { entry: JSON.stringify(entry) }, true);
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function _updateEntryInState(
+function _addHistoryEntriesToState(
+  state: EntriesState,
+  payload: {
+    entries: string[];
+  },
+  preventLocalStorageUpdate = false
+) {
+  const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
+  entries.forEach((entry) => {
+    _addHistoryEntryToState(state, { entry: JSON.stringify(entry) }, true);
+  });
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _updateRecentEntryInState(
   state: EntriesState,
   payload: {
     entry: string;
@@ -235,14 +332,33 @@ function _updateEntryInState(
   if (index !== -1) {
     state.recentEntries[index] = entry;
   } else {
-    _addEntryToState(state, payload, true);
+    _addRecentEntryToState(state, payload, true);
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function _updateEntriesInState(
+function _updateHistoryEntryInState(
+  state: EntriesState,
+  payload: {
+    entry: string;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const entry = JSON.parse(payload.entry) as Entry;
+  const index = state.historyEntries.findIndex((e) => e.id === entry.id);
+  if (index !== -1) {
+    state.historyEntries[index] = entry;
+  } else {
+    _addHistoryEntryToState(state, payload, true);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _updateRecentEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -251,14 +367,30 @@ function _updateEntriesInState(
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   entries.forEach((entry) => {
-    _updateEntryInState(state, { entry: JSON.stringify(entry) }, true);
+    _updateRecentEntryInState(state, { entry: JSON.stringify(entry) }, true);
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
 }
 
-function _removeEntryFromState(
+function _updateHistoryEntriesInState(
+  state: EntriesState,
+  payload: {
+    entries: string[];
+  },
+  preventLocalStorageUpdate = false
+) {
+  const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
+  entries.forEach((entry) => {
+    _updateHistoryEntryInState(state, { entry: JSON.stringify(entry) }, true);
+  });
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _removeRecentEntryFromState(
   state: EntriesState,
   payload: {
     id: string;
@@ -274,7 +406,23 @@ function _removeEntryFromState(
   }
 }
 
-function _removeEntriesFromState(
+function _removeHistoryEntryFromState(
+  state: EntriesState,
+  payload: {
+    id: string;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const index = state.historyEntries.findIndex((e) => e.id === payload.id);
+  if (index !== -1) {
+    state.historyEntries.splice(index, 1);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _removeRecentEntriesFromState(
   state: EntriesState,
   payload: {
     ids: string[];
@@ -293,7 +441,26 @@ function _removeEntriesFromState(
   }
 }
 
-function _setEntriesInState(
+function _removeHistoryEntriesFromState(
+  state: EntriesState,
+  payload: {
+    ids: string[];
+  },
+  preventLocalStorageUpdate = false
+) {
+  payload.ids.forEach((id) => {
+    if (isNullOrWhiteSpace(id)) return;
+    const index = state.historyEntries.findIndex((e) => e.id === id);
+    if (index !== -1) {
+      state.historyEntries.splice(index, 1);
+    }
+  });
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _setRecentEntriesInState(
   state: EntriesState,
   payload: {
     entries: string[];
@@ -302,6 +469,20 @@ function _setEntriesInState(
 ) {
   const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
   state.recentEntries = entries;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _setHistoryEntriesInState(
+  state: EntriesState,
+  payload: {
+    entries: string[];
+  },
+  preventLocalStorageUpdate = false
+) {
+  const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
+  state.historyEntries = entries;
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -342,61 +523,117 @@ const slice = createSlice({
   name: StoreReducerName.Entries,
   initialState: getInitialState(key, defaultState, parser),
   reducers: {
-    addEntryInState: (
+    addRecentEntryInState: (
       state,
       action: PayloadAction<{
         entry: string;
       }>
     ) => {
-      _addEntryToState(state, action.payload);
+      _addRecentEntryToState(state, action.payload);
     },
-    addEntriesInState: (
+    addRecentEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      _addEntriesToState(state, action.payload);
+      _addRecentEntriesToState(state, action.payload);
     },
-    updateEntryInState: (
+    addHistoryEntryInState: (
       state,
       action: PayloadAction<{
         entry: string;
       }>
     ) => {
-      _updateEntryInState(state, action.payload);
+      _addHistoryEntryToState(state, action.payload);
     },
-    updateEntriesInState: (
+    addHistoryEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      _updateEntriesInState(state, action.payload);
+      _addHistoryEntriesToState(state, action.payload);
     },
-    removeEntryFromState: (
+    updateRecentEntryInState: (
+      state,
+      action: PayloadAction<{
+        entry: string;
+      }>
+    ) => {
+      _updateRecentEntryInState(state, action.payload);
+    },
+    updateRecentEntriesInState: (
+      state,
+      action: PayloadAction<{
+        entries: string[];
+      }>
+    ) => {
+      _updateRecentEntriesInState(state, action.payload);
+    },
+    updateHistoryEntryInState: (
+      state,
+      action: PayloadAction<{
+        entry: string;
+      }>
+    ) => {
+      _updateHistoryEntryInState(state, action.payload);
+    },
+    updateHistoryEntriesInState: (
+      state,
+      action: PayloadAction<{
+        entries: string[];
+      }>
+    ) => {
+      _updateHistoryEntriesInState(state, action.payload);
+    },
+    removeRecentEntryFromState: (
       state,
       action: PayloadAction<{
         id: string;
       }>
     ) => {
-      _removeEntryFromState(state, action.payload);
+      _removeRecentEntryFromState(state, action.payload);
     },
-    removeEntriesFromState: (
+    removeRecentEntriesFromState: (
       state,
       action: PayloadAction<{
         ids: string[];
       }>
     ) => {
-      _removeEntriesFromState(state, action.payload);
+      _removeRecentEntriesFromState(state, action.payload);
     },
-    setEntriesInState: (
+    removeHistoryEntryFromState: (
+      state,
+      action: PayloadAction<{
+        id: string;
+      }>
+    ) => {
+      _removeHistoryEntryFromState(state, action.payload);
+    },
+    removeHistoryEntriesFromState: (
+      state,
+      action: PayloadAction<{
+        ids: string[];
+      }>
+    ) => {
+      _removeHistoryEntriesFromState(state, action.payload);
+    },
+    setRecentEntriesInState: (
       state,
       action: PayloadAction<{
         entries: string[];
       }>
     ) => {
-      _setEntriesInState(state, action.payload);
+      _setRecentEntriesInState(state, action.payload);
+    },
+    setHistoryEntriesInState: (
+      state,
+      action: PayloadAction<{
+        entries: string[];
+      }>
+    ) => {
+      _setHistoryEntriesInState(state, action.payload);
     },
     resetState: (state) => {
       _resetState(state);
@@ -416,7 +653,7 @@ const slice = createSlice({
     });
     builder.addCase(fetchRecentEntriesFromDB.fulfilled, (state, action) => {
       const entries = action.payload as Entry[];
-      _setEntriesInState(state, {
+      _setRecentEntriesInState(state, {
         entries: entries.map((e) => JSON.stringify(e)),
       });
       _setStatusInState(state, "idle");
@@ -430,7 +667,8 @@ const slice = createSlice({
     });
     builder.addCase(saveEntryInDB.fulfilled, (state, action) => {
       const entry = action.payload as Entry;
-      _updateEntryInState(state, { entry: JSON.stringify(entry) });
+      _updateRecentEntryInState(state, { entry: JSON.stringify(entry) });
+      _updateHistoryEntryInState(state, { entry: JSON.stringify(entry) });
       _setStatusInState(state, "idle");
     });
     builder.addCase(saveEntryInDB.rejected, (state, action) => {
@@ -442,47 +680,50 @@ const slice = createSlice({
     });
     builder.addCase(deleteEntryInDB.fulfilled, (state, action) => {
       const entryId = action.payload as string;
-      _removeEntryFromState(state, { id: entryId });
+      _removeRecentEntryFromState(state, { id: entryId });
+      _removeHistoryEntryFromState(state, { id: entryId });
       _setStatusInState(state, "idle");
     });
     builder.addCase(deleteEntryInDB.rejected, (state, action) => {
       console.error("Error deleting entry: ", action.payload);
       _setStatusInState(state, "idle");
     });
+    builder.addCase(fetchHistoryEntriesFromDB.pending, (state, action) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(fetchHistoryEntriesFromDB.fulfilled, (state, action) => {
+      const entries = action.payload as Entry[];
+      _setHistoryEntriesInState(state, {
+        entries: entries.map((e) => JSON.stringify(e)),
+      });
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(fetchHistoryEntriesFromDB.rejected, (state, action) => {
+      console.error("Error fetching history entries: ", action.payload);
+      _setStatusInState(state, "idle");
+    });
   },
 });
 
 export const {
-  updateEntryInState,
+  updateRecentEntryInState,
   resetState,
-  removeEntryFromState,
-  addEntriesInState,
-  addEntryInState,
-  removeEntriesFromState,
-  setEntriesInState,
+  removeRecentEntryFromState,
+  addRecentEntriesInState,
+  addRecentEntryInState,
+  removeRecentEntriesFromState,
+  setRecentEntriesInState,
   setLastFetchTimestampInState,
-  updateEntriesInState,
+  updateRecentEntriesInState,
 } = slice.actions;
 
 export const selectRecentEntries = (state: RootState) =>
   state.entriesReducer.recentEntries;
-export const selectOldEntries = (state: RootState) =>
-  state.entriesReducer.oldEntries;
+
+export const selectHistoryEntries = (state: RootState) =>
+  state.entriesReducer.historyEntries;
+
 export const selectEntriesStatus = (state: RootState) =>
   state.entriesReducer.status;
-
-// export const selectRecentEntries = createSelector(
-//   (state: RootState) => state.entriesReducer.recentEntries,
-//   (entries) => {
-//     try {
-//       const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
-//       return entries.filter(
-//         (entry) => entry.startTimestamp >= rangeStartTimestamp
-//       );
-//     } catch (error) {
-//       return [];
-//     }
-//   }
-// );
 
 export default slice.reducer;
