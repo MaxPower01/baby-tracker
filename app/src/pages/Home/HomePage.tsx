@@ -103,7 +103,7 @@ export function HomePage() {
             onClick={handleEmptyStateClick}
           />
         ) : (
-          <EntriesList entries={entries} /*groupByDate*/ />
+          <EntriesList entries={entries} />
         )}
       </Section>
     </SectionStack>

@@ -322,10 +322,17 @@ export const {
   saveActivityContextsOfTypeInState,
 } = slice.actions;
 
-export const selectActivityContexts = (state: RootState) =>
-  state.activitiesReducer.activityContexts.toSorted(
-    (a, b) => a.order - b.order
-  );
+// export const selectActivityContexts = (state: RootState) =>
+//   state.activitiesReducer.activityContexts.toSorted(
+//     (a, b) => a.order - b.order
+//   );
+
+export const selectActivityContexts = createSelector(
+  (state: RootState) => state.activitiesReducer.activityContexts,
+  (activityContexts) => {
+    return [...activityContexts].toSorted((a, b) => a.order - b.order);
+  }
+);
 
 export const selectActivityContextsOfType = createSelector(
   (state: RootState) => state.activitiesReducer.activityContexts,

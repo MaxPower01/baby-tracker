@@ -133,22 +133,8 @@ export const fetchHistoryEntriesFromDB = createAsyncThunk(
       if (isNullOrWhiteSpace(props.babyId)) {
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
-      const {
-        recentEntries: currentEntries,
-        latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
-      } = (thunkAPI.getState() as RootState).entriesReducer;
       const newTimestamp = getTimestamp(new Date());
       const startTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
-      const anyRecentEntries = currentEntries.some(
-        (entry) => entry.startTimestamp >= startTimestamp
-      );
-      if (
-        lastFetchTimestamp &&
-        newTimestamp - lastFetchTimestamp < recentDataFetchCooldownInSeconds &&
-        anyRecentEntries
-      ) {
-        return thunkAPI.rejectWithValue("Cooldown not elapsed");
-      }
       thunkAPI.dispatch(
         setLastFetchTimestampInState({
           timestamp: newTimestamp,

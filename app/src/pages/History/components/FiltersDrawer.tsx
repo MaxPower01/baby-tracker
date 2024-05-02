@@ -229,6 +229,7 @@ export function FiltersDrawer(props: Props) {
                   {sortItems.map((item) => {
                     return (
                       <Chip
+                        key={item.id}
                         icon={<item.Icon />}
                         label={item.label}
                         sx={{
