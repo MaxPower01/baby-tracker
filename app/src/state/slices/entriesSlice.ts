@@ -35,6 +35,7 @@ import { db } from "@/firebase";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
+import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { getTimestamp } from "@/utils/getTimestamp";
 
 const key = LocalStorageKey.EntriesState;
@@ -133,13 +134,7 @@ export const fetchHistoryEntriesFromDB = createAsyncThunk(
       if (isNullOrWhiteSpace(props.babyId)) {
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
-      const newTimestamp = getTimestamp(new Date());
-      const startTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
-      thunkAPI.dispatch(
-        setLastFetchTimestampInState({
-          timestamp: newTimestamp,
-        })
-      );
+      const startTimestamp = getStartTimestampForTimePeriod(props.timePeriodId);
       const q = query(
         collection(db, `babies/${props.babyId}/entries`),
         where("startTimestamp", ">=", startTimestamp),
