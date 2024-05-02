@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  fetchHistoryEntriesFromDB,
+  resetHistoryEntriesInState,
+} from "@/state/slices/entriesSlice";
+import { useEffect, useMemo, useState } from "react";
 
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
@@ -11,7 +15,6 @@ import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { fetchHistoryEntriesFromDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
@@ -22,6 +25,8 @@ export function HistoryPage() {
   const dispatch = useAppDispatch();
 
   const [isFetching, setIsFetching] = useState(false);
+  const [lastTimePeriodIdFetched, setLastTimePeriodIdFetched] =
+    useState<TimePeriodId | null>(null);
 
   const [timePeriodId, setTimePeriodId] = useState(TimePeriodId.Today);
 
@@ -36,8 +41,13 @@ export function HistoryPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
-    if (user?.babyId != null && !isFetching) {
+    if (
+      user?.babyId != null &&
+      !isFetching &&
+      lastTimePeriodIdFetched != timePeriodId
+    ) {
       setIsFetching(true);
+      setLastTimePeriodIdFetched(timePeriodId);
 
       dispatch(fetchHistoryEntriesFromDB({ babyId: user.babyId, timePeriodId }))
         .then((result) => {
@@ -45,6 +55,7 @@ export function HistoryPage() {
             if (typeof result.payload === "string") {
               console.error(result.payload);
             }
+
             setIsFetching(false);
           } else if (result.meta.requestStatus === "fulfilled") {
             if (!Array.isArray(result.payload)) {
@@ -52,10 +63,12 @@ export function HistoryPage() {
                 "Expected an array of entries, but got:",
                 result.payload
               );
+
               setIsFetching(false);
-              return;
             }
+
             const payload = result.payload as Entry[] | undefined | null;
+
             if (payload != null) {
               setEntries(payload);
             }
@@ -69,7 +82,43 @@ export function HistoryPage() {
           console.error(err);
         });
     }
-  }, [user, timePeriodId, dispatch, isFetching]);
+  }, [
+    user,
+    timePeriodId,
+    dispatch,
+    isFetching,
+    selectedEntryTypes,
+    selectedSortOrder,
+    lastTimePeriodIdFetched,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetHistoryEntriesInState());
+    };
+  }, []);
+
+  const filteredEntries = useMemo(() => {
+    let newEntries = entries;
+
+    if (selectedEntryTypes.length > 0) {
+      newEntries = newEntries.filter((entry) =>
+        selectedEntryTypes.includes(entry.entryTypeId)
+      );
+    }
+
+    if (selectedSortOrder === SortOrderId.DateDesc) {
+      newEntries = newEntries.sort(
+        (a, b) => b.startTimestamp - a.startTimestamp
+      );
+    } else if (selectedSortOrder === SortOrderId.DateAsc) {
+      newEntries = newEntries.sort(
+        (a, b) => a.startTimestamp - b.startTimestamp
+      );
+    }
+
+    return newEntries;
+  }, [entries, selectedEntryTypes, selectedSortOrder]);
 
   return (
     <Stack
@@ -89,7 +138,7 @@ export function HistoryPage() {
 
       {isFetching && <LoadingIndicator />}
 
-      {!isFetching && !entries.length && (
+      {!isFetching && !filteredEntries.length && (
         <EmptyState
           context={EmptyStateContext.Entries}
           override={{
@@ -101,7 +150,9 @@ export function HistoryPage() {
         />
       )}
 
-      {!isFetching && entries.length && <EntriesList entries={entries} />}
+      {!isFetching && filteredEntries.length > 0 && (
+        <EntriesList entries={filteredEntries} />
+      )}
     </Stack>
   );
 }

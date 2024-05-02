@@ -110,6 +110,8 @@ export function FiltersDrawer(props: Props) {
     }
   }, [selectedEntryTypes]);
 
+  const resetButtonLabel = "Réinitialiser les filtres";
+
   const activitiesSectionTitle = useMemo(() => {
     if (selectedEntryTypes.length === 0) {
       return "Activités";
@@ -141,15 +143,18 @@ export function FiltersDrawer(props: Props) {
   );
 
   const handleClose = useCallback(
-    (confirmed: boolean) => {
-      if (confirmed) {
+    (action: "confirm" | "cancel" | "reset") => {
+      if (action === "confirm") {
         setReferenceSelectedEntryTypes(selectedEntryTypes);
         setReferenceSelectedSortOrder(selectedSortOrder);
         props.setSelectedEntryTypes(selectedEntryTypes);
         props.setSelectedSortOrder(selectedSortOrder);
-      } else {
+      } else if (action === "cancel") {
         setSelectedEntryTypes(referenceSelectedEntryTypes);
         setSelectedSortOrder(referenceSelectedSortOrder);
+      } else {
+        setSelectedEntryTypes([]);
+        props.setSelectedEntryTypes([]);
       }
       props.onClose();
     },
@@ -185,7 +190,7 @@ export function FiltersDrawer(props: Props) {
             <Toolbar>
               <Typography variant="h6">Filtres</Typography>
               <Box sx={{ flexGrow: 1 }} />
-              <IconButton onClick={() => handleClose(false)}>
+              <IconButton onClick={() => handleClose("cancel")}>
                 <CloseIcon />
               </IconButton>
             </Toolbar>
@@ -218,7 +223,7 @@ export function FiltersDrawer(props: Props) {
                 paddingBottom: 2,
               }}
             >
-              <FiltersSection title="Trier par">
+              {/* <FiltersSection title="Trier par">
                 <Box
                   sx={{
                     display: "flex",
@@ -259,7 +264,7 @@ export function FiltersDrawer(props: Props) {
                     );
                   })}
                 </Box>
-              </FiltersSection>
+              </FiltersSection> */}
 
               <FiltersSection title={activitiesSectionTitle}>
                 <Box
@@ -295,37 +300,52 @@ export function FiltersDrawer(props: Props) {
                 width: "100%",
               }}
             >
-              <Button
-                variant="contained"
-                onClick={() => handleClose(true)}
-                fullWidth
-                size="large"
-                // disabled={isSaving || !props.selectedItems.length}
-                sx={{
-                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
-                }}
-              >
-                <Typography variant="button">{confirmButtonLabel}</Typography>
-                <Box
+              <Stack spacing={1}>
+                <Button
+                  variant="contained"
+                  onClick={() => handleClose("confirm")}
+                  fullWidth
+                  size="large"
+                  // disabled={isSaving || !props.selectedItems.length}
                   sx={{
-                    // display: isSaving ? "flex" : "none",
-                    display: "none",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    height: `calc(${theme.typography.button.fontSize} * 2.5)`,
                   }}
                 >
-                  <LoadingIndicator
-                    size={`calc(${theme.typography.button.fontSize} * 2)`}
-                  />
-                </Box>
-              </Button>
+                  <Typography variant="button">{confirmButtonLabel}</Typography>
+                  <Box
+                    sx={{
+                      // display: isSaving ? "flex" : "none",
+                      display: "none",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LoadingIndicator
+                      size={`calc(${theme.typography.button.fontSize} * 2)`}
+                    />
+                  </Box>
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  onClick={() => handleClose("reset")}
+                  fullWidth
+                  size="large"
+                  // disabled={isSaving || !props.selectedItems.length}
+                  sx={{
+                    height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                  }}
+                >
+                  <Typography variant="button">{resetButtonLabel}</Typography>
+                </Button>
+              </Stack>
             </Box>
           </Box>
         </Container>

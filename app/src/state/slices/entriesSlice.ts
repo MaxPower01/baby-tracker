@@ -469,6 +469,26 @@ function _setHistoryEntriesInState(
   }
 }
 
+function _resetRecentEntriesInState(
+  state: EntriesState,
+  preventLocalStorageUpdate = false
+) {
+  state.recentEntries = [];
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _resetHistoryEntriesInState(
+  state: EntriesState,
+  preventLocalStorageUpdate = false
+) {
+  state.historyEntries = [];
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
 function _resetState(state: EntriesState, preventLocalStorageUpdate = false) {
   Object.assign(state, defaultState);
   if (!preventLocalStorageUpdate) {
@@ -627,6 +647,12 @@ const slice = createSlice({
     ) => {
       _setLastFetchTimestampInState(state, action.payload);
     },
+    resetRecentEntriesInState: (state) => {
+      _resetRecentEntriesInState(state);
+    },
+    resetHistoryEntriesInState: (state) => {
+      _resetHistoryEntriesInState(state);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchRecentEntriesFromDB.pending, (state, action) => {
@@ -696,6 +722,15 @@ export const {
   setRecentEntriesInState,
   setLastFetchTimestampInState,
   updateRecentEntriesInState,
+  resetRecentEntriesInState,
+  updateHistoryEntryInState,
+  removeHistoryEntryFromState,
+  addHistoryEntriesInState,
+  addHistoryEntryInState,
+  removeHistoryEntriesFromState,
+  setHistoryEntriesInState,
+  updateHistoryEntriesInState,
+  resetHistoryEntriesInState,
 } = slice.actions;
 
 export const selectRecentEntries = (state: RootState) =>
