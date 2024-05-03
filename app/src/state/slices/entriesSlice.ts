@@ -1,10 +1,16 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Entry, ExistingEntry } from "@/pages/Entry/types/Entry";
 import {
-  Timestamp,
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import {
   addDoc,
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -21,36 +27,36 @@ import {
   recentDataFetchCooldownInSeconds,
 } from "@/utils/constants";
 
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
+import { DailyEntries } from "@/types/DailyEntries";
+import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import EntriesState from "@/types/EntriesState";
-import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { createSelector } from "@reduxjs/toolkit";
 import { db } from "@/firebase";
-import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
+import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
-import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { getTimestamp } from "@/utils/getTimestamp";
+import { getTimestampFromDateKey } from "@/utils/getTimestampFromDateKey";
+import { v4 as uuid } from "uuid";
 
 const key = LocalStorageKey.EntriesState;
 
 const defaultState: EntriesState = {
-  recentEntries: [],
-  historyEntries: [],
+  recentDailyEntries: {},
+  historyDailyEntries: {},
   latestRecentEntriesFetchedTimestamp: null,
   status: "idle",
 };
 
 const parser = (state: EntriesState) => {
   if (
-    !state.recentEntries ||
-    !state.historyEntries ||
+    !state.recentDailyEntries ||
     !state.latestRecentEntriesFetchedTimestamp ||
     !state.status
   ) {
@@ -71,48 +77,54 @@ export const fetchRecentEntriesFromDB = createAsyncThunk(
       if (isNullOrWhiteSpace(props.babyId)) {
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
+
       const {
-        recentEntries: currentEntries,
+        recentDailyEntries: currentDailyEntries,
         latestRecentEntriesFetchedTimestamp: lastFetchTimestamp,
       } = (thunkAPI.getState() as RootState).entriesReducer;
-      const newTimestamp = getTimestamp(new Date());
-      const startTimestamp = newTimestamp - recentAgeDataLimitInSeconds;
-      const anyRecentEntries = currentEntries.some(
-        (entry) => entry.startTimestamp >= startTimestamp
+
+      const now = new Date();
+      const nowTimestamp = getTimestamp(now);
+
+      const recentAgeDateLimitInDays = 2;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - recentAgeDateLimitInDays);
+      const startDateKey = getDateKeyFromTimestamp(
+        nowTimestamp - recentAgeDataLimitInSeconds
       );
+      const startTimestamp = getTimestampFromDateKey(startDateKey);
+      const anyRecentEntries =
+        currentDailyEntries &&
+        Object.keys(currentDailyEntries).some((k) => {
+          return currentDailyEntries[k].timestamp >= startTimestamp;
+        });
       if (
         lastFetchTimestamp &&
-        newTimestamp - lastFetchTimestamp < recentDataFetchCooldownInSeconds &&
+        nowTimestamp - lastFetchTimestamp < recentDataFetchCooldownInSeconds &&
         anyRecentEntries
       ) {
         return thunkAPI.rejectWithValue("Cooldown not elapsed");
       }
       thunkAPI.dispatch(
         setLastFetchTimestampInState({
-          timestamp: newTimestamp,
+          timestamp: nowTimestamp,
         })
       );
       const q = query(
-        collection(db, `babies/${props.babyId}/entries`),
-        where("startTimestamp", ">=", startTimestamp),
-        orderBy("startTimestamp", "desc")
+        collection(db, `babies/${props.babyId}/dailyEntries`),
+        where("timestamp", ">=", startTimestamp),
+        orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         return thunkAPI.fulfillWithValue([]);
       }
-      const entries: Entry[] = [];
+      const dailyEntriesCollection: DailyEntriesCollection = {};
       querySnapshot.forEach((doc) => {
-        const entry: Entry = {
-          id: doc.id,
-          ...(doc.data() as Entry),
-        };
-        entries.push(entry);
+        const dailyEntries = doc.data() as DailyEntries;
+        dailyEntriesCollection[doc.id] = dailyEntries;
       });
-      entries.sort((a, b) => {
-        return b.startTimestamp - a.startTimestamp;
-      });
-      return thunkAPI.fulfillWithValue(entries);
+      return thunkAPI.fulfillWithValue(dailyEntriesCollection);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -134,28 +146,25 @@ export const fetchHistoryEntriesFromDB = createAsyncThunk(
       if (isNullOrWhiteSpace(props.babyId)) {
         return thunkAPI.rejectWithValue("User or selected child is null");
       }
-      const startTimestamp = getStartTimestampForTimePeriod(props.timePeriodId);
+      const dateKey = getDateKeyFromTimestamp(
+        getStartTimestampForTimePeriod(props.timePeriodId)
+      );
+      const startTimestamp = getTimestampFromDateKey(dateKey);
       const q = query(
-        collection(db, `babies/${props.babyId}/entries`),
-        where("startTimestamp", ">=", startTimestamp),
-        orderBy("startTimestamp", "desc")
+        collection(db, `babies/${props.babyId}/dailyEntries`),
+        where("timestamp", ">=", startTimestamp),
+        orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         return thunkAPI.fulfillWithValue([]);
       }
-      const entries: Entry[] = [];
+      const dailyEntriesCollection: DailyEntriesCollection = {};
       querySnapshot.forEach((doc) => {
-        const entry: Entry = {
-          id: doc.id,
-          ...(doc.data() as Entry),
-        };
-        entries.push(entry);
+        const dailyEntries = doc.data() as DailyEntries;
+        dailyEntriesCollection[doc.id] = dailyEntries;
       });
-      entries.sort((a, b) => {
-        return b.startTimestamp - a.startTimestamp;
-      });
-      return thunkAPI.fulfillWithValue(entries);
+      return thunkAPI.fulfillWithValue(dailyEntriesCollection);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -166,7 +175,7 @@ export const saveEntryInDB = createAsyncThunk(
   "entries/saveEntry",
   async (
     props: {
-      entry: Entry;
+      entry: Entry | ExistingEntry;
       user: CustomUser;
     },
     thunkAPI
@@ -176,36 +185,80 @@ export const saveEntryInDB = createAsyncThunk(
     if (user == null || isNullOrWhiteSpace(babyId)) {
       return thunkAPI.rejectWithValue("User or selected baby is null");
     }
+
     const entryToSave = getEntryToSave(entry, babyId);
-    const { id, ...rest } = entryToSave;
-    let newId = id;
-    if (isNullOrWhiteSpace(id)) {
-      try {
-        const entryToAdd: Entry = {
-          ...rest,
-        };
-        const docRef = await addDoc(
-          collection(db, `babies/${entryToSave.babyId}/entries`),
-          entryToAdd
-        );
-        newId = docRef.id;
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error);
-      }
-    } else {
-      try {
-        const entryToUpdate: Entry = {
-          ...rest,
-        };
-        await setDoc(
-          doc(db, `babies/${entryToSave.babyId}/entries/${id}`),
-          entryToUpdate
-        );
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error);
-      }
+
+    if (isNullOrWhiteSpace(entryToSave.id)) {
+      entryToSave.id = uuid();
     }
-    const savedEntry = { ...entryToSave, id: newId } as Entry;
+
+    const dateKey = getDateKeyFromTimestamp(entryToSave.startTimestamp);
+
+    if (!dateKey || isNullOrWhiteSpace(dateKey)) {
+      return thunkAPI.rejectWithValue("Daily entries key is null or empty");
+    }
+
+    const collectionPath = `babies/${babyId}/dailyEntries`;
+    const docPath = `${collectionPath}/${dateKey}`;
+
+    let originalDateKey = dateKey;
+    let existingEntry: ExistingEntry | null = null;
+
+    if ((entry as ExistingEntry).originalStartTimestamp) {
+      existingEntry = entry as ExistingEntry;
+      originalDateKey = getDateKeyFromTimestamp(
+        (entry as ExistingEntry).originalStartTimestamp
+      );
+    }
+
+    const notSameDay = existingEntry && dateKey !== originalDateKey;
+
+    try {
+      const dailyEntriesDocRef = doc(db, docPath);
+      const dailyEntriesDoc = await getDoc(dailyEntriesDocRef);
+      const entries = dailyEntriesDoc.exists()
+        ? dailyEntriesDoc.data().entries
+        : ([] as Entry[]);
+      if (!entries || !Array.isArray(entries)) {
+        throw new Error("Entries is not an array");
+      }
+      const isNewEntry = !entries.some((e) => e.id === entryToSave.id);
+      if (isNewEntry) {
+        entries.push(entryToSave);
+      } else {
+        const index = entries.findIndex((e) => e.id === entryToSave.id);
+        entries[index] = entryToSave;
+      }
+      const timestamp = getTimestampFromDateKey(dateKey);
+      await setDoc(dailyEntriesDocRef, { entries, timestamp }, { merge: true });
+      if (notSameDay) {
+        const originalDateKeyDocRef = doc(
+          db,
+          `${collectionPath}/${originalDateKey}`
+        );
+        const originalDateKeyDoc = await getDoc(originalDateKeyDocRef);
+        if (originalDateKeyDoc.exists()) {
+          const originalEntries = originalDateKeyDoc.data().entries;
+          if (originalEntries && Array.isArray(originalEntries)) {
+            const index = originalEntries.findIndex(
+              (e) => e.id === entryToSave.id
+            );
+            if (index !== -1) {
+              originalEntries.splice(index, 1);
+              await setDoc(
+                originalDateKeyDocRef,
+                { entries: originalEntries, timestamp },
+                { merge: true }
+              );
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error saving entry: ", error);
+    }
+
+    const savedEntry = { ...entryToSave } as Entry;
     return thunkAPI.fulfillWithValue(savedEntry);
   }
 );
@@ -215,14 +268,36 @@ export const deleteEntryInDB = createAsyncThunk(
   async (
     props: {
       entryId: string;
+      timestamp: number;
       babyId: string;
     },
     thunkAPI
   ) => {
     try {
-      await deleteDoc(
-        doc(db, `babies/${props.babyId}/entries/${props.entryId}`)
+      const dailyEntriesKey = getDateKeyFromTimestamp(props.timestamp);
+      if (isNullOrWhiteSpace(dailyEntriesKey)) {
+        return thunkAPI.rejectWithValue("Daily entries key is null or empty");
+      }
+      const dailyEntriesDocRef = doc(
+        db,
+        `babies/${props.babyId}/dailyEntries/${dailyEntriesKey}`
       );
+      const dailyEntriesDoc = await getDoc(dailyEntriesDocRef);
+      if (!dailyEntriesDoc.exists()) {
+        return thunkAPI.rejectWithValue(
+          "Daily entries document does not exist"
+        );
+      }
+      const entries = dailyEntriesDoc.data().entries as Entry[];
+      if (!entries || !Array.isArray(entries)) {
+        return thunkAPI.rejectWithValue("Entries is not an array");
+      }
+      const index = entries.findIndex((e) => e.id === props.entryId);
+      if (index === -1) {
+        return thunkAPI.rejectWithValue("Entry not found in daily entries");
+      }
+      entries.splice(index, 1);
+      await setDoc(dailyEntriesDocRef, { entries }, { merge: true });
       return thunkAPI.fulfillWithValue(props.entryId);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -237,10 +312,26 @@ function _addRecentEntryToState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.recentEntries.findIndex((e) => e.id === entry.id);
-  if (index === -1) {
-    state.recentEntries.push(entry);
+  const entry = JSON.parse(payload.entry) as ExistingEntry;
+  const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+  if (isNullOrWhiteSpace(dateKey)) {
+    return;
+  }
+  if (!entry.originalStartTimestamp) {
+    entry.originalStartTimestamp = entry.startTimestamp;
+  }
+  if (!state.recentDailyEntries[dateKey]) {
+    state.recentDailyEntries[dateKey] = {
+      timestamp: entry.startTimestamp,
+      entries: [entry],
+    };
+  } else {
+    const index = state.recentDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === entry.id
+    );
+    if (index === -1) {
+      state.recentDailyEntries[dateKey].entries.push(entry);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -254,10 +345,26 @@ function _addHistoryEntryToState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.historyEntries.findIndex((e) => e.id === entry.id);
-  if (index === -1) {
-    state.historyEntries.push(entry);
+  const entry = JSON.parse(payload.entry) as ExistingEntry;
+  const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+  if (isNullOrWhiteSpace(dateKey)) {
+    return;
+  }
+  if (!entry.originalStartTimestamp) {
+    entry.originalStartTimestamp = entry.startTimestamp;
+  }
+  if (!state.historyDailyEntries[dateKey]) {
+    state.historyDailyEntries[dateKey] = {
+      timestamp: entry.startTimestamp,
+      entries: [entry],
+    };
+  } else {
+    const index = state.historyDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === entry.id
+    );
+    if (index === -1) {
+      state.historyDailyEntries[dateKey].entries.push(entry);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -303,12 +410,28 @@ function _updateRecentEntryInState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.recentEntries.findIndex((e) => e.id === entry.id);
-  if (index !== -1) {
-    state.recentEntries[index] = entry;
+  const entry = JSON.parse(payload.entry) as ExistingEntry;
+  const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+  if (isNullOrWhiteSpace(dateKey)) {
+    return;
+  }
+  if (!entry.originalStartTimestamp) {
+    entry.originalStartTimestamp = entry.startTimestamp;
+  }
+  if (!state.recentDailyEntries[dateKey]) {
+    state.recentDailyEntries[dateKey] = {
+      timestamp: entry.startTimestamp,
+      entries: [entry],
+    };
   } else {
-    _addRecentEntryToState(state, payload, true);
+    const index = state.recentDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === entry.id
+    );
+    if (index !== -1) {
+      state.recentDailyEntries[dateKey].entries[index] = entry;
+    } else {
+      _addRecentEntryToState(state, payload, true);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -322,12 +445,28 @@ function _updateHistoryEntryInState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entry = JSON.parse(payload.entry) as Entry;
-  const index = state.historyEntries.findIndex((e) => e.id === entry.id);
-  if (index !== -1) {
-    state.historyEntries[index] = entry;
+  const entry = JSON.parse(payload.entry) as ExistingEntry;
+  const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+  if (isNullOrWhiteSpace(dateKey)) {
+    return;
+  }
+  if (!entry.originalStartTimestamp) {
+    entry.originalStartTimestamp = entry.startTimestamp;
+  }
+  if (!state.historyDailyEntries[dateKey]) {
+    state.historyDailyEntries[dateKey] = {
+      timestamp: entry.startTimestamp,
+      entries: [entry],
+    };
   } else {
-    _addHistoryEntryToState(state, payload, true);
+    const index = state.historyDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === entry.id
+    );
+    if (index !== -1) {
+      state.historyDailyEntries[dateKey].entries[index] = entry;
+    } else {
+      _addHistoryEntryToState(state, payload, true);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -373,9 +512,16 @@ function _removeRecentEntryFromState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const index = state.recentEntries.findIndex((e) => e.id === payload.id);
-  if (index !== -1) {
-    state.recentEntries.splice(index, 1);
+  const dateKey = Object.keys(state.recentDailyEntries).find((k) => {
+    return state.recentDailyEntries[k].entries.some((e) => e.id === payload.id);
+  });
+  if (dateKey) {
+    const index = state.recentDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === payload.id
+    );
+    if (index !== -1) {
+      state.recentDailyEntries[dateKey].entries.splice(index, 1);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -389,9 +535,18 @@ function _removeHistoryEntryFromState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const index = state.historyEntries.findIndex((e) => e.id === payload.id);
-  if (index !== -1) {
-    state.historyEntries.splice(index, 1);
+  const dateKey = Object.keys(state.historyDailyEntries).find((k) => {
+    return state.historyDailyEntries[k].entries.some(
+      (e) => e.id === payload.id
+    );
+  });
+  if (dateKey) {
+    const index = state.historyDailyEntries[dateKey].entries.findIndex(
+      (e) => e.id === payload.id
+    );
+    if (index !== -1) {
+      state.historyDailyEntries[dateKey].entries.splice(index, 1);
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -406,11 +561,7 @@ function _removeRecentEntriesFromState(
   preventLocalStorageUpdate = false
 ) {
   payload.ids.forEach((id) => {
-    if (isNullOrWhiteSpace(id)) return;
-    const index = state.recentEntries.findIndex((e) => e.id === id);
-    if (index !== -1) {
-      state.recentEntries.splice(index, 1);
-    }
+    _removeRecentEntryFromState(state, { id });
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -425,11 +576,7 @@ function _removeHistoryEntriesFromState(
   preventLocalStorageUpdate = false
 ) {
   payload.ids.forEach((id) => {
-    if (isNullOrWhiteSpace(id)) return;
-    const index = state.historyEntries.findIndex((e) => e.id === id);
-    if (index !== -1) {
-      state.historyEntries.splice(index, 1);
-    }
+    _removeHistoryEntryFromState(state, { id });
   });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -443,8 +590,28 @@ function _setRecentEntriesInState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
-  state.recentEntries = entries;
+  const entries = payload.entries.map((entry) => {
+    const parsed = JSON.parse(entry) as ExistingEntry;
+    if (!parsed.originalStartTimestamp) {
+      parsed.originalStartTimestamp = parsed.startTimestamp;
+    }
+    return parsed;
+  });
+  const entriesByDateKey = {} as Record<string, ExistingEntry[]>;
+  entries.forEach((entry) => {
+    const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+    if (!entriesByDateKey[dateKey]) {
+      entriesByDateKey[dateKey] = [];
+    }
+    entriesByDateKey[dateKey].push(entry);
+  });
+  state.recentDailyEntries = {};
+  Object.keys(entriesByDateKey).forEach((dateKey) => {
+    state.recentDailyEntries[dateKey] = {
+      timestamp: getTimestampFromDateKey(dateKey),
+      entries: entriesByDateKey[dateKey],
+    };
+  });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -457,8 +624,28 @@ function _setHistoryEntriesInState(
   },
   preventLocalStorageUpdate = false
 ) {
-  const entries = payload.entries.map((entry) => JSON.parse(entry) as Entry);
-  state.historyEntries = entries;
+  const entries = payload.entries.map((entry) => {
+    const parsed = JSON.parse(entry) as ExistingEntry;
+    if (!parsed.originalStartTimestamp) {
+      parsed.originalStartTimestamp = parsed.startTimestamp;
+    }
+    return parsed;
+  });
+  const entriesByDateKey = {} as Record<string, ExistingEntry[]>;
+  entries.forEach((entry) => {
+    const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+    if (!entriesByDateKey[dateKey]) {
+      entriesByDateKey[dateKey] = [];
+    }
+    entriesByDateKey[dateKey].push(entry);
+  });
+  state.historyDailyEntries = {};
+  Object.keys(entriesByDateKey).forEach((dateKey) => {
+    state.historyDailyEntries[dateKey] = {
+      timestamp: getTimestampFromDateKey(dateKey),
+      entries: entriesByDateKey[dateKey],
+    };
+  });
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -468,7 +655,7 @@ function _resetRecentEntriesInState(
   state: EntriesState,
   preventLocalStorageUpdate = false
 ) {
-  state.recentEntries = [];
+  state.recentDailyEntries = {};
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -478,7 +665,7 @@ function _resetHistoryEntriesInState(
   state: EntriesState,
   preventLocalStorageUpdate = false
 ) {
-  state.historyEntries = [];
+  state.historyDailyEntries = {};
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
   }
@@ -654,50 +841,78 @@ const slice = createSlice({
       _setStatusInState(state, "busy");
     });
     builder.addCase(fetchRecentEntriesFromDB.fulfilled, (state, action) => {
-      const entries = action.payload as Entry[];
-      _setRecentEntriesInState(state, {
-        entries: entries.map((e) => JSON.stringify(e)),
-      });
-      _setStatusInState(state, "idle");
+      try {
+        const dailyEntriesCollection = action.payload as DailyEntriesCollection;
+        if (dailyEntriesCollection) {
+          const entries = getEntriesFromDailyEntriesCollection(
+            dailyEntriesCollection
+          );
+          _setRecentEntriesInState(state, {
+            entries: entries.map((e) => JSON.stringify(e)),
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching recent entries: ", error);
+      } finally {
+        _setStatusInState(state, "idle");
+      }
     });
     builder.addCase(fetchRecentEntriesFromDB.rejected, (state, action) => {
       console.error("Error fetching recent entries: ", action.payload);
       _setStatusInState(state, "idle");
     });
+
     builder.addCase(saveEntryInDB.pending, (state, action) => {
       _setStatusInState(state, "busy");
     });
     builder.addCase(saveEntryInDB.fulfilled, (state, action) => {
-      const entry = action.payload as Entry;
-      _updateRecentEntryInState(state, { entry: JSON.stringify(entry) });
-      _updateHistoryEntryInState(state, { entry: JSON.stringify(entry) });
-      _setStatusInState(state, "idle");
+      try {
+        const entry = action.payload as Entry;
+        _updateRecentEntryInState(state, { entry: JSON.stringify(entry) });
+        _updateHistoryEntryInState(state, { entry: JSON.stringify(entry) });
+      } catch (error) {
+        console.error("Error saving entry: ", error);
+      } finally {
+        _setStatusInState(state, "idle");
+      }
     });
     builder.addCase(saveEntryInDB.rejected, (state, action) => {
       console.error("Error saving entry: ", action.payload);
       _setStatusInState(state, "idle");
     });
+
     builder.addCase(deleteEntryInDB.pending, (state, action) => {
       _setStatusInState(state, "busy");
     });
     builder.addCase(deleteEntryInDB.fulfilled, (state, action) => {
-      const entryId = action.payload as string;
-      _removeRecentEntryFromState(state, { id: entryId });
-      _removeHistoryEntryFromState(state, { id: entryId });
-      _setStatusInState(state, "idle");
+      try {
+        const entryId = action.payload as string;
+        _removeRecentEntryFromState(state, { id: entryId });
+        _removeHistoryEntryFromState(state, { id: entryId });
+      } catch (error) {
+        console.error("Error deleting entry: ", error);
+      } finally {
+        _setStatusInState(state, "idle");
+      }
     });
     builder.addCase(deleteEntryInDB.rejected, (state, action) => {
       console.error("Error deleting entry: ", action.payload);
       _setStatusInState(state, "idle");
     });
+
     builder.addCase(fetchHistoryEntriesFromDB.pending, (state, action) => {
       _setStatusInState(state, "busy");
     });
     builder.addCase(fetchHistoryEntriesFromDB.fulfilled, (state, action) => {
-      const entries = action.payload as Entry[];
-      _setHistoryEntriesInState(state, {
-        entries: entries.map((e) => JSON.stringify(e)),
-      });
+      const dailyEntriesCollection = action.payload as DailyEntriesCollection;
+      if (dailyEntriesCollection) {
+        const entries = getEntriesFromDailyEntriesCollection(
+          dailyEntriesCollection
+        );
+        _setHistoryEntriesInState(state, {
+          entries: entries.map((e) => JSON.stringify(e)),
+        });
+      }
       _setStatusInState(state, "idle");
     });
     builder.addCase(fetchHistoryEntriesFromDB.rejected, (state, action) => {
@@ -728,11 +943,48 @@ export const {
   resetHistoryEntriesInState,
 } = slice.actions;
 
-export const selectRecentEntries = (state: RootState) =>
-  state.entriesReducer.recentEntries;
+export const selectRecentEntries = createSelector(
+  (state: RootState) => state.entriesReducer.recentDailyEntries,
+  (dailyEntriesCollection) => {
+    const entries: Entry[] = [];
+    Object.keys(dailyEntriesCollection).forEach((k) => {
+      const dailyEntries = dailyEntriesCollection[k];
+      if (dailyEntries && dailyEntries.entries) {
+        entries.push(...dailyEntries.entries);
+      }
+    });
+    return entries;
+  }
+);
 
-export const selectHistoryEntries = (state: RootState) =>
-  state.entriesReducer.historyEntries;
+export const selectRecentEntry = createSelector(
+  (state: RootState, entryId: string) => entryId,
+  (state: RootState) => state.entriesReducer.recentDailyEntries,
+  (entryId, dailyEntriesCollection) => {
+    const entries: Entry[] = [];
+    Object.keys(dailyEntriesCollection).forEach((k) => {
+      const dailyEntries = dailyEntriesCollection[k];
+      if (dailyEntries && dailyEntries.entries) {
+        entries.push(...dailyEntries.entries);
+      }
+    });
+    return entries.find((e) => e.id === entryId);
+  }
+);
+
+export const selectHistoryEntries = createSelector(
+  (state: RootState) => state.entriesReducer.historyDailyEntries,
+  (dailyEntriesCollection) => {
+    const entries: Entry[] = [];
+    Object.keys(dailyEntriesCollection).forEach((k) => {
+      const dailyEntries = dailyEntriesCollection[k];
+      if (dailyEntries && dailyEntries.entries) {
+        entries.push(...dailyEntries.entries);
+      }
+    });
+    return entries;
+  }
+);
 
 export const selectEntriesStatus = (state: RootState) =>
   state.entriesReducer.status;

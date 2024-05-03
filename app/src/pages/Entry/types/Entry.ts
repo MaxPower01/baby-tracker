@@ -50,3 +50,8 @@ export interface Entry {
   poopTextureId: number | null;
   poopHasUndigestedPieces: boolean | null;
 }
+
+export type ExistingEntry = Entry & {
+  id: string;
+  originalStartTimestamp: number;
+};

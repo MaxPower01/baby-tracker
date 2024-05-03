@@ -11,6 +11,7 @@ import { MenuProvider } from "@/components/MenuProvider";
 import { RootState } from "@/state/store";
 import { entryTypeIsValid } from "@/pages/Entry/utils/entryTypeIsValid";
 import { getDefaultEntry } from "@/utils/getDefaultEntry";
+import { selectRecentEntry } from "@/state/slices/entriesSlice";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -34,11 +35,12 @@ export function EntryPage() {
     console.error("Invalid entry type");
     return null;
   }
-  const entry: Entry | null = isNewEntry
-    ? getDefaultEntry(entryType, user.babyId)
-    : useSelector((state: RootState) =>
-        state.entriesReducer.recentEntries.find((entry) => entry.id === entryId)
-      ) ?? null;
+  const entry: Entry | null | undefined =
+    isNewEntry || isNullOrWhiteSpace(entryId)
+      ? getDefaultEntry(entryType, user.babyId)
+      : useSelector((state: RootState) =>
+          selectRecentEntry(state, entryId as string)
+        );
   if (!entry) {
     // TODO: Try to load entry from server
     // TODO: Show error message

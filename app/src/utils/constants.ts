@@ -1,9 +1,12 @@
 import { v4 as uuid } from "uuid";
 
+export const recentAgeDateLimitInDays = 2;
+
 /**
  * Represents the age limit for recent data in seconds. Data older than this should not be considered recent.
  */
-export const recentAgeDataLimitInSeconds = 60 * 60 * 48;
+export const recentAgeDataLimitInSeconds =
+  60 * 60 * 24 * recentAgeDateLimitInDays;
 
 /**
  * Represents the age limit for recent data in milliseconds. Data older than this should not be considered recent.

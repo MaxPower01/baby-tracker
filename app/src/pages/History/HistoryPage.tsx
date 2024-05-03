@@ -4,6 +4,7 @@ import {
 } from "@/state/slices/entriesSlice";
 import { useEffect, useMemo, useState } from "react";
 
+import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList";
@@ -15,6 +16,7 @@ import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
+import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
@@ -58,19 +60,14 @@ export function HistoryPage() {
 
             setIsFetching(false);
           } else if (result.meta.requestStatus === "fulfilled") {
-            if (!Array.isArray(result.payload)) {
-              console.error(
-                "Expected an array of entries, but got:",
-                result.payload
-              );
-
-              setIsFetching(false);
-            }
-
-            const payload = result.payload as Entry[] | undefined | null;
+            const payload = result.payload as
+              | DailyEntriesCollection
+              | undefined
+              | null;
 
             if (payload != null) {
-              setEntries(payload);
+              const entries = getEntriesFromDailyEntriesCollection(payload);
+              setEntries(entries);
             }
             setIsFetching(false);
           } else {
@@ -80,6 +77,9 @@ export function HistoryPage() {
         .catch((err) => {
           setIsFetching(false);
           console.error(err);
+        })
+        .finally(() => {
+          setIsFetching(false);
         });
     }
   }, [

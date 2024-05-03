@@ -70,7 +70,6 @@ export function EntriesCard(props: Props) {
     }
     setDeleteEntryDialogIsOpen(false);
   }, [isDeleting]);
-  // const { deleteEntry } = useEntries();
 
   const handleDeleteButtonClick = (
     e: React.MouseEvent<HTMLElement, MouseEvent>
@@ -87,7 +86,11 @@ export function EntriesCard(props: Props) {
     setIsDeleting(true);
     try {
       await dispatch(
-        deleteEntryInDB({ entryId: menuEntry.id, babyId: user.babyId })
+        deleteEntryInDB({
+          entryId: menuEntry.id,
+          timestamp: menuEntry.startTimestamp,
+          babyId: user.babyId,
+        })
       ).unwrap();
       setIsDeleting(false);
       handleDeleteEntryDialogClose();

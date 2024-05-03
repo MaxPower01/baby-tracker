@@ -1,9 +1,9 @@
-import { Entry } from "@/pages/Entry/types/Entry";
+import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 
 export default interface EntriesState {
-  recentEntries: Array<Entry>;
-  historyEntries: Array<Entry>;
+  recentDailyEntries: DailyEntriesCollection;
+  historyDailyEntries: DailyEntriesCollection;
   status: "idle" | "busy";
   latestRecentEntriesFetchedTimestamp: number | null;
 }
