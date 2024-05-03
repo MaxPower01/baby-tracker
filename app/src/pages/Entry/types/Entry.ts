@@ -12,16 +12,6 @@ export interface Entry {
    * Represents the end date of the entry in seconds since the epoch.
    */
   endTimestamp: number;
-  /**
-   * Represents the created date of the entry in seconds since the epoch.
-   */
-  createdTimestamp: number | null;
-  /**
-   * Represents the edited date of the entry in seconds since the epoch.
-   */
-  editedTimestamp: number | null;
-  createdBy: string;
-  editedBy: string;
   note: string;
   imageURLs: string[];
   activityContexts: ActivityContext[];
