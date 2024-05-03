@@ -183,9 +183,6 @@ export const saveEntryInDB = createAsyncThunk(
       try {
         const entryToAdd: Entry = {
           ...rest,
-          createdTimestamp: getTimestamp(new Date()),
-          createdBy: user.uid,
-          editedBy: "",
         };
         const docRef = await addDoc(
           collection(db, `babies/${entryToSave.babyId}/entries`),
@@ -199,8 +196,6 @@ export const saveEntryInDB = createAsyncThunk(
       try {
         const entryToUpdate: Entry = {
           ...rest,
-          editedTimestamp: getTimestamp(new Date()),
-          editedBy: user.uid,
         };
         await setDoc(
           doc(db, `babies/${entryToSave.babyId}/entries/${id}`),

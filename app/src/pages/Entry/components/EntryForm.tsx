@@ -325,10 +325,6 @@ export default function EntryForm(props: EntryFormProps) {
           poopAmount: poopAmount,
           poopColorId: poopColorId,
           poopTextureId: poopConsistencyId,
-          createdTimestamp: props.entry.createdTimestamp,
-          editedTimestamp: props.entry.editedTimestamp,
-          createdBy: user.uid,
-          editedBy: props.entry.editedBy,
           poopHasUndigestedPieces: poopHasUndigestedPieces,
         };
         await dispatch(saveEntryInDB({ entry, user })).unwrap();

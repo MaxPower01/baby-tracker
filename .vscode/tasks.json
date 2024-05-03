@@ -18,7 +18,10 @@
 		{
 			"type": "npm",
 			"script": "build",
-			"group": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
 			"problemMatcher": [],
 			"detail": "Builds the app for production to the `dist` folder.",
 			"label": "build"

@@ -4,12 +4,6 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 export function getEntryToSave(entry: Entry, babyId: string): Entry {
   const newEntry = { ...entry };
   newEntry.babyId = babyId;
-  if (newEntry.createdTimestamp === 0) {
-    newEntry.createdTimestamp = null;
-  }
-  if (newEntry.editedTimestamp === 0) {
-    newEntry.editedTimestamp = null;
-  }
   if (newEntry.leftVolume === 0) {
     newEntry.leftVolume = null;
   }
