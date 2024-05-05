@@ -17,6 +17,8 @@ type EmptyStateOverrideProps = {
   title?: string;
   description?: string;
   stickerSource?: string;
+  buttonLabel?: string;
+  onClick?: () => void;
 };
 
 export type EmptyStateProps = {
@@ -42,6 +44,7 @@ export function EmptyState(props: EmptyStateProps) {
     stickerSource = props.override.stickerSource ?? "";
     entryType = null;
     shouldRender = true;
+    buttonLabel = props.override.buttonLabel ?? "";
   } else {
     if (props.context === EmptyStateContext.ActivityContextDrawer) {
       if (props.activityContextType != null) {

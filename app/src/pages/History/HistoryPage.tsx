@@ -1,6 +1,7 @@
 import {
   fetchHistoryEntriesFromDB,
   resetHistoryEntriesInState,
+  selectHistoryEntries,
 } from "@/state/slices/entriesSlice";
 import { useEffect, useMemo, useState } from "react";
 
@@ -40,7 +41,8 @@ export function HistoryPage() {
     SortOrderId.DateDesc
   );
 
-  const [entries, setEntries] = useState<Entry[]>([]);
+  // const [entries, setEntries] = useState<Entry[]>([]);
+  const entries = useSelector(selectHistoryEntries);
 
   useEffect(() => {
     if (
@@ -65,10 +67,10 @@ export function HistoryPage() {
               | undefined
               | null;
 
-            if (payload != null) {
-              const entries = getEntriesFromDailyEntriesCollection(payload);
-              setEntries(entries);
-            }
+            // if (payload != null) {
+            //   const entries = getEntriesFromDailyEntriesCollection(payload);
+            //   setEntries(entries);
+            // }
             setIsFetching(false);
           } else {
             setIsFetching(false);
@@ -138,17 +140,34 @@ export function HistoryPage() {
 
       {isFetching && <LoadingIndicator />}
 
-      {!isFetching && !filteredEntries.length && (
-        <EmptyState
-          context={EmptyStateContext.Entries}
-          override={{
-            title: "Aucune entrée trouvée",
-            description:
-              "Aucune entrée ne correspond à vos critères de recherche",
-            stickerSource: "/stickers/empty-state--entries.svg",
-          }}
-        />
-      )}
+      {!isFetching &&
+        !filteredEntries.length &&
+        (selectedEntryTypes.length > 0 ? (
+          <EmptyState
+            context={EmptyStateContext.Entries}
+            override={{
+              title: "Aucune entrée trouvée",
+              description:
+                "Aucune entrée ne correspond à vos critères de recherche",
+              stickerSource: "/stickers/empty-state--entries.svg",
+              buttonLabel: "Réinitialiser les filtres",
+              onClick: () => {
+                setSelectedEntryTypes([]);
+                setSelectedSortOrder(SortOrderId.DateDesc);
+              },
+            }}
+          />
+        ) : (
+          <EmptyState
+            context={EmptyStateContext.Entries}
+            override={{
+              title: "Aucune entrée trouvée",
+              description:
+                "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
+              stickerSource: "/stickers/empty-state--entries.svg",
+            }}
+          />
+        ))}
 
       {!isFetching && filteredEntries.length > 0 && (
         <EntriesList entries={filteredEntries} />
