@@ -287,8 +287,9 @@ export default function EntryForm(props: EntryFormProps) {
   const [poopHasUndigestedPieces, setPoopHasUndigestedPieces] = useState(
     props.entry.poopHasUndigestedPieces ?? false
   );
-  const [poopConsistencyId, setPoopConsistencyId] =
-    useState<PoopTextureId | null>(props.entry.poopTextureId);
+  const [poopTextureId, setPoopTextureId] = useState<PoopTextureId | null>(
+    props.entry.poopTextureId
+  );
   const [poopColorId, setPoopColorId] = useState<PoopColorId | null>(
     props.entry.poopColorId
   );
@@ -324,7 +325,7 @@ export default function EntryForm(props: EntryFormProps) {
           urineAmount: urineAmount,
           poopAmount: poopAmount,
           poopColorId: poopColorId,
-          poopTextureId: poopConsistencyId,
+          poopTextureId: poopTextureId,
           poopHasUndigestedPieces: poopHasUndigestedPieces,
         };
         await dispatch(saveEntryInDB({ entry, user })).unwrap();
@@ -360,9 +361,12 @@ export default function EntryForm(props: EntryFormProps) {
     urineAmount,
     poopAmount,
     poopColorId,
-    poopConsistencyId,
+    poopTextureId,
     isSaving,
     user,
+    poopHasUndigestedPieces,
+    dispatch,
+    showSnackbar,
   ]);
 
   const handleSubmit = useCallback(() => {
@@ -397,10 +401,11 @@ export default function EntryForm(props: EntryFormProps) {
     urineAmount,
     poopAmount,
     poopColorId,
-    poopConsistencyId,
+    poopTextureId,
     isSaving,
     saveEntry,
     user,
+    navigate,
   ]);
 
   return (
@@ -553,8 +558,8 @@ export default function EntryForm(props: EntryFormProps) {
                   }}
                 />
                 <PoopTexturePicker
-                  value={poopConsistencyId}
-                  setValue={setPoopConsistencyId}
+                  value={poopTextureId}
+                  setValue={setPoopTextureId}
                 />
                 {/* Checkbox with the label "Morceaux non digérés" */}
                 <PoopColorPicker

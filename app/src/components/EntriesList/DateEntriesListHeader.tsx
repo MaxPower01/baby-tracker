@@ -11,7 +11,7 @@ type Props = {
   entries: Entry[];
 };
 
-export function DateEntriesHeader(props: Props) {
+export function DateEntriesListHeader(props: Props) {
   const entries = [...props.entries];
   const theme = useTheme();
   for (let i = 0; i < entries.length; i++) {

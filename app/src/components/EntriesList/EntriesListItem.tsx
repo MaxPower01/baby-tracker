@@ -49,10 +49,9 @@ type Props = {
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     activityType: ActivityType
   ) => void;
-  dense?: boolean;
 };
 
-export function EntriesCard(props: Props) {
+export function EntriesListItem(props: Props) {
   const navigate = useNavigate();
   const { entries } = props;
   const dispatch = useAppDispatch();
@@ -104,7 +103,7 @@ export function EntriesCard(props: Props) {
     <>
       <Card
         sx={{
-          borderRadius: props.dense ? 0 : undefined,
+          borderRadius: undefined,
         }}
       >
         {entries.map((entry, entryIndex) => {
@@ -139,10 +138,10 @@ export function EntriesCard(props: Props) {
               >
                 <CardContent
                   sx={{
-                    paddingTop: props.dense ? 1 : undefined,
-                    paddingBottom: props.dense ? 1 : undefined,
-                    paddingLeft: props.dense ? 1 : undefined,
-                    paddingRight: props.dense ? 1 : undefined,
+                    paddingTop: undefined,
+                    paddingBottom: undefined,
+                    paddingLeft: undefined,
+                    paddingRight: undefined,
                     // borderBottom:
                     //   nextEntryExists && "1px solid" : undefined,
                     // borderColor: theme.palette.divider,
@@ -157,7 +156,7 @@ export function EntriesCard(props: Props) {
                     {nextEntryExists && (
                       <Box
                         sx={{
-                          display: props.dense ? "none" : undefined,
+                          display: undefined,
                           position: "absolute",
                           top: "3.65em",
                           left: "calc(2.25em - 2px)",
@@ -178,6 +177,7 @@ export function EntriesCard(props: Props) {
                         ></Box>
                       </Box>
                     )}
+
                     <Stack
                       direction={"row"}
                       justifyContent={"flex-start"}

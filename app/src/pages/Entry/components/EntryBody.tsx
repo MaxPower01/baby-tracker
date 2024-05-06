@@ -73,7 +73,6 @@ export function EntryBody(props: Props) {
       duration: duration,
     };
   }
-  console.log("🚀 ~ EntryBody ~ poopTextureLabel:", poopTextureLabel);
 
   const shouldRender =
     !isNullOrWhiteSpace(poopTextureLabel) ||

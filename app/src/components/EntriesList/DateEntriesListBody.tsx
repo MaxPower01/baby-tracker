@@ -1,4 +1,4 @@
-import { EntriesCard } from "@/components/EntriesCard";
+import { EntriesListItem } from "@/components/EntriesList/EntriesListItem";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { MenuProvider } from "@/components/MenuProvider";
 import React from "react";
@@ -9,7 +9,7 @@ type Props = {
   entries: Entry[];
   dense?: boolean;
 };
-export function DateEntries(props: Props) {
+export function DateEntriesListBody(props: Props) {
   if (props.entries.length === 0) {
     return null;
   }
@@ -32,7 +32,7 @@ export function DateEntries(props: Props) {
         }-${index}`;
         return (
           <MenuProvider key={key}>
-            <EntriesCard entries={entries} dense={props.dense} />
+            <EntriesListItem entries={entries} />
           </MenuProvider>
         );
       })}

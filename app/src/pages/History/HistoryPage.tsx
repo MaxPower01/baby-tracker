@@ -8,7 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList";
+import { EntriesList } from "@/components/EntriesList/EntriesList";
+import { EntriesTable } from "@/components/EntriesTable/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -174,7 +175,7 @@ export function HistoryPage() {
         ))}
 
       {!isFetching && filteredEntries.length > 0 && (
-        <EntriesList entries={filteredEntries} />
+        <EntriesTable entries={filteredEntries} />
       )}
     </Stack>
   );

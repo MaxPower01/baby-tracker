@@ -11,8 +11,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import { DateEntries } from "@/components/DateEntries";
-import { DateEntriesHeader } from "@/components/DateEntriesHeader";
+import { DateEntriesListBody } from "@/components/EntriesList/DateEntriesListBody";
+import { DateEntriesListHeader } from "@/components/EntriesList/DateEntriesListHeader";
 import { DateHeader } from "@/components/DateHeader";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { MenuProvider } from "@/components/MenuProvider";
@@ -22,7 +22,6 @@ import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 
 type Props = {
   entries: Entry[];
-  dense?: boolean;
 };
 
 export function EntriesList(props: Props) {
@@ -72,7 +71,7 @@ export function EntriesList(props: Props) {
       sx={{
         width: "100%",
       }}
-      spacing={props.dense ? 2 : 4}
+      spacing={4}
     >
       {entriesByDate.years.map((yearEntries) => {
         return yearEntries.months.map((monthEntries) => {
@@ -101,8 +100,8 @@ export function EntriesList(props: Props) {
                   }}
                   spacing={2}
                 >
-                  <DateEntriesHeader date={date} entries={entriesOfDate} />
-                  <DateEntries entries={entriesOfDate} dense={props.dense} />
+                  <DateEntriesListHeader date={date} entries={entriesOfDate} />
+                  <DateEntriesListBody entries={entriesOfDate} />
                 </Stack>
               </Stack>
             );
