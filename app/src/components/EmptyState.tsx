@@ -38,6 +38,7 @@ export function EmptyState(props: EmptyStateProps) {
   let description = getEmptyStateDescription(props);
   let stickerSource = "";
   let entryType = getEntryTypeForEmptyState(props);
+  let onClick = props.onClick;
   if (props.override != null) {
     title = props.override.title ?? title;
     description = props.override.description ?? "";
@@ -45,6 +46,7 @@ export function EmptyState(props: EmptyStateProps) {
     entryType = null;
     shouldRender = true;
     buttonLabel = props.override.buttonLabel ?? "";
+    onClick = props.override.onClick;
   } else {
     if (props.context === EmptyStateContext.ActivityContextDrawer) {
       if (props.activityContextType != null) {
@@ -107,7 +109,7 @@ export function EmptyState(props: EmptyStateProps) {
         )}
       </Stack>
       {!isNullOrWhiteSpace(buttonLabel) && (
-        <Button variant="contained" color="primary" onClick={props.onClick}>
+        <Button variant="contained" color="primary" onClick={onClick}>
           {buttonLabel}
         </Button>
       )}

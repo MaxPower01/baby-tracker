@@ -35,3 +35,5 @@ export const stopwatchDisplayTimeAfterStopInSeconds = 60 * 5;
 
 export const bottomBarId = `bottom-bar-${uuid()}`;
 export const customBottomBarId = `custom-bottom-bar-${uuid()}`;
+
+export const resetFiltersButtonId = `reset-filters-button-${uuid()}`;

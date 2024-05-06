@@ -49,6 +49,7 @@ type Props = {
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     activityType: ActivityType
   ) => void;
+  dense?: boolean;
 };
 
 export function EntriesCard(props: Props) {
@@ -101,7 +102,11 @@ export function EntriesCard(props: Props) {
 
   return (
     <>
-      <Card>
+      <Card
+        sx={{
+          borderRadius: props.dense ? 0 : undefined,
+        }}
+      >
         {entries.map((entry, entryIndex) => {
           const nextEntryExists = entryIndex < entries.length - 1;
           const stopwatchRunning = entryHasStopwatchRunning(entry);
@@ -133,15 +138,15 @@ export function EntriesCard(props: Props) {
                 component={Box}
               >
                 <CardContent
-                  sx={
-                    {
-                      // paddingTop: 1,
-                      // paddingBottom: 1,
-                      // borderBottom:
-                      //   nextEntryExists && "1px solid" : undefined,
-                      // borderColor: theme.palette.divider,
-                    }
-                  }
+                  sx={{
+                    paddingTop: props.dense ? 1 : undefined,
+                    paddingBottom: props.dense ? 1 : undefined,
+                    paddingLeft: props.dense ? 1 : undefined,
+                    paddingRight: props.dense ? 1 : undefined,
+                    // borderBottom:
+                    //   nextEntryExists && "1px solid" : undefined,
+                    // borderColor: theme.palette.divider,
+                  }}
                 >
                   <Stack
                     sx={{
@@ -152,6 +157,7 @@ export function EntriesCard(props: Props) {
                     {nextEntryExists && (
                       <Box
                         sx={{
+                          display: props.dense ? "none" : undefined,
                           position: "absolute",
                           top: "3.65em",
                           left: "calc(2.25em - 2px)",

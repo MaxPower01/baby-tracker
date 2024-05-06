@@ -48,6 +48,7 @@ import { getSortOrderItems } from "@/utils/getSortOrderItems";
 import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { resetFiltersButtonId } from "@/utils/constants";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 
@@ -334,6 +335,7 @@ export function FiltersDrawer(props: Props) {
                 </Button>
 
                 <Button
+                  id={resetFiltersButtonId}
                   variant="outlined"
                   onClick={() => handleClose("reset")}
                   fullWidth

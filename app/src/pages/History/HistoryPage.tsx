@@ -18,6 +18,7 @@ import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
+import { resetFiltersButtonId } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
@@ -152,8 +153,11 @@ export function HistoryPage() {
               stickerSource: "/stickers/empty-state--entries.svg",
               buttonLabel: "Réinitialiser les filtres",
               onClick: () => {
-                setSelectedEntryTypes([]);
-                setSelectedSortOrder(SortOrderId.DateDesc);
+                const resetFiltersButton =
+                  document.getElementById(resetFiltersButtonId);
+                if (resetFiltersButton != null) {
+                  resetFiltersButton.click();
+                }
               },
             }}
           />

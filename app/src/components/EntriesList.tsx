@@ -22,7 +22,7 @@ import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 
 type Props = {
   entries: Entry[];
-  // groupByDate?: boolean;
+  dense?: boolean;
 };
 
 export function EntriesList(props: Props) {
@@ -72,7 +72,7 @@ export function EntriesList(props: Props) {
       sx={{
         width: "100%",
       }}
-      spacing={4}
+      spacing={props.dense ? 2 : 4}
     >
       {entriesByDate.years.map((yearEntries) => {
         return yearEntries.months.map((monthEntries) => {
@@ -102,7 +102,7 @@ export function EntriesList(props: Props) {
                   spacing={2}
                 >
                   <DateEntriesHeader date={date} entries={entriesOfDate} />
-                  <DateEntries entries={entriesOfDate} />
+                  <DateEntries entries={entriesOfDate} dense={props.dense} />
                 </Stack>
               </Stack>
             );

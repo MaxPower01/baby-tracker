@@ -33,12 +33,9 @@ export function EntryBody(props: Props) {
   if (entryTypeHasPoop(props.entry.entryTypeId)) {
     if (props.entry.poopTextureId != null) {
       poopTextureName = getPoopTextureName(props.entry.poopTextureId);
+      poopTextureLabel = `Consistance:`;
     }
-    // if (props.entry.entryTypeId == EntryTypeId.Poop) {
-    poopTextureLabel = `Consistance:`;
-    // } else {
-    //   poopTextureLabel = `Consistance du caca:`;
-    // }
+
     if (props.entry.poopHasUndigestedPieces) {
       poopHasUndigestedPiecesLabel = `Morceaux non digérés`;
     }
@@ -76,6 +73,7 @@ export function EntryBody(props: Props) {
       duration: duration,
     };
   }
+  console.log("🚀 ~ EntryBody ~ poopTextureLabel:", poopTextureLabel);
 
   const shouldRender =
     !isNullOrWhiteSpace(poopTextureLabel) ||

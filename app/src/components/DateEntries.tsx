@@ -7,6 +7,7 @@ import { groupEntriesByTime } from "@/utils/utils";
 
 type Props = {
   entries: Entry[];
+  dense?: boolean;
 };
 export function DateEntries(props: Props) {
   if (props.entries.length === 0) {
@@ -19,7 +20,7 @@ export function DateEntries(props: Props) {
   });
   return (
     <Stack
-      spacing={2}
+      spacing={props.dense ? 0 : 2}
       sx={{
         width: "100%",
       }}
@@ -31,7 +32,7 @@ export function DateEntries(props: Props) {
         }-${index}`;
         return (
           <MenuProvider key={key}>
-            <EntriesCard entries={entries} />
+            <EntriesCard entries={entries} dense={props.dense} />
           </MenuProvider>
         );
       })}
