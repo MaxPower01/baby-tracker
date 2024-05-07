@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 import { BabyWidget } from "@/components/BabyWidget";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList";
+import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { EntriesWidget } from "@/pages/Home/components/EntriesWidget";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LoadingIndicator } from "@/components/LoadingIndicator";

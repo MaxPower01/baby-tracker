@@ -175,7 +175,7 @@ export function HistoryPage() {
         ))}
 
       {!isFetching && filteredEntries.length > 0 && (
-        <EntriesTable entries={filteredEntries} />
+        <EntriesList entries={filteredEntries} />
       )}
     </Stack>
   );

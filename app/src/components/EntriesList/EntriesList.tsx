@@ -11,10 +11,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { DateEntriesListBody } from "@/components/EntriesList/DateEntriesListBody";
 import { DateEntriesListHeader } from "@/components/EntriesList/DateEntriesListHeader";
 import { DateHeader } from "@/components/DateHeader";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { FixedSizeList as List } from "react-window";
 import { MenuProvider } from "@/components/MenuProvider";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";

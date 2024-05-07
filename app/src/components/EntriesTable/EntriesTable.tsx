@@ -1,7 +1,16 @@
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useTheme,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import { Entry } from "@/pages/Entry/types/Entry";
-import { useTheme } from "@mui/material";
 
 type Props = {
   entries: Entry[];
