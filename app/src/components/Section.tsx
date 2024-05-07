@@ -4,7 +4,9 @@ export function Section(props: {
   children: React.ReactNode;
   dividerPosition?: "top" | "bottom";
   sx?: SxProps;
+  title?: string;
   onClick?: () => void;
+  padding?: boolean;
 }) {
   const { children, dividerPosition, sx, onClick } = props;
   const theme = useTheme();
@@ -36,8 +38,8 @@ export function Section(props: {
           component={"section"}
           sx={{
             width: "100%",
-            // paddingTop: 2,
-            //  paddingBottom: 2,
+            paddingTop: props.padding ? 2 : 0,
+            paddingBottom: props.padding ? 2 : 0,
             ...sx,
           }}
         >

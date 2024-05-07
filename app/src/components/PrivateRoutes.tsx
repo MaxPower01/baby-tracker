@@ -1,15 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import ActivitiesPage from "@/pages/Activities";
+import ActivitiesPage from "@/pages/Activities/ActivitiesPage";
 import AuthenticationPage from "@/pages/Authentication";
-import ChildPage from "@/pages/Baby";
-import EntriesPage from "@/pages/Entries";
-import EntryPage from "@/pages/Entry";
-import FamilyPage from "@/pages/Family";
-import GraphicsPage from "@/pages/Graphics";
-import HomePage from "@/pages/Home";
+import { BabyPage } from "@/pages/Baby/BabyPage";
+import { EntryPage } from "@/pages/Entry/EntryPage";
+import { FamilyPage } from "@/pages/Family/FamilyPage";
+import { GraphicsPage } from "@/pages/Graphics/GraphicsPage";
+import { HistoryPage } from "@/pages/History/HistoryPage";
+import { HomePage } from "@/pages/Home/HomePage";
 import { PageId } from "@/enums/PageId";
-import SettingsPage from "@/pages/Settings";
+import { SettingsPage } from "@/pages/Settings/SettingsPage";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -17,18 +17,18 @@ import { useMemo } from "react";
 
 export function PrivateRoutes() {
   const { user } = useAuthentication();
-  const selectedChild = useMemo(() => {
-    return user?.selectedChild ?? "";
+  const babyId = useMemo(() => {
+    return user?.babyId ?? "";
   }, [user]);
   return (
     <Routes>
       <>
-        {isNullOrWhiteSpace(selectedChild) == true && (
+        {isNullOrWhiteSpace(babyId) == true && (
           <>
-            <Route path="*" element={<ChildPage />} />
+            <Route path="*" element={<BabyPage />} />
           </>
         )}
-        {isNullOrWhiteSpace(selectedChild) == false && (
+        {isNullOrWhiteSpace(babyId) == false && (
           <>
             <Route
               path={getPath({ page: PageId.Family })}
@@ -46,8 +46,8 @@ export function PrivateRoutes() {
               element={<GraphicsPage />}
             />
             <Route
-              path={getPath({ page: PageId.Entries })}
-              element={<EntriesPage />}
+              path={getPath({ page: PageId.History })}
+              element={<HistoryPage />}
             />
             <Route
               path={getPath({ page: PageId.Authentication })}
@@ -66,10 +66,10 @@ export function PrivateRoutes() {
               <Route path="*" element={<Navigate replace to="" />} />
               <Route path=":entryId" element={<EntryPage />} />
             </Route>
-            <Route path={getPath({ page: PageId.Child })}>
-              <Route path="" element={<ChildPage />} />
+            <Route path={getPath({ page: PageId.Baby })}>
+              <Route path="" element={<BabyPage />} />
               <Route path="*" element={<Navigate replace to="" />} />
-              <Route path=":childId" element={<ChildPage />} />
+              <Route path=":babyId" element={<BabyPage />} />
             </Route>
           </>
         )}

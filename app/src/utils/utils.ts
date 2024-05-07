@@ -1,5 +1,6 @@
-import ActivityType from "@/pages/Activities/enums/ActivityType";
-import EntryModel from "@/pages/Entries/models/EntryModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { Entry } from "@/pages/Entry/types/Entry";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Entries                                  */
@@ -10,7 +11,7 @@ import EntryModel from "@/pages/Entries/models/EntryModel";
  * @param entries The entries to group
  * @returns The entries grouped by date
  */
-export function groupEntriesByDate(entries: EntryModel[]): {
+export function groupEntriesByDate(entries: Entry[]): {
   years: Array<{
     /**
      * 4-digit year
@@ -29,7 +30,7 @@ export function groupEntriesByDate(entries: EntryModel[]): {
          * @example 1 = 1st
          */
         dayNumber: number;
-        entries: EntryModel[];
+        entries: Entry[];
       }>;
     }>;
   }>;
@@ -42,9 +43,10 @@ export function groupEntriesByDate(entries: EntryModel[]): {
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
   const mostRecentEntry = entries.reduce((a, b) =>
-    a.timestamp > b.timestamp ? a : b
+    a.startTimestamp > b.startTimestamp ? a : b
   );
-  const mostRecentDate = mostRecentEntry.startDate;
+  // const mostRecentDate = new Date(mostRecentEntry.startTimestamp);
+  const mostRecentDate = getDateFromTimestamp(mostRecentEntry.startTimestamp);
   const mostRecentYear = mostRecentDate.getFullYear();
   for (let i = currentYear; i >= mostRecentYear; i--) {
     const yearEntries = {
@@ -61,12 +63,15 @@ export function groupEntriesByDate(entries: EntryModel[]): {
       for (let k = daysOfMonth; k >= 1; k--) {
         const dayEntries = {
           dayNumber: k,
-          entries: entries.filter(
-            (entry) =>
-              entry.startDate.getFullYear() === i &&
-              entry.startDate.getMonth() === j &&
-              entry.startDate.getDate() === k
-          ),
+          entries: entries.filter((entry) => {
+            // const startDate = new Date(entry.startTimestamp);
+            const startDate = getDateFromTimestamp(entry.startTimestamp);
+            return (
+              startDate.getFullYear() === i &&
+              startDate.getMonth() === j &&
+              startDate.getDate() === k
+            );
+          }),
         };
         monthEntries.days.push(dayEntries);
       }
@@ -85,24 +90,28 @@ export function groupEntriesByDate(entries: EntryModel[]): {
  * @returns The entries grouped by time
  */
 export function groupEntriesByTime(params: {
-  entries: EntryModel[];
+  entries: Entry[];
   timeUnit: "hour" | "minute";
   timeStep: number;
 }) {
   const { entries, timeUnit, timeStep } = params;
   const result = [] as Array<{
-    entries: EntryModel[];
+    entries: Entry[];
   }>;
   if (!entries || entries.length === 0) return result;
   // Sort entries by timestamp, from most recent to least recent
-  const sortedEntries = entries.sort((a, b) => b.timestamp - a.timestamp);
-  let lastDate = sortedEntries[0].startDate;
+  const sortedEntries = entries.sort(
+    (a, b) => b.startTimestamp - a.startTimestamp
+  );
+  // let lastDate = new Date(sortedEntries[0].startTimestamp);
+  let lastDate = getDateFromTimestamp(sortedEntries[0].startTimestamp);
   let currentGroup = {
-    entries: [] as EntryModel[],
+    entries: [] as Entry[],
   };
   for (let i = 0; i < sortedEntries.length; i++) {
     const entry = entries[i];
-    const entryDate = entry.startDate;
+    // const entryDate = new Date(entry.startTimestamp);
+    const entryDate = getDateFromTimestamp(entry.startTimestamp);
     const previousEntryDate = lastDate;
     const timeDifference = previousEntryDate.getTime() - entryDate.getTime();
     const timeDifferenceInMinutes = Math.floor(timeDifference / 60000);
@@ -155,6 +164,7 @@ export function getMonthName(month: number) {
 /* -------------------------------------------------------------------------- */
 
 export function isValidActivityType(type: any) {
+  if (!type) return false;
   if (typeof type === "number") {
     return Object.values(ActivityType).includes(type);
   }

@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import React from "react";
 
 type Props = {
@@ -32,17 +32,18 @@ export default function ActivityPicker({
     setActivityType(newValue);
   };
   return (
-    <FormControl fullWidth variant="standard">
+    <FormControl fullWidth variant="outlined">
       <InputLabel id="activity-label">Activité</InputLabel>
       <Select
         id="activity"
         labelId="activity-label"
-        value={activityType}
-        SelectDisplayProps={{
-          style: {
-            padding: "0.5em",
-          },
-        }}
+        value={activityType ?? ""}
+        // SelectDisplayProps={{
+        //   style: {
+        //     padding: "0.5em",
+        //   },
+        // }}
+        label={"Activité"}
         onChange={handleActivityTypeChange}
         // error={sexError !== ""}
       >
@@ -51,14 +52,15 @@ export default function ActivityPicker({
           const activity = new ActivityModel(activityType);
           return (
             <MenuItem
+              key={activityType}
               value={activityType}
-              sx={{
-                padding: 1,
-              }}
+              // sx={{
+              //   padding: 1,
+              // }}
             >
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <ActivityIcon
-                  activity={activity}
+                  type={activity.type as any}
                   sx={{
                     fontSize: "1.5em",
                   }}

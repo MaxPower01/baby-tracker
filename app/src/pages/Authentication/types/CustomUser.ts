@@ -1,9 +1,14 @@
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { User } from "firebase/auth";
-import UserPreferences from "@/pages/Authentication/types/UserPreferences";
 
 export default interface CustomUser extends User {
-  selectedChild: string;
-  children: Child[];
-  preferences: UserPreferences;
+  babyId: string;
+  babies: Baby[];
+  entryTypesOrder: EntryTypeId[];
+  intervalMethodByEntryTypeId: Array<{
+    entryTypeId: EntryTypeId;
+    methodId: IntervalMethodId;
+  }>;
 }

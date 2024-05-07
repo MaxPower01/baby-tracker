@@ -12,11 +12,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { PageId } from "@/enums/PageId";
-import getPageName from "@/utils/getPageName";
+import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
-import { selectEditingEntryId } from "@/pages/Entries/state/entriesSlice";
 import { useSelector } from "react-redux";
+
+// import { selectEditingEntryId } from "@/pages/History/state/entriesSlice";
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -27,39 +28,35 @@ type Props = {
 export function TopBar(props: Props) {
   const navigate = useNavigate();
 
-  const editingEntryId = useSelector(selectEditingEntryId);
+  // const editingEntryId = useSelector(selectEditingEntryId);
 
   const { pathname } = useLocation();
   const { pageName, pageTitle } = useMemo(() => {
     return {
-      pageName: getPageName(pathname),
-      pageTitle: getPageTitle(pathname) + " (Simon)",
+      pageName: getPageId(pathname),
+      pageTitle: getPageTitle(pathname),
     };
   }, [pathname]);
 
   const shouldRenderBackButton = useMemo(() => {
-    return pageName === PageId.Entry || pageName === PageId.Child;
+    return (
+      pageName === PageId.Entry ||
+      pageName === PageId.Baby ||
+      pageName === PageId.Family ||
+      pageName === PageId.Settings ||
+      pageName === PageId.Activities
+    );
   }, [pageName]);
 
-  const shouldRenderDeleteEntryButton = useMemo(() => {
-    return editingEntryId != null && pageName === PageId.Entry;
-  }, [pageName]);
+  // const shouldRenderDeleteEntryButton = useMemo(() => {
+  //   return editingEntryId != null && pageName === PageId.Entry;
+  // }, [pageName]);
 
   const handleBackButtonClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     navigate(-1);
   };
-
-  const handleDeleteEntryButtonClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (!editingEntryId) return;
-      // TODO: Implement
-      // dispatch(removeEntry(editingEntryId));
-      navigate(getPath({ page: PageId.Home }));
-    },
-    [editingEntryId]
-  );
 
   return (
     <AppBar
@@ -74,7 +71,12 @@ export function TopBar(props: Props) {
       <Container maxWidth={CSSBreakpoint.Small}>
         <Toolbar disableGutters>
           {shouldRenderBackButton && (
-            <IconButton onClick={handleBackButtonClick}>
+            <IconButton
+              onClick={handleBackButtonClick}
+              sx={{
+                marginRight: 1,
+              }}
+            >
               <ArrowBackIcon />
             </IconButton>
           )}

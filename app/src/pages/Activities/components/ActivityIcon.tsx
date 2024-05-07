@@ -1,8 +1,11 @@
 import { Box, SxProps } from "@mui/material";
 
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { ReactSVG } from "react-svg";
+import { isValidActivityType } from "@/utils/utils";
+import { parseEnumValue } from "@/utils/parseEnumValue";
 
 function BathIcon() {
   return <ReactSVG src="/icons/bath.svg" className="ActivityIcon" />;
@@ -66,8 +69,19 @@ function PlayIcon() {
   return <ReactSVG src="/icons/play.svg" className="ActivityIcon" />;
 }
 
-function PoopIcon() {
-  return <ReactSVG src="/icons/poop.svg" className="ActivityIcon" />;
+function PoopIcon(props: { color?: string }) {
+  const src = props.color
+    ? `/icons/poop-${props.color.toLowerCase()}.svg`
+    : "/icons/poop.svg";
+  return <ReactSVG src={src} className="ActivityIcon" />;
+}
+
+function PoopIconOutlined() {
+  return <ReactSVG src="/icons/poop-outlined.svg" className="ActivityIcon" />;
+}
+
+function PoopIconMonochrome() {
+  return <ReactSVG src="/icons/poop-monochrome.svg" className="ActivityIcon" />;
 }
 
 function SizeIcon() {
@@ -96,6 +110,16 @@ function TeethIcon() {
 
 function UrineIcon() {
   return <ReactSVG src="/icons/urine.svg" className="ActivityIcon" />;
+}
+
+function UrineIconOutlined() {
+  return <ReactSVG src="/icons/urine-outlined.svg" className="ActivityIcon" />;
+}
+
+function UrineIconMonochrome() {
+  return (
+    <ReactSVG src="/icons/urine-monochrome.svg" className="ActivityIcon" />
+  );
 }
 
 function VaccineIcon() {
@@ -156,16 +180,23 @@ function BellyTimeIcon() {
   return <ReactSVG src="/icons/036-mat-1.svg" className="ActivityIcon" />;
 }
 
-type Props = {
-  activity: ActivityModel;
+type ActivityIconProps = {
+  type: EntryTypeId;
+  activity?: ActivityModel;
   sx?: SxProps | undefined;
+  outlined?: boolean;
+  monochrome?: boolean;
+  color?: string;
 };
 
-export default function ActivityIcon({ activity, sx }: Props) {
+export default function ActivityIcon(props: ActivityIconProps) {
+  let type = props.activity?.type ?? props.type;
+  const parsedType = parseEnumValue(type, EntryTypeId);
+  if (parsedType === null) return false;
   return (
-    <Box sx={sx}>
+    <Box sx={props.sx}>
       {(() => {
-        switch (activity.type) {
+        switch (parsedType) {
           case ActivityType.Bath:
             return <BathIcon />;
           case ActivityType.BottleFeeding:
@@ -197,7 +228,13 @@ export default function ActivityIcon({ activity, sx }: Props) {
           case ActivityType.Play:
             return <PlayIcon />;
           case ActivityType.Poop:
-            return <PoopIcon />;
+            if (props.outlined) {
+              return <PoopIconOutlined />;
+            }
+            if (props.monochrome) {
+              return <PoopIconMonochrome />;
+            }
+            return <PoopIcon color={props.color} />;
           case ActivityType.Regurgitation:
             return <RegurgitationIcon />;
           case ActivityType.Size:
@@ -213,6 +250,12 @@ export default function ActivityIcon({ activity, sx }: Props) {
           case ActivityType.Teeth:
             return <TeethIcon />;
           case ActivityType.Urine:
+            if (props.outlined) {
+              return <UrineIconOutlined />;
+            }
+            if (props.monochrome) {
+              return <UrineIconMonochrome />;
+            }
             return <UrineIcon />;
           case ActivityType.Vaccine:
             return <VaccineIcon />;

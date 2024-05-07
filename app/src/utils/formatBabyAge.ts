@@ -1,4 +1,4 @@
-import { getAgeInMonths } from "./getAgeInMonths";
+import { getAgeInMonths } from "@/utils/getAgeInMonths";
 import { getAgeInWeeks } from "@/utils/getAgeInWeeks";
 import { getWeeksSinceCurrentMonthAnniversary } from "@/utils/getWeeksSinceCurrentMonthAnniversary";
 
@@ -36,15 +36,13 @@ export default function formatBabyAge(
   const months = getAgeInMonths(dateOfBirth);
   const years = Math.floor(months / 12);
 
-  console.log("🚀 ~ file: formatBabyAge.ts:36 ~ format:", format);
-
   let result = "";
 
   switch (format) {
     case "years":
       const remainingMonths = months % 12;
       if (years > 0) {
-        result += `${years} année${years > 1 ? "s" : ""}`;
+        result += `${years} an${years > 1 ? "s" : ""}`;
       }
       if (remainingMonths > 0) {
         result += ` et ${remainingMonths} mois`;

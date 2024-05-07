@@ -1,11 +1,11 @@
 export enum PageId {
   Home = "home",
   Graphics = "graphics",
-  Entries = "entries",
+  History = "history",
   Entry = "entry",
   Authentication = "authentication",
   Family = "family",
-  Child = "child",
+  Baby = "baby",
   Settings = "settings",
   Activities = "activities",
 }

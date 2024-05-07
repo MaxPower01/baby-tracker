@@ -1,32 +1,41 @@
-import "./main.scss";
+import "@/main.scss";
 
-import { App } from "@/app/components/App";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { App } from "@/components/App";
 import { AuthenticationProvider } from "@/pages/Authentication/components/AuthenticationProvider";
+import { BabiesProvider } from "@/pages/Baby/components/BabiesProvider";
 import { BrowserRouter } from "react-router-dom";
-import { ChildrenProvider } from "@/pages/Baby/components/ChildrenProvider";
 import CssBaseline from "@mui/material/CssBaseline";
-import { EntriesProvider } from "@/pages/Entries/components/EntriesProvider";
+import { LayoutProvider } from "@/components/LayoutProvider";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { StoreProvider } from "@/store/components/StoreProvider";
-import { ThemeProvider } from "@/theme/components/ThemeProvider";
-
-// history.scrollRestoration = "manual";
+import { SnackbarProvider } from "@/components/SnackbarProvider";
+import { StoreProvider } from "@/components/StoreProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  // TODO: Uncomment when DnD is done
   <React.StrictMode>
     <StoreProvider>
       <AuthenticationProvider>
-        <ChildrenProvider>
-          <EntriesProvider>
+        <BabiesProvider>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="fr-ca"
+          >
             <ThemeProvider>
-              <CssBaseline />
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
+              <SnackbarProvider>
+                <LayoutProvider>
+                  <CssBaseline />
+                  <BrowserRouter>
+                    <App />
+                  </BrowserRouter>
+                </LayoutProvider>
+              </SnackbarProvider>
             </ThemeProvider>
-          </EntriesProvider>
-        </ChildrenProvider>
+          </LocalizationProvider>
+        </BabiesProvider>
       </AuthenticationProvider>
     </StoreProvider>
   </React.StrictMode>

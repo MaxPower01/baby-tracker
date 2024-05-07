@@ -3,6 +3,7 @@ import {
   WithFieldValue,
   doc,
   getDoc,
+  onSnapshot,
   setDoc,
 } from "firebase/firestore";
 import {
@@ -13,49 +14,93 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, googleAuthProvider } from "@/firebase";
+import {
+  saveEntryTypesOrderInState,
+  saveIntervalMethodByEntryTypeIdInState,
+} from "@/state/slices/settingsSlice";
 import { useEffect, useMemo, useState } from "react";
 
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
-import Child from "@/pages/Authentication/types/Child";
+import Baby from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
+import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import isDevelopment from "@/utils/isDevelopment";
+import { saveActivityContextsInState } from "@/state/slices/activitiesSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 
 export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
-  // Store the user in a state variable
+  const dispatch = useAppDispatch();
 
   const [user, setUser] = useState<CustomUser | null>(null);
-  const [children, setChildren] = useState<Child[]>([]);
+
+  const dispatchUserPreferences = (newUser: CustomUser) => {
+    dispatch(
+      saveIntervalMethodByEntryTypeIdInState({
+        intervalMethodByEntryTypeId: newUser.intervalMethodByEntryTypeId,
+      })
+    );
+    dispatch(
+      saveEntryTypesOrderInState({
+        entryTypesOrder: newUser.entryTypesOrder,
+      })
+    );
+    const baby = newUser.babies?.find((baby) => baby.id === newUser.babyId);
+    if (baby) {
+      dispatch(
+        saveActivityContextsInState({
+          activityContexts: (baby.activityContexts as ActivityContext[]).map(
+            (activityContext) => JSON.stringify(activityContext)
+          ),
+        })
+      );
+    }
+  };
 
   const fetchUserDoc = (user: User) => {
-    const userRef = doc(db, "users", user.uid);
-    getDoc(userRef)
+    const userDocRef = doc(db, "users", user.uid);
+    getDoc(userDocRef)
       .then((docSnap) => {
-        const userData = docSnap.data();
-        if (userData != null) {
-          setUser(userData as CustomUser);
-          if (userData?.children) {
-            const newChildren: Child[] = [];
-            docSnap.data()?.children.forEach(async (childId: string) => {
-              const childRef = doc(db, "children", childId);
-              const childDocSnap = await getDoc(childRef);
-              const childData = childDocSnap.data();
-              if (childData) {
-                const { birthDate, ...childDataWithoutBirthDate } = childData;
+        if (docSnap.data() != null) {
+          const newUser = docSnap.data() as CustomUser;
+          // setUser(docSnap.data() as CustomUser);
+          if (docSnap.data()?.babies) {
+            const newBabies: Baby[] = [];
+            docSnap.data()?.babies.forEach(async (babyId: string) => {
+              const docRef = doc(db, "babies", babyId);
+              const docSnap = await getDoc(docRef);
+              const docData = docSnap.data();
+              if (docData) {
+                const { birthDate, ...rest } = docData;
                 const parsedBirthDate = birthDate.toDate();
                 if (parsedBirthDate) {
-                  newChildren.push({
-                    id: childId,
+                  newBabies.push({
+                    id: babyId,
                     birthDate: parsedBirthDate as Date,
-                    ...(childDataWithoutBirthDate as any),
+                    ...(rest as any),
                   });
+                  if (docSnap.id == newUser.babyId) {
+                    dispatch(
+                      saveActivityContextsInState({
+                        activityContexts: (
+                          docData.activityContexts as ActivityContext[]
+                        ).map((activityContext) =>
+                          JSON.stringify(activityContext)
+                        ),
+                      })
+                    );
+                  }
                 } else {
                   throw new Error("Birth date is null");
                 }
               }
             });
-            setChildren(newChildren);
+            newUser.babies = newBabies;
           }
+          dispatchUserPreferences(newUser);
+          setUser(newUser);
         } else {
           setUser(null);
         }
@@ -70,18 +115,79 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   // and update the user state accordingly
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        await fetchUserDoc(user);
-      } else {
-        // User is signed out
-        setUser(null);
+    const unsubscribeFromAuthChanges = onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/firebase.User
+          await fetchUserDoc(user);
+        } else {
+          // User is signed out
+          setUser(null);
+        }
       }
-    });
-    return () => unsubscribe();
+    );
+    return () => {
+      unsubscribeFromAuthChanges();
+    };
   }, []);
+
+  useEffect(() => {
+    const babyId = user?.babyId;
+    if (babyId) {
+      const babyDocRef = doc(db, "babies", babyId);
+      const unsubscribeFromBabyChanges = onSnapshot(babyDocRef, (doc) => {
+        try {
+          if (doc.exists()) {
+            const babyData = doc.data();
+            if (babyData) {
+              const { birthDate, ...rest } = babyData;
+              const parsedBirthDate = birthDate.toDate();
+              if (parsedBirthDate) {
+                let newUser = null;
+                setUser((prevUser) => {
+                  if (prevUser) {
+                    const newBabies = prevUser.babies.map((baby) => {
+                      if (baby.id === babyId) {
+                        return {
+                          id: babyId,
+                          birthDate: parsedBirthDate as Date,
+                          ...(rest as any),
+                        };
+                      }
+                      return baby;
+                    });
+                    newUser = {
+                      ...prevUser,
+                      babies: newBabies,
+                    };
+                    return newUser;
+                  }
+                  return prevUser;
+                });
+                if (newUser != null) {
+                  dispatchUserPreferences(newUser);
+                }
+              } else {
+                throw new Error("Birth date is null");
+              }
+            } else {
+              throw new Error("Baby data is null");
+            }
+          } else {
+            // TODO: Handle case where baby doc does not exist (deleted by another user?)
+            throw new Error("Baby doc does not exist");
+          }
+        } catch (error) {
+          console.error("Error updating baby data in user", error);
+        }
+      });
+      return () => {
+        unsubscribeFromBabyChanges();
+      };
+    }
+  }, [user?.babyId]);
 
   const googleSignInWithPopup = async () => {
     return new Promise<{
@@ -135,17 +241,20 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           lastSignInTime: user.metadata.lastSignInTime,
         };
         if (isNewUser) {
-          data.selectedChild = "";
-          data.children = [];
+          (data as CustomUser).babyId = "";
+          (data as CustomUser).babies = [];
+          (data as CustomUser).intervalMethodByEntryTypeId =
+            getDefaulIntervalMethodByEntryTypeId();
+          (data as CustomUser).entryTypesOrder = getDefaultEntryTypesOrder();
         }
         await setDoc(userRef, data, { merge: true });
         if (!isNewUser) {
           await fetchUserDoc(user);
         }
+        return resolve({ user, isNewUser });
       } catch (error: any) {
         return reject(error);
       }
-      return resolve({ user, isNewUser });
     });
   };
 
@@ -168,7 +277,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       googleSignInWithPopup,
       signOut,
     };
-  }, [user, children]);
+  }, [user, setUser, googleSignInWithPopup, signOut]);
 
   return (
     <AuthenticationContext.Provider

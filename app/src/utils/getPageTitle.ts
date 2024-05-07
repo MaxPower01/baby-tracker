@@ -1,15 +1,15 @@
 import { PageId } from "@/enums/PageId";
-import getPageName from "./getPageName";
+import getPageId from "@/utils/getPageId";
 
 export default function getPageTitle(pathname: string) {
-  const pageName = getPageName(pathname);
+  const pageName = getPageId(pathname);
   switch (pageName) {
     case PageId.Home:
       return "Accueil";
     case PageId.Graphics:
       return "Graphiques";
-    case PageId.Entries:
-      return "Entrées";
+    case PageId.History:
+      return "Historique";
     case PageId.Entry:
       const entryId = pathname.substring(1).split("/")[1];
       if (entryId) {
@@ -24,9 +24,9 @@ export default function getPageTitle(pathname: string) {
       return "Paramètres";
     case PageId.Activities:
       return "Activités";
-    case PageId.Child:
-      const childId = pathname.substring(1).split("/")[1];
-      if (childId) {
+    case PageId.Baby:
+      const babyId = pathname.substring(1).split("/")[1];
+      if (babyId) {
         return "Modifier un enfant";
       }
       return "Ajouter un enfant";

@@ -1,13 +1,17 @@
-import GroupEntriesBy from "../enums/GroupEntriesBy";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
-import ThemeMode from "@/theme/enums/ThemeMode";
+import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
+import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 
 export default interface SettingsState {
   themeMode: ThemeMode;
-  groupEntriesBy: GroupEntriesBy;
-  groupEntriesInterval: GroupEntriesInterval;
-  weightUnit: WeightUnit;
-  showPoopQuantityInHomePage: boolean;
-  showUrineQuantityInHomePage: boolean;
+  intervalMethodByEntryTypeId: Array<{
+    entryTypeId: EntryTypeId;
+    methodId: IntervalMethodId;
+  }>;
+  entryTypesOrder: Array<EntryTypeId>;
+  status: "idle" | "busy";
 }

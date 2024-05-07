@@ -1,5 +1,5 @@
-import ActivityModel from "@/pages/Activities/models/ActivityModel";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityModel from "@/pages/Activity/models/ActivityModel";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 
 export default function getDefaultActivities(): ActivityModel[] {

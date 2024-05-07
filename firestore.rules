@@ -1,6 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // Make sure the uid of the requesting user matches name of the user
     // document. The wildcard expression {userId} makes the userId variable
     // available in rules.
@@ -8,8 +9,9 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
     }
-    match /children/{childId}/{document=**} {
-      // Allow the user to create a children document
+
+    // Allow users to create, update, and delete their own babies
+    match /babies/{babyId}/{document=**} {
       allow create: if request.auth != null;
       allow read, update, delete: if request.auth != null;
     }

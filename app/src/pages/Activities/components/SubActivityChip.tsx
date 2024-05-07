@@ -2,8 +2,8 @@ import { Chip, Stack, Typography, useTheme } from "@mui/material";
 
 import CheckIcon from "@mui/icons-material/Check";
 import SubActivityIcon from "@/pages/Activities/components/SubActivityIcon";
-import { SubActivityModel } from "@/pages/Activities/models/SubActivityModel";
-import SubActivityType from "@/pages/Activities/enums/SubActivityType";
+import { SubActivityModel } from "@/pages/Activity/models/SubActivityModel";
+import SubActivityType from "@/pages/Activity/enums/SubActivityType";
 import { useSelector } from "react-redux";
 
 type Props = {

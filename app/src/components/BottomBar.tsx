@@ -8,12 +8,13 @@ import {
   Toolbar,
   Typography,
   styled,
+  useTheme,
 } from "@mui/material";
+import { bottomBarId, bottomBarNewEntryFabId } from "@/utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import ActivitiesDrawer from "@/pages/Activities/components/ActivitiesDrawer";
-import ActivityType from "@/pages/Activities/enums/ActivityType";
+import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
@@ -21,16 +22,17 @@ import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import HomeIcon from "@mui/icons-material/Home";
 import { MenuDrawer } from "@/components/MenuDrawer";
 import MenuIcon from "@mui/icons-material/Menu";
+import { NewEntryDrawer } from "@/pages/Entry/components/NewEntryDrawer";
 import { PageId } from "@/enums/PageId";
-import getPageName from "@/utils/getPageName";
+import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useLayout } from "@/components/LayoutProvider";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
-  zIndex: 1,
   top: -25,
   left: 0,
   right: 0,
@@ -59,22 +61,25 @@ type Props = {
 };
 
 export function BottomBar(props: Props) {
+  const layout = useLayout();
   const { user } = useAuthentication();
-  const selectedChild = useMemo(() => {
-    return user?.selectedChild ?? "";
+  const babyId = useMemo(() => {
+    return user?.babyId ?? "";
   }, [user]);
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
-  const { pageName, pageTitle } = useMemo(() => {
+  const { pageId, pageTitle } = useMemo(() => {
     return {
-      pageName: getPageName(pathname),
+      pageId: getPageId(pathname),
       pageTitle: getPageTitle(pathname),
     };
   }, [location.pathname]);
 
-  const [activitiesDrawerIsOpen, setActivitiesDrawerIsOpen] = useState(false);
+  const [newEntryDrawerIsOpen, setNewEntryDrawerIsOpen] = useState(false);
   const [menuDrawerIsOpen, setMenuDrawerIsOpen] = useState(false);
+
+  const theme = useTheme();
 
   const items: Array<BottomBarItem> = [
     {
@@ -83,12 +88,11 @@ export function BottomBar(props: Props) {
       onClick: () => navigate(getPath({ page: PageId.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Home,
-      // sx: {
-      //   opacity: pageName === PageName.Home ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Home ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.Home,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "graphics",
@@ -96,12 +100,11 @@ export function BottomBar(props: Props) {
       onClick: () => navigate(getPath({ page: PageId.Graphics })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Graphics,
-      // sx: {
-      //   opacity: pageName === PageName.Graphics ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Graphics ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.Graphics,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "new-entry-trasparent",
@@ -111,28 +114,28 @@ export function BottomBar(props: Props) {
       color: "primary",
     },
     {
-      id: "new-entry",
-      onClick: () => setActivitiesDrawerIsOpen(true),
+      id: bottomBarNewEntryFabId,
+      onClick: () => setNewEntryDrawerIsOpen(true),
       IconWrapper: FloatingActionButton,
       Icon: AddIcon,
       color: "primary",
       isFloatingActionButton: true,
       sx: {
-        display: isNullOrWhiteSpace(selectedChild) ? "none" : undefined,
+        display: isNullOrWhiteSpace(babyId) ? "none" : undefined,
+        opacity: undefined,
       },
     },
     {
-      id: "entries",
-      onClick: () => navigate(getPath({ page: PageId.Entries })),
-      label: getPageTitle(getPath({ page: PageId.Entries })),
+      id: "history",
+      onClick: () => navigate(getPath({ page: PageId.History })),
+      label: getPageTitle(getPath({ page: PageId.History })),
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
-      color: "default",
-      isCurrentPage: pageName === PageId.Entries,
-      // sx: {
-      //   opacity: pageName === PageName.Calendar ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Calendar ? "bold" : undefined,
-      // },
+      color: "inherit",
+      isCurrentPage: pageId === PageId.History,
+      sx: {
+        opacity: undefined,
+      },
     },
     {
       id: "menu",
@@ -140,22 +143,43 @@ export function BottomBar(props: Props) {
       label: "Menu",
       IconWrapper: IconButton,
       Icon: MenuIcon,
-      color: "default",
+      color: "inherit",
       isCurrentPage: false,
-      // sx: {
-      //   opacity: pageName === PageName.Menu ? 1 : 0.6,
-      //   fontWeight: pageName === PageName.Menu ? "bold" : undefined,
-      // },
+      sx: {
+        opacity: undefined,
+      },
     },
   ];
 
-  if (pageName === PageId.Entry || pageName === PageId.Child) {
+  // items.forEach((item) => {
+  //   if (item.sx && Object.keys(item.sx).includes("opacity")) {
+  //     // Assign the sx property to the theme.opacity.tertiary value
+  //     item.sx = { ...item.sx, opacity: theme.opacity.tertiary };
+  //   }
+  // });
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (
+      item.sx &&
+      Object.keys(item.sx).includes("opacity") &&
+      !item.isFloatingActionButton
+    ) {
+      const opacity =
+        item.isCurrentPage == true
+          ? theme.opacity.secondary
+          : theme.opacity.tertiary;
+      item.sx = { ...item.sx, opacity };
+    }
+  }
+
+  if (layout.bottomBarIsVisible === false) {
     return null;
   }
 
   return (
     <AppBar
-      id="bottombar"
+      id={bottomBarId}
       {...props}
       position="fixed"
       sx={{
@@ -193,6 +217,7 @@ export function BottomBar(props: Props) {
                 sx,
               }) => (
                 <IconWrapper
+                  id={id}
                   key={id}
                   color={color}
                   onClick={onClick}
@@ -201,7 +226,11 @@ export function BottomBar(props: Props) {
                     flexDirection: "column",
                     flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
-                    opacity: isCurrentPage == false ? 0.6 : undefined,
+                    // opacity:
+                    //   isCurrentPage == false
+                    //     ? theme.opacity.tertiary
+                    //     : theme.opacity.primary,
+
                     ...sx,
                   }}
                 >
@@ -218,7 +247,7 @@ export function BottomBar(props: Props) {
                       textAlign="center"
                       sx={{
                         // fontSize: "50%",
-                        fontWeight: isCurrentPage == true ? "bold" : undefined,
+                        fontWeight: isCurrentPage == true ? "bold" : 400,
                       }}
                     >
                       {label}
@@ -229,17 +258,9 @@ export function BottomBar(props: Props) {
             )}
           </Stack>
 
-          <ActivitiesDrawer
-            isOpen={activitiesDrawerIsOpen}
-            onClose={() => setActivitiesDrawerIsOpen(false)}
-            handleActivityClick={(type: ActivityType) =>
-              navigate(
-                getPath({
-                  page: PageId.Entry,
-                  params: { activity: type.toString() },
-                })
-              )
-            }
+          <NewEntryDrawer
+            isOpen={newEntryDrawerIsOpen}
+            onClose={() => setNewEntryDrawerIsOpen(false)}
           />
 
           <MenuDrawer
