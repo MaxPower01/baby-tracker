@@ -1,25 +1,27 @@
 import {
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
+import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   entries: Entry[];
 };
 
 export function EntriesTable(props: Props) {
-  if (props.entries.length === 0) {
-    return null;
-  }
   const theme = useTheme();
 
   const [topHeight, setTopHeight] = useState<{
@@ -57,5 +59,43 @@ export function EntriesTable(props: Props) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return <div>EntriesTable</div>;
+  if (props.entries.length === 0) {
+    return null;
+  }
+
+  return (
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="center"></TableCell>
+            <TableCell align="center"></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {props.entries.map((entry) => (
+            <TableRow
+              key={entry.id ?? uuid()}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row" align="left">
+                <Stack spacing={1} direction={"row"} alignItems={"center"}>
+                  <ActivityIcon
+                    type={entry.entryTypeId}
+                    sx={{
+                      fontSize: "2em",
+                    }}
+                  />
+                  <Typography variant="body1">
+                    {getEntryTypeName(entry.entryTypeId)}
+                  </Typography>
+                </Stack>
+              </TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 }
