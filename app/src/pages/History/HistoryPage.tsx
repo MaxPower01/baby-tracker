@@ -61,22 +61,8 @@ export function HistoryPage() {
             if (typeof result.payload === "string") {
               console.error(result.payload);
             }
-
-            setIsFetching(false);
-          } else if (result.meta.requestStatus === "fulfilled") {
-            const payload = result.payload as
-              | DailyEntriesCollection
-              | undefined
-              | null;
-
-            // if (payload != null) {
-            //   const entries = getEntriesFromDailyEntriesCollection(payload);
-            //   setEntries(entries);
-            // }
-            setIsFetching(false);
-          } else {
-            setIsFetching(false);
           }
+          setIsFetching(false);
         })
         .catch((err) => {
           setIsFetching(false);
