@@ -30,7 +30,7 @@
     "react-scrollbars-custom": "^4.1.1",
     "react-svg": "^16.1.25",
     "react-virtualized-auto-sizer": "^1.0.24",
-    "react-window": "^1.8.10",
+    "react-virtuoso": "^4.7.10",
     "redux-logger": "^3.0.6",
     "sass": "^1.68.0",
     "uuid": "^9.0.1"
@@ -40,7 +40,6 @@
     "@types/react": "^18.2.22",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-dom": "^18.2.22",
-    "@types/react-window": "^1.8.8",
     "@types/redux-logger": "^3.0.9",
     "@types/uuid": "^9.0.4",
     "@vitejs/plugin-react": "^4.2.1",

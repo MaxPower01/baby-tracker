@@ -103,7 +103,7 @@ export function HomePage() {
             onClick={handleEmptyStateClick}
           />
         ) : (
-          <EntriesList entries={entries} />
+          <EntriesList entries={entries} format="cards" />
         )}
       </Section>
     </SectionStack>

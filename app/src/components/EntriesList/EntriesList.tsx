@@ -12,11 +12,11 @@ import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { DateEntriesListBody } from "@/components/EntriesList/DateEntriesListBody";
-import { DateEntriesListHeader } from "@/components/EntriesList/DateEntriesListHeader";
 import { DateHeader } from "@/components/DateHeader";
+import { EntriesCardsList } from "@/components/EntriesList/CardsFormat/EntriesCardsList";
+import { EntriesDateHeader } from "@/components/EntriesList/EntriesDateHeader";
+import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { FixedSizeList as List } from "react-window";
 import { MenuProvider } from "@/components/MenuProvider";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
@@ -24,6 +24,7 @@ import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
 
 type Props = {
   entries: Entry[];
+  format: "cards" | "table";
 };
 
 export function EntriesList(props: Props) {
@@ -102,8 +103,12 @@ export function EntriesList(props: Props) {
                   }}
                   spacing={2}
                 >
-                  <DateEntriesListHeader date={date} entries={entriesOfDate} />
-                  <DateEntriesListBody entries={entriesOfDate} />
+                  <EntriesDateHeader date={date} entries={entriesOfDate} />
+                  {props.format === "table" ? (
+                    <EntriesTable entries={entriesOfDate} />
+                  ) : (
+                    <EntriesCardsList entries={entriesOfDate} />
+                  )}
                 </Stack>
               </Stack>
             );

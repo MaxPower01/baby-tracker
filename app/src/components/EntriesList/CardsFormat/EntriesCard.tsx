@@ -51,7 +51,7 @@ type Props = {
   ) => void;
 };
 
-export function EntriesListItem(props: Props) {
+export function EntriesCard(props: Props) {
   const navigate = useNavigate();
   const { entries } = props;
   const dispatch = useAppDispatch();
