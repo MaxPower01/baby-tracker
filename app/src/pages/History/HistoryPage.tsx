@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { SearchToolbar } from "@/pages/History/components/SearchToolbar";
@@ -111,19 +112,34 @@ export function HistoryPage() {
 
   return (
     <Stack
-      spacing={2}
+      spacing={4}
       sx={{
         width: "100%",
       }}
     >
-      <SearchToolbar
-        timePeriodId={timePeriodId}
-        setTimePeriodId={setTimePeriodId}
-        selectedEntryTypes={selectedEntryTypes}
-        setSelectedEntryTypes={setSelectedEntryTypes}
-        selectedSortOrder={selectedSortOrder}
-        setSelectedSortOrder={setSelectedSortOrder}
-      />
+      <Stack
+        spacing={1}
+        sx={{
+          width: "100%",
+        }}
+      >
+        <SearchToolbar
+          timePeriodId={timePeriodId}
+          setTimePeriodId={setTimePeriodId}
+          selectedEntryTypes={selectedEntryTypes}
+          setSelectedEntryTypes={setSelectedEntryTypes}
+          selectedSortOrder={selectedSortOrder}
+          setSelectedSortOrder={setSelectedSortOrder}
+        />
+
+        {!isFetching && (
+          <EntryTypeChips
+            entries={entries}
+            selectedEntryTypes={selectedEntryTypes}
+            setSelectedEntryTypes={setSelectedEntryTypes}
+          />
+        )}
+      </Stack>
 
       {isFetching && <LoadingIndicator />}
 
@@ -139,11 +155,12 @@ export function HistoryPage() {
               stickerSource: "/stickers/empty-state--entries.svg",
               buttonLabel: "Réinitialiser les filtres",
               onClick: () => {
-                const resetFiltersButton =
-                  document.getElementById(resetFiltersButtonId);
-                if (resetFiltersButton != null) {
-                  resetFiltersButton.click();
-                }
+                // const resetFiltersButton =
+                //   document.getElementById(resetFiltersButtonId);
+                // if (resetFiltersButton != null) {
+                //   resetFiltersButton.click();
+                // }
+                setSelectedEntryTypes([]);
               },
             }}
           />
@@ -160,7 +177,9 @@ export function HistoryPage() {
         ))}
 
       {!isFetching && filteredEntries.length > 0 && (
-        <EntriesList entries={filteredEntries} format="table" />
+        <>
+          <EntriesList entries={filteredEntries} format="table" />
+        </>
       )}
     </Stack>
   );

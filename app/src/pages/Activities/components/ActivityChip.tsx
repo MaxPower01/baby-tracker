@@ -19,7 +19,8 @@ type Props = {
    * the activity name will be used.
    */
   entries?: Entry[];
-  overrideIconOpacity?: number;
+
+  readonly?: boolean;
 };
 
 export default function ActivityChip(props: Props) {
@@ -35,12 +36,15 @@ export default function ActivityChip(props: Props) {
           sx={{
             fontSize: "1.75em",
             marginLeft: 0.5,
-            opacity: props.overrideIconOpacity ?? undefined,
+            opacity: props.isSelected
+              ? theme.opacity.primary
+              : theme.opacity.tertiary,
           }}
         />
       }
       label={label}
       sx={{
+        borderColor: props.readonly ? "transparent" : undefined,
         "& .MuiChip-label": {
           color: props.isSelected
             ? theme.customPalette.text.primary
@@ -49,11 +53,15 @@ export default function ActivityChip(props: Props) {
         },
       }}
       variant={props.isSelected ? "filled" : "outlined"}
-      onClick={() => {
-        if (props.onClick) {
-          props.onClick(props.entryType);
-        }
-      }}
+      onClick={
+        props.readonly
+          ? undefined
+          : () => {
+              if (props.onClick) {
+                props.onClick(props.entryType);
+              }
+            }
+      }
     />
   );
 }

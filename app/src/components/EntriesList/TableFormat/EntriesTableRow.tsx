@@ -1,5 +1,7 @@
 import {
   Box,
+  CardActionArea,
+  CardContent,
   Collapse,
   IconButton,
   Stack,
@@ -35,18 +37,29 @@ export function EntriesTableRow(props: Props) {
         key={entry.id ?? uuid()}
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       >
-        <TableCell component="th" scope="row" align="left">
-          <Stack spacing={1} direction={"row"} alignItems={"center"}>
-            <ActivityIcon
-              type={entry.entryTypeId}
-              sx={{
-                fontSize: "1.5em",
-              }}
-            />
-            <Typography variant="body1">{title}</Typography>
-          </Stack>
+        <TableCell
+          scope="row"
+          align="left"
+          sx={{
+            padding: 0,
+          }}
+        >
+          <CardActionArea
+            sx={{
+              padding: 1,
+            }}
+          >
+            <Stack spacing={1} direction={"row"} alignItems={"center"}>
+              <ActivityIcon
+                type={entry.entryTypeId}
+                sx={{
+                  fontSize: "1.75em",
+                }}
+              />
+              <Typography variant="body1">{title}</Typography>
+            </Stack>
+          </CardActionArea>
         </TableCell>
-        <TableCell align="center"></TableCell>
       </TableRow>
     </>
   );

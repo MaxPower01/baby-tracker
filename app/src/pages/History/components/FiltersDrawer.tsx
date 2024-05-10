@@ -49,8 +49,10 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetFiltersButtonId } from "@/utils/constants";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 type SectionProps = {
   title: string;
@@ -84,10 +86,6 @@ type Props = {
 
 export function FiltersDrawer(props: Props) {
   const theme = useTheme();
-
-  const entryTypes = Object.values(EntryTypeId).filter((entryTypeId) => {
-    return typeof entryTypeId !== "string";
-  }) as EntryTypeId[];
 
   const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
     props.selectedEntryTypes
@@ -168,6 +166,8 @@ export function FiltersDrawer(props: Props) {
     ]
   );
 
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+
   return (
     <>
       <SwipeableDrawer
@@ -224,49 +224,6 @@ export function FiltersDrawer(props: Props) {
                 paddingBottom: 2,
               }}
             >
-              {/* <FiltersSection title="Trier par">
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 1,
-                  }}
-                >
-                  {sortItems.map((item) => {
-                    return (
-                      <Chip
-                        key={item.id}
-                        icon={<item.Icon />}
-                        label={item.label}
-                        sx={{
-                          "& .MuiChip-label": {
-                            color:
-                              item.id == selectedSortOrder
-                                ? theme.customPalette.text.primary
-                                : theme.customPalette.text.tertiary,
-                            //   paddingLeft: 0.5,
-                          },
-
-                          "& .MuiChip-icon": {
-                            color:
-                              item.id == selectedSortOrder
-                                ? theme.customPalette.text.secondary
-                                : theme.customPalette.text.tertiary,
-                            fontSize: "1.5em",
-                          },
-                        }}
-                        variant={
-                          item.id == selectedSortOrder ? "filled" : "outlined"
-                        }
-                        onClick={() => {
-                          setSelectedSortOrder(item.id);
-                        }}
-                      />
-                    );
-                  })}
-                </Box>
-              </FiltersSection> */}
-
               <FiltersSection title={activitiesSectionTitle}>
                 <Box
                   sx={{
@@ -275,7 +232,7 @@ export function FiltersDrawer(props: Props) {
                     gap: 1,
                   }}
                 >
-                  {entryTypes.map((entryTypeId) => {
+                  {entryTypesOrder.map((entryTypeId) => {
                     return (
                       <ActivityChip
                         key={entryTypeId}

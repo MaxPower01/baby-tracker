@@ -66,7 +66,7 @@ export function EntriesTable(props: Props) {
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table aria-label="entries-table" size="small">
         {/* <TableHead>
           <TableRow>
             <TableCell align="center"></TableCell>
@@ -75,7 +75,7 @@ export function EntriesTable(props: Props) {
         </TableHead> */}
         <TableBody>
           {props.entries.map((entry) => (
-            <EntriesTableRow entry={entry} />
+            <EntriesTableRow key={entry.id ?? uuid()} entry={entry} />
           ))}
         </TableBody>
       </Table>

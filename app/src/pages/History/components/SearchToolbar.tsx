@@ -31,7 +31,7 @@ export function SearchToolbar(props: Props) {
           flexGrow: 1,
         }}
       />
-      <FiltersPicker
+      {/* <FiltersPicker
         selectedEntryTypes={props.selectedEntryTypes}
         setSelectedEntryTypes={props.setSelectedEntryTypes}
         selectedSortOrder={props.selectedSortOrder}
@@ -39,7 +39,7 @@ export function SearchToolbar(props: Props) {
         sx={{
           flexShrink: 0,
         }}
-      />
+      /> */}
     </Stack>
   );
 }
