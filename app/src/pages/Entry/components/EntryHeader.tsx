@@ -9,6 +9,8 @@ import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { getActivityName } from "@/utils/getActivityName";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getEntryTitle } from "@/utils/getEntryTitle";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -20,28 +22,7 @@ type Props = {
 
 export function EntryHeader(props: Props) {
   const theme = useTheme();
-  let title = getActivityName(props.entry.entryTypeId);
-  let titleSuffix: "left" | "right" | null = null;
-  if (entryTypeHasSides(props.entry.entryTypeId)) {
-    if (entryTypeHasVolume(props.entry.entryTypeId)) {
-      const hasLeftVolume = props.entry.leftVolume != null;
-      const hasRightVolume = props.entry.rightVolume != null;
-      const hasBothVolume = hasLeftVolume && hasRightVolume;
-      if (!hasBothVolume) {
-        titleSuffix = hasLeftVolume ? "left" : "right";
-      }
-    } else if (entryTypeHasStopwatch(props.entry.entryTypeId)) {
-      const hasLeftTime = props.entry.leftTime != null;
-      const hasRightTime = props.entry.rightTime != null;
-      const hasBothTime = hasLeftTime && hasRightTime;
-      if (!hasBothTime) {
-        titleSuffix = hasLeftTime ? "left" : "right";
-      }
-    }
-  }
-  if (titleSuffix != null) {
-    title += ` (${titleSuffix === "left" ? "G" : "D"})`;
-  }
+  const title = getEntryTitle(props.entry);
   const startTimestamp = useMemo(() => {
     return props.entry.startTimestamp;
   }, [props.entry.startTimestamp]);

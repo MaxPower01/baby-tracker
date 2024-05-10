@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import { EntriesTableRow } from "@/components/EntriesList/TableFormat/EntriesTableRow";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { v4 as uuid } from "uuid";
@@ -66,33 +67,15 @@ export function EntriesTable(props: Props) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
+        {/* <TableHead>
           <TableRow>
             <TableCell align="center"></TableCell>
             <TableCell align="center"></TableCell>
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>
           {props.entries.map((entry) => (
-            <TableRow
-              key={entry.id ?? uuid()}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row" align="left">
-                <Stack spacing={1} direction={"row"} alignItems={"center"}>
-                  <ActivityIcon
-                    type={entry.entryTypeId}
-                    sx={{
-                      fontSize: "2em",
-                    }}
-                  />
-                  <Typography variant="body1">
-                    {getEntryTypeName(entry.entryTypeId)}
-                  </Typography>
-                </Stack>
-              </TableCell>
-              <TableCell align="center"></TableCell>
-            </TableRow>
+            <EntriesTableRow entry={entry} />
           ))}
         </TableBody>
       </Table>

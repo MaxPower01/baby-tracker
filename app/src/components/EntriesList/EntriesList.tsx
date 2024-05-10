@@ -67,8 +67,23 @@ export function EntriesList(props: Props) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  // if (props.groupByDate) {
-  const entriesByDate = groupEntriesByDate(props.entries);
+  const groupedEntries = groupEntriesByDate(props.entries);
+  const dateEntriesMap: Record<string, Entry[]> = {};
+  for (const year of groupedEntries.years) {
+    for (const month of year.months) {
+      for (const day of month.days) {
+        const entries = day.entries;
+        if (!entries.length) {
+          continue;
+        }
+        const yearString = year.year.toString();
+        const monthString = (month.monthIndex + 1).toString().padStart(2, "0");
+        const dayString = day.dayNumber.toString().padStart(2, "0");
+        const key = `${yearString}-${monthString}-${dayString}`;
+        dateEntriesMap[key] = entries;
+      }
+    }
+  }
   return (
     <Stack
       sx={{
@@ -76,53 +91,42 @@ export function EntriesList(props: Props) {
       }}
       spacing={4}
     >
-      {entriesByDate.years.map((yearEntries) => {
-        return yearEntries.months.map((monthEntries) => {
-          return monthEntries.days.map((dateEntries) => {
-            const entriesOfDate = dateEntries.entries;
-            if (entriesOfDate.length === 0) {
-              return null;
-            }
-            const date = getDateFromTimestamp(entriesOfDate[0].startTimestamp);
-            const key = `${yearEntries.year}-${monthEntries.monthIndex}-${dateEntries.dayNumber}-${entriesOfDate[0].id}`;
-            return (
-              <Stack
-                key={key}
-                spacing={2}
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <Stack
-                  sx={{
-                    position: topHeight != null ? "sticky" : undefined,
-                    top: topHeight != null ? topHeight.totalHeight : undefined,
-                    zIndex: 2,
-                    backgroundColor: theme.palette.background.default,
-                    width: "100%",
-                  }}
-                  spacing={2}
-                >
-                  <EntriesDateHeader date={date} entries={entriesOfDate} />
-                  {props.format === "table" ? (
-                    <EntriesTable entries={entriesOfDate} />
-                  ) : (
-                    <EntriesCardsList entries={entriesOfDate} />
-                  )}
-                </Stack>
-              </Stack>
-            );
-          });
-        });
+      {Object.entries(dateEntriesMap).map(([dateKey, entries]) => {
+        if (entries.length === 0) {
+          return null;
+        }
+
+        return (
+          <Stack
+            key={dateKey}
+            spacing={2}
+            sx={{
+              width: "100%",
+            }}
+          >
+            <Stack
+              sx={{
+                position: topHeight != null ? "sticky" : undefined,
+                top: topHeight != null ? topHeight.totalHeight : undefined,
+                zIndex: 2,
+                backgroundColor: theme.palette.background.default,
+                width: "100%",
+              }}
+              spacing={2}
+            >
+              <EntriesDateHeader
+                date={getDateFromTimestamp(entries[0].startTimestamp)}
+                entries={entries}
+              />
+              {props.format === "table" ? (
+                <EntriesTable entries={entries} />
+              ) : (
+                <EntriesCardsList entries={entries} />
+              )}
+            </Stack>
+          </Stack>
+        );
       })}
     </Stack>
   );
-  // }
-  // return (
-  //   <Stack>
-  //     {props.entries.map((entry, index) => {
-  //       return <div key={index}>Entry: {entry.id}</div>;
-  //     })}
-  //   </Stack>
-  // );
 }
