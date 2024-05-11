@@ -118,7 +118,7 @@ export function HistoryPage() {
       }}
     >
       <Stack
-        spacing={1}
+        spacing={2}
         sx={{
           width: "100%",
         }}

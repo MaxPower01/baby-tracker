@@ -31,42 +31,7 @@ export function EntriesList(props: Props) {
   if (props.entries.length === 0) {
     return null;
   }
-  const theme = useTheme();
 
-  const [topHeight, setTopHeight] = useState<{
-    topbarHeight: number;
-    filterChipsHeight: number;
-    totalHeight: number;
-  } | null>(null);
-
-  useEffect(() => {
-    function handleResize() {
-      requestAnimationFrame(() => {
-        const result = {
-          topbarHeight: 0,
-          filterChipsHeight: 0,
-          totalHeight: 0,
-        };
-        const topbar = document.getElementById("topbar");
-        let topbarHeight = topbar?.clientHeight;
-        if (topbarHeight != null) {
-          topbarHeight -= 1;
-        }
-        result.topbarHeight = topbarHeight ?? 0;
-        const filterChips =
-          document.getElementsByClassName("EntriesFilterChips");
-        if (filterChips.length > 0) {
-          const filterChipsHeight = filterChips[0].clientHeight - 1;
-          result.filterChipsHeight = filterChipsHeight;
-        }
-        result.totalHeight = result.topbarHeight + result.filterChipsHeight;
-        setTopHeight(result);
-      });
-    }
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   const groupedEntries = groupEntriesByDate(props.entries);
   const dateEntriesMap: Record<string, Entry[]> = {};
   for (const year of groupedEntries.years) {
@@ -104,26 +69,11 @@ export function EntriesList(props: Props) {
               width: "100%",
             }}
           >
-            <Stack
-              sx={{
-                position: topHeight != null ? "sticky" : undefined,
-                top: topHeight != null ? topHeight.totalHeight : undefined,
-                zIndex: 2,
-                backgroundColor: theme.palette.background.default,
-                width: "100%",
-              }}
-              spacing={2}
-            >
-              <EntriesDateHeader
-                date={getDateFromTimestamp(entries[0].startTimestamp)}
-                entries={entries}
-              />
-              {props.format === "table" ? (
-                <EntriesTable entries={entries} />
-              ) : (
-                <EntriesCardsList entries={entries} />
-              )}
-            </Stack>
+            {props.format === "table" ? (
+              <EntriesTable entries={entries} />
+            ) : (
+              <EntriesCardsList entries={entries} />
+            )}
           </Stack>
         );
       })}

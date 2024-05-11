@@ -58,7 +58,14 @@ export function DateHeader(props: Props) {
               borderRadius: 0.75,
             }}
           >
-            <Typography textAlign={"center"} fontWeight={600} variant={"h6"}>
+            <Typography
+              textAlign={"center"}
+              fontWeight={600}
+              variant={"h6"}
+              sx={{
+                color: theme.customPalette.text.primary,
+              }}
+            >
               {date.toLocaleDateString("fr-CA", {
                 day: "numeric",
               })}
@@ -77,6 +84,7 @@ export function DateHeader(props: Props) {
               fontWeight={600}
               sx={{
                 lineHeight: 1,
+                color: theme.customPalette.text.secondary,
               }}
             >
               {upperCaseFirst(

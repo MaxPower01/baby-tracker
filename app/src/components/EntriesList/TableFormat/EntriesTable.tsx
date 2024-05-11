@@ -1,4 +1,6 @@
 import {
+  Box,
+  Divider,
   Paper,
   Stack,
   Table,
@@ -13,8 +15,12 @@ import {
 import React, { useEffect, useState } from "react";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import { DateHeader } from "@/components/DateHeader";
+import { EntriesDateHeader } from "@/components/EntriesList/EntriesDateHeader";
 import { EntriesTableRow } from "@/components/EntriesList/TableFormat/EntriesTableRow";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { v4 as uuid } from "uuid";
 
@@ -66,11 +72,63 @@ export function EntriesTable(props: Props) {
 
   return (
     <TableContainer component={Paper}>
+      <Stack
+        sx={{
+          // position: topHeight != null ? "sticky" : undefined,
+          // top: topHeight != null ? topHeight.totalHeight : undefined,
+          // zIndex: 2,
+          // backgroundColor: theme.palette.background.default,
+          width: "100%",
+          marginBottom: 1,
+        }}
+        spacing={0}
+      >
+        <Box
+          sx={{
+            paddingTop: 1,
+            paddingLeft: 2,
+            paddingRight: 2,
+          }}
+        >
+          <DateHeader
+            date={getDateFromTimestamp(props.entries[0].startTimestamp)}
+          />
+        </Box>
+        <EntryTypeChips entries={props.entries} readonly />
+      </Stack>
+
+      <Divider />
+
       <Table aria-label="entries-table" size="small">
         {/* <TableHead>
           <TableRow>
-            <TableCell align="center"></TableCell>
-            <TableCell align="center"></TableCell>
+            <TableCell
+              sx={{
+                border: 0,
+                paddingBottom: 0,
+              }}
+            >
+              <Typography variant="h6" fontWeight={600}>
+                {getDateFromTimestamp(
+                  props.entries[0].startTimestamp
+                ).toLocaleDateString("fr-CA", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell
+              sx={{
+                paddingLeft: 1,
+                paddingRight: 1,
+                paddingTop: 0,
+              }}
+            >
+              <EntryTypeChips entries={props.entries} readonly />
+            </TableCell>
           </TableRow>
         </TableHead> */}
         <TableBody>

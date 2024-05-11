@@ -46,7 +46,10 @@ export function EntriesTableRow(props: Props) {
         >
           <CardActionArea
             sx={{
-              padding: 1,
+              paddingTop: 1,
+              paddingBottom: 1,
+              paddingLeft: 2,
+              paddingRight: 2,
             }}
           >
             <Stack spacing={1} direction={"row"} alignItems={"center"}>
@@ -56,7 +59,7 @@ export function EntriesTableRow(props: Props) {
                   fontSize: "1.75em",
                 }}
               />
-              <Typography variant="body1">{title}</Typography>
+              <Typography variant="body2">{title}</Typography>
             </Stack>
           </CardActionArea>
         </TableCell>
