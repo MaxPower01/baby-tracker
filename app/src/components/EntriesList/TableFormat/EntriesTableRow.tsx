@@ -36,6 +36,7 @@ export function EntriesTableRow(props: Props) {
       <TableRow
         key={entry.id ?? uuid()}
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+        onClick={() => setOpen(!open)}
       >
         <TableCell
           scope="row"

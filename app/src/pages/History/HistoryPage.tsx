@@ -19,6 +19,7 @@ import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
+import { getFilteredEntries } from "@/utils/getFilteredEntries";
 import { resetFiltersButtonId } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -89,25 +90,7 @@ export function HistoryPage() {
   }, []);
 
   const filteredEntries = useMemo(() => {
-    let newEntries = entries;
-
-    if (selectedEntryTypes.length > 0) {
-      newEntries = newEntries.filter((entry) =>
-        selectedEntryTypes.includes(entry.entryTypeId)
-      );
-    }
-
-    if (selectedSortOrder === SortOrderId.DateDesc) {
-      newEntries = newEntries.sort(
-        (a, b) => b.startTimestamp - a.startTimestamp
-      );
-    } else if (selectedSortOrder === SortOrderId.DateAsc) {
-      newEntries = newEntries.sort(
-        (a, b) => a.startTimestamp - b.startTimestamp
-      );
-    }
-
-    return newEntries;
+    return getFilteredEntries(entries, selectedEntryTypes, selectedSortOrder);
   }, [entries, selectedEntryTypes, selectedSortOrder]);
 
   return (

@@ -14,9 +14,9 @@ import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { DateHeader } from "@/components/DateHeader";
 import { EntriesCardsList } from "@/components/EntriesList/CardsFormat/EntriesCardsList";
-import { EntriesDateHeader } from "@/components/EntriesList/EntriesDateHeader";
 import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { MenuProvider } from "@/components/MenuProvider";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
@@ -28,9 +28,7 @@ type Props = {
 };
 
 export function EntriesList(props: Props) {
-  if (props.entries.length === 0) {
-    return null;
-  }
+  const theme = useTheme();
 
   const groupedEntries = groupEntriesByDate(props.entries);
   const dateEntriesMap: Record<string, Entry[]> = {};
@@ -49,6 +47,46 @@ export function EntriesList(props: Props) {
       }
     }
   }
+
+  const [topHeight, setTopHeight] = useState<{
+    topbarHeight: number;
+    filterChipsHeight: number;
+    totalHeight: number;
+  } | null>(null);
+
+  useEffect(() => {
+    function handleResize() {
+      requestAnimationFrame(() => {
+        const result = {
+          topbarHeight: 0,
+          filterChipsHeight: 0,
+          totalHeight: 0,
+        };
+        const topbar = document.getElementById("topbar");
+        let topbarHeight = topbar?.clientHeight;
+        if (topbarHeight != null) {
+          topbarHeight -= 1;
+        }
+        result.topbarHeight = topbarHeight ?? 0;
+        const filterChips =
+          document.getElementsByClassName("EntriesFilterChips");
+        if (filterChips.length > 0) {
+          const filterChipsHeight = filterChips[0].clientHeight - 1;
+          result.filterChipsHeight = filterChipsHeight;
+        }
+        result.totalHeight = result.topbarHeight + result.filterChipsHeight;
+        setTopHeight(result);
+      });
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (props.entries.length === 0) {
+    return null;
+  }
+
   return (
     <Stack
       sx={{
@@ -63,17 +101,38 @@ export function EntriesList(props: Props) {
 
         return (
           <Stack
-            key={dateKey}
-            spacing={2}
             sx={{
               width: "100%",
             }}
+            spacing={0}
           >
-            {props.format === "table" ? (
-              <EntriesTable entries={entries} />
-            ) : (
-              <EntriesCardsList entries={entries} />
-            )}
+            <DateHeader
+              date={getDateFromTimestamp(props.entries[0].startTimestamp)}
+              sx={{
+                position: topHeight != null ? "sticky" : undefined,
+                top: topHeight != null ? topHeight.totalHeight : undefined,
+                zIndex: 2,
+                backgroundColor: theme.palette.background.default,
+              }}
+            />
+
+            <Stack
+              sx={{
+                width: "100%",
+                paddingBottom: 1,
+                paddingLeft: 0.5,
+                paddingRight: 0.5,
+              }}
+              spacing={2}
+            >
+              <EntryTypeChips entries={props.entries} readonly />
+
+              {props.format === "table" ? (
+                <EntriesTable entries={entries} />
+              ) : (
+                <EntriesCardsList entries={entries} />
+              )}
+            </Stack>
           </Stack>
         );
       })}
