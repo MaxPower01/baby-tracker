@@ -125,7 +125,7 @@ export function EntriesList(props: Props) {
               }}
               spacing={2}
             >
-              <EntryTypeChips entries={props.entries} readonly />
+              <EntryTypeChips entries={entries} readonly />
 
               {props.format === "table" ? (
                 <EntriesTable entries={entries} />

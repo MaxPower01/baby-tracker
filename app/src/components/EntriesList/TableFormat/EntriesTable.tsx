@@ -72,37 +72,6 @@ export function EntriesTable(props: Props) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="entries-table" size="small">
-        {/* <TableHead>
-          <TableRow>
-            <TableCell
-              sx={{
-                border: 0,
-                paddingBottom: 0,
-              }}
-            >
-              <Typography variant="h6" fontWeight={600}>
-                {getDateFromTimestamp(
-                  props.entries[0].startTimestamp
-                ).toLocaleDateString("fr-CA", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              sx={{
-                paddingLeft: 1,
-                paddingRight: 1,
-                paddingTop: 0,
-              }}
-            >
-              <EntryTypeChips entries={props.entries} readonly />
-            </TableCell>
-          </TableRow>
-        </TableHead> */}
         <TableBody>
           {props.entries.map((entry) => (
             <EntriesTableRow key={entry.id ?? uuid()} entry={entry} />
