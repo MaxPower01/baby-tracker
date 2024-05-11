@@ -107,7 +107,7 @@ export function EntriesList(props: Props) {
             spacing={0}
           >
             <DateHeader
-              date={getDateFromTimestamp(props.entries[0].startTimestamp)}
+              date={getDateFromTimestamp(entries[0].startTimestamp)}
               sx={{
                 position: topHeight != null ? "sticky" : undefined,
                 top: topHeight != null ? topHeight.totalHeight : undefined,

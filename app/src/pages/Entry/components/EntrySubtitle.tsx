@@ -11,6 +11,7 @@ import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasCon
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import { entryTypeHasSize } from "@/pages/Entry/utils/entryTypeHasSize";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
+import { entryTypeHasTemperature } from "@/pages/Entry/utils/entryTypeHasTemperature";
 import { entryTypeHasUrine } from "@/pages/Entry/utils/entryTypeHasUrine";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { entryTypeHasWeight } from "@/pages/Entry/utils/entryTypeHasWeight";
@@ -111,6 +112,7 @@ export function EntrySubtitle(props: Props) {
     );
   }
   let subtitle = "";
+
   const hasContext =
     entryTypeHasContextSelector(props.entry.entryTypeId) &&
     props.entry.activityContexts.length > 0;
@@ -125,6 +127,7 @@ export function EntrySubtitle(props: Props) {
       subtitle = contextsLabel;
     }
   }
+
   let volumeDisplayed = false;
   const hasVolume = entryTypeHasVolume(props.entry.entryTypeId);
   const totalVolume = hasVolume
@@ -138,7 +141,7 @@ export function EntrySubtitle(props: Props) {
     volumeDisplayed = true;
   }
   let timeDisplayed = false;
-  // if (!volumeDisplayed) {
+
   if (hasStopwatch) {
     if (totalTime > 0) {
       if (!isNullOrWhiteSpace(subtitle)) {
@@ -148,7 +151,7 @@ export function EntrySubtitle(props: Props) {
       timeDisplayed = true;
     }
   }
-  // }
+
   let weightDisplayed = false;
   const hasWeight =
     entryTypeHasWeight(props.entry.entryTypeId) &&
@@ -163,6 +166,7 @@ export function EntrySubtitle(props: Props) {
       weightDisplayed = true;
     }
   }
+
   let sizeDisplayed = false;
   const hasSize =
     entryTypeHasSize(props.entry.entryTypeId) && (props.entry.size ?? 0) > 0;
@@ -174,6 +178,21 @@ export function EntrySubtitle(props: Props) {
       }
       subtitle += `${formatSize(size)} cm`;
       sizeDisplayed = true;
+    }
+  }
+
+  let temperatureDisplayed = false;
+  const hasTemperature =
+    entryTypeHasTemperature(props.entry.entryTypeId) &&
+    (props.entry.temperature ?? 0) > 0;
+  if (hasTemperature) {
+    const temperature = props.entry.temperature ?? 0;
+    if (temperature > 0) {
+      if (!isNullOrWhiteSpace(subtitle)) {
+        subtitle += " • ";
+      }
+      subtitle += `${temperature} °C`;
+      temperatureDisplayed = true;
     }
   }
 
