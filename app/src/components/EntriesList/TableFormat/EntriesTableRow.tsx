@@ -16,6 +16,7 @@ import {
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryBody } from "@/pages/Entry/components/EntryBody";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -41,42 +42,62 @@ export function EntriesTableRow(props: Props) {
         sx={{
           "&:last-child td, &:last-child th": { border: 0 },
         }}
-        // onClick={() => setOpen(!open)}
+        onClick={() => setOpen(!open)}
       >
         <TableCell
           scope="row"
           align="left"
           sx={{
             padding: 0,
-            // borderBottom: "unset",
+            borderBottom: "unset",
           }}
         >
           <CardActionArea
+            component={Box}
             sx={{
               paddingTop: 1,
               paddingBottom: 1,
-              paddingLeft: 2,
-              paddingRight: 2,
+              paddingLeft: 1.5,
+              paddingRight: 1.5,
             }}
           >
             <Stack spacing={1} direction={"row"} alignItems={"center"}>
-              <ActivityIcon
-                type={entry.entryTypeId}
+              <Stack
+                spacing={1}
+                direction={"row"}
+                alignItems={"center"}
                 sx={{
-                  fontSize: "1.75em",
+                  flexGrow: 1,
                 }}
-              />
-              <Typography variant="body2">{title}</Typography>
-              <EntrySubtitle
-                entry={entry}
-                textColor={theme.customPalette.text.tertiary}
-              />
+              >
+                <ActivityIcon
+                  type={entry.entryTypeId}
+                  sx={{
+                    fontSize: "1.75em",
+                  }}
+                />
+                <Typography variant="body2">{title}</Typography>
+                <EntrySubtitle
+                  entry={entry}
+                  textColor={theme.customPalette.text.tertiary}
+                />
+              </Stack>
+
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                sx={{
+                  flexShrink: 0,
+                }}
+              >
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
             </Stack>
           </CardActionArea>
         </TableCell>
       </TableRow>
-      {/* <TableRow
-        key={entry.id ?? uuid()}
+      <TableRow
+        key={`${entry.id ?? uuid()}-collapse`}
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       >
         <TableCell
@@ -87,32 +108,16 @@ export function EntriesTableRow(props: Props) {
           }}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Stack
-              spacing={1}
-              direction={"row"}
-              alignItems={"center"}
+            <EntryBody
+              entry={entry}
               sx={{
-                paddingTop: 1,
-                paddingBottom: 1,
-                paddingLeft: 2,
-                paddingRight: 2,
+                width: "100%",
+                padding: 2,
               }}
-            >
-              <ActivityIcon
-                type={entry.entryTypeId}
-                sx={{
-                  fontSize: "1.75em",
-                }}
-              />
-              <Typography variant="body2">{title}</Typography>
-              <EntrySubtitle
-                entry={entry}
-                textColor={theme.customPalette.text.tertiary}
-              />
-            </Stack>
+            />
           </Collapse>
         </TableCell>
-      </TableRow> */}
+      </TableRow>
     </>
   );
 }

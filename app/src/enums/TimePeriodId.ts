@@ -6,4 +6,7 @@ export enum TimePeriodId {
   Last14Days = 5,
   Last30Days = 6,
   Custom = 7,
+  Last3Months = 8,
+  Last6Months = 9,
+  ThisYear = 10,
 }

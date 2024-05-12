@@ -12,6 +12,7 @@ import {
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import React from "react";
+import { customButtomBarSaveButtonId } from "@/utils/constants";
 
 type Props = {
   onSaveButtonClick: () => void;
@@ -43,6 +44,7 @@ export function CustomBottomBar(props: Props) {
             spacing={2}
           >
             <Button
+              id={customButtomBarSaveButtonId}
               variant="contained"
               onClick={props.onSaveButtonClick}
               fullWidth

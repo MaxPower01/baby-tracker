@@ -2,10 +2,6 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 
 export function getTimePeriodPickerItems() {
   return [
-    // {
-    //   id: TimePeriodId.AllTime,
-    //   label: "Tout le temps",
-    // },
     {
       id: TimePeriodId.Today,
       label: "Aujourd'hui",
@@ -16,7 +12,7 @@ export function getTimePeriodPickerItems() {
     },
     {
       id: TimePeriodId.Last7Days,
-      label: "7 derniers jours",
+      label: "Cette semaine",
     },
     {
       id: TimePeriodId.Last14Days,
@@ -24,11 +20,27 @@ export function getTimePeriodPickerItems() {
     },
     {
       id: TimePeriodId.Last30Days,
-      label: "30 derniers jours",
+      label: "Ce mois-ci",
+    },
+    {
+      id: TimePeriodId.Last3Months,
+      label: "3 derniers mois",
+    },
+    {
+      id: TimePeriodId.Last6Months,
+      label: "6 derniers mois",
+    },
+    {
+      id: TimePeriodId.ThisYear,
+      label: "Cette année",
     },
     // {
+    //   id: TimePeriodId.AllTime,
+    //   label: "Tout le temps",
+    // },
+    // {
     //   id: TimePeriodId.Custom,
-    //   label: "Sélectionner une période",
+    //   label: "Choisir une période",
     // },
   ];
 }

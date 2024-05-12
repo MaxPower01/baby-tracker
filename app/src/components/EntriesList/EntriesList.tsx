@@ -7,6 +7,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
 import React, { useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
@@ -32,6 +33,7 @@ export function EntriesList(props: Props) {
 
   const groupedEntries = groupEntriesByDate(props.entries);
   const dateEntriesMap: Record<string, Entry[]> = {};
+
   for (const year of groupedEntries.years) {
     for (const month of year.months) {
       for (const day of month.days) {
@@ -47,6 +49,10 @@ export function EntriesList(props: Props) {
       }
     }
   }
+
+  const dateEntriesList: Array<Entry[]> = useMemo(() => {
+    return Object.values(dateEntriesMap);
+  }, [dateEntriesMap]);
 
   const [topHeight, setTopHeight] = useState<{
     topbarHeight: number;
@@ -88,17 +94,63 @@ export function EntriesList(props: Props) {
   }
 
   return (
-    <Stack
-      sx={{
+    // <Stack
+    //   sx={{
+    //     width: "100%",
+    //   }}
+    //   spacing={4}
+    // >
+    //   {Object.entries(dateEntriesMap).map(([dateKey, entries]) => {
+    //     if (entries.length === 0) {
+    //       return null;
+    //     }
+
+    //     return (
+    //       <Stack
+    //         sx={{
+    //           width: "100%",
+    //         }}
+    //         spacing={0}
+    //       >
+    //         <DateHeader
+    //           date={getDateFromTimestamp(entries[0].startTimestamp)}
+    //           sx={{
+    //             position: topHeight != null ? "sticky" : undefined,
+    //             top: topHeight != null ? topHeight.totalHeight : undefined,
+    //             zIndex: 2,
+    //             backgroundColor: theme.palette.background.default,
+    //           }}
+    //         />
+
+    //         <Stack
+    //           sx={{
+    //             width: "100%",
+    //             paddingBottom: 1,
+    //             paddingLeft: 0.5,
+    //             paddingRight: 0.5,
+    //           }}
+    //           spacing={2}
+    //         >
+    //           <EntryTypeChips entries={entries} readonly />
+
+    //           {props.format === "table" ? (
+    //             <EntriesTable entries={entries} />
+    //           ) : (
+    //             <EntriesCardsList entries={entries} />
+    //           )}
+    //         </Stack>
+    //       </Stack>
+    //     );
+    //   })}
+    // </Stack>
+
+    <Virtuoso
+      style={{
         width: "100%",
       }}
-      spacing={4}
-    >
-      {Object.entries(dateEntriesMap).map(([dateKey, entries]) => {
-        if (entries.length === 0) {
-          return null;
-        }
-
+      useWindowScroll
+      data={dateEntriesList}
+      itemContent={(index, entries) => {
         return (
           <Stack
             sx={{
@@ -135,7 +187,7 @@ export function EntriesList(props: Props) {
             </Stack>
           </Stack>
         );
-      })}
-    </Stack>
+      }}
+    />
   );
 }
