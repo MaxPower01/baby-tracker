@@ -49,6 +49,7 @@ type Props = {
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     activityType: ActivityType
   ) => void;
+  hideOptionsButton?: boolean;
 };
 
 export function EntriesCard(props: Props) {
@@ -238,20 +239,23 @@ export function EntriesCard(props: Props) {
                               : undefined
                           }
                         />
-                        <IconButton
-                          sx={{
-                            opacity: 0.5,
-                            zIndex: 1,
-                          }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setMenuEntry(entry);
-                            openMenu(event);
-                          }}
-                          size="large"
-                        >
-                          <MoreVertIcon fontSize="medium" />
-                        </IconButton>
+
+                        {!props.hideOptionsButton && (
+                          <IconButton
+                            sx={{
+                              opacity: 0.5,
+                              zIndex: 1,
+                            }}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setMenuEntry(entry);
+                              openMenu(event);
+                            }}
+                            size="large"
+                          >
+                            <MoreVertIcon fontSize="medium" />
+                          </IconButton>
+                        )}
                       </Stack>
                     </Stack>
 

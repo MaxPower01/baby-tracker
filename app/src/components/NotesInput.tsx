@@ -13,7 +13,7 @@ export function NotesInput(props: Props) {
       name="note"
       type="text"
       placeholder="Détails supplémentaires, commentaires, etc."
-      value={props.note}
+      value={props.note ?? ""}
       onChange={(e) => props.setNote(e.target.value)}
       fullWidth
       multiline

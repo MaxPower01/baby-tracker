@@ -10,6 +10,7 @@ import { groupEntriesByTime } from "@/utils/utils";
 type Props = {
   entries: Entry[];
   dense?: boolean;
+  hideOptionsButton?: boolean;
 };
 export function EntriesCardsList(props: Props) {
   const entriesByTime = groupEntriesByTime({
@@ -38,7 +39,10 @@ export function EntriesCardsList(props: Props) {
         }-${index}`;
         return (
           <MenuProvider key={key}>
-            <EntriesCard entries={entries} />
+            <EntriesCard
+              entries={entries}
+              hideOptionsButton={props.hideOptionsButton}
+            />
           </MenuProvider>
         );
       })}

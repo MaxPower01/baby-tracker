@@ -25,6 +25,7 @@ import { v4 as uuid } from "uuid";
 
 type Props = {
   entries: Entry[];
+  onRowClick: (entry: Entry) => void;
 };
 
 export function EntriesTable(props: Props) {
@@ -74,7 +75,11 @@ export function EntriesTable(props: Props) {
       <Table aria-label="entries-table" size="small">
         <TableBody>
           {props.entries.map((entry) => (
-            <EntriesTableRow key={entry.id ?? uuid()} entry={entry} />
+            <EntriesTableRow
+              key={entry.id ?? uuid()}
+              entry={entry}
+              onClick={() => props.onRowClick(entry)}
+            />
           ))}
         </TableBody>
       </Table>

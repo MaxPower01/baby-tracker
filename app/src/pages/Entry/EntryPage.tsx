@@ -35,6 +35,7 @@ export function EntryPage() {
     console.error("Invalid entry type");
     return null;
   }
+
   const entry: Entry | null | undefined =
     isNewEntry || isNullOrWhiteSpace(entryId)
       ? getDefaultEntry(entryType, user.babyId)

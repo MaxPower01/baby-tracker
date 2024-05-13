@@ -29,6 +29,7 @@ import { v4 as uuid } from "uuid";
 
 type Props = {
   entry: Entry;
+  onClick: (entry: Entry) => void;
 };
 
 export function EntriesTableRow(props: Props) {
@@ -70,118 +71,104 @@ export function EntriesTableRow(props: Props) {
           "&:last-child td, &:last-child th": { border: 0 },
           cursor: "pointer",
         }}
-        onClick={() => setOpen(!open)}
+        // onClick={() => setOpen(!open)}
+        onClick={() => props.onClick(entry)}
       >
         <TableCell
           scope="row"
           align="left"
           sx={{
-            // padding: 0,
-            paddingLeft: 0.5,
-            borderBottom: "unset",
+            padding: 0,
+            // paddingLeft: 0.5,
+            // borderBottom: "unset",
           }}
         >
-          {/* <CardActionArea
+          <CardActionArea
             component={Box}
             sx={{
               paddingTop: 1,
               paddingBottom: 1,
-              paddingLeft: 0.5,
+              paddingLeft: 1.5,
               paddingRight: 1.5,
             }}
-          > */}
-          <Stack
-            spacing={1}
-            direction={"row"}
-            alignItems={"center"}
-            sx={{
-              width: "100%",
-            }}
           >
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              sx={{
-                flexShrink: 0,
-              }}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
             <Stack
-              spacing={4}
+              spacing={1}
               direction={"row"}
               alignItems={"center"}
               sx={{
                 width: "100%",
               }}
             >
+              {/* <IconButton
+                aria-label="expand row"
+                size="small"
+                sx={{
+                  flexShrink: 0,
+                }}
+              >
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton> */}
               <Stack
-                spacing={1}
+                spacing={4}
                 direction={"row"}
                 alignItems={"center"}
                 sx={{
-                  flexGrow: 1,
+                  width: "100%",
                 }}
               >
-                <ActivityIcon
-                  type={entry.entryTypeId}
+                <Stack
+                  spacing={1}
+                  direction={"row"}
+                  alignItems={"center"}
                   sx={{
-                    fontSize: "1.75em",
+                    flexGrow: 1,
+                  }}
+                >
+                  <ActivityIcon
+                    type={entry.entryTypeId}
+                    sx={{
+                      fontSize: "1.75em",
+                    }}
+                  />
+
+                  <Stack>
+                    <Typography
+                      variant={"caption"}
+                      sx={{
+                        lineHeight: 1,
+                        opacity: theme.opacity.tertiary,
+                        fontWeight: 300,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {caption}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {title}
+                    </Typography>
+                  </Stack>
+                </Stack>
+
+                <EntrySubtitle
+                  entry={entry}
+                  textColor={theme.customPalette.text.tertiary}
+                  sx={{
+                    // whiteSpace: "nowrap",
+                    textAlign: "right",
                   }}
                 />
-
-                <Stack>
-                  <Typography
-                    variant={"caption"}
-                    sx={{
-                      lineHeight: 1,
-                      opacity: theme.opacity.tertiary,
-                      fontWeight: 300,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {caption}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {title}
-                  </Typography>
-                </Stack>
               </Stack>
-
-              <EntrySubtitle
-                entry={entry}
-                textColor={theme.customPalette.text.tertiary}
-                sx={{
-                  // whiteSpace: "nowrap",
-                  textAlign: "right",
-                }}
-              />
             </Stack>
-          </Stack>
-          {/* </CardActionArea> */}
+          </CardActionArea>
         </TableCell>
-        {/* <TableCell
-          scope="row"
-          align="left"
-          sx={{
-            borderBottom: "unset",
-          }}
-        >
-          <EntrySubtitle
-            entry={entry}
-            textColor={theme.customPalette.text.tertiary}
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          />
-        </TableCell> */}
       </TableRow>
-      <TableRow
+      {/* <TableRow
         key={`${entry.id ?? uuid()}-collapse`}
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       >
@@ -203,7 +190,7 @@ export function EntriesTableRow(props: Props) {
             />
           </Collapse>
         </TableCell>
-      </TableRow>
+      </TableRow> */}
     </>
   );
 }

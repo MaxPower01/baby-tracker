@@ -3,25 +3,31 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Container,
+  Modal,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
 import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
 import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateHeader } from "@/components/DateHeader";
 import { EntriesCardsList } from "@/components/EntriesList/CardsFormat/EntriesCardsList";
 import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { MenuProvider } from "@/components/MenuProvider";
+import { addRecentEntryInState } from "@/state/slices/entriesSlice";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
+import { serializeEntry } from "@/pages/Entry/utils/serializeEntry";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 
 type Props = {
   entries: Entry[];
@@ -30,6 +36,8 @@ type Props = {
 
 export function EntriesList(props: Props) {
   const theme = useTheme();
+
+  const dispatch = useAppDispatch();
 
   const groupedEntries = groupEntriesByDate(props.entries);
   const dateEntriesMap: Record<string, Entry[]> = {};
@@ -89,105 +97,87 @@ export function EntriesList(props: Props) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [entryForModal, setEntryForModal] = useState<Entry | null>(null);
+
+  const handleEntriesTableRowClick = useCallback(
+    (entry: Entry) => {
+      dispatch(addRecentEntryInState({ entry: serializeEntry(entry) }));
+      setEntryForModal(entry);
+    },
+    [dispatch]
+  );
+
+  const handleCloseModal = () => {
+    setEntryForModal(null);
+  };
+
   if (props.entries.length === 0) {
     return null;
   }
 
   return (
-    // <Stack
-    //   sx={{
-    //     width: "100%",
-    //   }}
-    //   spacing={4}
-    // >
-    //   {Object.entries(dateEntriesMap).map(([dateKey, entries]) => {
-    //     if (entries.length === 0) {
-    //       return null;
-    //     }
-
-    //     return (
-    //       <Stack
-    //         sx={{
-    //           width: "100%",
-    //         }}
-    //         spacing={0}
-    //       >
-    //         <DateHeader
-    //           date={getDateFromTimestamp(entries[0].startTimestamp)}
-    //           sx={{
-    //             position: topHeight != null ? "sticky" : undefined,
-    //             top: topHeight != null ? topHeight.totalHeight : undefined,
-    //             zIndex: 2,
-    //             backgroundColor: theme.palette.background.default,
-    //           }}
-    //         />
-
-    //         <Stack
-    //           sx={{
-    //             width: "100%",
-    //             paddingBottom: 1,
-    //             paddingLeft: 0.5,
-    //             paddingRight: 0.5,
-    //           }}
-    //           spacing={2}
-    //         >
-    //           <EntryTypeChips entries={entries} readonly />
-
-    //           {props.format === "table" ? (
-    //             <EntriesTable entries={entries} />
-    //           ) : (
-    //             <EntriesCardsList entries={entries} />
-    //           )}
-    //         </Stack>
-    //       </Stack>
-    //     );
-    //   })}
-    // </Stack>
-
-    <Virtuoso
-      style={{
-        width: "100%",
-      }}
-      useWindowScroll
-      data={dateEntriesList}
-      itemContent={(index, entries) => {
-        return (
-          <Stack
-            sx={{
-              width: "100%",
-            }}
-            spacing={0}
-          >
-            <DateHeader
-              date={getDateFromTimestamp(entries[0].startTimestamp)}
-              sx={{
-                position: topHeight != null ? "sticky" : undefined,
-                top: topHeight != null ? topHeight.totalHeight : undefined,
-                zIndex: 2,
-                backgroundColor: theme.palette.background.default,
-              }}
-            />
-
+    <>
+      <Virtuoso
+        style={{
+          width: "100%",
+        }}
+        useWindowScroll
+        data={dateEntriesList}
+        itemContent={(index, entries) => {
+          return (
             <Stack
               sx={{
                 width: "100%",
-                paddingBottom: 1,
-                paddingLeft: 0.5,
-                paddingRight: 0.5,
               }}
-              spacing={2}
+              spacing={0}
             >
-              <EntryTypeChips entries={entries} readonly />
+              <DateHeader
+                date={getDateFromTimestamp(entries[0].startTimestamp)}
+                sx={{
+                  position: topHeight != null ? "sticky" : undefined,
+                  top: topHeight != null ? topHeight.totalHeight : undefined,
+                  zIndex: 2,
+                  backgroundColor: theme.palette.background.default,
+                }}
+              />
 
-              {props.format === "table" ? (
-                <EntriesTable entries={entries} />
-              ) : (
-                <EntriesCardsList entries={entries} />
-              )}
+              <Stack
+                sx={{
+                  width: "100%",
+                  paddingBottom: 1,
+                  paddingLeft: 0.5,
+                  paddingRight: 0.5,
+                }}
+                spacing={2}
+              >
+                <EntryTypeChips entries={entries} readonly />
+
+                {props.format === "table" ? (
+                  <EntriesTable
+                    entries={entries}
+                    onRowClick={handleEntriesTableRowClick}
+                  />
+                ) : (
+                  <EntriesCardsList entries={entries} />
+                )}
+              </Stack>
             </Stack>
-          </Stack>
-        );
-      }}
-    />
+          );
+        }}
+      />
+
+      <Modal
+        open={entryForModal !== null}
+        onClose={handleCloseModal}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <Container component={"main"} maxWidth={CSSBreakpoint.Small}>
+          <EntriesCardsList
+            entries={[entryForModal as Entry]}
+            hideOptionsButton
+          />
+        </Container>
+      </Modal>
+    </>
   );
 }
