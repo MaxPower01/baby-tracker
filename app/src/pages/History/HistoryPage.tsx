@@ -44,8 +44,8 @@ export function HistoryPage() {
     SortOrderId.DateDesc
   );
 
-  // const [entries, setEntries] = useState<Entry[]>([]);
-  const entries = useSelector(selectHistoryEntries);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  // const entries = useSelector(selectHistoryEntries);
 
   useEffect(() => {
     if (
@@ -63,6 +63,12 @@ export function HistoryPage() {
               console.error(result.payload);
             }
           }
+          const dailyEntriesCollection =
+            result.payload as DailyEntriesCollection;
+          const entries = getEntriesFromDailyEntriesCollection(
+            dailyEntriesCollection
+          );
+          setEntries(entries);
           setIsFetching(false);
         })
         .catch((err) => {

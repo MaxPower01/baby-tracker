@@ -4,15 +4,16 @@ export function getTimePeriodPickerItems() {
   return [
     {
       id: TimePeriodId.Today,
-      label: "Aujourd'hui",
+      label: "24 dernières heures",
     },
     {
       id: TimePeriodId.Last2Days,
-      label: "2 derniers jours",
+      label: "48 dernières heures",
     },
     {
       id: TimePeriodId.Last7Days,
-      label: "Cette semaine",
+      label: "7 derniers jours",
+      divider: true,
     },
     {
       id: TimePeriodId.Last14Days,
@@ -20,11 +21,12 @@ export function getTimePeriodPickerItems() {
     },
     {
       id: TimePeriodId.Last30Days,
-      label: "Ce mois-ci",
+      label: "30 derniers jours",
     },
     {
       id: TimePeriodId.Last3Months,
       label: "3 derniers mois",
+      divider: true,
     },
     {
       id: TimePeriodId.Last6Months,
@@ -32,12 +34,13 @@ export function getTimePeriodPickerItems() {
     },
     {
       id: TimePeriodId.ThisYear,
-      label: "Cette année",
+      label: "12 derniers mois",
     },
-    // {
-    //   id: TimePeriodId.AllTime,
-    //   label: "Tout le temps",
-    // },
+    {
+      id: TimePeriodId.AllTime,
+      label: "Tout le temps",
+      divider: true,
+    },
     // {
     //   id: TimePeriodId.Custom,
     //   label: "Choisir une période",

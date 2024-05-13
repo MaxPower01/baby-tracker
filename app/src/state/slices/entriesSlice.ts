@@ -904,15 +904,17 @@ const slice = createSlice({
       _setStatusInState(state, "busy");
     });
     builder.addCase(fetchHistoryEntriesFromDB.fulfilled, (state, action) => {
-      const dailyEntriesCollection = action.payload as DailyEntriesCollection;
-      if (dailyEntriesCollection) {
-        const entries = getEntriesFromDailyEntriesCollection(
-          dailyEntriesCollection
-        );
-        _setHistoryEntriesInState(state, {
-          entries: entries.map((e) => JSON.stringify(e)),
-        });
-      }
+      // Result of fetching history entries might be too large to store in state
+
+      // const dailyEntriesCollection = action.payload as DailyEntriesCollection;
+      // if (dailyEntriesCollection) {
+      //   const entries = getEntriesFromDailyEntriesCollection(
+      //     dailyEntriesCollection
+      //   );
+      //   _setHistoryEntriesInState(state, {
+      //     entries: entries.map((e) => JSON.stringify(e)),
+      //   });
+      // }
       _setStatusInState(state, "idle");
     });
     builder.addCase(fetchHistoryEntriesFromDB.rejected, (state, action) => {

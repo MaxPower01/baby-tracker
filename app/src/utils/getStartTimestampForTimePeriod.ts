@@ -21,6 +21,7 @@ export function getStartTimestampForTimePeriod(timePeriodId: TimePeriodId) {
     case TimePeriodId.ThisYear:
       return nowTimestamp - dayInSeconds * 365;
     case TimePeriodId.AllTime:
+      return 0;
     case TimePeriodId.Custom:
     case TimePeriodId.Today:
     default:

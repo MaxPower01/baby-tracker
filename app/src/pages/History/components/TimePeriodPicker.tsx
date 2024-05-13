@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   FormControl,
   InputLabel,
   ListItemText,
@@ -67,7 +68,16 @@ export function TimePeriodPicker(props: Props) {
         >
           {items.map((item) => {
             return (
-              <MenuItem key={item.id} value={item.id}>
+              <MenuItem
+                key={item.id}
+                value={item.id}
+                sx={{
+                  borderTop: "1px solid",
+                  borderTopColor: item.divider
+                    ? theme.palette.divider
+                    : "transparent",
+                }}
+              >
                 <ListItemText primary={item.label} />
               </MenuItem>
             );
