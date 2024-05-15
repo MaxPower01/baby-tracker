@@ -26,7 +26,11 @@ export function getActivityChipLabel(entries: Entry[]) {
       return acc + (entry.leftTime ?? 0) + (entry.rightTime ?? 0);
     }, 0);
     if (totalTime > 0) {
-      const totalDuration = formatStopwatchTime(totalTime);
+      const totalDuration = formatStopwatchTime(
+        totalTime,
+        true,
+        totalTime < 3600
+      );
       result += ` • ${totalDuration}`;
     }
   }
