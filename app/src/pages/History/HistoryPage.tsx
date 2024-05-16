@@ -13,7 +13,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { SearchToolbar } from "@/pages/History/components/SearchToolbar";
+import { SearchToolbar } from "@/components/Filters/SearchToolbar";
 import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";

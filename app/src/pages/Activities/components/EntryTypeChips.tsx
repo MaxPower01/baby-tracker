@@ -1,8 +1,8 @@
 import { Box, Stack, useTheme } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
-import ActivityChip from "@/pages/Activities/components/ActivityChip";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useSelector } from "react-redux";
@@ -118,7 +118,7 @@ export function EntryTypeChips(props: Props) {
             return null;
           }
           return (
-            <ActivityChip
+            <EntryTypeChip
               key={entryTypeId}
               isSelected={
                 props.readonly

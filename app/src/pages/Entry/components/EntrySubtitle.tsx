@@ -2,8 +2,8 @@ import React, { useEffect, useMemo } from "react";
 import { Stack, SxProps, Typography, useTheme } from "@mui/material";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeCanHaveMultipleContexts } from "@/pages/Entry/utils/entryTypeCanHaveMultipleContexts";
@@ -82,7 +82,7 @@ export function EntrySubtitle(props: Props) {
         {urineArray.length > 0 && (
           <Stack direction={"row"}>
             {urineArray.map((_, index) => (
-              <ActivityIcon
+              <EntryTypeIcon
                 key={index}
                 type={EntryTypeId.Urine}
                 sx={{
@@ -96,7 +96,7 @@ export function EntrySubtitle(props: Props) {
         {poopArray.length > 0 && (
           <Stack direction={"row"}>
             {poopArray.map((_, index) => (
-              <ActivityIcon
+              <EntryTypeIcon
                 key={index}
                 type={EntryTypeId.Poop}
                 color={poopColorId}

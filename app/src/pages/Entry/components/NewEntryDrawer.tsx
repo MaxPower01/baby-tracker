@@ -11,10 +11,10 @@ import {
   useTheme,
 } from "@mui/material";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -130,7 +130,7 @@ export function NewEntryDrawer(props: {
                     }}
                   >
                     <>
-                      <ActivityIcon
+                      <EntryTypeIcon
                         type={entryType}
                         sx={{
                           flexShrink: 0,

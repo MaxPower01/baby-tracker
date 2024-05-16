@@ -26,10 +26,9 @@ import {
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ActivityChip from "@/pages/Activities/components/ActivityChip";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
+import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
@@ -234,7 +233,7 @@ export function FiltersDrawer(props: Props) {
                 >
                   {entryTypesOrder.map((entryTypeId) => {
                     return (
-                      <ActivityChip
+                      <EntryTypeChip
                         key={entryTypeId}
                         entryType={entryTypeId}
                         isSelected={selectedEntryTypes.includes(entryTypeId)}

@@ -12,9 +12,9 @@ import {
   selectEntryTypesOrder,
 } from "@/state/slices/settingsSlice";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
@@ -184,7 +184,7 @@ export default function ActivitiesPage() {
                               justifyContent={"flex-start"}
                               alignItems={"center"}
                             >
-                              <ActivityIcon
+                              <EntryTypeIcon
                                 type={entryTypeId}
                                 sx={{
                                   fontSize: "2em",

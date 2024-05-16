@@ -1,9 +1,8 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
-import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
@@ -68,7 +67,7 @@ export function EntryHeader(props: Props) {
             fontSize: "80%",
           }}
         >
-          <ActivityIcon type={props.entry.entryTypeId} />
+          <EntryTypeIcon type={props.entry.entryTypeId} />
         </Box>
       )}
       <Stack spacing={0.25}>

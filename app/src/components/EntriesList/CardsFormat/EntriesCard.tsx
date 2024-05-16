@@ -22,14 +22,13 @@ import {
 } from "@/state/slices/entriesSlice";
 import { useCallback, useState } from "react";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryBody } from "@/pages/Entry/components/EntryBody";
 import { EntryHeader } from "@/pages/Entry/components/EntryHeader";
-import EntryModel from "@/pages/Entry/models/EntryModel";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -208,7 +207,7 @@ export function EntriesCard(props: Props) {
                             : "",
                         }}
                       >
-                        <ActivityIcon
+                        <EntryTypeIcon
                           type={entry.entryTypeId}
                           sx={{
                             fontSize: "3.5em",

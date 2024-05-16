@@ -1,9 +1,8 @@
 import { Chip, Stack, Typography, useTheme } from "@mui/material";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import CheckIcon from "@mui/icons-material/Check";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { getActivityChipLabel } from "@/utils/getActivityChipLabel";
 import { getActivityName } from "@/utils/getActivityName";
@@ -23,7 +22,7 @@ type Props = {
   readonly?: boolean;
 };
 
-export default function ActivityChip(props: Props) {
+export function EntryTypeChip(props: Props) {
   const theme = useTheme();
   const label = props.entries?.length
     ? getActivityChipLabel(props.entries)
@@ -31,7 +30,7 @@ export default function ActivityChip(props: Props) {
   return (
     <Chip
       icon={
-        <ActivityIcon
+        <EntryTypeIcon
           type={props.entryType as any}
           sx={{
             fontSize: "1.75em",

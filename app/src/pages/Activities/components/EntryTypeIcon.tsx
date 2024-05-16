@@ -1,6 +1,5 @@
 import { Box, SxProps } from "@mui/material";
 
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { ReactSVG } from "react-svg";
@@ -182,16 +181,14 @@ function BellyTimeIcon() {
 
 type ActivityIconProps = {
   type: EntryTypeId;
-  activity?: ActivityModel;
   sx?: SxProps | undefined;
   outlined?: boolean;
   monochrome?: boolean;
   color?: string;
 };
 
-export default function ActivityIcon(props: ActivityIconProps) {
-  let type = props.activity?.type ?? props.type;
-  const parsedType = parseEnumValue(type, EntryTypeId);
+export function EntryTypeIcon(props: ActivityIconProps) {
+  const parsedType = parseEnumValue(props.type, EntryTypeId);
   if (parsedType === null) return false;
   return (
     <Box sx={props.sx}>

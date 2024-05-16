@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { DateHeader } from "@/components/DateHeader";
 import { EntriesTableRow } from "@/components/EntriesList/TableFormat/EntriesTableRow";
 import { Entry } from "@/pages/Entry/types/Entry";

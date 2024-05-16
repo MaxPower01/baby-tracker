@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { FiltersPicker } from "@/pages/History/components/FiltersPicker";
+import { FiltersPicker } from "@/components/Filters/FiltersPicker";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { TimePeriodPicker } from "@/pages/History/components/TimePeriodPicker";
+import { TimePeriodPicker } from "@/components/Filters/TimePeriodPicker";
 
 type Props = {
   timePeriodId: TimePeriodId;
@@ -31,7 +31,7 @@ export function SearchToolbar(props: Props) {
           flexGrow: 1,
         }}
       />
-      {/* <FiltersPicker
+      <FiltersPicker
         selectedEntryTypes={props.selectedEntryTypes}
         setSelectedEntryTypes={props.setSelectedEntryTypes}
         selectedSortOrder={props.selectedSortOrder}
@@ -39,7 +39,7 @@ export function SearchToolbar(props: Props) {
         sx={{
           flexShrink: 0,
         }}
-      /> */}
+      />
     </Stack>
   );
 }

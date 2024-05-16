@@ -13,7 +13,6 @@ import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateHeader } from "@/components/DateHeader";

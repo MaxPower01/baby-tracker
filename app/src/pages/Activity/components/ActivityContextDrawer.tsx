@@ -40,7 +40,6 @@ import {
 } from "@/state/slices/activitiesSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AddIcon from "@mui/icons-material/Add";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
@@ -48,6 +47,7 @@ import DragHandleIcon from "@mui/icons-material/DragHandle";
 import EditIcon from "@mui/icons-material/Edit";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { RootState } from "@/state/store";
@@ -472,7 +472,7 @@ export function ActivityContextDrawer(props: Props) {
             <Toolbar>
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 {entryTypeForActivityIcon != null && (
-                  <ActivityIcon
+                  <EntryTypeIcon
                     type={entryTypeForActivityIcon}
                     sx={{
                       flexShrink: 0,

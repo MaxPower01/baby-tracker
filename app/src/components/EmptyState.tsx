@@ -1,9 +1,9 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EmptyStatePeriod } from "@/enums/EmptyStatePeriod";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 import { ReactSVG } from "react-svg";
@@ -68,7 +68,7 @@ export function EmptyState(props: EmptyStateProps) {
     <Stack spacing={2}>
       <Stack spacing={1}>
         {entryType != null ? (
-          <ActivityIcon
+          <EntryTypeIcon
             type={entryType}
             sx={{
               fontSize: "7em",

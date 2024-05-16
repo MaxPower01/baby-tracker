@@ -2,22 +2,16 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
-import EntryModel from "@/pages/Entry/models/EntryModel";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
-import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import { SettingsState } from "@/state/types/SettingsState";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { ThemeMode } from "@/enums/ThemeMode";
-import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 import { db } from "@/firebase";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
-import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 
 const key = LocalStorageKey.SettingsState;
