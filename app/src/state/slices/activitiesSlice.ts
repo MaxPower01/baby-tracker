@@ -7,7 +7,7 @@ import {
 import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
+import ActivitiesState from "@/state/types/ActivitiesState";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";

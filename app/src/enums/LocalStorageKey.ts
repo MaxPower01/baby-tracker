@@ -3,4 +3,5 @@ export enum LocalStorageKey {
   EntriesState = "entriesState",
   SettingsState = "settingsState",
   ActivitiesState = "activitiesState",
+  FiltersState = "filtersState",
 }

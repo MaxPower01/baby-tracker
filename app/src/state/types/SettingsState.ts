@@ -6,7 +6,7 @@ import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 
-export default interface SettingsState {
+export interface SettingsState {
   themeMode: ThemeMode;
   intervalMethodByEntryTypeId: Array<{
     entryTypeId: EntryTypeId;
