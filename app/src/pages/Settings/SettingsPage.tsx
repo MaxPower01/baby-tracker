@@ -24,11 +24,10 @@ import {
   selectThemeMode,
 } from "@/state/slices/settingsSlice";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
@@ -221,7 +220,7 @@ export function SettingsPage() {
                       alignItems={"center"}
                       spacing={0.5}
                     >
-                      <ActivityIcon
+                      <EntryTypeIcon
                         type={intervalMethod.entryTypeId}
                         sx={{
                           fontSize: theme.typography.h5.fontSize,

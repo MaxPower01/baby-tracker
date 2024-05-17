@@ -1,6 +1,6 @@
 import { Rating, Stack, Typography, styled, useTheme } from "@mui/material";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -43,10 +43,10 @@ export function PoopAmountPicker(props: Props) {
         name="poop-amount-selector"
         size="large"
         icon={
-          <ActivityIcon type={EntryTypeId.Poop} sx={{ fontSize: "1.5em" }} />
+          <EntryTypeIcon type={EntryTypeId.Poop} sx={{ fontSize: "1.5em" }} />
         }
         emptyIcon={
-          <ActivityIcon
+          <EntryTypeIcon
             type={EntryTypeId.Poop}
             monochrome
             sx={{ fontSize: "1.5em", opacity: theme.opacity.disabled }}

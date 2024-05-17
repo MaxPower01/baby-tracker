@@ -16,8 +16,8 @@ import React, { useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import AddIcon from "@mui/icons-material/Add";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { RootState } from "@/state/store";
 import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activityContextTypeCanMultiSelect";
@@ -67,7 +67,7 @@ export function ActivityContextPicker(props: Props) {
         }}
       >
         {entryType != null && (
-          <ActivityIcon
+          <EntryTypeIcon
             type={entryType}
             sx={{
               fontSize: "1.5em",

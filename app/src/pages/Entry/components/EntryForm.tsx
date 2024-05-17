@@ -11,11 +11,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { DateTimeRangePicker } from "@/components/DateTimeRangePicker";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { ImagesInput } from "@/components/ImagesInput";
 import { NotesInput } from "@/components/NotesInput";
 import { PageId } from "@/enums/PageId";
@@ -427,7 +427,7 @@ export default function EntryForm(props: EntryFormProps) {
         >
           <Section title="header">
             <Stack justifyContent={"center"} alignItems={"center"}>
-              <ActivityIcon
+              <EntryTypeIcon
                 type={props.entry.entryTypeId}
                 sx={{
                   fontSize: "5em",

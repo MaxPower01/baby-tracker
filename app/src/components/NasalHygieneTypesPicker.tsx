@@ -24,10 +24,9 @@ import {
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextDrawer } from "@/pages/Activity/components/ActivityContextDrawer";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
 import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { NasalHygieneId } from "@/enums/NasalHygieneId";
 import { RootState } from "@/state/store";
@@ -59,7 +58,7 @@ export function NasalHygieneTypesPicker(props: Props) {
           position: "relative",
         }}
       >
-        <ActivityIcon
+        <EntryTypeIcon
           type={EntryTypeId.NasalHygiene}
           sx={{
             fontSize: "1.5em",

@@ -3,5 +3,6 @@ enum StoreReducerName {
   Entries = "entriesReducer",
   Settings = "settingsReducer",
   Activities = "activitiesReducer",
+  Filters = "filtersReducer",
 }
 export default StoreReducerName;

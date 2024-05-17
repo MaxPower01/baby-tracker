@@ -7,17 +7,13 @@ import {
 import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import ActivitiesState from "@/pages/Activities/types/ActivitiesState";
+import ActivitiesState from "@/state/types/ActivitiesState";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import ActivityModel from "@/pages/Activity/models/ActivityModel";
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { db } from "@/firebase";
-import getDefaultActivities from "@/pages/Activities/utils/getDefaultActivities";
-import getDefaultActivitiesOrder from "@/pages/Activities/utils/getDefaultActivitiesOrder";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import { getDefaultNasalHygieneTypes } from "@/pages/Activities/utils/getDefaultNasalHygieneTypes";
 import { getDefaultPoopColors } from "@/pages/Activities/utils/getDefaultPoopColors";

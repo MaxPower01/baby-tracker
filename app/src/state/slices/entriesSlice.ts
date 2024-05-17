@@ -30,7 +30,7 @@ import {
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 import { DailyEntries } from "@/types/DailyEntries";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
-import EntriesState from "@/types/EntriesState";
+import EntriesState from "@/state/types/EntriesState";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";

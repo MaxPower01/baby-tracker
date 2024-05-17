@@ -14,11 +14,9 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { DateHeader } from "@/components/DateHeader";
 import { EntriesTableRow } from "@/components/EntriesList/TableFormat/EntriesTableRow";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { v4 as uuid } from "uuid";

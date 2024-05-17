@@ -3,17 +3,23 @@ import {
   resetHistoryEntriesInState,
   selectHistoryEntries,
 } from "@/state/slices/entriesSlice";
-import { useEffect, useMemo, useState } from "react";
+import {
+  resetFiltersInState,
+  selectEntryTypesInFiltersState,
+  selectSortOrderInFiltersState,
+  selectTimePeriodInFiltersState,
+} from "@/state/slices/filtersSlice";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { SearchToolbar } from "@/pages/History/components/SearchToolbar";
+import { SearchToolbar } from "@/components/Filters/SearchToolbar";
 import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
@@ -30,33 +36,45 @@ export function HistoryPage() {
 
   const dispatch = useAppDispatch();
 
+  const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  const sortOrder = useSelector(selectSortOrderInFiltersState);
+
   const [isFetching, setIsFetching] = useState(false);
-  const [lastTimePeriodIdFetched, setLastTimePeriodIdFetched] =
+  const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
     useState<TimePeriodId | null>(null);
 
-  const [timePeriodId, setTimePeriodId] = useState(TimePeriodId.Today);
-
-  const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
-    []
-  );
-
-  const [selectedSortOrder, setSelectedSortOrder] = useState(
-    SortOrderId.DateDesc
-  );
-
   const [entries, setEntries] = useState<Entry[]>([]);
-  // const entries = useSelector(selectHistoryEntries);
+
+  const handleResetButtonClick = useCallback(() => {
+    dispatch(
+      resetFiltersInState({
+        keepTimePeriod: true,
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetFiltersInState());
+    };
+  }, []);
 
   useEffect(() => {
     if (
       user?.babyId != null &&
       !isFetching &&
-      lastTimePeriodIdFetched != timePeriodId
+      lastTimePeriodFetched != timePeriod
     ) {
       setIsFetching(true);
-      setLastTimePeriodIdFetched(timePeriodId);
+      setLastTimePeriodIdFetched(timePeriod);
 
-      dispatch(fetchHistoryEntriesFromDB({ babyId: user.babyId, timePeriodId }))
+      dispatch(
+        fetchHistoryEntriesFromDB({
+          babyId: user.babyId,
+          timePeriodId: timePeriod,
+        })
+      )
         .then((result) => {
           if (result.meta.requestStatus === "rejected") {
             if (typeof result.payload === "string") {
@@ -81,23 +99,17 @@ export function HistoryPage() {
     }
   }, [
     user,
-    timePeriodId,
+    timePeriod,
     dispatch,
     isFetching,
-    selectedEntryTypes,
-    selectedSortOrder,
-    lastTimePeriodIdFetched,
+    entryTypes,
+    sortOrder,
+    lastTimePeriodFetched,
   ]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetHistoryEntriesInState());
-    };
-  }, []);
-
   const filteredEntries = useMemo(() => {
-    return getFilteredEntries(entries, selectedEntryTypes, selectedSortOrder);
-  }, [entries, selectedEntryTypes, selectedSortOrder]);
+    return getFilteredEntries(entries, entryTypes, sortOrder);
+  }, [entries, entryTypes, sortOrder]);
 
   return (
     <Stack
@@ -112,20 +124,13 @@ export function HistoryPage() {
           width: "100%",
         }}
       >
-        <SearchToolbar
-          timePeriodId={timePeriodId}
-          setTimePeriodId={setTimePeriodId}
-          selectedEntryTypes={selectedEntryTypes}
-          setSelectedEntryTypes={setSelectedEntryTypes}
-          selectedSortOrder={selectedSortOrder}
-          setSelectedSortOrder={setSelectedSortOrder}
-        />
+        <SearchToolbar />
 
         {!isFetching && (
-          <EntryTypeChips
+          <EntryTypesChips
             entries={entries}
-            selectedEntryTypes={selectedEntryTypes}
-            setSelectedEntryTypes={setSelectedEntryTypes}
+            useFiltersEntryTypes
+            useChipLabel
           />
         )}
       </Stack>
@@ -134,7 +139,7 @@ export function HistoryPage() {
 
       {!isFetching &&
         !filteredEntries.length &&
-        (selectedEntryTypes.length > 0 ? (
+        (entryTypes.length > 0 ? (
           <EmptyState
             context={EmptyStateContext.Entries}
             override={{
@@ -143,14 +148,7 @@ export function HistoryPage() {
                 "Aucune entrée ne correspond à vos critères de recherche",
               stickerSource: "/stickers/empty-state--entries.svg",
               buttonLabel: "Réinitialiser les filtres",
-              onClick: () => {
-                // const resetFiltersButton =
-                //   document.getElementById(resetFiltersButtonId);
-                // if (resetFiltersButton != null) {
-                //   resetFiltersButton.click();
-                // }
-                setSelectedEntryTypes([]);
-              },
+              onClick: handleResetButtonClick,
             }}
           />
         ) : (

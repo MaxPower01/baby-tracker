@@ -16,9 +16,9 @@ import {
   selectIntervalMethodByEntryTypeId,
 } from "@/state/slices/settingsSlice";
 
-import ActivityIcon from "@/pages/Activities/components/ActivityIcon";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { PageId } from "@/enums/PageId";
@@ -241,7 +241,7 @@ function ItemBody(props: ItemBodyProps) {
                   alignItems: "center",
                 }}
               >
-                <ActivityIcon
+                <EntryTypeIcon
                   type={props.entryType}
                   sx={{
                     fontSize: "3.5em",
