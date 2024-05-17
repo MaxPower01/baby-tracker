@@ -4,8 +4,9 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { getActivityChipLabel } from "@/utils/getActivityChipLabel";
 import { getActivityName } from "@/utils/getActivityName";
+import { getEntryTypeChipLabel } from "@/utils/getEntryTypeChipLabel";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -18,15 +19,17 @@ type Props = {
    * the activity name will be used.
    */
   entries?: Entry[];
-
   readonly?: boolean;
+  useChipLabel?: boolean;
 };
 
 export function EntryTypeChip(props: Props) {
   const theme = useTheme();
-  const label = props.entries?.length
-    ? getActivityChipLabel(props.entries)
-    : getActivityName(props.entryType);
+  const label = props.useChipLabel
+    ? getEntryTypeChipLabel(props.entryType, props.entries)
+    : props.entries?.length
+    ? getEntryTypeChipLabel(props.entryType, props.entries)
+    : getEntryTypeName(props.entryType);
   return (
     <Chip
       icon={

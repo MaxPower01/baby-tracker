@@ -16,8 +16,8 @@ import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { SearchToolbar } from "@/components/Filters/SearchToolbar";
 import { Section } from "@/components/Section";
@@ -127,7 +127,11 @@ export function HistoryPage() {
         <SearchToolbar />
 
         {!isFetching && (
-          <EntryTypeChips entries={entries} useFiltersEntryTypes />
+          <EntryTypesChips
+            entries={entries}
+            useFiltersEntryTypes
+            useChipLabel
+          />
         )}
       </Stack>
 

@@ -19,7 +19,7 @@ import { DateHeader } from "@/components/DateHeader";
 import { EntriesCardsList } from "@/components/EntriesList/CardsFormat/EntriesCardsList";
 import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
-import { EntryTypeChips } from "@/pages/Activities/components/EntryTypeChips";
+import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { MenuProvider } from "@/components/MenuProvider";
 import { addRecentEntryInState } from "@/state/slices/entriesSlice";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
@@ -150,7 +150,7 @@ export function EntriesList(props: Props) {
                 }}
                 spacing={2}
               >
-                <EntryTypeChips entries={entries} readonly />
+                <EntryTypesChips entries={entries} readonly />
 
                 {props.format === "table" ? (
                   <EntriesTable

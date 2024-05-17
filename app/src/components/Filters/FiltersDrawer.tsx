@@ -25,17 +25,23 @@ import {
 } from "@mui/material";
 import {
   resetFiltersInState,
+  selectActivityContextsInFiltersState,
   selectEntryTypesInFiltersState,
   selectSortOrderInFiltersState,
   selectTimePeriodInFiltersState,
+  toggleActivityContextInFiltersState,
   toggleEntryTypeInFiltersState,
 } from "@/state/slices/filtersSlice";
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+import { ActivityContextChip } from "@/pages/Activities/components/ActivityContextChip";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
+import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
@@ -48,6 +54,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import SortIcon from "@mui/icons-material/Sort";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { functions } from "@/firebase";
+import { getActivityContextTypesItems } from "@/utils/getActivityContextTypesItems";
+import { getEntryTypeIdFromActivityContextType } from "@/utils/getEntryTypeIdFromActivityContextType";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getSortOrderItems } from "@/utils/getSortOrderItems";
@@ -55,6 +63,7 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetFiltersButtonId } from "@/utils/constants";
+import { selectActivityContexts } from "@/state/slices/activitiesSlice";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -64,19 +73,29 @@ import { useSelector } from "react-redux";
 type SectionProps = {
   title: string;
   children: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 function FiltersSection(props: SectionProps) {
   return (
     <Stack spacing={1}>
-      <Typography
-        variant="body1"
-        sx={{
-          fontWeight: 600,
-        }}
+      <Stack
+        spacing={1}
+        direction={"row"}
+        justifyContent={"flex-start"}
+        alignItems={"center"}
       >
-        {props.title}
-      </Typography>
+        {" "}
+        {props.icon}
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: 600,
+          }}
+        >
+          {props.title}
+        </Typography>
+      </Stack>
       {props.children}
     </Stack>
   );
@@ -91,29 +110,56 @@ export function FiltersDrawer(props: Props) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
 
-  const timePeriod = useSelector(selectTimePeriodInFiltersState);
-  const entryTypes = useSelector(selectEntryTypesInFiltersState);
-  const sortOrder = useSelector(selectSortOrderInFiltersState);
+  const selectedTimePeriod = useSelector(selectTimePeriodInFiltersState);
+  const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
+  const selectedSortOrder = useSelector(selectSortOrderInFiltersState);
+  const selectedActivityContexts = useSelector(
+    selectActivityContextsInFiltersState
+  );
+  const activityContexts = useSelector(selectActivityContexts);
+
+  const activityContextTypesItems = getActivityContextTypesItems();
+
+  const activityContextsGroups = useMemo(() => {
+    const result: Array<{
+      label: string;
+      activityContextType: ActivityContextType;
+      activityContexts: ActivityContext[];
+    }> = [];
+    for (const activityContextType of activityContextTypesItems) {
+      const activityContextsOftype = activityContexts.filter(
+        (context) => context.type == activityContextType.id
+      );
+      if (activityContexts.length) {
+        result.push({
+          label: activityContextType.label,
+          activityContextType: activityContextType.id,
+          activityContexts: activityContextsOftype,
+        });
+      }
+    }
+    return result;
+  }, [activityContexts]);
 
   // const sortItems = getSortOrderItems();
 
   const confirmButtonLabel = useMemo(() => {
-    if (entryTypes.length === 0) {
+    if (selectedEntryTypes.length === 0) {
       return "Confirmer";
     } else {
-      return `Confirmer (${entryTypes.length})`;
+      return `Confirmer (${selectedEntryTypes.length})`;
     }
-  }, [entryTypes]);
+  }, [selectedEntryTypes]);
 
   const resetButtonLabel = "Réinitialiser les filtres";
 
   const activitiesSectionTitle = useMemo(() => {
-    if (entryTypes.length === 0) {
+    if (selectedEntryTypes.length === 0) {
       return "Activités";
     } else {
-      return `Activités (${entryTypes.length})`;
+      return `Activités (${selectedEntryTypes.length})`;
     }
-  }, [entryTypes]);
+  }, [selectedEntryTypes]);
 
   const toggleEntryType = useCallback(
     (entryTypeId: EntryTypeId) => {
@@ -122,21 +168,15 @@ export function FiltersDrawer(props: Props) {
     [dispatch]
   );
 
+  const toggleActivityContext = useCallback(
+    (activityContext: ActivityContext) => {
+      dispatch(toggleActivityContextInFiltersState({ activityContext }));
+    },
+    [dispatch]
+  );
+
   const handleClose = useCallback(
     (action: "confirm" | "cancel" | "reset") => {
-      console.log("🚀 ~ FiltersDrawer ~ action:", action);
-      // if (action === "confirm") {
-      //   setReferenceSelectedEntryTypes(entryTypes);
-      //   setReferenceSelectedSortOrder(sortOrder);
-      //   props.setSelectedEntryTypes(entryTypes);
-      //   props.setSelectedSortOrder(sortOrder);
-      // } else if (action === "cancel") {
-      //   setSelectedEntryTypes(referenceSelectedEntryTypes);
-      //   setSelectedSortOrder(referenceSelectedSortOrder);
-      // } else {
-      //   setSelectedEntryTypes([]);
-      //   props.setSelectedEntryTypes([]);
-      // }
       if (action == "reset") {
         dispatch(resetFiltersInState());
       }
@@ -144,10 +184,10 @@ export function FiltersDrawer(props: Props) {
     },
     [
       // referenceSelectedEntryTypes,
-      entryTypes,
+      selectedEntryTypes,
       props,
       // referenceSelectedSortOrder,
-      sortOrder,
+      selectedSortOrder,
       dispatch,
     ]
   );
@@ -223,13 +263,69 @@ export function FiltersDrawer(props: Props) {
                       <EntryTypeChip
                         key={entryTypeId}
                         entryType={entryTypeId}
-                        isSelected={entryTypes.includes(entryTypeId)}
+                        isSelected={selectedEntryTypes.includes(entryTypeId)}
                         onClick={toggleEntryType}
                       />
                     );
                   })}
                 </Box>
               </FiltersSection>
+
+              {activityContextsGroups.map((activityContextGroup) => {
+                if (!activityContextGroup.activityContexts.length) {
+                  return null;
+                }
+                const entryTypeId = getEntryTypeIdFromActivityContextType(
+                  activityContextGroup.activityContextType
+                );
+                let title = activityContextGroup.label;
+                const selectedItemsCount = selectedActivityContexts.filter(
+                  (context) =>
+                    context.type === activityContextGroup.activityContextType
+                ).length;
+                if (selectedItemsCount) {
+                  title += ` (${selectedItemsCount})`;
+                }
+                return (
+                  <FiltersSection
+                    title={title}
+                    icon={
+                      entryTypeId == null ? undefined : (
+                        <EntryTypeIcon
+                          type={entryTypeId}
+                          sx={{
+                            fontSize: "1.5em",
+                          }}
+                        />
+                      )
+                    }
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                      }}
+                    >
+                      {activityContextGroup.activityContexts.map(
+                        (activityContext, index) => {
+                          return (
+                            <ActivityContextChip
+                              key={activityContext.id}
+                              // entryTypeId={entryTypeId}
+                              activityContext={activityContext}
+                              isSelected={selectedActivityContexts
+                                .map((context) => context.id)
+                                .includes(activityContext.id)}
+                              onClick={toggleActivityContext}
+                            />
+                          );
+                        }
+                      )}
+                    </Box>
+                  </FiltersSection>
+                );
+              })}
             </Stack>
 
             <Box
