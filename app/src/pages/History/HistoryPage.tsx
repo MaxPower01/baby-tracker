@@ -4,6 +4,7 @@ import {
   selectHistoryEntries,
 } from "@/state/slices/entriesSlice";
 import {
+  resetFiltersInState,
   selectEntryTypesInFiltersState,
   selectSortOrderInFiltersState,
   selectTimePeriodInFiltersState,
@@ -44,6 +45,12 @@ export function HistoryPage() {
     useState<TimePeriodId | null>(null);
 
   const [entries, setEntries] = useState<Entry[]>([]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetFiltersInState());
+    };
+  }, []);
 
   useEffect(() => {
     if (
