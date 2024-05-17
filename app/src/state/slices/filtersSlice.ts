@@ -123,9 +123,15 @@ function _setTimePeriodInFiltersState(
 
 function _resetFiltersInState(
   state: FiltersState,
+  payload?: {
+    keepTimePeriod?: boolean;
+  },
   preventLocalStorageUpdate = false
 ) {
   for (const key in defaultState) {
+    if (payload?.keepTimePeriod && key === "timePeriod") {
+      continue;
+    }
     (state as { [key: string]: any })[key] = (
       defaultState as { [key: string]: any }
     )[key];
@@ -175,8 +181,16 @@ const slice = createSlice({
     ) => {
       _setTimePeriodInFiltersState(state, action.payload);
     },
-    resetFiltersInState: (state) => {
-      _resetFiltersInState(state);
+    resetFiltersInState: (
+      state,
+      action: PayloadAction<
+        | {
+            keepTimePeriod?: boolean;
+          }
+        | undefined
+      >
+    ) => {
+      _resetFiltersInState(state, action.payload);
     },
   },
 });

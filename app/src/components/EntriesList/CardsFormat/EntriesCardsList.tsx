@@ -9,7 +9,6 @@ import { groupEntriesByTime } from "@/utils/utils";
 
 type Props = {
   entries: Entry[];
-  dense?: boolean;
   hideOptionsButton?: boolean;
 };
 export function EntriesCardsList(props: Props) {
@@ -27,7 +26,7 @@ export function EntriesCardsList(props: Props) {
 
   return (
     <Stack
-      spacing={props.dense ? 0 : 2}
+      spacing={2}
       sx={{
         width: "100%",
       }}

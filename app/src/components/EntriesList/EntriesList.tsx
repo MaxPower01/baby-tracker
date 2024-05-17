@@ -127,6 +127,7 @@ export function EntriesList(props: Props) {
             <Stack
               sx={{
                 width: "100%",
+                marginTop: index === 0 ? 0 : 4,
               }}
               spacing={0}
             >

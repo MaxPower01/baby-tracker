@@ -23,7 +23,12 @@ export function EntryTypeChips(props: Props) {
 
   const dispatch = useAppDispatch();
 
-  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+
+  const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
+  const sortedSelectedEntryTypes = entryTypesOrder.filter((entryTypeId) =>
+    selectedEntryTypes.includes(entryTypeId)
+  );
 
   const entries = [...props.entries];
   for (let i = 0; i < entries.length; i++) {
@@ -56,11 +61,11 @@ export function EntryTypeChips(props: Props) {
         }, {} as Record<string, Entry[]>)
       : {};
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
-
-  // const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
-  //   props.selectedEntryTypes ?? []
-  // );
+  const entryTypes = (sortedSelectedEntryTypes ?? []).concat(
+    entryTypesOrder.filter(
+      (entryTypeId) => !sortedSelectedEntryTypes.includes(entryTypeId)
+    )
+  );
 
   const toggleEntryType = useCallback(
     (entryTypeId: EntryTypeId) => {
@@ -90,7 +95,7 @@ export function EntryTypeChips(props: Props) {
         alignItems={"flex-start"}
         spacing={1}
       >
-        {entryTypesOrder.map((entryTypeId) => {
+        {entryTypes.map((entryTypeId) => {
           const entriesForEntryType = entriesByEntryType[entryTypeId];
           if (!entriesForEntryType) {
             return null;
@@ -101,7 +106,7 @@ export function EntryTypeChips(props: Props) {
               isSelected={
                 props.readonly || !props.useFiltersEntryTypes
                   ? false
-                  : entryTypes?.includes(entryTypeId)
+                  : selectedEntryTypes?.includes(entryTypeId)
               }
               entryType={entryTypeId as any}
               entries={entriesForEntryType}

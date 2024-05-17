@@ -9,7 +9,7 @@ import {
   selectSortOrderInFiltersState,
   selectTimePeriodInFiltersState,
 } from "@/state/slices/filtersSlice";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
@@ -45,6 +45,14 @@ export function HistoryPage() {
     useState<TimePeriodId | null>(null);
 
   const [entries, setEntries] = useState<Entry[]>([]);
+
+  const handleResetButtonClick = useCallback(() => {
+    dispatch(
+      resetFiltersInState({
+        keepTimePeriod: true,
+      })
+    );
+  }, [dispatch]);
 
   useEffect(() => {
     return () => {
@@ -99,12 +107,6 @@ export function HistoryPage() {
     lastTimePeriodFetched,
   ]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetHistoryEntriesInState());
-    };
-  }, []);
-
   const filteredEntries = useMemo(() => {
     return getFilteredEntries(entries, entryTypes, sortOrder);
   }, [entries, entryTypes, sortOrder]);
@@ -142,14 +144,7 @@ export function HistoryPage() {
                 "Aucune entrée ne correspond à vos critères de recherche",
               stickerSource: "/stickers/empty-state--entries.svg",
               buttonLabel: "Réinitialiser les filtres",
-              onClick: () => {
-                // const resetFiltersButton =
-                //   document.getElementById(resetFiltersButtonId);
-                // if (resetFiltersButton != null) {
-                //   resetFiltersButton.click();
-                // }
-                // setSelectedEntryTypes([]);
-              },
+              onClick: handleResetButtonClick,
             }}
           />
         ) : (
