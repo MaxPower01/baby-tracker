@@ -6,25 +6,49 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Stack,
   SxProps,
   useTheme,
 } from "@mui/material";
+import React, { useCallback } from "react";
+import {
+  selectEntryTypesInFiltersState,
+  selectSortOrderInFiltersState,
+  selectTimePeriodInFiltersState,
+  setTimePeriodInFiltersState,
+} from "@/state/slices/filtersSlice";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import React from "react";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getTimePeriodPickerItems } from "@/utils/getTimePeriodPickerItems";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useSelector } from "react-redux";
 
 type Props = {
   sx?: SxProps;
-  value: TimePeriodId;
-  setValue: React.Dispatch<React.SetStateAction<TimePeriodId>>;
 };
 
 export function TimePeriodPicker(props: Props) {
   const items = getTimePeriodPickerItems();
   const theme = useTheme();
+
+  const dispatch = useAppDispatch();
+
+  const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  const sortOrder = useSelector(selectSortOrderInFiltersState);
+
+  const handleChange = useCallback(
+    (event: SelectChangeEvent<TimePeriodId>) => {
+      dispatch(
+        setTimePeriodInFiltersState({
+          timePeriod: event.target.value as TimePeriodId,
+        })
+      );
+    },
+    [dispatch, entryTypes, sortOrder]
+  );
 
   const renderValue = (selected: TimePeriodId | null) => {
     if (selected === null) {
@@ -60,10 +84,8 @@ export function TimePeriodPicker(props: Props) {
         <Select
           id="search-range-picker"
           labelId="search-range-picker-label"
-          value={props.value ?? ""}
-          onChange={(e) => {
-            props.setValue(e.target.value as TimePeriodId);
-          }}
+          value={timePeriod ?? ""}
+          onChange={handleChange}
           renderValue={renderValue}
         >
           {items.map((item) => {

@@ -8,10 +8,6 @@ import { SortOrderId } from "@/enums/SortOrderId";
 
 type Props = {
   sx?: SxProps;
-  selectedEntryTypes: EntryTypeId[];
-  setSelectedEntryTypes: React.Dispatch<React.SetStateAction<EntryTypeId[]>>;
-  selectedSortOrder: SortOrderId;
-  setSelectedSortOrder: React.Dispatch<React.SetStateAction<SortOrderId>>;
 };
 
 export function FiltersPicker(props: Props) {
@@ -35,10 +31,6 @@ export function FiltersPicker(props: Props) {
       </Box>
 
       <FiltersDrawer
-        selectedEntryTypes={props.selectedEntryTypes}
-        setSelectedEntryTypes={props.setSelectedEntryTypes}
-        selectedSortOrder={props.selectedSortOrder}
-        setSelectedSortOrder={props.setSelectedSortOrder}
         isOpen={drawerIsOpen}
         onClose={() => {
           setDrawerIsOpen(false);

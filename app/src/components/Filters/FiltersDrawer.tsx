@@ -23,6 +23,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {
+  resetFiltersInState,
+  selectEntryTypesInFiltersState,
+  selectSortOrderInFiltersState,
+  selectTimePeriodInFiltersState,
+  toggleEntryTypeInFiltersState,
+} from "@/state/slices/filtersSlice";
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -49,6 +56,7 @@ import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetFiltersButtonId } from "@/utils/constants";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -77,91 +85,70 @@ function FiltersSection(props: SectionProps) {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  selectedEntryTypes: EntryTypeId[];
-  setSelectedEntryTypes: React.Dispatch<React.SetStateAction<EntryTypeId[]>>;
-  selectedSortOrder: SortOrderId;
-  setSelectedSortOrder: React.Dispatch<React.SetStateAction<SortOrderId>>;
 };
 
 export function FiltersDrawer(props: Props) {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
 
-  const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
-    props.selectedEntryTypes
-  );
-  const [referenceSelectedEntryTypes, setReferenceSelectedEntryTypes] =
-    useState<EntryTypeId[]>(props.selectedEntryTypes);
+  const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  const sortOrder = useSelector(selectSortOrderInFiltersState);
 
-  const sortItems = getSortOrderItems();
-  const [selectedSortOrder, setSelectedSortOrder] = useState(
-    props.selectedSortOrder
-  );
-  const [referenceSelectedSortOrder, setReferenceSelectedSortOrder] = useState(
-    props.selectedSortOrder
-  );
+  // const sortItems = getSortOrderItems();
 
   const confirmButtonLabel = useMemo(() => {
-    if (selectedEntryTypes.length === 0) {
+    if (entryTypes.length === 0) {
       return "Confirmer";
     } else {
-      return `Confirmer (${selectedEntryTypes.length})`;
+      return `Confirmer (${entryTypes.length})`;
     }
-  }, [selectedEntryTypes]);
+  }, [entryTypes]);
 
   const resetButtonLabel = "Réinitialiser les filtres";
 
   const activitiesSectionTitle = useMemo(() => {
-    if (selectedEntryTypes.length === 0) {
+    if (entryTypes.length === 0) {
       return "Activités";
     } else {
-      return `Activités (${selectedEntryTypes.length})`;
+      return `Activités (${entryTypes.length})`;
     }
-  }, [selectedEntryTypes]);
+  }, [entryTypes]);
 
   const toggleEntryType = useCallback(
     (entryTypeId: EntryTypeId) => {
-      const isSelected = selectedEntryTypes.includes(entryTypeId);
-      if (isSelected) {
-        setSelectedEntryTypes((prev) => {
-          if (!prev || !prev.length) {
-            return prev;
-          } else if (prev.length === 1) {
-            return [];
-          } else {
-            return prev.filter((id) => id !== entryTypeId);
-          }
-        });
-      } else {
-        setSelectedEntryTypes((prev) => {
-          return [...prev, entryTypeId];
-        });
-      }
+      dispatch(toggleEntryTypeInFiltersState({ entryTypeId }));
     },
-    [selectedEntryTypes]
+    [dispatch]
   );
 
   const handleClose = useCallback(
     (action: "confirm" | "cancel" | "reset") => {
-      if (action === "confirm") {
-        setReferenceSelectedEntryTypes(selectedEntryTypes);
-        setReferenceSelectedSortOrder(selectedSortOrder);
-        props.setSelectedEntryTypes(selectedEntryTypes);
-        props.setSelectedSortOrder(selectedSortOrder);
-      } else if (action === "cancel") {
-        setSelectedEntryTypes(referenceSelectedEntryTypes);
-        setSelectedSortOrder(referenceSelectedSortOrder);
-      } else {
-        setSelectedEntryTypes([]);
-        props.setSelectedEntryTypes([]);
+      console.log("🚀 ~ FiltersDrawer ~ action:", action);
+      // if (action === "confirm") {
+      //   setReferenceSelectedEntryTypes(entryTypes);
+      //   setReferenceSelectedSortOrder(sortOrder);
+      //   props.setSelectedEntryTypes(entryTypes);
+      //   props.setSelectedSortOrder(sortOrder);
+      // } else if (action === "cancel") {
+      //   setSelectedEntryTypes(referenceSelectedEntryTypes);
+      //   setSelectedSortOrder(referenceSelectedSortOrder);
+      // } else {
+      //   setSelectedEntryTypes([]);
+      //   props.setSelectedEntryTypes([]);
+      // }
+      if (action == "reset") {
+        dispatch(resetFiltersInState());
       }
       props.onClose();
     },
     [
-      referenceSelectedEntryTypes,
-      selectedEntryTypes,
+      // referenceSelectedEntryTypes,
+      entryTypes,
       props,
-      referenceSelectedSortOrder,
-      selectedSortOrder,
+      // referenceSelectedSortOrder,
+      sortOrder,
+      dispatch,
     ]
   );
 
@@ -236,7 +223,7 @@ export function FiltersDrawer(props: Props) {
                       <EntryTypeChip
                         key={entryTypeId}
                         entryType={entryTypeId}
-                        isSelected={selectedEntryTypes.includes(entryTypeId)}
+                        isSelected={entryTypes.includes(entryTypeId)}
                         onClick={toggleEntryType}
                       />
                     );

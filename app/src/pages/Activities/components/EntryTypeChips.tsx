@@ -1,21 +1,30 @@
 import { Box, Stack, useTheme } from "@mui/material";
 import React, { useCallback, useState } from "react";
+import {
+  selectEntryTypesInFiltersState,
+  toggleEntryTypeInFiltersState,
+} from "@/state/slices/filtersSlice";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 
 type Props = {
   entries: Entry[];
-  selectedEntryTypes?: EntryTypeId[];
-  setSelectedEntryTypes?: React.Dispatch<React.SetStateAction<EntryTypeId[]>>;
   readonly?: boolean;
+  useFiltersEntryTypes?: boolean;
 };
 
 export function EntryTypeChips(props: Props) {
   const theme = useTheme();
+
+  const dispatch = useAppDispatch();
+
+  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+
   const entries = [...props.entries];
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
@@ -55,40 +64,9 @@ export function EntryTypeChips(props: Props) {
 
   const toggleEntryType = useCallback(
     (entryTypeId: EntryTypeId) => {
-      const isSelected = props.selectedEntryTypes?.includes(entryTypeId);
-      if (isSelected) {
-        // setSelectedEntryTypes((prev) => {
-        //   if (!prev || !prev.length) {
-        //     return prev;
-        //   } else if (prev.length === 1) {
-        //     return [];
-        //   } else {
-        //     return prev.filter((id) => id !== entryTypeId);
-        //   }
-        // });
-        if (props.setSelectedEntryTypes) {
-          props.setSelectedEntryTypes((prev) => {
-            if (!prev || !prev.length) {
-              return prev;
-            } else if (prev.length === 1) {
-              return [];
-            } else {
-              return prev.filter((id) => id !== entryTypeId);
-            }
-          });
-        }
-      } else {
-        // setSelectedEntryTypes((prev) => {
-        //   return [...prev, entryTypeId];
-        // });
-        if (props.setSelectedEntryTypes) {
-          props.setSelectedEntryTypes((prev) => {
-            return [...prev, entryTypeId];
-          });
-        }
-      }
+      dispatch(toggleEntryTypeInFiltersState({ entryTypeId }));
     },
-    [props]
+    [props, dispatch]
   );
 
   if (entriesByEntryType == null) {
@@ -121,9 +99,9 @@ export function EntryTypeChips(props: Props) {
             <EntryTypeChip
               key={entryTypeId}
               isSelected={
-                props.readonly
+                props.readonly || !props.useFiltersEntryTypes
                   ? false
-                  : props.selectedEntryTypes?.includes(entryTypeId)
+                  : entryTypes?.includes(entryTypeId)
               }
               entryType={entryTypeId as any}
               entries={entriesForEntryType}

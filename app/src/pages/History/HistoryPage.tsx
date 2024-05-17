@@ -3,6 +3,11 @@ import {
   resetHistoryEntriesInState,
   selectHistoryEntries,
 } from "@/state/slices/entriesSlice";
+import {
+  selectEntryTypesInFiltersState,
+  selectSortOrderInFiltersState,
+  selectTimePeriodInFiltersState,
+} from "@/state/slices/filtersSlice";
 import { useEffect, useMemo, useState } from "react";
 
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
@@ -30,33 +35,31 @@ export function HistoryPage() {
 
   const dispatch = useAppDispatch();
 
+  const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  const sortOrder = useSelector(selectSortOrderInFiltersState);
+
   const [isFetching, setIsFetching] = useState(false);
-  const [lastTimePeriodIdFetched, setLastTimePeriodIdFetched] =
+  const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
     useState<TimePeriodId | null>(null);
 
-  const [timePeriodId, setTimePeriodId] = useState(TimePeriodId.Today);
-
-  const [selectedEntryTypes, setSelectedEntryTypes] = useState<EntryTypeId[]>(
-    []
-  );
-
-  const [selectedSortOrder, setSelectedSortOrder] = useState(
-    SortOrderId.DateDesc
-  );
-
   const [entries, setEntries] = useState<Entry[]>([]);
-  // const entries = useSelector(selectHistoryEntries);
 
   useEffect(() => {
     if (
       user?.babyId != null &&
       !isFetching &&
-      lastTimePeriodIdFetched != timePeriodId
+      lastTimePeriodFetched != timePeriod
     ) {
       setIsFetching(true);
-      setLastTimePeriodIdFetched(timePeriodId);
+      setLastTimePeriodIdFetched(timePeriod);
 
-      dispatch(fetchHistoryEntriesFromDB({ babyId: user.babyId, timePeriodId }))
+      dispatch(
+        fetchHistoryEntriesFromDB({
+          babyId: user.babyId,
+          timePeriodId: timePeriod,
+        })
+      )
         .then((result) => {
           if (result.meta.requestStatus === "rejected") {
             if (typeof result.payload === "string") {
@@ -81,12 +84,12 @@ export function HistoryPage() {
     }
   }, [
     user,
-    timePeriodId,
+    timePeriod,
     dispatch,
     isFetching,
-    selectedEntryTypes,
-    selectedSortOrder,
-    lastTimePeriodIdFetched,
+    entryTypes,
+    sortOrder,
+    lastTimePeriodFetched,
   ]);
 
   useEffect(() => {
@@ -96,8 +99,8 @@ export function HistoryPage() {
   }, []);
 
   const filteredEntries = useMemo(() => {
-    return getFilteredEntries(entries, selectedEntryTypes, selectedSortOrder);
-  }, [entries, selectedEntryTypes, selectedSortOrder]);
+    return getFilteredEntries(entries, entryTypes, sortOrder);
+  }, [entries, entryTypes, sortOrder]);
 
   return (
     <Stack
@@ -112,21 +115,10 @@ export function HistoryPage() {
           width: "100%",
         }}
       >
-        <SearchToolbar
-          timePeriodId={timePeriodId}
-          setTimePeriodId={setTimePeriodId}
-          selectedEntryTypes={selectedEntryTypes}
-          setSelectedEntryTypes={setSelectedEntryTypes}
-          selectedSortOrder={selectedSortOrder}
-          setSelectedSortOrder={setSelectedSortOrder}
-        />
+        <SearchToolbar />
 
         {!isFetching && (
-          <EntryTypeChips
-            entries={entries}
-            selectedEntryTypes={selectedEntryTypes}
-            setSelectedEntryTypes={setSelectedEntryTypes}
-          />
+          <EntryTypeChips entries={entries} useFiltersEntryTypes />
         )}
       </Stack>
 
@@ -134,7 +126,7 @@ export function HistoryPage() {
 
       {!isFetching &&
         !filteredEntries.length &&
-        (selectedEntryTypes.length > 0 ? (
+        (entryTypes.length > 0 ? (
           <EmptyState
             context={EmptyStateContext.Entries}
             override={{
@@ -149,7 +141,7 @@ export function HistoryPage() {
                 // if (resetFiltersButton != null) {
                 //   resetFiltersButton.click();
                 // }
-                setSelectedEntryTypes([]);
+                // setSelectedEntryTypes([]);
               },
             }}
           />

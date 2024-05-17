@@ -7,14 +7,7 @@ import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { TimePeriodPicker } from "@/components/Filters/TimePeriodPicker";
 
-type Props = {
-  timePeriodId: TimePeriodId;
-  setTimePeriodId: React.Dispatch<React.SetStateAction<TimePeriodId>>;
-  selectedEntryTypes: EntryTypeId[];
-  setSelectedEntryTypes: React.Dispatch<React.SetStateAction<EntryTypeId[]>>;
-  selectedSortOrder: SortOrderId;
-  setSelectedSortOrder: React.Dispatch<React.SetStateAction<SortOrderId>>;
-};
+type Props = {};
 
 export function SearchToolbar(props: Props) {
   return (
@@ -25,17 +18,11 @@ export function SearchToolbar(props: Props) {
       spacing={1}
     >
       <TimePeriodPicker
-        value={props.timePeriodId}
-        setValue={props.setTimePeriodId}
         sx={{
           flexGrow: 1,
         }}
       />
       <FiltersPicker
-        selectedEntryTypes={props.selectedEntryTypes}
-        setSelectedEntryTypes={props.setSelectedEntryTypes}
-        selectedSortOrder={props.selectedSortOrder}
-        setSelectedSortOrder={props.setSelectedSortOrder}
         sx={{
           flexShrink: 0,
         }}

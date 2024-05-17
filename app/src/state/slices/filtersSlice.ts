@@ -8,6 +8,7 @@ import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import { SortOrderId } from "@/enums/SortOrderId";
 import StoreReducerName from "@/enums/StoreReducerName";
+import { TimePeriodId } from "@/enums/TimePeriodId";
 
 const key = LocalStorageKey.FiltersState;
 
@@ -15,10 +16,16 @@ const defaultState: FiltersState = {
   activityContexts: [],
   entryTypes: [],
   sortOrder: SortOrderId.DateDesc,
+  timePeriod: TimePeriodId.Today,
 };
 
 const parser = (state: FiltersState) => {
-  if (!state.activityContexts || !state.entryTypes || !state.sortOrder) {
+  if (
+    !state.activityContexts ||
+    !state.entryTypes ||
+    !state.sortOrder ||
+    !state.timePeriod
+  ) {
     state = defaultState;
   }
   return state;
@@ -101,6 +108,33 @@ function _setSortOrderInFiltersState(
   }
 }
 
+function _setTimePeriodInFiltersState(
+  state: FiltersState,
+  payload: {
+    timePeriod: TimePeriodId;
+  },
+  preventLocalStorageUpdate = false
+) {
+  state.timePeriod = payload.timePeriod;
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _resetFiltersInState(
+  state: FiltersState,
+  preventLocalStorageUpdate = false
+) {
+  for (const key in defaultState) {
+    (state as { [key: string]: any })[key] = (
+      defaultState as { [key: string]: any }
+    )[key];
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
 const slice = createSlice({
   name: StoreReducerName.Filters,
   initialState: getInitialState(key, defaultState, parser),
@@ -135,6 +169,15 @@ const slice = createSlice({
     ) => {
       _setSortOrderInFiltersState(state, action.payload);
     },
+    setTimePeriodInFiltersState: (
+      state,
+      action: PayloadAction<{ timePeriod: TimePeriodId }>
+    ) => {
+      _setTimePeriodInFiltersState(state, action.payload);
+    },
+    resetFiltersInState: (state) => {
+      _resetFiltersInState(state);
+    },
   },
 });
 
@@ -144,6 +187,8 @@ export const {
   setActivityContextsInFiltersState,
   toggleActivityContextInFiltersState,
   setSortOrderInFiltersState,
+  setTimePeriodInFiltersState,
+  resetFiltersInState,
 } = slice.actions;
 
 export const selectEntryTypesInFiltersState = createSelector(
@@ -159,6 +204,11 @@ export const selectActivityContextsInFiltersState = createSelector(
 export const selectSortOrderInFiltersState = createSelector(
   (state: RootState) => state.filtersReducer,
   (filters) => filters.sortOrder
+);
+
+export const selectTimePeriodInFiltersState = createSelector(
+  (state: RootState) => state.filtersReducer,
+  (filters) => filters.timePeriod
 );
 
 export default slice.reducer;
