@@ -2,6 +2,7 @@ import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { FiltersState } from "@/state/types/FiltersState";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
@@ -9,6 +10,8 @@ import { RootState } from "@/state/store";
 import { SortOrderId } from "@/enums/SortOrderId";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { TimePeriodId } from "@/enums/TimePeriodId";
+import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
+import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
 
 const key = LocalStorageKey.FiltersState;
 
@@ -44,6 +47,52 @@ function _setEntryTypesInFiltersState(
   }
 }
 
+function _addEntryTypeInFiltersState(
+  state: FiltersState,
+  payload: {
+    entryTypeId: EntryTypeId;
+  },
+  preventLocalStorageUpdate = false
+) {
+  if (state.entryTypes.indexOf(payload.entryTypeId) === -1) {
+    state.entryTypes.push(payload.entryTypeId);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _removeEntryTypeInFiltersState(
+  state: FiltersState,
+  payload: {
+    entryTypeId: EntryTypeId;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const index = state.entryTypes.indexOf(payload.entryTypeId);
+  if (index !== -1) {
+    state.entryTypes.splice(index, 1);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _removeActivityContextsOfTypeInFiltersState(
+  state: FiltersState,
+  payload: {
+    type: ActivityContextType;
+  },
+  preventLocalStorageUpdate = false
+) {
+  state.activityContexts = state.activityContexts.filter(
+    (context) => context.type != payload.type
+  );
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
 function _toggleEntryTypeInFiltersState(
   state: FiltersState,
   payload: {
@@ -53,9 +102,17 @@ function _toggleEntryTypeInFiltersState(
 ) {
   const index = state.entryTypes.indexOf(payload.entryTypeId);
   if (index === -1) {
-    state.entryTypes.push(payload.entryTypeId);
+    _addEntryTypeInFiltersState(state, payload, true);
   } else {
-    state.entryTypes.splice(index, 1);
+    _removeEntryTypeInFiltersState(state, payload, true);
+    const activityContextType = getActivityContextType(payload.entryTypeId);
+    if (activityContextType != null) {
+      _removeActivityContextsOfTypeInFiltersState(
+        state,
+        { type: activityContextType },
+        true
+      );
+    }
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -75,6 +132,37 @@ function _setActivityContextsInFiltersState(
   }
 }
 
+function _addActivityContextInFiltersState(
+  state: FiltersState,
+  payload: {
+    activityContext: ActivityContext;
+  },
+  preventLocalStorageUpdate = false
+) {
+  state.activityContexts.push(payload.activityContext);
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
+function _removeActivityContextInFiltersState(
+  state: FiltersState,
+  payload: {
+    activityContext: ActivityContext;
+  },
+  preventLocalStorageUpdate = false
+) {
+  const index = state.activityContexts.findIndex(
+    (context) => context.id === payload.activityContext.id
+  );
+  if (index !== -1) {
+    state.activityContexts.splice(index, 1);
+  }
+  if (!preventLocalStorageUpdate) {
+    setLocalState(key, state);
+  }
+}
+
 function _toggleActivityContextInFiltersState(
   state: FiltersState,
   payload: {
@@ -86,9 +174,15 @@ function _toggleActivityContextInFiltersState(
     (context) => context.id === payload.activityContext.id
   );
   if (index === -1) {
-    state.activityContexts.push(payload.activityContext);
+    _addActivityContextInFiltersState(state, payload, true);
+    const entryTypeId = getEntryTypeFromActivityContextType(
+      payload.activityContext.type
+    );
+    if (entryTypeId != null) {
+      _addEntryTypeInFiltersState(state, { entryTypeId }, true);
+    }
   } else {
-    state.activityContexts.splice(index, 1);
+    _removeActivityContextInFiltersState(state, payload, true);
   }
   if (!preventLocalStorageUpdate) {
     setLocalState(key, state);
@@ -223,6 +317,13 @@ export const selectSortOrderInFiltersState = createSelector(
 export const selectTimePeriodInFiltersState = createSelector(
   (state: RootState) => state.filtersReducer,
   (filters) => filters.timePeriod
+);
+
+export const selectFiltersCount = createSelector(
+  (state: RootState) => state.filtersReducer,
+  (filters) => {
+    return filters.entryTypes.length + filters.activityContexts.length;
+  }
 );
 
 export default slice.reducer;
