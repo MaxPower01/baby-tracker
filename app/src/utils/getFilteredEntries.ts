@@ -1,3 +1,4 @@
+import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { SortOrderId } from "@/enums/SortOrderId";
@@ -5,7 +6,8 @@ import { SortOrderId } from "@/enums/SortOrderId";
 export function getFilteredEntries(
   entries: Entry[],
   selectedEntryTypes: EntryTypeId[],
-  selectedSortOrder: SortOrderId
+  selectedSortOrder: SortOrderId,
+  activityContexts: ActivityContext[]
 ): Entry[] {
   let newEntries = entries;
 
@@ -35,6 +37,17 @@ export function getFilteredEntries(
         }
       });
     }
+  }
+
+  if (activityContexts.length > 0) {
+    newEntries = newEntries.filter((entry) => {
+      return entry.activityContexts.some((activityContext) =>
+        activityContexts.some(
+          (selectedActivityContext) =>
+            selectedActivityContext.id === activityContext.id
+        )
+      );
+    });
   }
 
   if (selectedSortOrder === SortOrderId.DateDesc) {

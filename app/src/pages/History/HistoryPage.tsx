@@ -5,12 +5,14 @@ import {
 } from "@/state/slices/entriesSlice";
 import {
   resetFiltersInState,
+  selectActivityContextsInFiltersState,
   selectEntryTypesInFiltersState,
   selectSortOrderInFiltersState,
   selectTimePeriodInFiltersState,
 } from "@/state/slices/filtersSlice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
@@ -39,6 +41,7 @@ export function HistoryPage() {
   const timePeriod = useSelector(selectTimePeriodInFiltersState);
   const entryTypes = useSelector(selectEntryTypesInFiltersState);
   const sortOrder = useSelector(selectSortOrderInFiltersState);
+  const activityContexts = useSelector(selectActivityContextsInFiltersState);
 
   const [isFetching, setIsFetching] = useState(false);
   const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
@@ -108,8 +111,8 @@ export function HistoryPage() {
   ]);
 
   const filteredEntries = useMemo(() => {
-    return getFilteredEntries(entries, entryTypes, sortOrder);
-  }, [entries, entryTypes, sortOrder]);
+    return getFilteredEntries(entries, entryTypes, sortOrder, activityContexts);
+  }, [entries, entryTypes, sortOrder, activityContexts]);
 
   return (
     <Stack
@@ -127,11 +130,14 @@ export function HistoryPage() {
         <SearchToolbar />
 
         {!isFetching && (
-          <EntryTypesChips
-            entries={entries}
-            useFiltersEntryTypes
-            useChipLabel
-          />
+          <>
+            <EntryTypesChips
+              entries={entries}
+              useFiltersEntryTypes
+              useChipLabel
+            />
+            <ActivityContextsChips />
+          </>
         )}
       </Stack>
 

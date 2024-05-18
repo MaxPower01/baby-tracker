@@ -27,6 +27,7 @@ import {
   resetFiltersInState,
   selectActivityContextsInFiltersState,
   selectEntryTypesInFiltersState,
+  selectFiltersCount,
   selectSortOrderInFiltersState,
   selectTimePeriodInFiltersState,
   toggleActivityContextInFiltersState,
@@ -143,13 +144,15 @@ export function FiltersDrawer(props: Props) {
 
   // const sortItems = getSortOrderItems();
 
+  const filtersCount = useSelector(selectFiltersCount);
+
   const confirmButtonLabel = useMemo(() => {
-    if (selectedEntryTypes.length === 0) {
+    if (filtersCount === 0) {
       return "Confirmer";
     } else {
-      return `Confirmer (${selectedEntryTypes.length})`;
+      return `Confirmer (${filtersCount})`;
     }
-  }, [selectedEntryTypes]);
+  }, [filtersCount]);
 
   const resetButtonLabel = "Réinitialiser les filtres";
 

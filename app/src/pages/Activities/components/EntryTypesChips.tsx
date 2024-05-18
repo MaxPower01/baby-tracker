@@ -64,11 +64,19 @@ export function EntryTypesChips(props: Props) {
         }, {} as Record<string, Entry[]>)
       : {};
 
-  const entryTypes = (sortedSelectedEntryTypes ?? []).concat(
-    entryTypesOrder.filter(
-      (entryTypeId) => !sortedSelectedEntryTypes.includes(entryTypeId)
-    )
-  );
+  let entryTypes = [];
+
+  if (!props.useFiltersEntryTypes || props.readonly) {
+    entryTypes = entryTypesOrder.filter(
+      (entryTypeId) => entriesByEntryType[entryTypeId]
+    );
+  } else {
+    entryTypes = (sortedSelectedEntryTypes ?? []).concat(
+      entryTypesOrder.filter(
+        (entryTypeId) => !sortedSelectedEntryTypes.includes(entryTypeId)
+      )
+    );
+  }
 
   const toggleEntryType = useCallback(
     (entryTypeId: EntryTypeId) => {
