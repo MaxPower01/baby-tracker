@@ -46,6 +46,7 @@ import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { FiltersProps } from "@/components/Filters/FiltersPicker";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
@@ -105,6 +106,7 @@ function FiltersSection(props: SectionProps) {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  filtersProps: FiltersProps;
 };
 
 export function FiltersDrawer(props: Props) {
@@ -254,24 +256,30 @@ export function FiltersDrawer(props: Props) {
               }}
             >
               <FiltersSection title={activitiesSectionTitle}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 1,
-                  }}
-                >
-                  {entryTypesOrder.map((entryTypeId) => {
-                    return (
-                      <EntryTypeChip
-                        key={entryTypeId}
-                        entryType={entryTypeId}
-                        isSelected={selectedEntryTypes.includes(entryTypeId)}
-                        onClick={toggleEntryType}
-                      />
-                    );
-                  })}
-                </Box>
+                {props.filtersProps.entryTypeIdFilterMode === "multiple" && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1,
+                    }}
+                  >
+                    {entryTypesOrder.map((entryTypeId) => {
+                      return (
+                        <EntryTypeChip
+                          key={entryTypeId}
+                          entryType={entryTypeId}
+                          isSelected={selectedEntryTypes.includes(entryTypeId)}
+                          onClick={toggleEntryType}
+                        />
+                      );
+                    })}
+                  </Box>
+                )}
+
+                {
+                  props.filtersProps.entryTypeIdFilterMode === "single" && null // TODO: implement single entry type filter
+                }
               </FiltersSection>
 
               {activityContextsGroups.map((activityContextGroup) => {

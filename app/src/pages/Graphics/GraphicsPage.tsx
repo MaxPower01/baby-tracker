@@ -128,7 +128,11 @@ export function GraphicsPage() {
           width: "100%",
         }}
       >
-        <SearchToolbar />
+        <SearchToolbar
+          filtersProps={{
+            entryTypeIdFilterMode: "single",
+          }}
+        />
 
         {!isFetching && (
           <>

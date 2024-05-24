@@ -127,7 +127,11 @@ export function HistoryPage() {
           width: "100%",
         }}
       >
-        <SearchToolbar />
+        <SearchToolbar
+          filtersProps={{
+            entryTypeIdFilterMode: "multiple",
+          }}
+        />
 
         {!isFetching && (
           <>
