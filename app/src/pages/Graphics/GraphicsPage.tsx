@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
+import { DiaperGraphic } from "@/pages/Graphics/components/Graphic/DiaperGraphic";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList/EntriesList";
@@ -179,6 +180,8 @@ export function GraphicsPage() {
           <GraphicsList entries={filteredEntries} />
         </>
       )}
+
+      <DiaperGraphic timeScale="days" />
     </Stack>
   );
 }
