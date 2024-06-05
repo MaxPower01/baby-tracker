@@ -180,8 +180,6 @@ export function GraphicsPage() {
           <GraphicsList entries={filteredEntries} />
         </>
       )}
-
-      <DiaperGraphic timeScale="days" />
     </Stack>
   );
 }
