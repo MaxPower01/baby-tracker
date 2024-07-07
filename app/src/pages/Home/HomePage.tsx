@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -70,6 +71,21 @@ export function HomePage() {
 
   return (
     <SectionStack>
+      {/* <Button
+        onClick={() => {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              setTimeout(() => {
+                const notification = new Notification("Hello, world!", {
+                  body: "Here is a notification body",
+                });
+              }, 3000);
+            }
+          });
+        }}
+      >
+        TEST
+      </Button> */}
       <Section
         onClick={() =>
           navigate(
