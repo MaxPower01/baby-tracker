@@ -16,6 +16,7 @@ import {
   selectIntervalMethodByEntryTypeId,
 } from "@/state/slices/settingsSlice";
 
+import { EntriesWidgetItem } from "@/pages/Home/components/EntriesWidgetItem";
 import { EntriesWidgetItemBody } from "@/pages/Home/components/EntriesWidgetItemBody";
 import { EntriesWidgetItemFooter } from "@/pages/Home/components/EntriesWidgetItemFooter";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -92,33 +93,11 @@ export function EntriesWidget(props: Props) {
           >
             {entryTypesOrder.map((entryType, index) => {
               return (
-                <EntriesWidgetItemBody
+                <EntriesWidgetItem
                   key={entryType}
                   entryType={entryType}
                   padding={itemPadding}
                   width={itemWidth}
-                  mostRecentEntryOfType={mostRecentEntryByType[entryType]}
-                />
-              );
-            })}
-          </Stack>
-          <Stack
-            direction={"row"}
-            sx={{
-              display: "grid",
-              gap: 0.5,
-              gridTemplateColumns: `${entryTypesOrder
-                .map(() => "1fr")
-                .join(" ")}`,
-            }}
-          >
-            {entryTypesOrder.map((entryType, index) => {
-              return (
-                <EntriesWidgetItemFooter
-                  key={entryType}
-                  entryType={entryType}
-                  width={itemWidth}
-                  padding={itemPadding}
                   mostRecentEntryOfType={mostRecentEntryByType[entryType]}
                 />
               );

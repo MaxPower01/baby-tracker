@@ -72,7 +72,7 @@ export function EntriesWidgetItemBody(props: Props) {
         justifyContent: "flex-start",
         flexDirection: "column",
         alignItems: "center",
-        height: "100%",
+        // height: "100%",
         padding: `${props.padding}px`,
         width: props.width,
         order: showStopwatch ? -1 : undefined,
@@ -149,6 +149,7 @@ export function EntriesWidgetItemBody(props: Props) {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  minHeight: "3em",
                 }}
               >
                 <Typography
