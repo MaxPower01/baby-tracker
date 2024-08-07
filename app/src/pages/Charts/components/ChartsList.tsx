@@ -4,6 +4,6 @@ import React from "react";
 type Props = {
   entries: Entry[];
 };
-export function GraphicsList(props: Props) {
+export function ChartsList(props: Props) {
   return <div>GraphicsList</div>;
 }

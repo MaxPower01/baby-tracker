@@ -4,6 +4,6 @@ type Props = {
   timeScale: "hours" | "days";
 };
 
-export function BreastFeedingGraphic(props: Props) {
+export function BreastFeedingChart(props: Props) {
   return <div>BreastFeedingGraphic</div>;
 }

@@ -4,6 +4,6 @@ type Props = {
   timeScale: "hours" | "days";
 };
 
-export function PoopGraphic(props: Props) {
-  return <div>PoopGraphic</div>;
+export function UrineChart(props: Props) {
+  return <div>UrineGraphic</div>;
 }

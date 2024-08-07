@@ -1,16 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import {
-  axisBottom,
-  axisLeft,
-  curveCardinal,
-  curveMonotoneX,
-  extent,
-  line,
-  max,
-  scaleLinear,
-  scaleTime,
-  select,
-} from "d3";
+
+import d3 from "d3";
 
 type Props = {
   timeScale: "hours" | "days";
@@ -28,35 +18,39 @@ const data = [
 const width = 1000;
 const height = 500;
 
-export function DiaperGraphic(props: Props) {
+export function DiaperChart(props: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   useEffect(() => {
-    const svg = select(svgRef.current)
+    const svg = d3
+      .select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
       .style("background", "#f9f9f9")
       .style("margin", "50px")
       .style("overflow", "visible");
 
-    const x = scaleTime()
-      .domain(extent(data, (d) => new Date(d.date)) as [Date, Date])
+    const x = d3
+      .scaleTime()
+      .domain(d3.extent(data, (d) => new Date(d.date)) as [Date, Date])
       .range([0, width]);
 
-    const y = scaleLinear()
-      .domain([0, max(data, (d) => d.value) as number])
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => d.value) as number])
       .range([height, 0]);
 
-    const xAxis = axisBottom(x);
-    const yAxis = axisLeft(y);
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
 
     svg.append("g").call(xAxis).attr("transform", `translate(0, ${height})`);
 
     svg.append("g").call(yAxis);
 
-    const lineFunction = line<{ date: string; value: number }>()
+    const lineFunction = d3
+      .line<{ date: string; value: number }>()
       .x((d) => x(new Date(d.date)))
       .y((d) => y(d.value))
-      .curve(curveMonotoneX);
+      .curve(d3.curveMonotoneX);
 
     svg
       .append("path")

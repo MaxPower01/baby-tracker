@@ -6,6 +6,6 @@ type Props = {
   entryTypeId: EntryTypeId;
 };
 
-export function DefaultGaphic(props: Props) {
+export function DefaultChart(props: Props) {
   return <div>DefaultGaphic</div>;
 }
