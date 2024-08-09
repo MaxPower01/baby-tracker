@@ -264,10 +264,10 @@ export function FiltersDrawer(props: Props) {
                       gap: 1,
                     }}
                   >
-                    {entryTypesOrder.map((entryTypeId) => {
+                    {entryTypesOrder.map((entryTypeId, index) => {
                       return (
                         <EntryTypeChip
-                          key={entryTypeId}
+                          key={index}
                           entryType={entryTypeId}
                           isSelected={selectedEntryTypes.includes(entryTypeId)}
                           onClick={toggleEntryType}

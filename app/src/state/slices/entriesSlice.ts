@@ -16,6 +16,7 @@ import {
   query,
   setDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import {
   getInitialState,
@@ -256,10 +257,61 @@ export const saveEntryInDB = createAsyncThunk(
       }
     } catch (error) {
       console.error("Error saving entry: ", error);
+      return thunkAPI.rejectWithValue(error);
     }
 
     const savedEntry = { ...entryToSave } as Entry;
     return thunkAPI.fulfillWithValue(savedEntry);
+  }
+);
+
+export const saveEntriesInDB = createAsyncThunk(
+  "entries/saveEntries",
+  async (
+    props: {
+      entries: Entry[] | ExistingEntry[];
+      user: CustomUser;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const { entries, user } = props;
+      const babyId = user?.babyId ?? "";
+      if (user == null || isNullOrWhiteSpace(babyId)) {
+        return thunkAPI.rejectWithValue("User or selected baby is null");
+      }
+      const entriesByDateKey = {} as Record<
+        string,
+        {
+          entries: Entry[];
+          timestamp: number;
+        }
+      >;
+      entries.forEach((entry) => {
+        const dateKey = getDateKeyFromTimestamp(entry.startTimestamp);
+        if (!entriesByDateKey[dateKey]) {
+          entriesByDateKey[dateKey] = {
+            entries: [],
+            timestamp: getTimestampFromDateKey(dateKey),
+          };
+        }
+        const entryToSave = getEntryToSave(entry, babyId);
+        if (isNullOrWhiteSpace(entryToSave.id)) {
+          entryToSave.id = uuid();
+        }
+        entriesByDateKey[dateKey].entries.push(entryToSave as Entry);
+      });
+      const batch = writeBatch(db);
+      Object.keys(entriesByDateKey).forEach((dateKey) => {
+        const docRef = doc(db, `babies/${babyId}/dailyEntries/${dateKey}`);
+        batch.set(docRef, { ...entriesByDateKey[dateKey] }, { merge: true });
+      });
+      await batch.commit();
+      return thunkAPI.fulfillWithValue(entries);
+    } catch (error) {
+      console.error("Error saving entries: ", error);
+      return thunkAPI.rejectWithValue(error);
+    }
   }
 );
 
@@ -919,6 +971,16 @@ const slice = createSlice({
     });
     builder.addCase(fetchHistoryEntriesFromDB.rejected, (state, action) => {
       console.error("Error fetching history entries: ", action.payload);
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(saveEntriesInDB.pending, (state, action) => {
+      _setStatusInState(state, "busy");
+    });
+    builder.addCase(saveEntriesInDB.fulfilled, (state, action) => {
+      _setStatusInState(state, "idle");
+    });
+    builder.addCase(saveEntriesInDB.rejected, (state, action) => {
+      console.error("Error saving entries: ", action.payload);
       _setStatusInState(state, "idle");
     });
   },

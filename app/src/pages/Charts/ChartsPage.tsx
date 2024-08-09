@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
+import { BarChart } from "@/pages/Charts/components/BarChart";
 import { ChartsList } from "@/pages/Charts/components/ChartsList";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
@@ -147,6 +148,7 @@ export function ChartsPage() {
       </Stack>
 
       {isFetching && <LoadingIndicator />}
+      <BarChart />
 
       {!isFetching &&
         !filteredEntries.length &&

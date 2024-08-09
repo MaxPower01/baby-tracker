@@ -73,36 +73,34 @@ export function EntriesWidget(props: Props) {
         sx={{
           width: "100%",
           overflowX: "scroll",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
+          // scrollbarWidth: "none",
+          // msOverflowStyle: "none",
+          // "&::-webkit-scrollbar": {
+          //   display: "none",
+          // },
         }}
       >
-        <Stack>
-          <Stack
-            direction={"row"}
-            sx={{
-              display: "grid",
-              gap: 0.5,
-              gridTemplateColumns: `${entryTypesOrder
-                .map(() => "1fr")
-                .join(" ")}`,
-            }}
-          >
-            {entryTypesOrder.map((entryType, index) => {
-              return (
-                <EntriesWidgetItem
-                  key={entryType}
-                  entryType={entryType}
-                  padding={itemPadding}
-                  width={itemWidth}
-                  mostRecentEntryOfType={mostRecentEntryByType[entryType]}
-                />
-              );
-            })}
-          </Stack>
+        <Stack
+          direction={"row"}
+          sx={{
+            display: "grid",
+            gap: 0.5,
+            gridTemplateColumns: `${entryTypesOrder
+              .map(() => "1fr")
+              .join(" ")}`,
+          }}
+        >
+          {entryTypesOrder.map((entryType, index) => {
+            return (
+              <EntriesWidgetItem
+                key={index}
+                entryType={entryType}
+                padding={itemPadding}
+                width={itemWidth}
+                mostRecentEntryOfType={mostRecentEntryByType[entryType]}
+              />
+            );
+          })}
         </Stack>
       </Box>
     </Stack>

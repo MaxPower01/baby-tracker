@@ -16,14 +16,12 @@ export function EntriesWidgetItem(props: Props) {
   return (
     <Stack>
       <EntriesWidgetItemBody
-        key={props.entryType}
         entryType={props.entryType}
         padding={props.padding}
         width={props.width}
         mostRecentEntryOfType={props.mostRecentEntryOfType}
       />
       <EntriesWidgetItemFooter
-        key={props.entryType}
         entryType={props.entryType}
         width={props.width}
         padding={props.padding}
