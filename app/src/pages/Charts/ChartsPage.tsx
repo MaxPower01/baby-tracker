@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
 import { BarChart } from "@/pages/Charts/components/BarChart";
-import { ChartsList } from "@/pages/Charts/components/ChartsList";
+import { ChartCard } from "@/pages/Charts/components/ChartCard";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
@@ -28,6 +28,7 @@ import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
+import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getFilteredEntries } from "@/utils/getFilteredEntries";
 import { resetFiltersButtonId } from "@/utils/constants";
@@ -148,7 +149,6 @@ export function ChartsPage() {
       </Stack>
 
       {isFetching && <LoadingIndicator />}
-      <BarChart />
 
       {!isFetching &&
         !filteredEntries.length &&
@@ -177,9 +177,26 @@ export function ChartsPage() {
         ))}
 
       {!isFetching && filteredEntries.length > 0 && (
-        <>
-          <ChartsList entries={filteredEntries} />
-        </>
+        <Stack
+          spacing={2}
+          sx={{
+            width: "100%",
+          }}
+        >
+          {entryTypeHasStopwatch(filteredEntries[0].entryTypeId) && (
+            <ChartCard
+              entries={filteredEntries}
+              timePeriod={timePeriod}
+              yAxisUnit="duration"
+            />
+          )}
+
+          <ChartCard
+            entries={filteredEntries}
+            timePeriod={timePeriod}
+            yAxisUnit="count"
+          />
+        </Stack>
       )}
     </Stack>
   );

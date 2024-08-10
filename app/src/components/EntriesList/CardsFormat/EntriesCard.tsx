@@ -147,9 +147,8 @@ export function EntriesCard(props: Props) {
                     // borderColor: theme.palette.divider,
                   }}
                 >
-                  <Stack
+                  <Box
                     sx={{
-                      fontSize: "0.65em",
                       position: "relative",
                     }}
                   >
@@ -158,8 +157,8 @@ export function EntriesCard(props: Props) {
                         sx={{
                           display: undefined,
                           position: "absolute",
-                          top: "3.65em",
-                          left: "calc(2.25em - 2px)",
+                          top: "3em",
+                          left: "calc(1.75em - 2px)",
                           height: "100%",
                           // opacity: 0.5,
                           paddingTop: 2.5,
@@ -189,8 +188,8 @@ export function EntriesCard(props: Props) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          width: "4.5em",
-                          height: "4.5em",
+                          width: "3.5em",
+                          height: "3.5em",
                           borderRadius: "50%",
                           border: "1px solid",
                           // backgroundColor: theme.customPalette.background.avatar,
@@ -210,7 +209,7 @@ export function EntriesCard(props: Props) {
                         <EntryTypeIcon
                           type={entry.entryTypeId}
                           sx={{
-                            fontSize: "3.5em",
+                            fontSize: "3em",
                             transform:
                               entryTypeHasSides(entry.entryTypeId) &&
                               entry.leftTime &&
@@ -269,7 +268,7 @@ export function EntriesCard(props: Props) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          width: "4.5em",
+                          width: "3.5em",
                           borderRadius: "50%",
                           borderColor: "transparent",
                           flexShrink: 0,
@@ -283,7 +282,7 @@ export function EntriesCard(props: Props) {
                         }}
                       />
                     </Stack>
-                  </Stack>
+                  </Box>
                 </CardContent>
               </CardActionArea>
 

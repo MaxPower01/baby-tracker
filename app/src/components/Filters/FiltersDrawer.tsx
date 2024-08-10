@@ -282,7 +282,7 @@ export function FiltersDrawer(props: Props) {
                 }
               </FiltersSection>
 
-              {activityContextsGroups.map((activityContextGroup) => {
+              {activityContextsGroups.map((activityContextGroup, index) => {
                 if (!activityContextGroup.activityContexts.length) {
                   return null;
                 }
@@ -299,6 +299,7 @@ export function FiltersDrawer(props: Props) {
                 }
                 return (
                   <FiltersSection
+                    key={index}
                     title={title}
                     icon={
                       entryTypeId == null ? undefined : (
