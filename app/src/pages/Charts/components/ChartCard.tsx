@@ -114,7 +114,10 @@ export function ChartCard(props: Props) {
             </Stack>
           </Stack>
 
-          <BarChart backgroundColor={theme.palette.background.paper} />
+          <BarChart
+            backgroundColor={theme.palette.background.paper}
+            barColor={theme.palette.primary.main}
+          />
         </Stack>
       </CardContent>
     </Card>

@@ -27,6 +27,7 @@ const generateMockData = (count: number): Datapoint[] => {
 type Props = {
   // data: Datapoint[];
   backgroundColor: string;
+  barColor?: string | string[];
 };
 
 export function BarChart(props: Props) {
@@ -59,8 +60,13 @@ export function BarChart(props: Props) {
   const chartWidth =
     barWidth * (barsCount + 1) + chartMarginLeft + chartMarginRight;
   const barPadding = 0.25;
-  const barFillColor = "steelblue";
-  const barStrokeColor = barFillColor;
+
+  const getBarColor = () => {
+    if (props.barColor instanceof Array) {
+      return props.barColor[0];
+    }
+    return props.barColor || theme.palette.primary.main;
+  };
 
   useEffect(() => {
     if (!svgRef.current || chartRef.current) return;
@@ -111,8 +117,7 @@ export function BarChart(props: Props) {
 
     svg
       .append("g")
-      .attr("fill", barFillColor)
-      .attr("stroke", barStrokeColor)
+      .attr("fill", () => getBarColor())
       .selectAll()
       .data(datapoints)
       .join("rect")
@@ -257,6 +262,9 @@ export function BarChart(props: Props) {
       width={chartWidth}
       height={chartHeight}
       viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+      style={{
+        outline: "none",
+      }}
     ></svg>
   );
 
