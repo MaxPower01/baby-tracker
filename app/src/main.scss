@@ -38,3 +38,7 @@ main {
 .firebase-emulator-warning {
 	display: none;
 }
+
+:focus-visible {
+	outline: none;
+}
