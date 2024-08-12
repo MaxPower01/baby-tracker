@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-import { Box, useTheme } from "@mui/material";
+import { Box, Paper, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
 import { chartHeight } from "@/utils/constants";
@@ -26,6 +26,7 @@ const generateMockData = (count: number): Datapoint[] => {
 
 type Props = {
   // data: Datapoint[];
+  backgroundColor: string;
 };
 
 export function BarChart(props: Props) {
@@ -287,7 +288,7 @@ export function BarChart(props: Props) {
       >
         {renderSVG(chartSVGId, svgRef)}
       </Box>
-      <Box
+      <Paper
         id={chartOverlayId}
         ref={overlayRef}
         sx={{
@@ -295,7 +296,11 @@ export function BarChart(props: Props) {
           position: "absolute",
           top: 0,
           left: 0,
-          backgroundColor: theme.palette.background.default,
+          height: chartHeight,
+          width: chartMarginLeft,
+          borderRadius: 0,
+          boxShadow: "none",
+          backgroundColor: props.backgroundColor,
         }}
       />
       {renderSVG(chartSVGOverlayId, svgOverlayRef)}

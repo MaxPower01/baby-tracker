@@ -93,7 +93,7 @@ function getRandomBreastFeedingEntriesFor(date: Date, babyId: string): Entry[] {
   // There should be between 3 and 8 entries of type EntryTypeId.BreastFeeding per day.
   // The duration of those entries should be between 5 minutes and 45 minutes and alternate between left and right.
 
-  const entriesCount = Math.floor(Math.random() * 5);
+  const entriesCount = Math.floor(Math.random() * 6 + 3);
 
   let startHour: number | null = null;
   let leftDurationInMinutes = Math.floor(Math.random() * 41 + 5);

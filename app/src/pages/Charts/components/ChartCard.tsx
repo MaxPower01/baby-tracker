@@ -7,6 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 
+import { BarChart } from "@/pages/Charts/components/BarChart";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
@@ -113,14 +114,7 @@ export function ChartCard(props: Props) {
             </Stack>
           </Stack>
 
-          <Stack
-            direction={"row"}
-            justifyContent={"flex-start"}
-            alignItems={"center"}
-            spacing={2}
-          >
-            Fréquence
-          </Stack>
+          <BarChart backgroundColor={theme.palette.background.paper} />
         </Stack>
       </CardContent>
     </Card>
