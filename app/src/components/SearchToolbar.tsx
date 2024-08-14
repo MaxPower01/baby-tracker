@@ -8,10 +8,11 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { TimePeriodPicker } from "@/components/Filters/TimePeriodPicker";
+import { TimePeriodPicker } from "@/components/TimePeriodPicker";
 
 type Props = {
   filtersProps: FiltersProps;
+  hideFilters?: boolean;
 };
 
 export function SearchToolbar(props: Props) {
@@ -27,12 +28,14 @@ export function SearchToolbar(props: Props) {
           flexGrow: 1,
         }}
       />
-      <FiltersPicker
-        sx={{
-          flexShrink: 0,
-        }}
-        filtersProps={props.filtersProps}
-      />
+      {!props.hideFilters && (
+        <FiltersPicker
+          sx={{
+            flexShrink: 0,
+          }}
+          filtersProps={props.filtersProps}
+        />
+      )}
     </Stack>
   );
 }

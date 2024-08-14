@@ -21,7 +21,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { SearchToolbar } from "@/components/Filters/SearchToolbar";
+import { SearchToolbar } from "@/components/SearchToolbar";
 import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";

@@ -17,7 +17,7 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 
 type XAxisUnit = "hours" | "days";
-type YAxisUnit = "count" | "duration";
+type YAxisUnit = "count" | "duration" | "volume";
 
 type Props = {
   entries: Entry[];
@@ -26,8 +26,23 @@ type Props = {
 };
 
 function getSubtitle(xAxisUnit: XAxisUnit, yAxisUnit: YAxisUnit) {
-  let result = xAxisUnit === "hours" ? "Durée par" : "Fréquence par";
-  if (yAxisUnit === "count") {
+  let result;
+
+  switch (yAxisUnit) {
+    case "count":
+      result = "Nombre par";
+      break;
+    case "duration":
+      result = "Durée par";
+      break;
+    case "volume":
+      result = "Volume par";
+      break;
+    default:
+      break;
+  }
+
+  if (xAxisUnit === "days") {
     result += " jour";
   } else {
     result += " heure";

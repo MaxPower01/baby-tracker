@@ -21,17 +21,20 @@ import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { EntryTypePicker } from "@/components/EntryTypePicker";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { SearchToolbar } from "@/components/Filters/SearchToolbar";
+import { SearchToolbar } from "@/components/SearchToolbar";
 import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
+import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getFilteredEntries } from "@/utils/getFilteredEntries";
 import { resetFiltersButtonId } from "@/utils/constants";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
@@ -42,9 +45,12 @@ export function ChartsPage() {
   const dispatch = useAppDispatch();
 
   const timePeriod = useSelector(selectTimePeriodInFiltersState);
-  const entryTypes = useSelector(selectEntryTypesInFiltersState);
-  const sortOrder = useSelector(selectSortOrderInFiltersState);
-  const activityContexts = useSelector(selectActivityContextsInFiltersState);
+
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+
+  const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(
+    entryTypesOrder[0]
+  );
 
   const [isFetching, setIsFetching] = useState(false);
   const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
@@ -103,19 +109,14 @@ export function ChartsPage() {
           setIsFetching(false);
         });
     }
-  }, [
-    user,
-    timePeriod,
-    dispatch,
-    isFetching,
-    entryTypes,
-    sortOrder,
-    lastTimePeriodFetched,
-  ]);
+  }, [user, timePeriod, dispatch, isFetching, lastTimePeriodFetched]);
 
   const filteredEntries = useMemo(() => {
-    return getFilteredEntries(entries, entryTypes, sortOrder, activityContexts);
-  }, [entries, entryTypes, sortOrder, activityContexts]);
+    if (!entryTypeId) {
+      return [];
+    }
+    return entries.filter((entry) => entry.entryTypeId == entryTypeId);
+  }, [entryTypeId]);
 
   return (
     <Stack
@@ -125,56 +126,34 @@ export function ChartsPage() {
       }}
     >
       <Stack
-        spacing={2}
+        spacing={1}
         sx={{
           width: "100%",
         }}
       >
+        <EntryTypePicker value={entryTypeId} setValue={setEntryTypeId} />
+
         <SearchToolbar
           filtersProps={{
-            entryTypeIdFilterMode: "single",
+            entryTypeIdFilterMode: "multiple",
           }}
+          hideFilters
         />
-
-        {!isFetching && (
-          <>
-            <EntryTypesChips
-              entries={entries}
-              useFiltersEntryTypes
-              useChipLabel
-            />
-            <ActivityContextsChips />
-          </>
-        )}
       </Stack>
 
       {isFetching && <LoadingIndicator />}
 
-      {!isFetching &&
-        !filteredEntries.length &&
-        (entryTypes.length > 0 ? (
-          <EmptyState
-            context={EmptyStateContext.Graphics}
-            override={{
-              title: "Aucune entrée trouvée",
-              description:
-                "Aucune entrée ne correspond à vos critères de recherche",
-              stickerSource: "/stickers/empty-state--graphics.svg",
-              buttonLabel: "Réinitialiser les filtres",
-              onClick: handleResetButtonClick,
-            }}
-          />
-        ) : (
-          <EmptyState
-            context={EmptyStateContext.Graphics}
-            override={{
-              title: "Aucune entrée trouvée",
-              description:
-                "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
-              stickerSource: "/stickers/empty-state--graphics.svg",
-            }}
-          />
-        ))}
+      {!isFetching && !filteredEntries.length && (
+        <EmptyState
+          context={EmptyStateContext.Graphics}
+          override={{
+            title: "Aucune entrée trouvée",
+            description:
+              "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
+            stickerSource: "/stickers/empty-state--graphics.svg",
+          }}
+        />
+      )}
 
       {!isFetching && filteredEntries.length > 0 && (
         <Stack
@@ -183,6 +162,14 @@ export function ChartsPage() {
             width: "100%",
           }}
         >
+          {entryTypeHasVolume(filteredEntries[0].entryTypeId) && (
+            <ChartCard
+              entries={filteredEntries}
+              timePeriod={timePeriod}
+              yAxisUnit="volume"
+            />
+          )}
+
           {entryTypeHasStopwatch(filteredEntries[0].entryTypeId) && (
             <ChartCard
               entries={filteredEntries}

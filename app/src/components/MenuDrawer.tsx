@@ -93,7 +93,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
       }
       setPostingMockEntries(true);
       const entries = getMockEntries(
-        new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         new Date(Date.now()),
         babyId
       );
@@ -297,7 +297,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     }}
                   />
                   <Typography variant="body1">
-                    Publier des entrées mock
+                    Générer des fausses entrées
                   </Typography>
                   <Box
                     sx={{
