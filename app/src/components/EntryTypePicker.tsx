@@ -34,6 +34,7 @@ import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activi
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
+import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { getTemperatureMethodName } from "@/utils/getTemperatureMethodName";
 import { parseEnumValue } from "@/utils/parseEnumValue";
@@ -49,7 +50,7 @@ type Props = {
 export function EntryTypePicker(props: Props) {
   const theme = useTheme();
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
-  const label = () => {
+  const renderItem = (entryTypeId: EntryTypeId) => {
     return (
       <Stack
         direction={"row"}
@@ -62,7 +63,7 @@ export function EntryTypePicker(props: Props) {
         }}
       >
         <EntryTypeIcon
-          type={EntryTypeId.Poop}
+          type={entryTypeId}
           sx={{
             fontSize: "1.5em",
             position: "absolute",
@@ -72,14 +73,12 @@ export function EntryTypePicker(props: Props) {
             opacity: theme.opacity.tertiary,
           }}
         />
-        <Box
+        <ListItemText
           sx={{
             marginLeft: 1,
-            color: theme.customPalette.text.tertiary,
           }}
-        >
-          Consistance
-        </Box>
+          primary={getEntryTypeName(entryTypeId)}
+        />
       </Stack>
     );
   };
@@ -96,19 +95,19 @@ export function EntryTypePicker(props: Props) {
   return (
     <>
       <FormControl fullWidth variant="outlined">
-        <InputLabel id="entry-type-picker-label">{label()}</InputLabel>
+        <InputLabel id="entry-type-picker-label">Type d'entrée</InputLabel>
         <Select
           id="entry-type-picker"
           labelId="entry-type-picker-label"
           value={props.value ?? ""}
-          label={label()}
+          label={renderItem(props.value)}
           onChange={(e) => props.setValue(e.target.value as EntryTypeId)}
           renderValue={renderValue}
         >
-          {items.map((item: any) => {
+          {items.map((item: EntryTypeId, index) => {
             return (
-              <MenuItem key={item.id} value={item.id}>
-                <ListItemText primary={item.label} />
+              <MenuItem key={index} value={item}>
+                {renderItem(item)}
               </MenuItem>
             );
           })}
