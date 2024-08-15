@@ -209,7 +209,7 @@ export function EntriesCard(props: Props) {
                         <EntryTypeIcon
                           type={entry.entryTypeId}
                           sx={{
-                            fontSize: "3em",
+                            fontSize: "2.75em",
                             transform:
                               entryTypeHasSides(entry.entryTypeId) &&
                               entry.leftTime &&

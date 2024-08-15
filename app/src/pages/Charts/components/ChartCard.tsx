@@ -93,7 +93,7 @@ export function ChartCard(props: Props) {
               <EntryTypeIcon
                 type={entryTypeId}
                 sx={{
-                  fontSize: "3em",
+                  fontSize: "2.75em",
                 }}
               />
             </Box>
