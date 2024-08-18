@@ -11,13 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  addRecentEntriesInState,
-  removeRecentEntriesFromState,
-  selectEntriesStatus,
-  selectRecentEntries,
-  updateRecentEntriesInState,
-} from "@/state/slices/entriesSlice";
-import {
   collection,
   onSnapshot,
   orderBy,
@@ -45,14 +38,14 @@ import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTim
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export function HomePage() {
   const { user } = useAuthentication();
   const navigate = useNavigate();
-  const entries = useSelector(selectRecentEntries);
-  const entriesStatus = useSelector(selectEntriesStatus);
+  const { recentEntries, isFetching } = useEntries();
   const dispatch = useAppDispatch();
 
   // TODO: Subscribe to entries changes only if user is Premium
@@ -76,7 +69,7 @@ export function HomePage() {
           navigate(
             getPath({
               page: PageId.Baby,
-              id: user.babyId,
+              ids: [user.babyId],
             })
           )
         }
@@ -92,19 +85,19 @@ export function HomePage() {
       </Section>
 
       <Section>
-        <EntriesWidget entries={entries} />
+        <EntriesWidget entries={recentEntries} />
       </Section>
 
       <Section>
-        {entriesStatus === "busy" ? (
+        {isFetching && recentEntries.length == 0 ? (
           <LoadingIndicator />
-        ) : entries.length === 0 ? (
+        ) : recentEntries.length == 0 ? (
           <EmptyState
             context={EmptyStateContext.Entries}
             onClick={handleEmptyStateClick}
           />
         ) : (
-          <EntriesList entries={entries} format="cards" />
+          <EntriesList entries={recentEntries} format="cards" />
         )}
       </Section>
     </SectionStack>

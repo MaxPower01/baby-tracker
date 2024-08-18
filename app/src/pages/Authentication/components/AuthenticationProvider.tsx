@@ -30,6 +30,7 @@ import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTy
 import isDevelopment from "@/utils/isDevelopment";
 import { saveActivityContextsInState } from "@/state/slices/activitiesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useEntries } from "@/components/EntriesProvider";
 
 export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const dispatch = useAppDispatch();

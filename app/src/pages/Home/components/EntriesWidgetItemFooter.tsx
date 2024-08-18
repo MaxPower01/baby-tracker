@@ -14,10 +14,10 @@ import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
 import { getTimestamp } from "@/utils/getTimestamp";
-import { saveEntryInDB } from "@/state/slices/entriesSlice";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -32,6 +32,7 @@ export function EntriesWidgetItemFooter(props: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAuthentication();
+  const { saveEntry } = useEntries();
   const elapsedTime =
     props.mostRecentEntryOfType == null
       ? null
@@ -99,7 +100,7 @@ export function EntriesWidgetItemFooter(props: Props) {
             rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
             endTimestamp: newEndTimestamp,
           };
-          await dispatch(saveEntryInDB({ entry, user })).unwrap();
+          await saveEntry(entry);
           setIsSaving(false);
           return resolve(true);
         } catch (error) {
@@ -157,7 +158,7 @@ export function EntriesWidgetItemFooter(props: Props) {
         }
         navigate(
           getPath({
-            id: props.mostRecentEntryOfType.id,
+            ids: [props.mostRecentEntryOfType.id ?? ""],
             page: PageId.Entry,
             params: {
               type: props.entryType.toString(),

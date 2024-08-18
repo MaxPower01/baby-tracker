@@ -64,7 +64,7 @@ export function PrivateRoutes() {
             <Route path={getPath({ page: PageId.Entry })}>
               <Route path="" element={<EntryPage />} />
               <Route path="*" element={<Navigate replace to="" />} />
-              <Route path=":entryId" element={<EntryPage />} />
+              <Route path=":dateKey/:entryId" element={<EntryPage />} />
             </Route>
             <Route path={getPath({ page: PageId.Baby })}>
               <Route path="" element={<BabyPage />} />

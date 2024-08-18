@@ -29,6 +29,7 @@ import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 interface EntriesContextType {
+  isFetching: boolean;
   recentEntries: Entry[];
   saveEntry: (entry: Entry) => Promise<Entry>;
   saveEntries: (entries: Entry[]) => Promise<Entry[]>;
@@ -64,6 +65,14 @@ const EntriesContext = React.createContext<EntriesContextType | undefined>(
   undefined
 );
 
+export function useEntries() {
+  const context = React.useContext(EntriesContext);
+  if (context === undefined) {
+    throw new Error("useEntries must be used within a EntriesProvider");
+  }
+  return context;
+}
+
 type Props = React.PropsWithChildren<{}>;
 
 export function EntriesProvider(props: Props) {
@@ -76,58 +85,84 @@ export function EntriesProvider(props: Props) {
   useEffect(() => {
     const babyId = user?.babyId ?? "";
 
-    if (isNullOrWhiteSpace(babyId)) {
-      return;
-    }
+    if (!isNullOrWhiteSpace(babyId)) {
+      const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
 
-    const rangeStartTimestamp = getRangeStartTimestampForRecentEntries();
+      const q = query(
+        collection(db, `babies/${babyId}/dailyEntries`),
+        where("timestamp", ">=", rangeStartTimestamp),
+        orderBy("timestamp", "desc")
+      );
 
-    const q = query(
-      collection(db, `babies/${babyId}/dailyEntries`),
-      where("startTimestamp", ">=", rangeStartTimestamp),
-      orderBy("startTimestamp", "desc")
-    );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const addedDailyEntries: DailyEntries[] = [];
+        const modifiedDailyEntries: DailyEntries[] = [];
+        const removedDailyEntries: DailyEntries[] = [];
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const addedEntries: Entry[] = [];
-      const modifiedEntries: Entry[] = [];
-      const removedEntries: Entry[] = [];
-
-      snapshot.docChanges().forEach((change) => {
-        if (change.doc.data() != null) {
-          const entry = change.doc.data() as Entry;
-          entry.id = change.doc.id;
-          if (change.type === "added") {
-            addedEntries.push(entry);
-          } else if (change.type === "modified") {
-            modifiedEntries.push(entry);
-          } else if (change.type === "removed") {
-            removedEntries.push(entry);
+        snapshot.docChanges().forEach((change) => {
+          if (change.doc.data() != null) {
+            const dailyEntries = change.doc.data() as DailyEntries;
+            if (change.type === "added") {
+              addedDailyEntries.push(dailyEntries);
+            } else if (change.type === "modified") {
+              modifiedDailyEntries.push(dailyEntries);
+            } else if (change.type === "removed") {
+              removedDailyEntries.push(dailyEntries);
+            }
           }
-        }
+        });
+
+        setRecentEntries((prevEntries) => {
+          let entries = [...prevEntries];
+          if (removedDailyEntries.length) {
+            removedDailyEntries.forEach((dailyEntries) => {
+              const removedEntries = dailyEntries.entries;
+              if (!removedEntries || !Array.isArray(removedEntries)) {
+                return;
+              }
+              entries = entries.filter(
+                (entry) => !removedEntries.some((e) => e.id === entry.id)
+              );
+            });
+          }
+          if (addedDailyEntries.length) {
+            addedDailyEntries.forEach((dailyEntries) => {
+              const addedEntries = dailyEntries.entries;
+              if (!addedEntries || !Array.isArray(addedEntries)) {
+                return;
+              }
+              entries.push(...addedEntries);
+            });
+          }
+          if (modifiedDailyEntries.length) {
+            modifiedDailyEntries.forEach((dailyEntries) => {
+              const modifiedEntries = dailyEntries.entries;
+              if (!modifiedEntries || !Array.isArray(modifiedEntries)) {
+                return;
+              }
+              modifiedEntries.forEach((entry) => {
+                const index = entries.findIndex((e) => e.id === entry.id);
+                if (index !== -1) {
+                  entries[index] = entry;
+                } else {
+                  entries.push(entry);
+                }
+              });
+            });
+          }
+          entries = entries
+            .sort((a, b) => b.startTimestamp - a.startTimestamp)
+            .filter((entry, index, self) => {
+              return index === self.findIndex((e) => e.id === entry.id);
+            });
+          return entries;
+        });
       });
 
-      setRecentEntries((prevEntries) => {
-        let entries = [...prevEntries];
-        entries = entries.filter(
-          (entry) => !removedEntries.some((e) => e.id === entry.id)
-        );
-        entries.push(...addedEntries);
-        entries = entries
-          .map((entry) => {
-            const modifiedEntry = modifiedEntries.find(
-              (e) => e.id === entry.id
-            );
-            return modifiedEntry ?? entry;
-          })
-          .sort((a, b) => b.startTimestamp - a.startTimestamp);
-        return entries;
-      });
-    });
-
-    return () => {
-      unsubscribe();
-    };
+      return () => {
+        unsubscribe();
+      };
+    }
   }, [user]);
 
   const saveEntry = useCallback(
@@ -145,6 +180,7 @@ export function EntriesProvider(props: Props) {
           const entryToSave = getEntryToSave(entry, babyId);
 
           const dateKey = getDateKeyFromTimestamp(entryToSave.startTimestamp);
+          console.log("🚀 ~ returnnewPromise<Entry> ~ dateKey:", dateKey);
           if (isNullOrWhiteSpace(dateKey)) {
             return reject("dateKey is not set");
           }
@@ -164,63 +200,79 @@ export function EntriesProvider(props: Props) {
 
           const notSameDay = existingEntry && dateKey !== originalDateKey;
 
-          try {
-            const dailyEntriesDocRef = doc(db, docPath);
-            const dailyEntriesDoc = await getDoc(dailyEntriesDocRef);
+          const dailyEntriesDocRef = doc(db, docPath);
+          const dailyEntriesDoc = await getDoc(dailyEntriesDocRef);
 
-            const entries = dailyEntriesDoc.exists()
-              ? dailyEntriesDoc.data().entries
-              : ([] as Entry[]);
+          const entries = dailyEntriesDoc.exists()
+            ? dailyEntriesDoc.data().entries
+            : ([] as Entry[]);
 
-            if (!entries || !Array.isArray(entries)) {
-              throw new Error("Entries is not an array");
+          if (!entries || !Array.isArray(entries)) {
+            throw new Error("Entries is not an array");
+          }
+
+          const isNewEntry = !entries.some((e) => e.id === entryToSave.id);
+
+          if (isNewEntry) {
+            entries.push(entryToSave);
+          } else {
+            const index = entries.findIndex((e) => e.id === entryToSave.id);
+            entries[index] = entryToSave;
+          }
+
+          const timestamp = getTimestampFromDateKey(dateKey);
+
+          if (notSameDay) {
+            const originalDateKeyDocRef = doc(
+              db,
+              `${collectionPath}/${originalDateKey}`
+            );
+            const originalDateKeyDoc = await getDoc(originalDateKeyDocRef);
+
+            if (originalDateKeyDoc.exists()) {
+              const originalEntries = originalDateKeyDoc.data().entries;
+              if (originalEntries && Array.isArray(originalEntries)) {
+                const index = originalEntries.findIndex(
+                  (e) => e.id === entryToSave.id
+                );
+
+                if (index !== -1) {
+                  originalEntries.splice(index, 1);
+                  await setDoc(
+                    originalDateKeyDocRef,
+                    { entries: originalEntries, timestamp },
+                    { merge: true }
+                  );
+                }
+              }
             }
-
-            const isNewEntry = !entries.some((e) => e.id === entryToSave.id);
-
-            if (isNewEntry) {
-              entries.push(entryToSave);
-            } else {
-              const index = entries.findIndex((e) => e.id === entryToSave.id);
-              entries[index] = entryToSave;
-            }
-
-            const timestamp = getTimestampFromDateKey(dateKey);
-
+          } else {
             await setDoc(
               dailyEntriesDocRef,
               { entries, timestamp },
               { merge: true }
             );
+          }
 
-            if (notSameDay) {
-              const originalDateKeyDocRef = doc(
-                db,
-                `${collectionPath}/${originalDateKey}`
-              );
-              const originalDateKeyDoc = await getDoc(originalDateKeyDocRef);
-
-              if (originalDateKeyDoc.exists()) {
-                const originalEntries = originalDateKeyDoc.data().entries;
-                if (originalEntries && Array.isArray(originalEntries)) {
-                  const index = originalEntries.findIndex(
-                    (e) => e.id === entryToSave.id
-                  );
-
-                  if (index !== -1) {
-                    originalEntries.splice(index, 1);
-                    await setDoc(
-                      originalDateKeyDocRef,
-                      { entries: originalEntries, timestamp },
-                      { merge: true }
-                    );
-                  }
-                }
+          if (
+            entryToSave.startTimestamp >=
+            getRangeStartTimestampForRecentEntries()
+          ) {
+            setRecentEntries((prevEntries) => {
+              let entries = [...prevEntries];
+              const index = entries.findIndex((e) => e.id === entryToSave.id);
+              if (index !== -1) {
+                entries[index] = entryToSave;
+              } else {
+                entries.push(entryToSave);
               }
-            }
-          } catch (error) {
-            console.error("Error saving entry: ", error);
-            return reject(error);
+              entries = entries
+                .sort((a, b) => b.startTimestamp - a.startTimestamp)
+                .filter((entry, index, self) => {
+                  return index === self.findIndex((e) => e.id === entry.id);
+                });
+              return entries;
+            });
           }
 
           return resolve({ ...entryToSave });
@@ -282,6 +334,34 @@ export function EntriesProvider(props: Props) {
           });
 
           await batch.commit();
+
+          const rangeStartTimestampForRecentEntries =
+            getRangeStartTimestampForRecentEntries();
+
+          const newRecentEntries = entries.filter(
+            (entry) =>
+              entry.startTimestamp >= rangeStartTimestampForRecentEntries
+          );
+
+          if (newRecentEntries.length) {
+            setRecentEntries((prevEntries) => {
+              let entries = [...prevEntries];
+              newRecentEntries.forEach((entry) => {
+                const index = entries.findIndex((e) => e.id === entry.id);
+                if (index !== -1) {
+                  entries[index] = entry;
+                } else {
+                  entries.push(entry);
+                }
+              });
+              entries = entries
+                .sort((a, b) => b.startTimestamp - a.startTimestamp)
+                .filter((entry, index, self) => {
+                  return index === self.findIndex((e) => e.id === entry.id);
+                });
+              return entries;
+            });
+          }
 
           return resolve(entries.map((entry) => ({ ...entry })));
         } catch (error) {
@@ -414,7 +494,9 @@ export function EntriesProvider(props: Props) {
 
           snapshot.forEach((doc) => {
             const dailyEntries = doc.data() as DailyEntries;
-            dailyEntriesCollection[doc.id] = dailyEntries;
+            dailyEntriesCollection[
+              getDateKeyFromTimestamp(dailyEntries.timestamp)
+            ] = dailyEntries;
           });
 
           setIsFetching(false);
@@ -516,6 +598,7 @@ export function EntriesProvider(props: Props) {
 
   const value: EntriesContextType = useMemo(() => {
     return {
+      isFetching,
       recentEntries,
       saveEntry,
       saveEntries,
@@ -524,7 +607,16 @@ export function EntriesProvider(props: Props) {
       deleteEntry,
       deleteDailyEntries,
     };
-  }, []);
+  }, [
+    isFetching,
+    recentEntries,
+    saveEntry,
+    saveEntries,
+    getEntry,
+    getDailyEntries,
+    deleteEntry,
+    deleteDailyEntries,
+  ]);
 
   return (
     <EntriesContext.Provider value={value}>

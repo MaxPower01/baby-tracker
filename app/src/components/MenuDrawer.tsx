@@ -34,9 +34,9 @@ import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { saveEntriesInDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 import { writeBatch } from "firebase/firestore";
 
@@ -49,6 +49,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
   const [email, setEmail] = useState("");
+  const { saveEntries } = useEntries();
   const [postingMockEntries, setPostingMockEntries] = useState(false);
 
   const babyId = useMemo(() => {
@@ -101,7 +102,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
         setPostingMockEntries(false);
         return;
       }
-      await dispatch(saveEntriesInDB({ entries, user })).unwrap();
+      await saveEntries(entries);
       setPostingMockEntries(false);
     } catch (error) {
       console.error(error);

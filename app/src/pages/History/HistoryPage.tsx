@@ -1,9 +1,4 @@
 import {
-  fetchHistoryEntriesFromDB,
-  resetHistoryEntriesInState,
-  selectHistoryEntries,
-} from "@/state/slices/entriesSlice";
-import {
   resetFiltersInState,
   selectActivityContextsInFiltersState,
   selectEntryTypesInFiltersState,
@@ -71,34 +66,6 @@ export function HistoryPage() {
     ) {
       setIsFetching(true);
       setLastTimePeriodIdFetched(timePeriod);
-
-      dispatch(
-        fetchHistoryEntriesFromDB({
-          babyId: user.babyId,
-          timePeriodId: timePeriod,
-        })
-      )
-        .then((result) => {
-          if (result.meta.requestStatus === "rejected") {
-            if (typeof result.payload === "string") {
-              console.error(result.payload);
-            }
-          }
-          const dailyEntriesCollection =
-            result.payload as DailyEntriesCollection;
-          const entries = getEntriesFromDailyEntriesCollection(
-            dailyEntriesCollection
-          );
-          setEntries(entries);
-          setIsFetching(false);
-        })
-        .catch((err) => {
-          setIsFetching(false);
-          console.error(err);
-        })
-        .finally(() => {
-          setIsFetching(false);
-        });
     }
   }, [
     user,

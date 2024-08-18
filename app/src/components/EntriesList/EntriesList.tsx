@@ -21,7 +21,6 @@ import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable"
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { MenuProvider } from "@/components/MenuProvider";
-import { addRecentEntryInState } from "@/state/slices/entriesSlice";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
@@ -100,7 +99,6 @@ export function EntriesList(props: Props) {
 
   const handleEntriesTableRowClick = useCallback(
     (entry: Entry) => {
-      dispatch(addRecentEntryInState({ entry: serializeEntry(entry) }));
       setEntryForModal(entry);
     },
     [dispatch]
