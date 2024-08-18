@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { DateHeader } from "@/components/DateHeader";
-import { EntriesTableRow } from "@/components/EntriesList/TableFormat/EntriesTableRow";
+import { EntriesTableRow } from "@/components/Entries/EntriesList/TableFormat/EntriesTableRow";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";

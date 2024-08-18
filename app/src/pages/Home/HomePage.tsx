@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { BabyWidget } from "@/components/BabyWidget";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList/EntriesList";
+import { EntriesList } from "@/components/Entries/EntriesList/EntriesList";
 import { EntriesWidget } from "@/pages/Home/components/EntriesWidget";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -38,7 +38,7 @@ import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTim
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/components/EntriesProvider";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

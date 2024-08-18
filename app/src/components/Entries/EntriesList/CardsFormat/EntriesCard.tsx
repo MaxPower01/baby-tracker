@@ -36,7 +36,7 @@ import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/components/EntriesProvider";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";

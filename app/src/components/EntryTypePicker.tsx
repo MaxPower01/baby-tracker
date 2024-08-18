@@ -57,20 +57,12 @@ export function EntryTypePicker(props: Props) {
         spacing={1}
         justifyContent={"flex-start"}
         alignItems={"center"}
-        sx={{
-          paddingLeft: "1.5em",
-          position: "relative",
-        }}
       >
         <EntryTypeIcon
           type={entryTypeId}
           sx={{
             fontSize: "1.5em",
-            position: "absolute",
-            left: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            opacity: theme.opacity.tertiary,
+            opacity: theme.opacity.secondary,
           }}
         />
         <ListItemText
@@ -102,7 +94,7 @@ export function EntryTypePicker(props: Props) {
           value={props.value ?? ""}
           label={renderItem(props.value)}
           onChange={(e) => props.setValue(e.target.value as EntryTypeId)}
-          renderValue={renderValue}
+          renderValue={renderItem}
         >
           {items.map((item: EntryTypeId, index) => {
             return (

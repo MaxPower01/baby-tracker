@@ -8,7 +8,7 @@ import { MenuProvider } from "@/components/MenuProvider";
 import { getDefaultEntry } from "@/utils/getDefaultEntry";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/components/EntriesProvider";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 
 export function EntryPage() {
   const [searchParams] = useSearchParams();

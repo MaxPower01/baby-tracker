@@ -1,7 +1,6 @@
 import activitiesReducer from "@/state/slices/activitiesSlice";
 import appReducer from "@/state/slices/appSlice";
 import { configureStore } from "@reduxjs/toolkit";
-import filtersReducer from "@/state/slices/filtersSlice";
 import logger from "redux-logger";
 import settingsReducer from "@/state/slices/settingsSlice";
 
@@ -9,7 +8,6 @@ const reducer = {
   appReducer,
   settingsReducer,
   activitiesReducer,
-  filtersReducer,
 };
 
 const store = configureStore({

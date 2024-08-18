@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Stack, useTheme } from "@mui/material";
 
-import { EntriesCard } from "@/components/EntriesList/CardsFormat/EntriesCard";
+import { EntriesCard } from "@/components/Entries/EntriesList/CardsFormat/EntriesCard";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { MenuProvider } from "@/components/MenuProvider";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";

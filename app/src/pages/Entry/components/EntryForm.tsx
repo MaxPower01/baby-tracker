@@ -50,7 +50,7 @@ import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/components/EntriesProvider";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/components/SnackbarProvider";

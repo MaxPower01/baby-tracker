@@ -17,7 +17,7 @@ import { getTimestamp } from "@/utils/getTimestamp";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEntries } from "@/components/EntriesProvider";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 
 type Props = {

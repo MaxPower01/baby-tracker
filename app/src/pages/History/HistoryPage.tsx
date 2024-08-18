@@ -1,17 +1,10 @@
-import {
-  resetFiltersInState,
-  selectActivityContextsInFiltersState,
-  selectEntryTypesInFiltersState,
-  selectSortOrderInFiltersState,
-  selectTimePeriodInFiltersState,
-} from "@/state/slices/filtersSlice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList/EntriesList";
+import { EntriesList } from "@/components/Entries/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
@@ -26,6 +19,7 @@ import { getFilteredEntries } from "@/utils/getFilteredEntries";
 import { resetFiltersButtonId } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 export function HistoryPage() {
@@ -33,10 +27,13 @@ export function HistoryPage() {
 
   const dispatch = useAppDispatch();
 
-  const timePeriod = useSelector(selectTimePeriodInFiltersState);
-  const entryTypes = useSelector(selectEntryTypesInFiltersState);
-  const sortOrder = useSelector(selectSortOrderInFiltersState);
-  const activityContexts = useSelector(selectActivityContextsInFiltersState);
+  // const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  // const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  // const sortOrder = useSelector(selectSortOrderInFiltersState);
+  // const activityContexts = useSelector(selectActivityContextsInFiltersState);
+
+  const { timePeriod, entryTypes, sortOrder, activityContexts, reset } =
+    useFilters();
 
   const [isFetching, setIsFetching] = useState(false);
   const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
@@ -44,18 +41,8 @@ export function HistoryPage() {
 
   const [entries, setEntries] = useState<Entry[]>([]);
 
-  const handleResetButtonClick = useCallback(() => {
-    dispatch(
-      resetFiltersInState({
-        keepTimePeriod: true,
-      })
-    );
-  }, [dispatch]);
-
   useEffect(() => {
-    return () => {
-      dispatch(resetFiltersInState());
-    };
+    reset();
   }, []);
 
   useEffect(() => {
@@ -125,7 +112,7 @@ export function HistoryPage() {
                 "Aucune entrée ne correspond à vos critères de recherche",
               stickerSource: "/stickers/empty-state--entries.svg",
               buttonLabel: "Réinitialiser les filtres",
-              onClick: handleResetButtonClick,
+              onClick: () => reset(),
             }}
           />
         ) : (

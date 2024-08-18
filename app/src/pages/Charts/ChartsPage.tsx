@@ -1,45 +1,26 @@
-import {
-  resetFiltersInState,
-  selectActivityContextsInFiltersState,
-  selectEntryTypesInFiltersState,
-  selectSortOrderInFiltersState,
-  selectTimePeriodInFiltersState,
-} from "@/state/slices/filtersSlice";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
-import { BarChart } from "@/pages/Charts/components/BarChart";
 import { ChartCard } from "@/pages/Charts/components/ChartCard";
-import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList/EntriesList";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypePicker } from "@/components/EntryTypePicker";
-import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { SearchToolbar } from "@/components/SearchToolbar";
-import { Section } from "@/components/Section";
-import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
-import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
-import { getFilteredEntries } from "@/utils/getFilteredEntries";
-import { resetFiltersButtonId } from "@/utils/constants";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
-import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 export function ChartsPage() {
   const { user } = useAuthentication();
 
-  const dispatch = useAppDispatch();
-
-  const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  const { timePeriod } = useFilters();
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
 
@@ -52,31 +33,6 @@ export function ChartsPage() {
     useState<TimePeriodId | null>(null);
 
   const [entries, setEntries] = useState<Entry[]>([]);
-
-  const handleResetButtonClick = useCallback(() => {
-    dispatch(
-      resetFiltersInState({
-        keepTimePeriod: true,
-      })
-    );
-  }, [dispatch]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetFiltersInState());
-    };
-  }, []);
-
-  useEffect(() => {
-    if (
-      user?.babyId != null &&
-      !isFetching &&
-      lastTimePeriodFetched != timePeriod
-    ) {
-      setIsFetching(true);
-      setLastTimePeriodIdFetched(timePeriod);
-    }
-  }, [user, timePeriod, dispatch, isFetching, lastTimePeriodFetched]);
 
   const filteredEntries = useMemo(() => {
     if (!entryTypeId) {
