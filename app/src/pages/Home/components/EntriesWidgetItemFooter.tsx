@@ -158,7 +158,7 @@ export function EntriesWidgetItemFooter(props: Props) {
         }
         navigate(
           getPath({
-            ids: [props.mostRecentEntryOfType.id ?? ""],
+            paths: [props.mostRecentEntryOfType.id ?? ""],
             page: PageId.Entry,
             params: {
               type: props.entryType.toString(),

@@ -69,7 +69,7 @@ export function HomePage() {
           navigate(
             getPath({
               page: PageId.Baby,
-              ids: [user.babyId],
+              paths: [user.babyId],
             })
           )
         }

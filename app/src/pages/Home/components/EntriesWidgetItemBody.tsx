@@ -106,7 +106,7 @@ export function EntriesWidgetItemBody(props: Props) {
           onClick={() => {
             navigate(
               getPath({
-                ids: stopwatchIsRunning
+                paths: stopwatchIsRunning
                   ? [props.mostRecentEntryOfType?.id ?? ""]
                   : undefined,
                 page: PageId.Entry,

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -8,7 +9,6 @@ import { getDefaultEntry } from "@/utils/getDefaultEntry";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEntries } from "@/components/EntriesProvider";
-import { useState } from "react";
 
 export function EntryPage() {
   const [searchParams] = useSearchParams();
@@ -29,20 +29,24 @@ export function EntryPage() {
     isNewEntry ? getDefaultEntry(entryType as string, babyId) : undefined
   );
 
-  if (
-    !isNewEntry &&
-    !isNullOrWhiteSpace(entryId) &&
-    !isNullOrWhiteSpace(dateKey) &&
-    !isNullOrWhiteSpace(babyId)
-  ) {
-    getEntry({
-      id: entryId as string,
-      babyId: user?.babyId as string,
-      dateKey: dateKey as string,
-    }).then((entry) => {
-      setEntry(entry);
-    });
-  }
+  useEffect(() => {
+    if (
+      !isNewEntry &&
+      !isNullOrWhiteSpace(entryId) &&
+      !isNullOrWhiteSpace(dateKey) &&
+      !isNullOrWhiteSpace(babyId) &&
+      entry == null &&
+      !isFetching
+    ) {
+      getEntry({
+        id: entryId as string,
+        babyId: user?.babyId as string,
+        dateKey: dateKey as string,
+      }).then((entry) => {
+        setEntry(entry);
+      });
+    }
+  }, [entry, entryId, getEntry, isNewEntry, isFetching, babyId, dateKey, user]);
 
   if (entry == null) {
     if (!isNewEntry && isFetching) {

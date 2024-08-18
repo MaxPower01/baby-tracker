@@ -123,7 +123,7 @@ export function EntriesCard(props: Props) {
                   navigate(
                     getPath({
                       page: PageId.Entry,
-                      ids: isNullOrWhiteSpace(entry.id)
+                      paths: isNullOrWhiteSpace(entry.id)
                         ? undefined
                         : [
                             getDateKeyFromTimestamp(entry.startTimestamp),
