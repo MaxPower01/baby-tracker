@@ -14,46 +14,20 @@ import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 import { TimePeriodId } from "@/enums/TimePeriodId";
+import { XAxisUnit } from "@/types/XAxisUnit";
+import { YAxisUnit } from "@/types/YAxisUnit";
+import { getChartCardSubtitle } from "@/pages/Charts/utils/getChardCardSubtitle";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
-
-type XAxisUnit = "hours" | "days";
-type YAxisUnit = "count" | "duration" | "volume";
 
 type Props = {
   entries: Entry[];
+  entryTypeId: EntryTypeId;
   timePeriod: TimePeriodId;
   yAxisUnit: YAxisUnit;
 };
 
-function getSubtitle(xAxisUnit: XAxisUnit, yAxisUnit: YAxisUnit) {
-  let result;
-
-  switch (yAxisUnit) {
-    case "count":
-      result = "Nombre par";
-      break;
-    case "duration":
-      result = "Durée par";
-      break;
-    case "volume":
-      result = "Volume par";
-      break;
-    default:
-      break;
-  }
-
-  if (xAxisUnit === "days") {
-    result += " jour";
-  } else {
-    result += " heure";
-  }
-  return result;
-}
-
 export function ChartCard(props: Props) {
   const theme = useTheme();
-
-  const entryTypeId = props.entries[0].entryTypeId;
 
   const hoursTimePeriodIds = [TimePeriodId.Today, TimePeriodId.Last2Days];
 
@@ -61,8 +35,8 @@ export function ChartCard(props: Props) {
     ? "hours"
     : "days";
 
-  const title = getEntryTypeName(entryTypeId);
-  const subtitle = getSubtitle(xAxisUnit, props.yAxisUnit);
+  const title = getEntryTypeName(props.entryTypeId);
+  const subtitle = getChartCardSubtitle(xAxisUnit, props.yAxisUnit);
 
   return (
     <Card>
@@ -91,7 +65,7 @@ export function ChartCard(props: Props) {
               }}
             >
               <EntryTypeIcon
-                type={entryTypeId}
+                type={props.entryTypeId}
                 sx={{
                   fontSize: "2.75em",
                 }}

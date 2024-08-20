@@ -99,17 +99,19 @@ export function ChartsPage() {
             width: "100%",
           }}
         >
-          {entryTypeHasVolume(entries[0].entryTypeId) && (
+          {entryTypeHasVolume(entryTypeId) && (
             <ChartCard
               entries={entries}
+              entryTypeId={entryTypeId}
               timePeriod={timePeriod}
               yAxisUnit="volume"
             />
           )}
 
-          {entryTypeHasStopwatch(entries[0].entryTypeId) && (
+          {entryTypeHasStopwatch(entryTypeId) && (
             <ChartCard
               entries={entries}
+              entryTypeId={entryTypeId}
               timePeriod={timePeriod}
               yAxisUnit="duration"
             />
@@ -117,6 +119,7 @@ export function ChartsPage() {
 
           <ChartCard
             entries={entries}
+            entryTypeId={entryTypeId}
             timePeriod={timePeriod}
             yAxisUnit="count"
           />
