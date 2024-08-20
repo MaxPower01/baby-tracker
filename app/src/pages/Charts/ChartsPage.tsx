@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ChartCard } from "@/pages/Charts/components/ChartCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -12,34 +12,48 @@ import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
+import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 export function ChartsPage() {
-  const { user } = useAuthentication();
-
-  const { timePeriod } = useFilters();
+  const { timePeriod, reset } = useFilters();
+  const { recentEntries } = useEntries();
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const defaultEntryType = entryTypesOrder[0];
+  const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(defaultEntryType);
 
-  const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(
-    entryTypesOrder[0]
-  );
-
-  const [isFetching, setIsFetching] = useState(false);
-  const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
-    useState<TimePeriodId | null>(null);
+  const recentTimePeriods = [TimePeriodId.Today, TimePeriodId.Last2Days];
 
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
 
-  const filteredEntries = useMemo(() => {
-    if (!entryTypeId) {
-      return [];
+  useEffect(() => {
+    setIsFetching(true);
+
+    if (recentTimePeriods.includes(timePeriod)) {
+      if (recentEntries.length) {
+        const newEntries = recentEntries.filter(
+          (entry) =>
+            entry.startTimestamp >=
+              getStartTimestampForTimePeriod(timePeriod) &&
+            entry.entryTypeId == entryTypeId
+        );
+        setEntries(newEntries);
+      } else {
+        setEntries([]);
+      }
+
+      setIsFetching(false);
     }
-    return entries.filter((entry) => entry.entryTypeId == entryTypeId);
-  }, [entryTypeId]);
+
+    return () => {
+      reset();
+    };
+  }, [timePeriod, entryTypeId, recentEntries]);
 
   return (
     <Stack
@@ -66,7 +80,7 @@ export function ChartsPage() {
 
       {isFetching && <LoadingIndicator />}
 
-      {!isFetching && !filteredEntries.length && (
+      {!entries.length && !isFetching && (
         <EmptyState
           context={EmptyStateContext.Graphics}
           override={{
@@ -78,31 +92,31 @@ export function ChartsPage() {
         />
       )}
 
-      {!isFetching && filteredEntries.length > 0 && (
+      {entries.length > 0 && (
         <Stack
           spacing={2}
           sx={{
             width: "100%",
           }}
         >
-          {entryTypeHasVolume(filteredEntries[0].entryTypeId) && (
+          {entryTypeHasVolume(entries[0].entryTypeId) && (
             <ChartCard
-              entries={filteredEntries}
+              entries={entries}
               timePeriod={timePeriod}
               yAxisUnit="volume"
             />
           )}
 
-          {entryTypeHasStopwatch(filteredEntries[0].entryTypeId) && (
+          {entryTypeHasStopwatch(entries[0].entryTypeId) && (
             <ChartCard
-              entries={filteredEntries}
+              entries={entries}
               timePeriod={timePeriod}
               yAxisUnit="duration"
             />
           )}
 
           <ChartCard
-            entries={filteredEntries}
+            entries={entries}
             timePeriod={timePeriod}
             yAxisUnit="count"
           />

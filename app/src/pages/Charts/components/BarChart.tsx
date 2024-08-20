@@ -218,7 +218,6 @@ export function BarChart(props: Props) {
     // Animate the bars and show the value labels
 
     const showBarValueLabels = () => {
-      console.log("showBarValueLabels");
       svg
         .selectAll(".bar-value-label")
         .transition()

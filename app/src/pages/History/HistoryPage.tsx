@@ -16,57 +16,52 @@ import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getFilteredEntries } from "@/utils/getFilteredEntries";
+import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { resetFiltersButtonId } from "@/utils/constants";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 export function HistoryPage() {
-  const { user } = useAuthentication();
-
-  const dispatch = useAppDispatch();
-
-  // const timePeriod = useSelector(selectTimePeriodInFiltersState);
-  // const entryTypes = useSelector(selectEntryTypesInFiltersState);
-  // const sortOrder = useSelector(selectSortOrderInFiltersState);
-  // const activityContexts = useSelector(selectActivityContextsInFiltersState);
-
   const { timePeriod, entryTypes, sortOrder, activityContexts, reset } =
     useFilters();
+  const { recentEntries } = useEntries();
 
-  const [isFetching, setIsFetching] = useState(false);
-  const [lastTimePeriodFetched, setLastTimePeriodIdFetched] =
-    useState<TimePeriodId | null>(null);
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const defaultEntryType = entryTypesOrder[0];
+  const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(defaultEntryType);
+
+  const recentTimePeriods = [TimePeriodId.Today, TimePeriodId.Last2Days];
 
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    reset();
-  }, []);
+    setIsFetching(true);
 
-  useEffect(() => {
-    if (
-      user?.babyId != null &&
-      !isFetching &&
-      lastTimePeriodFetched != timePeriod
-    ) {
-      setIsFetching(true);
-      setLastTimePeriodIdFetched(timePeriod);
+    if (recentTimePeriods.includes(timePeriod)) {
+      if (recentEntries.length) {
+        const newEntries = recentEntries.filter(
+          (entry) =>
+            entry.startTimestamp >=
+              getStartTimestampForTimePeriod(timePeriod) &&
+            entry.entryTypeId == entryTypeId
+        );
+        setEntries(newEntries);
+      } else {
+        setEntries([]);
+      }
+
+      setIsFetching(false);
     }
-  }, [
-    user,
-    timePeriod,
-    dispatch,
-    isFetching,
-    entryTypes,
-    sortOrder,
-    lastTimePeriodFetched,
-  ]);
 
-  const filteredEntries = useMemo(() => {
-    return getFilteredEntries(entries, entryTypes, sortOrder, activityContexts);
-  }, [entries, entryTypes, sortOrder, activityContexts]);
+    return () => {
+      reset();
+    };
+  }, [timePeriod, entryTypeId, recentEntries]);
 
   return (
     <Stack
@@ -101,36 +96,29 @@ export function HistoryPage() {
 
       {isFetching && <LoadingIndicator />}
 
-      {!isFetching &&
-        !filteredEntries.length &&
-        (entryTypes.length > 0 ? (
-          <EmptyState
-            context={EmptyStateContext.Entries}
-            override={{
-              title: "Aucune entrée trouvée",
-              description:
-                "Aucune entrée ne correspond à vos critères de recherche",
-              stickerSource: "/stickers/empty-state--entries.svg",
-              buttonLabel: "Réinitialiser les filtres",
-              onClick: () => reset(),
-            }}
-          />
-        ) : (
-          <EmptyState
-            context={EmptyStateContext.Entries}
-            override={{
-              title: "Aucune entrée trouvée",
-              description:
-                "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
-              stickerSource: "/stickers/empty-state--entries.svg",
-            }}
-          />
-        ))}
+      {!entries.length && !isFetching && (
+        <EmptyState
+          context={EmptyStateContext.Entries}
+          override={{
+            title: "Aucune entrée trouvée",
+            description:
+              "Aucune entrée ne correspond à vos critères de recherche",
+            stickerSource: "/stickers/empty-state--entries.svg",
+            buttonLabel: "Réinitialiser les filtres",
+            onClick: () => reset(),
+          }}
+        />
+      )}
 
-      {!isFetching && filteredEntries.length > 0 && (
-        <>
-          <EntriesList entries={filteredEntries} format="table" />
-        </>
+      {entries.length > 0 && (
+        <Stack
+          spacing={2}
+          sx={{
+            width: "100%",
+          }}
+        >
+          <EntriesList entries={entries} format="table" />
+        </Stack>
       )}
     </Stack>
   );
