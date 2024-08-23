@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 
 import { EntriesWidgetItem } from "@/pages/Home/components/EntriesWidgetItem";
 import { Entry } from "@/pages/Entry/types/Entry";
@@ -10,6 +10,7 @@ type Props = {
 };
 
 export function EntriesWidget(props: Props) {
+  const theme = useTheme();
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const itemPadding = 4;
   const itemWidth = "10em";
@@ -39,6 +40,20 @@ export function EntriesWidget(props: Props) {
           // "&::-webkit-scrollbar": {
           //   display: "none",
           // },
+          // Style the scrollbar
+          "&::-webkit-scrollbar": {
+            width: "5em",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: theme.palette.divider,
+            borderRadius: theme.shape.borderRadius,
+            transition: theme.transitions.create("box-shadow", {
+              duration: theme.transitions.duration.shortest,
+            }),
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            boxShadow: `inset 0 0 0 20px ${theme.palette.action.hover}`,
+          },
         }}
       >
         <Stack

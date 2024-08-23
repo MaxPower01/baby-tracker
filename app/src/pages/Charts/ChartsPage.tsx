@@ -49,11 +49,13 @@ export function ChartsPage() {
 
       setIsFetching(false);
     }
+  }, [timePeriod, entryTypeId, recentEntries]);
 
+  useEffect(() => {
     return () => {
       reset();
     };
-  }, [timePeriod, entryTypeId, recentEntries]);
+  }, []);
 
   return (
     <Stack

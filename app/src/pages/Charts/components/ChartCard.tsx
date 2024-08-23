@@ -105,7 +105,11 @@ export function ChartCard(props: Props) {
 
           <BarChart
             backgroundColor={theme.palette.background.paper}
-            barColor={theme.palette.primary.main}
+            entries={props.entries}
+            entryTypeId={props.entryTypeId}
+            timePeriod={props.timePeriod}
+            xAxisUnit={xAxisUnit}
+            yAxisUnit={props.yAxisUnit}
           />
         </Stack>
       </CardContent>

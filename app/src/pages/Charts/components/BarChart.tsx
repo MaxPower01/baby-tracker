@@ -3,7 +3,16 @@ import * as d3 from "d3";
 import { Box, Paper, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
+import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { TimePeriodId } from "@/enums/TimePeriodId";
+import { XAxisUnit } from "@/types/XAxisUnit";
+import { YAxisUnit } from "@/types/YAxisUnit";
 import { chartHeight } from "@/utils/constants";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getDaysCountForTimePeriod } from "@/pages/Charts/utils/getDaysCountForTimePeriod";
+import { getHoursCountForTimePeriod } from "@/pages/Charts/utils/getHoursCountForTimePeriod";
+import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { v4 as uuid } from "uuid";
 
 type Datapoint = {
@@ -25,9 +34,12 @@ const generateMockData = (count: number): Datapoint[] => {
 };
 
 type Props = {
-  // data: Datapoint[];
+  entries: Entry[];
+  entryTypeId: EntryTypeId;
+  timePeriod: TimePeriodId;
+  yAxisUnit: YAxisUnit;
+  xAxisUnit: XAxisUnit;
   backgroundColor: string;
-  barColor?: string | string[];
 };
 
 export function BarChart(props: Props) {
@@ -46,9 +58,72 @@ export function BarChart(props: Props) {
   const outerContainerId = `${chartId}-outer-container`;
   const innerContainerId = `${chartId}-inner-container`;
 
-  const data = generateMockData(24);
+  const barsCount =
+    props.xAxisUnit === "hours"
+      ? getHoursCountForTimePeriod(props.timePeriod)
+      : getDaysCountForTimePeriod(props.timePeriod);
 
-  const barsCount = data.length;
+  const startTimestamp = getStartTimestampForTimePeriod(props.timePeriod);
+  const startDate = getDateFromTimestamp(startTimestamp);
+  startDate.setHours(0, 0, 0, 0);
+
+  const dates = Array.from({ length: barsCount }, (_, i) => {
+    const date = new Date(startDate);
+    if (props.xAxisUnit === "hours") {
+      date.setHours(date.getHours() + i);
+    } else {
+      date.setDate(date.getDate() + i);
+    }
+    return date;
+  });
+
+  const data: Datapoint[] = dates.map((date) => {
+    let entries: Entry[] = [];
+
+    if (props.xAxisUnit === "hours") {
+      const dateHour = date.getHours();
+      entries = props.entries.filter((entry) => {
+        const entryDate = getDateFromTimestamp(entry.startTimestamp);
+        const entryStartHour = entryDate.getHours();
+        return entryStartHour === dateHour;
+      });
+    } else if (props.xAxisUnit === "days") {
+      const dateDay = date.getDate();
+      entries = props.entries.filter((entry) => {
+        const entryDate = getDateFromTimestamp(entry.startTimestamp);
+        const entryStartDay = entryDate.getDate();
+        return entryStartDay === dateDay;
+      });
+    }
+
+    const result = {
+      id: uuid(),
+      date,
+      value: 0,
+    };
+
+    if (!entries.length) {
+      return result;
+    }
+
+    if (props.yAxisUnit === "count") {
+      result.value = entries.length;
+    } else if (props.yAxisUnit === "duration") {
+      result.value = entries.reduce(
+        (acc, entry) => acc + ((entry.leftTime ?? 0) + (entry.rightTime ?? 0)),
+        0
+      );
+    } else if (props.yAxisUnit === "volume") {
+      result.value = entries.reduce(
+        (acc, entry) =>
+          acc + ((entry.leftVolume ?? 0) + (entry.rightVolume ?? 0)),
+        0
+      );
+    }
+
+    return result;
+  });
+
   const barWidth = 40;
   const spacing = 8;
   const fontSize = barWidth / 3;
@@ -62,10 +137,7 @@ export function BarChart(props: Props) {
   const barPadding = 0.25;
 
   const getBarColor = () => {
-    if (props.barColor instanceof Array) {
-      return props.barColor[0];
-    }
-    return props.barColor || theme.palette.primary.main;
+    return theme.palette.primary.main;
   };
 
   useEffect(() => {

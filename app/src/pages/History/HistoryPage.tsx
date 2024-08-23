@@ -57,11 +57,13 @@ export function HistoryPage() {
 
       setIsFetching(false);
     }
+  }, [timePeriod, entryTypeId, recentEntries]);
 
+  useEffect(() => {
     return () => {
       reset();
     };
-  }, [timePeriod, entryTypeId, recentEntries]);
+  }, []);
 
   return (
     <Stack
