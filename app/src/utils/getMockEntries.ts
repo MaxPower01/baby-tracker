@@ -16,10 +16,14 @@ export function getMockEntries(
 
     for (let i = 0; i < daysCount; i++) {
       const date = new Date(fromDate.getTime() + i * 1000 * 60 * 60 * 24);
-      result.push(...getRandomActivityEntriesFor(date, babyId));
-      result.push(...getRandomBreastFeedingEntriesFor(date, babyId));
-      result.push(...getRandomBottleFeedingEntriesFor(date, babyId));
-      result.push(...getRandomDiaperEntriesFor(date, babyId));
+      result.push(...getRandomActivityEntriesFor(date, babyId, i, daysCount));
+      result.push(
+        ...getRandomBreastFeedingEntriesFor(date, babyId, i, daysCount)
+      );
+      result.push(
+        ...getRandomBottleFeedingEntriesFor(date, babyId, i, daysCount)
+      );
+      result.push(...getRandomDiaperEntriesFor(date, babyId, i, daysCount));
     }
   } catch (error) {
     console.error(error);
@@ -32,7 +36,12 @@ function getNumberWithinRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function getRandomActivityEntriesFor(date: Date, babyId: string): Entry[] {
+function getRandomActivityEntriesFor(
+  date: Date,
+  babyId: string,
+  i: number,
+  daysCount: number
+): Entry[] {
   const result: Entry[] = [];
 
   const entriesCount = getNumberWithinRange(0, 4);
@@ -85,11 +94,13 @@ function getRandomActivityEntriesFor(date: Date, babyId: string): Entry[] {
   return result;
 }
 
-function getRandomBreastFeedingEntriesFor(date: Date, babyId: string): Entry[] {
+function getRandomBreastFeedingEntriesFor(
+  date: Date,
+  babyId: string,
+  i: number,
+  daysCount: number
+): Entry[] {
   const result: Entry[] = [];
-
-  // There should be between 3 and 8 entries of type EntryTypeId.BreastFeeding per day.
-  // The duration of those entries should be between 5 minutes and 45 minutes and alternate between left and right.
 
   const entriesCount = getNumberWithinRange(3, 8);
 
@@ -104,7 +115,10 @@ function getRandomBreastFeedingEntriesFor(date: Date, babyId: string): Entry[] {
       startHour += 1;
     }
 
-    const duration = getNumberWithinRange(5, 45);
+    const duration =
+      j == entriesCount - 1
+        ? getNumberWithinRange(60, 180)
+        : getNumberWithinRange(5, 45);
 
     const startDate = new Date(date);
     startDate.setHours(startHour, 0, 0, 0);
@@ -143,7 +157,12 @@ function getRandomBreastFeedingEntriesFor(date: Date, babyId: string): Entry[] {
   return result;
 }
 
-function getRandomBottleFeedingEntriesFor(date: Date, babyId: string): Entry[] {
+function getRandomBottleFeedingEntriesFor(
+  date: Date,
+  babyId: string,
+  i: number,
+  daysCount: number
+): Entry[] {
   const result: Entry[] = [];
 
   const entriesCount = getNumberWithinRange(3, 8);
@@ -156,7 +175,11 @@ function getRandomBottleFeedingEntriesFor(date: Date, babyId: string): Entry[] {
       startHour += 1;
     }
 
-    const duration = getNumberWithinRange(5, 45);
+    const duration =
+      j == entriesCount - 1
+        ? getNumberWithinRange(60, 180)
+        : getNumberWithinRange(5, 45);
+
     const volume = getNumberWithinRange(30, 180);
 
     const startDate = new Date(date);
@@ -196,7 +219,12 @@ function getRandomBottleFeedingEntriesFor(date: Date, babyId: string): Entry[] {
   return result;
 }
 
-function getRandomDiaperEntriesFor(date: Date, babyId: string): Entry[] {
+function getRandomDiaperEntriesFor(
+  date: Date,
+  babyId: string,
+  i: number,
+  daysCount: number
+): Entry[] {
   const result: Entry[] = [];
 
   const entriesCount = getNumberWithinRange(2, 5);

@@ -1,13 +1,13 @@
 import { XAxisUnit } from "@/types/XAxisUnit";
-import { YAxisUnit } from "@/types/YAxisUnit";
+import { YAxisType } from "@/types/YAxisType";
 
 export function getChartCardSubtitle(
   xAxisUnit: XAxisUnit,
-  yAxisUnit: YAxisUnit
+  yAxisType: YAxisType
 ) {
   let result;
 
-  switch (yAxisUnit) {
+  switch (yAxisType) {
     case "count":
       result = "Nombre par";
       break;

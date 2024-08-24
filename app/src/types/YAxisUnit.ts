@@ -1,1 +1,7 @@
-export type YAxisUnit = "count" | "duration" | "volume";
+export type YAxisUnit =
+  | "count"
+  | "seconds"
+  | "minutes"
+  | "hours"
+  | "milliliters"
+  | "ounces";

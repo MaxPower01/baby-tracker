@@ -15,7 +15,7 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
-import { YAxisUnit } from "@/types/YAxisUnit";
+import { YAxisType } from "@/types/YAxisType";
 import { getChartCardSubtitle } from "@/pages/Charts/utils/getChardCardSubtitle";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 
@@ -23,7 +23,7 @@ type Props = {
   entries: Entry[];
   entryTypeId: EntryTypeId;
   timePeriod: TimePeriodId;
-  yAxisUnit: YAxisUnit;
+  yAxisType: YAxisType;
 };
 
 export function ChartCard(props: Props) {
@@ -36,7 +36,7 @@ export function ChartCard(props: Props) {
     : "days";
 
   const title = getEntryTypeName(props.entryTypeId);
-  const subtitle = getChartCardSubtitle(xAxisUnit, props.yAxisUnit);
+  const subtitle = getChartCardSubtitle(xAxisUnit, props.yAxisType);
 
   return (
     <Card>
@@ -109,7 +109,7 @@ export function ChartCard(props: Props) {
             entryTypeId={props.entryTypeId}
             timePeriod={props.timePeriod}
             xAxisUnit={xAxisUnit}
-            yAxisUnit={props.yAxisUnit}
+            yAxisType={props.yAxisType}
           />
         </Stack>
       </CardContent>

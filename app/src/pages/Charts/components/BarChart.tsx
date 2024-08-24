@@ -7,12 +7,15 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
+import { YAxisType } from "@/types/YAxisType";
 import { YAxisUnit } from "@/types/YAxisUnit";
 import { chartHeight } from "@/utils/constants";
+import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getDaysCountForTimePeriod } from "@/pages/Charts/utils/getDaysCountForTimePeriod";
 import { getHoursCountForTimePeriod } from "@/pages/Charts/utils/getHoursCountForTimePeriod";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
+import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
 import { v4 as uuid } from "uuid";
 
 type Datapoint = {
@@ -21,23 +24,11 @@ type Datapoint = {
   value: number;
 };
 
-const generateMockData = (count: number): Datapoint[] => {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    data.push({
-      id: uuid(),
-      date: new Date(new Date().setHours(i, 0, 0, 0)),
-      value: Math.floor(Math.random() * 10),
-    });
-  }
-  return data;
-};
-
 type Props = {
   entries: Entry[];
   entryTypeId: EntryTypeId;
   timePeriod: TimePeriodId;
-  yAxisUnit: YAxisUnit;
+  yAxisType: YAxisType;
   xAxisUnit: XAxisUnit;
   backgroundColor: string;
 };
@@ -83,16 +74,20 @@ export function BarChart(props: Props) {
     if (props.xAxisUnit === "hours") {
       const dateHour = date.getHours();
       entries = props.entries.filter((entry) => {
-        const entryDate = getDateFromTimestamp(entry.startTimestamp);
-        const entryStartHour = entryDate.getHours();
-        return entryStartHour === dateHour;
+        const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
+        const entryStartHour = entryStartDate.getHours();
+        const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
+        const entryEndHour = entryEndDate.getHours();
+        return entryStartHour === dateHour || entryEndHour === dateHour;
       });
     } else if (props.xAxisUnit === "days") {
       const dateDay = date.getDate();
       entries = props.entries.filter((entry) => {
-        const entryDate = getDateFromTimestamp(entry.startTimestamp);
-        const entryStartDay = entryDate.getDate();
-        return entryStartDay === dateDay;
+        const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
+        const entryStartDay = entryStartDate.getDate();
+        const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
+        const entryEndDay = entryEndDate.getDate();
+        return entryStartDay === dateDay || entryEndDay === dateDay;
       });
     }
 
@@ -106,14 +101,14 @@ export function BarChart(props: Props) {
       return result;
     }
 
-    if (props.yAxisUnit === "count") {
+    if (props.yAxisType === "count") {
       result.value = entries.length;
-    } else if (props.yAxisUnit === "duration") {
-      result.value = entries.reduce(
-        (acc, entry) => acc + ((entry.leftTime ?? 0) + (entry.rightTime ?? 0)),
-        0
-      );
-    } else if (props.yAxisUnit === "volume") {
+    } else if (props.yAxisType === "duration") {
+      result.value = entries.reduce((acc, entry) => {
+        const entryTotalTime = (entry.leftTime ?? 0) + (entry.rightTime ?? 0);
+        return acc + entryTotalTime;
+      }, 0);
+    } else if (props.yAxisType === "volume") {
       result.value = entries.reduce(
         (acc, entry) =>
           acc + ((entry.leftVolume ?? 0) + (entry.rightVolume ?? 0)),
@@ -124,12 +119,14 @@ export function BarChart(props: Props) {
     return result;
   });
 
-  const barWidth = 40;
+  const barWidth = 48;
   const spacing = 8;
-  const fontSize = barWidth / 3;
-  const chartMarginTop = spacing * 2 + fontSize;
+  const mainFontSize = barWidth / 3.25;
+  const secondaryFontSize = barWidth / 3.75;
+  const chartMarginTop = spacing * 2 + mainFontSize;
   const chartMarginRight = spacing;
-  const chartMarginLeft = spacing * 4;
+  const chartMarginLeft =
+    props.yAxisType === "duration" ? spacing * 8 : spacing * 4;
   const chartMarginBottom = spacing * 8;
   const chartContainerHeight = chartHeight + chartMarginTop + chartMarginBottom;
   const chartWidth =
@@ -147,6 +144,15 @@ export function BarChart(props: Props) {
 
     const datapoints = data.sort((a, b) => d3.ascending(a.date, b.date));
 
+    const min = d3.min(datapoints, (d) => d.value) as number;
+    const max = d3.max(datapoints, (d) => d.value) as number;
+
+    const yAxisUnit = getYAxisUnit({
+      yAxisType: props.yAxisType,
+      min,
+      max,
+    });
+
     const getValueById = (id: string) => {
       const dataPoint = data.find((d) => d.id === id);
       return dataPoint ? dataPoint.value : 0;
@@ -155,6 +161,19 @@ export function BarChart(props: Props) {
     const getDateById = (id: string) => {
       const dataPoint = data.find((d) => d.id === id);
       return dataPoint ? dataPoint.date : new Date();
+    };
+
+    const valueFormatter = (value: number) => {
+      if (props.yAxisType === "duration") {
+        const milliseconds = value;
+        const hours = Math.floor(milliseconds / 3600000);
+        if (yAxisUnit === "hours") {
+          return `${hours} h`;
+        }
+        return formatStopwatchTime(milliseconds, false, true, true);
+      }
+
+      return value.toFixed();
     };
 
     // Setting up the scales
@@ -219,9 +238,10 @@ export function BarChart(props: Props) {
           })
       )
       .selectAll("text")
-      .attr("font-size", fontSize)
+      .attr("font-size", mainFontSize)
       .attr("transform", "translate(-10,5)rotate(-45)")
       .style("text-anchor", "end")
+      .style("color", theme.palette.text.secondary)
       .style("alignment-baseline", "middle")
       .attr("class", "x-axis-label");
 
@@ -233,7 +253,13 @@ export function BarChart(props: Props) {
       .call(
         d3
           .axisTop(xScale)
-          .tickFormat((id) => getValueById(id).toString())
+          .tickFormat((id) => {
+            const value = getValueById(id as string);
+            if (value === 0) {
+              return "";
+            }
+            return valueFormatter(value);
+          })
           .tickSizeOuter(0)
       )
       .call((g) => g.select(".domain").remove())
@@ -241,13 +267,15 @@ export function BarChart(props: Props) {
       .selectAll("text")
       .attr("transform", (id) => {
         if (id == null) return "";
-        const y = yScale(getValueById(id as string)) - (spacing * 2 + fontSize);
+        const y =
+          yScale(getValueById(id as string)) - (spacing * 2 + mainFontSize);
         return `translate(0, ${y})`;
       })
-      .style("font-size", fontSize)
-      .style("font-weight", "bold")
+      .style("font-size", secondaryFontSize)
+      // .style("font-weight", "bold")
       .style("text-anchor", "middle")
       .attr("class", "bar-value-label")
+      .style("color", theme.palette.text.primary)
       .style("opacity", 0); // Hide the labels until the bars are animated
 
     // Adding the y-axis
@@ -257,7 +285,11 @@ export function BarChart(props: Props) {
       .style("opacity", 0) // A fixed y-axis is added in the overlay SVG, so this one is hidden
       .attr("transform", `translate(${chartMarginLeft},0)`)
       .attr("class", "y-axis")
-      .call(d3.axisLeft(yScale).tickFormat((y) => (y as number).toFixed()))
+      .call(
+        d3.axisLeft(yScale).tickFormat((y) => {
+          return valueFormatter(y as number);
+        })
+      )
       .call((g: any) => g.select(".domain").remove());
 
     // Adding the overlay y-axis
@@ -272,19 +304,24 @@ export function BarChart(props: Props) {
       .attr("class", "y-axis-overlay")
       .attr("transform", `translate(0,${chartHeight - chartMarginBottom})`)
       .attr("transform", `translate(${chartMarginLeft},0)`)
-      .call(d3.axisLeft(yScale).tickFormat((y) => (y as number).toFixed()))
+      .call(
+        d3.axisLeft(yScale).tickFormat((y) => {
+          return valueFormatter(y as number);
+        })
+      )
       .call((g: any) =>
         g
           .selectAll(".tick")
           .attr("class", "y-axis-tick")
-          .attr("font-size", fontSize)
+          .attr("font-size", mainFontSize)
+          .style("color", theme.palette.text.secondary)
       )
       .call((g: any) =>
         g
           .selectAll(".tick text")
           .attr("font-weight", "bold")
           .attr("class", "y-axis-label")
-          .attr("font-size", fontSize)
+          .attr("font-size", mainFontSize)
       );
 
     // Animate the bars and show the value labels

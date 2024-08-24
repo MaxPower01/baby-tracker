@@ -106,7 +106,7 @@ export function ChartsPage() {
               entries={entries}
               entryTypeId={entryTypeId}
               timePeriod={timePeriod}
-              yAxisUnit="volume"
+              yAxisType="volume"
             />
           )}
 
@@ -115,7 +115,7 @@ export function ChartsPage() {
               entries={entries}
               entryTypeId={entryTypeId}
               timePeriod={timePeriod}
-              yAxisUnit="duration"
+              yAxisType="duration"
             />
           )}
 
@@ -123,7 +123,7 @@ export function ChartsPage() {
             entries={entries}
             entryTypeId={entryTypeId}
             timePeriod={timePeriod}
-            yAxisUnit="count"
+            yAxisType="count"
           />
         </Stack>
       )}
