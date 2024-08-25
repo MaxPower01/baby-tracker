@@ -68,6 +68,8 @@ export function BarChart(props: Props) {
     return date;
   });
 
+  const entryIds: string[] = [];
+
   const data: Datapoint[] = dates.map((date) => {
     let entries: Entry[] = [];
 
@@ -78,7 +80,7 @@ export function BarChart(props: Props) {
         const entryStartHour = entryStartDate.getHours();
         const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
         const entryEndHour = entryEndDate.getHours();
-        return entryStartHour === dateHour || entryEndHour === dateHour;
+        return entryStartHour === dateHour;
       });
     } else if (props.xAxisUnit === "days") {
       const dateDay = date.getDate();
@@ -87,7 +89,7 @@ export function BarChart(props: Props) {
         const entryStartDay = entryStartDate.getDate();
         const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
         const entryEndDay = entryEndDate.getDate();
-        return entryStartDay === dateDay || entryEndDay === dateDay;
+        return entryStartDay === dateDay;
       });
     }
 
