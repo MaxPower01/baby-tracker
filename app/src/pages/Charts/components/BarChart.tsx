@@ -68,58 +68,55 @@ export function BarChart(props: Props) {
     return date;
   });
 
-  const entryIds: string[] = [];
+  const filterEntriesByUnit = (
+    entries: Entry[],
+    date: Date,
+    unit: string
+  ): Entry[] => {
+    return entries.filter((entry) => {
+      const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
+      const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
+
+      if (unit === "hours") {
+        return entryStartDate.getHours() === date.getHours();
+      } else if (unit === "days") {
+        return entryStartDate.getDate() === date.getDate();
+      }
+      return false;
+    });
+  };
+
+  const calculateValue = (entries: Entry[], yAxisType: string): number => {
+    if (yAxisType === "count") {
+      return entries.length;
+    } else if (yAxisType === "duration") {
+      return entries.reduce(
+        (acc, entry) => acc + (entry.leftTime ?? 0) + (entry.rightTime ?? 0),
+        0
+      );
+    } else if (yAxisType === "volume") {
+      return entries.reduce(
+        (acc, entry) =>
+          acc + (entry.leftVolume ?? 0) + (entry.rightVolume ?? 0),
+        0
+      );
+    }
+    return 0;
+  };
 
   const data: Datapoint[] = dates.map((date) => {
-    let entries: Entry[] = [];
-
-    if (props.xAxisUnit === "hours") {
-      const dateHour = date.getHours();
-      entries = props.entries.filter((entry) => {
-        const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
-        const entryStartHour = entryStartDate.getHours();
-        const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
-        const entryEndHour = entryEndDate.getHours();
-        return entryStartHour === dateHour;
-      });
-    } else if (props.xAxisUnit === "days") {
-      const dateDay = date.getDate();
-      entries = props.entries.filter((entry) => {
-        const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
-        const entryStartDay = entryStartDate.getDate();
-        const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
-        const entryEndDay = entryEndDate.getDate();
-        return entryStartDay === dateDay;
-      });
-    }
+    const entries = filterEntriesByUnit(props.entries, date, props.xAxisUnit);
 
     const result = {
       id: uuid(),
       date,
-      value: 0,
+      value: calculateValue(entries, props.yAxisType),
     };
-
-    if (!entries.length) {
-      return result;
-    }
-
-    if (props.yAxisType === "count") {
-      result.value = entries.length;
-    } else if (props.yAxisType === "duration") {
-      result.value = entries.reduce((acc, entry) => {
-        const entryTotalTime = (entry.leftTime ?? 0) + (entry.rightTime ?? 0);
-        return acc + entryTotalTime;
-      }, 0);
-    } else if (props.yAxisType === "volume") {
-      result.value = entries.reduce(
-        (acc, entry) =>
-          acc + ((entry.leftVolume ?? 0) + (entry.rightVolume ?? 0)),
-        0
-      );
-    }
 
     return result;
   });
+
+  const datapoints = data.sort((a, b) => d3.ascending(a.date, b.date));
 
   const barWidth = 48;
   const spacing = 8;
@@ -143,8 +140,6 @@ export function BarChart(props: Props) {
     if (!svgRef.current || chartRef.current) return;
 
     chartRef.current = true;
-
-    const datapoints = data.sort((a, b) => d3.ascending(a.date, b.date));
 
     const min = d3.min(datapoints, (d) => d.value) as number;
     const max = d3.max(datapoints, (d) => d.value) as number;
@@ -363,7 +358,7 @@ export function BarChart(props: Props) {
       overlay.style.width = `${chartMarginLeft}px`;
       overlay.style.height = `${chartHeight}px`;
     }
-  }, []);
+  }, [datapoints, props.yAxisType, theme.palette.primary.main]);
 
   const renderSVG = (id: string, ref: React.RefObject<SVGSVGElement>) => (
     <svg
