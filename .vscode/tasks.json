@@ -31,7 +31,7 @@
 			"script": "dev",
 			"problemMatcher": [],
 			"detail": "Starts the app in development mode (Firebase Emulator Suite, hot-code reloading, error reporting, etc.).",
-			"label": "dev"
+			"label": "dev",
 		},
 		{
 			"type": "npm",
@@ -41,14 +41,11 @@
 			"label": "install"
 		},
 		{
-			"label": "kill-emulators",
+			"label": "kill-firebase-emulators",
+			"detail": "Kills all running Firebase emulators by finding tne PIDs of specific processes and killing them.",
 			"type": "shell",
-			"command": "cmd.exe",
-			"args": [
-				"/C",
-				"for %p in (9099,5001,8080,9000,5000,8085,9199) do for /f \"tokens=5\" %a in ('netstat -aon ^| findstr :%p') do if not \"%a\"==\"0\" taskkill /PID %a /F"
-			],
+			"command": "${workspaceFolder}/kill-firebase-emulators.bat",
 			"problemMatcher": []
-		}
+		},
 	]
 }
