@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ChartCard } from "@/pages/Charts/components/ChartCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -12,15 +12,26 @@ import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
+import { filterTimePeriodEntries } from "@/utils/filterTimePeriodEntries";
+import { getEntriesFromDailyEntries } from "@/utils/getEntriesFromDailyEntries";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 export function ChartsPage() {
   const { timePeriod, reset } = useFilters();
-  const { recentEntries } = useEntries();
+  const { recentEntries, getDailyEntries, isFetching } = useEntries();
+
+  const { user } = useAuthentication();
+
+  // TODO: Optimize the cache to make sure that the same entries aren't store in multiple time periods
+  // e.g. if the user switches from Last7Days to Last14Days, the entries from the last 7 days should be reused
+  // and in the Last14Days time period, only the new entries should be cached
+  const cache = useRef<{ [timePeriod: string]: Entry[] }>({});
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const defaultEntryType = entryTypesOrder[0];
@@ -28,32 +39,51 @@ export function ChartsPage() {
 
   const recentTimePeriods = [TimePeriodId.Today, TimePeriodId.Last2Days];
 
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [entries, setEntries] = useState<Entry[]>(
+    filterTimePeriodEntries(recentEntries, timePeriod)
+  );
 
   useEffect(() => {
-    setIsFetching(true);
+    if (!user || isNullOrWhiteSpace(user?.babyId ?? "")) {
+      return;
+    }
 
     if (recentTimePeriods.includes(timePeriod)) {
-      if (recentEntries.length) {
-        const newEntries = recentEntries.filter(
-          (entry) =>
-            entry.startTimestamp >=
-              getStartTimestampForTimePeriod(timePeriod) &&
-            entry.entryTypeId == entryTypeId
-        );
-        setEntries(newEntries);
-      } else {
-        setEntries([]);
-      }
-
-      setIsFetching(false);
+      setEntries(filterTimePeriodEntries(recentEntries, timePeriod));
+      return;
     }
-  }, [timePeriod, entryTypeId, recentEntries]);
+
+    if (isFetching) {
+      return;
+    }
+
+    if (cache.current[timePeriod]) {
+      setEntries(cache.current[timePeriod]);
+      return;
+    }
+
+    getDailyEntries({
+      range: timePeriod,
+      babyId: user.babyId,
+    })
+      .then((dailyEntries) => {
+        const newEntries = getEntriesFromDailyEntries(dailyEntries);
+        const newEntriesFiltered = filterTimePeriodEntries(
+          newEntries,
+          timePeriod
+        );
+        cache.current[timePeriod] = newEntriesFiltered;
+        setEntries(newEntriesFiltered);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [timePeriod, entryTypeId, recentEntries, isFetching]);
 
   useEffect(() => {
     return () => {
       reset();
+      cache.current = {};
     };
   }, []);
 

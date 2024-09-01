@@ -6,6 +6,8 @@ export function getStartTimestampForTimePeriod(timePeriodId: TimePeriodId) {
   const dayInSeconds = 60 * 60 * 24;
 
   switch (timePeriodId) {
+    case TimePeriodId.Today:
+      return nowTimestamp - dayInSeconds;
     case TimePeriodId.Last2Days:
       return nowTimestamp - dayInSeconds * 2;
     case TimePeriodId.Last7Days:
@@ -23,7 +25,6 @@ export function getStartTimestampForTimePeriod(timePeriodId: TimePeriodId) {
     case TimePeriodId.AllTime:
       return 0;
     case TimePeriodId.Custom:
-    case TimePeriodId.Today:
     default:
       return nowTimestamp - dayInSeconds;
   }
