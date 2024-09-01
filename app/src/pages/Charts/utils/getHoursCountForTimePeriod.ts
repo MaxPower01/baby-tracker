@@ -2,7 +2,7 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 
 export function getHoursCountForTimePeriod(timePeriod: TimePeriodId): number {
   switch (timePeriod) {
-    case TimePeriodId.Today:
+    case TimePeriodId.Last24Hours:
       return 24;
     case TimePeriodId.Last2Days:
       return 24 * 2;

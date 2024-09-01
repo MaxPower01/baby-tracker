@@ -75,7 +75,7 @@ export function EntriesWidgetItemBody(props: Props) {
         // height: "100%",
         padding: `${props.padding}px`,
         width: props.width,
-        order: showStopwatch ? -1 : undefined,
+        // order: showStopwatch ? -1 : undefined,
       }}
     >
       <Card

@@ -29,7 +29,7 @@ type Props = {
 export function ChartCard(props: Props) {
   const theme = useTheme();
 
-  const hoursTimePeriodIds = [TimePeriodId.Today, TimePeriodId.Last2Days];
+  const hoursTimePeriodIds = [TimePeriodId.Last24Hours, TimePeriodId.Last2Days];
 
   const xAxisUnit: XAxisUnit = hoursTimePeriodIds.includes(props.timePeriod)
     ? "hours"

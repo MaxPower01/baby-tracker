@@ -34,7 +34,7 @@ export function HistoryPage() {
   const defaultEntryType = entryTypesOrder[0];
   const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(defaultEntryType);
 
-  const recentTimePeriods = [TimePeriodId.Today, TimePeriodId.Last2Days];
+  const recentTimePeriods = [TimePeriodId.Last24Hours, TimePeriodId.Last2Days];
 
   const [entries, setEntries] = useState<Entry[]>([]);
   const [isFetching, setIsFetching] = useState(false);

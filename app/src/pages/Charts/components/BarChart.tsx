@@ -22,6 +22,12 @@ import { v4 as uuid } from "uuid";
 type Datapoint = {
   id: string;
   date: Date;
+  /**
+   * The value of the datapoint.
+   * Might be a count, duration, or volume depending on the Y-axis type.
+   * If it's a duration, the value is in minutes.
+   * If it's a volume, the value is in milliliters.
+   */
   value: number;
 };
 
@@ -61,20 +67,23 @@ export function BarChart(props: Props) {
 
   const dates: Date[] = [];
 
+  const now = new Date();
+  now.setMinutes(0, 0, 0);
+
   if (props.xAxisUnit === "days") {
-    const today = new Date();
-    dates.push(today);
+    dates.push(now);
     for (let i = barsCount - 1; i >= 1; i--) {
       const newDate = new Date();
-      newDate.setDate(today.getDate() - i);
+      newDate.setDate(now.getDate() - i);
+      newDate.setHours(0, 0, 0, 0);
       dates.unshift(newDate);
     }
   } else {
-    Array.from({ length: barsCount }, (_, i) => {
-      const date = new Date(startDate);
-      date.setHours(date.getHours() + i);
-      dates.unshift(date);
-    });
+    for (let i = barsCount - 1; i >= 1; i--) {
+      const newDate = new Date();
+      newDate.setHours(now.getHours() - i, 0, 0, 0);
+      dates.unshift(newDate);
+    }
   }
 
   const filterEntriesByUnit = (
@@ -101,10 +110,14 @@ export function BarChart(props: Props) {
     if (yAxisType === "count") {
       return entries.length;
     } else if (yAxisType === "duration") {
-      return entries.reduce(
+      const result = entries.reduce(
         (acc, entry) => acc + (entry.leftTime ?? 0) + (entry.rightTime ?? 0),
         0
       );
+      if (result > 0) {
+        return result / 1000 / 60;
+      }
+      return result;
     } else if (yAxisType === "volume") {
       return entries.reduce(
         (acc, entry) =>
@@ -135,6 +148,19 @@ export function BarChart(props: Props) {
       .sort((a, b) => d3.ascending(a.date, b.date));
   }, [dates, props.entries, props.xAxisUnit, props.yAxisType]);
 
+  if (props.xAxisUnit === "hours") {
+    for (let i = 0; i < datapoints.length; i++) {
+      const datapoint = datapoints[i];
+      const nextDatapoint = datapoints[i + 1];
+      if (nextDatapoint == null) continue;
+      if (datapoint.value > 60) {
+        const excess = datapoint.value - 60;
+        datapoint.value = 60;
+        nextDatapoint.value += excess;
+      }
+    }
+  }
+
   const barWidth = 48;
   const spacing = 8;
   const mainFontSize = barWidth / 3.25;
@@ -143,11 +169,12 @@ export function BarChart(props: Props) {
   const chartMarginRight = spacing;
   const chartMarginLeft =
     props.yAxisType === "duration" ? spacing * 8 : spacing * 4;
-  const chartMarginBottom =
-    spacing * (props.timePeriod === TimePeriodId.Last2Days ? 10 : 8);
+  const chartMarginBottom = spacing * (props.xAxisUnit === "hours" ? 12 : 8);
   const chartContainerHeight = chartHeight + chartMarginTop + chartMarginBottom;
+  // const xScalePaddingLeft = props.xAxisUnit === "hours" ? barWidth / 4 : 0;
   const chartWidth =
     barWidth * (barsCount + 1) + chartMarginLeft + chartMarginRight;
+  // + xScalePaddingLeft;
   const barPadding = 0.25;
 
   useEffect(() => {
@@ -158,8 +185,11 @@ export function BarChart(props: Props) {
     d3.select(svgOverlayRef.current).selectAll("*").remove();
     chartRef.current = false;
 
-    const min = d3.min(datapoints, (d) => d.value) as number;
-    const max = d3.max(datapoints, (d) => d.value) as number;
+    // const min = d3.min(datapoints, (d) => d.value) as number;
+    const min = 0;
+    const _maxValue = d3.max(datapoints, (d) => d.value) as number;
+    const max =
+      props.xAxisUnit === "hours" ? Math.max(_maxValue, 60) : _maxValue;
 
     const yAxisUnit = getYAxisUnit({
       yAxisType: props.yAxisType,
@@ -177,14 +207,17 @@ export function BarChart(props: Props) {
       return dataPoint ? dataPoint.date : new Date();
     };
 
-    const valueFormatter = (value: number) => {
+    const valueFormatter = (value: number, axis: "x" | "y") => {
       if (props.yAxisType === "duration") {
-        const milliseconds = value;
+        const milliseconds = value * 60 * 1000;
         const hours = Math.floor(milliseconds / 3600000);
         if (yAxisUnit === "hours") {
           return `${hours} h`;
         }
-        return formatStopwatchTime(milliseconds, false, true, true);
+        if (axis === "x") {
+          return formatStopwatchTime(milliseconds, true, false, true, true);
+        }
+        return formatStopwatchTime(milliseconds, false, false, true, true);
       }
 
       return value.toFixed();
@@ -203,13 +236,15 @@ export function BarChart(props: Props) {
       )
       .rangeRound([
         chartMarginLeft,
+        // chartMarginLeft + xScalePaddingLeft,
         chartMarginLeft + barWidth * (barsCount + 1 + barPadding),
+        // - xScalePaddingLeft,
       ])
       .padding(barPadding);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(datapoints, (d) => d.value) as number])
+      .domain([min, 60])
       .nice()
       .range([chartHeight - chartMarginBottom, chartMarginTop]);
 
@@ -226,7 +261,11 @@ export function BarChart(props: Props) {
       .selectAll()
       .data(datapoints)
       .join("rect")
-      .attr("x", (datapoint) => xScale(datapoint.id) as number)
+      .attr(
+        "x",
+        (datapoint) => xScale(datapoint.id) as number
+        // (datapoint) => (xScale(datapoint.id) as number) + xScalePaddingLeft
+      )
       .attr("y", (datapoint) => yScale(0)) // Set to 0 to animate bars from bottom to top
       .attr("height", 0) // Set to 0 to animate bars from bottom to top
       .attr("width", xScale.bandwidth())
@@ -235,43 +274,63 @@ export function BarChart(props: Props) {
 
     // Adding the bottom x-axis with date labels
 
+    const bottomXAxis = d3
+      .axisBottom(xScale)
+      .tickFormat((id) => {
+        const date = getDateById(id as string);
+
+        if (date == null) return "";
+
+        if (props.xAxisUnit === "hours") {
+          if (
+            props.timePeriod == TimePeriodId.Last2Days ||
+            props.timePeriod == TimePeriodId.Last24Hours
+          ) {
+            return date.toLocaleTimeString("fr-FR", {
+              hour: "2-digit",
+              minute: "2-digit",
+              weekday: "short",
+            });
+          }
+
+          return date.toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        return date.toLocaleDateString("fr-FR", {
+          month: "short",
+          day: "numeric",
+        });
+      })
+      .tickSizeOuter(0);
+
     svg
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${chartHeight - chartMarginBottom})`)
-      .call(
-        d3
-          .axisBottom(xScale)
-          .tickSizeOuter(0)
-          .tickFormat((id) => {
-            const date = getDateById(id as string);
-
-            if (date == null) return "";
-
-            if (props.xAxisUnit === "hours") {
-              if (props.timePeriod == TimePeriodId.Last2Days) {
-                return date.toLocaleTimeString("fr-FR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  weekday: "short",
-                });
-              }
-
-              return date.toLocaleTimeString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-            }
-
-            return date.toLocaleDateString("fr-FR", {
-              month: "short",
-              day: "numeric",
-            });
-          })
+      .attr(
+        "transform",
+        // `translate(${xScalePaddingLeft}, ${chartHeight - chartMarginBottom})`
+        `translate(0, ${chartHeight - chartMarginBottom})`
+      )
+      .call(bottomXAxis)
+      .call((g) =>
+        g.select(".domain").attr(
+          "transform",
+          // `translate(${(xScalePaddingLeft / (barPadding * 2)) * -1},0)`
+          `translate(0,0)`
+        )
       )
       .selectAll("text")
       .attr("font-size", mainFontSize)
-      .attr("transform", "translate(-10,5)rotate(-45)")
+      // .attr("transform", "translate(-10,5)rotate(-45)")
+      .attr("transform", () => {
+        if (props.xAxisUnit === "hours") {
+          return "translate(-15,5)rotate(-65)";
+        }
+        return "translate(-10,5)rotate(-45)";
+      })
       .style("text-anchor", "end")
       .style("color", theme.palette.text.secondary)
       .style("alignment-baseline", "middle")
@@ -279,21 +338,22 @@ export function BarChart(props: Props) {
 
     // Adding the top x-axis with value labels
 
+    const topXAxis = d3
+      .axisTop(xScale)
+      .tickFormat((id) => {
+        const value = getValueById(id as string);
+        if (value === 0) {
+          return "";
+        }
+        return valueFormatter(value, "x");
+      })
+      .tickSizeOuter(0);
+
     svg
       .append("g")
+      // .attr("transform", `translate(${xScalePaddingLeft}, ${chartMarginTop})`)
       .attr("transform", `translate(0, ${chartMarginTop})`)
-      .call(
-        d3
-          .axisTop(xScale)
-          .tickFormat((id) => {
-            const value = getValueById(id as string);
-            if (value === 0) {
-              return "";
-            }
-            return valueFormatter(value);
-          })
-          .tickSizeOuter(0)
-      )
+      .call(topXAxis)
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").remove())
       .selectAll("text")
@@ -318,9 +378,12 @@ export function BarChart(props: Props) {
       .attr("transform", `translate(${chartMarginLeft},0)`)
       .attr("class", "y-axis")
       .call(
-        d3.axisLeft(yScale).tickFormat((y) => {
-          return valueFormatter(y as number);
-        })
+        d3
+          .axisLeft(yScale)
+          .tickFormat((y) => {
+            return valueFormatter(y as number, "y");
+          })
+          .ticks(12)
       )
       .call((g: any) => g.select(".domain").remove());
 
@@ -337,9 +400,12 @@ export function BarChart(props: Props) {
       .attr("transform", `translate(0,${chartHeight - chartMarginBottom})`)
       .attr("transform", `translate(${chartMarginLeft},0)`)
       .call(
-        d3.axisLeft(yScale).tickFormat((y) => {
-          return valueFormatter(y as number);
-        })
+        d3
+          .axisLeft(yScale)
+          .tickFormat((y) => {
+            return valueFormatter(y as number, "y");
+          })
+          .ticks(12)
       )
       .call((g: any) =>
         g

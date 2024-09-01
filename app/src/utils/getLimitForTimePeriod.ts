@@ -2,7 +2,7 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 
 export function getLimitForTimePeriod(timePeriod: TimePeriodId) {
   switch (timePeriod) {
-    case TimePeriodId.Today:
+    case TimePeriodId.Last24Hours:
       return 1;
     case TimePeriodId.Last2Days:
       return 2;

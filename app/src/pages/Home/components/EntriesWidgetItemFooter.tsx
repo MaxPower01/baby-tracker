@@ -138,7 +138,7 @@ export function EntriesWidgetItemFooter(props: Props) {
       key={props.entryType}
       sx={{
         width: props.width,
-        order: showStopwatch ? -1 : undefined,
+        // order: showStopwatch ? -1 : undefined,
         padding: `${props.padding}px`,
         cursor: shouldHandleClick ? "pointer" : undefined,
         "&:hover": shouldHandleClick

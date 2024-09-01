@@ -3,7 +3,7 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 export function getTimePeriodPickerItems() {
   return [
     {
-      id: TimePeriodId.Today,
+      id: TimePeriodId.Last24Hours,
       label: "24 dernières heures",
     },
     {
