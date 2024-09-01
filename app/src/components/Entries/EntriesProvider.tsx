@@ -19,6 +19,7 @@ import { DailyEntries } from "@/types/DailyEntries";
 import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { db } from "@/firebase";
+import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
@@ -454,8 +455,15 @@ export function EntriesProvider(props: Props) {
             typeof props.range === "string" ||
             typeof props.range === "number"
           ) {
-            rangeStartTimestamp = getStartTimestampForTimePeriod(props.range);
-            rangeEndTimestamp = getTimestamp(new Date());
+            const _rangeStartTimestamp = getStartTimestampForTimePeriod(
+              props.range
+            );
+            const rangeStartDate = getDateFromTimestamp(_rangeStartTimestamp);
+            rangeStartDate.setDate(rangeStartDate.getDate() - 1);
+            rangeStartTimestamp = getTimestamp(rangeStartDate);
+            const rangeEndDate = new Date();
+            rangeEndDate.setDate(rangeEndDate.getDate() + 1);
+            rangeEndTimestamp = getTimestamp(rangeEndDate);
           } else {
             rangeStartTimestamp = getTimestamp(props.range.start);
             rangeEndTimestamp = getTimestamp(props.range.end);

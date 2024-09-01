@@ -16,6 +16,7 @@ import { getDaysCountForTimePeriod } from "@/pages/Charts/utils/getDaysCountForT
 import { getHoursCountForTimePeriod } from "@/pages/Charts/utils/getHoursCountForTimePeriod";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
+import { isSameDay } from "@/utils/isSameDay";
 import { v4 as uuid } from "uuid";
 
 type Datapoint = {
@@ -58,31 +59,41 @@ export function BarChart(props: Props) {
   const startDate = getDateFromTimestamp(startTimestamp);
   startDate.setHours(0, 0, 0, 0);
 
-  const dates = Array.from({ length: barsCount }, (_, i) => {
-    const date = new Date(startDate);
-    if (props.xAxisUnit === "hours") {
-      date.setHours(date.getHours() + i);
-    } else {
-      date.setDate(date.getDate() + i);
+  const dates: Date[] = [];
+
+  if (props.xAxisUnit === "days") {
+    const today = new Date();
+    dates.push(today);
+    for (let i = barsCount - 1; i >= 1; i--) {
+      const newDate = new Date();
+      newDate.setDate(today.getDate() - i);
+      dates.unshift(newDate);
     }
-    return date;
-  });
+  } else {
+    Array.from({ length: barsCount }, (_, i) => {
+      const date = new Date(startDate);
+      date.setHours(date.getHours() + i);
+      dates.unshift(date);
+    });
+  }
 
   const filterEntriesByUnit = (
     entries: Entry[],
     date: Date,
-    unit: string
+    unit: XAxisUnit
   ): Entry[] => {
     return entries.filter((entry) => {
       const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
-      const entryEndDate = getDateFromTimestamp(entry.endTimestamp);
+
+      if (!isSameDay({ targetDate: entryStartDate, comparisonDate: date })) {
+        return false;
+      }
 
       if (unit === "hours") {
         return entryStartDate.getHours() === date.getHours();
-      } else if (unit === "days") {
-        return entryStartDate.getDate() === date.getDate();
       }
-      return false;
+
+      return true;
     });
   };
 
@@ -104,19 +115,25 @@ export function BarChart(props: Props) {
     return 0;
   };
 
-  const data: Datapoint[] = dates.map((date) => {
-    const entries = filterEntriesByUnit(props.entries, date, props.xAxisUnit);
+  const datapoints: Datapoint[] = useMemo(() => {
+    return dates
+      .map((date) => {
+        const entries = filterEntriesByUnit(
+          props.entries,
+          date,
+          props.xAxisUnit
+        );
 
-    const result = {
-      id: uuid(),
-      date,
-      value: calculateValue(entries, props.yAxisType),
-    };
+        const result = {
+          id: uuid(),
+          date,
+          value: calculateValue(entries, props.yAxisType),
+        };
 
-    return result;
-  });
-
-  const datapoints = data.sort((a, b) => d3.ascending(a.date, b.date));
+        return result;
+      })
+      .sort((a, b) => d3.ascending(a.date, b.date));
+  }, [dates, props.entries, props.xAxisUnit, props.yAxisType]);
 
   const barWidth = 48;
   const spacing = 8;
@@ -126,20 +143,20 @@ export function BarChart(props: Props) {
   const chartMarginRight = spacing;
   const chartMarginLeft =
     props.yAxisType === "duration" ? spacing * 8 : spacing * 4;
-  const chartMarginBottom = spacing * 8;
+  const chartMarginBottom =
+    spacing * (props.timePeriod === TimePeriodId.Last2Days ? 10 : 8);
   const chartContainerHeight = chartHeight + chartMarginTop + chartMarginBottom;
   const chartWidth =
     barWidth * (barsCount + 1) + chartMarginLeft + chartMarginRight;
   const barPadding = 0.25;
 
-  const getBarColor = () => {
-    return theme.palette.primary.main;
-  };
-
   useEffect(() => {
     if (!svgRef.current || chartRef.current) return;
 
-    chartRef.current = true;
+    // Clear the existing SVG content before re-rendering
+    d3.select(svgRef.current).selectAll("*").remove();
+    d3.select(svgOverlayRef.current).selectAll("*").remove();
+    chartRef.current = false;
 
     const min = d3.min(datapoints, (d) => d.value) as number;
     const max = d3.max(datapoints, (d) => d.value) as number;
@@ -151,12 +168,12 @@ export function BarChart(props: Props) {
     });
 
     const getValueById = (id: string) => {
-      const dataPoint = data.find((d) => d.id === id);
+      const dataPoint = datapoints.find((d) => d.id === id);
       return dataPoint ? dataPoint.value : 0;
     };
 
     const getDateById = (id: string) => {
-      const dataPoint = data.find((d) => d.id === id);
+      const dataPoint = datapoints.find((d) => d.id === id);
       return dataPoint ? dataPoint.date : new Date();
     };
 
@@ -205,7 +222,7 @@ export function BarChart(props: Props) {
 
     svg
       .append("g")
-      .attr("fill", () => getBarColor())
+      .attr("fill", () => theme.palette.primary.main)
       .selectAll()
       .data(datapoints)
       .join("rect")
@@ -228,9 +245,27 @@ export function BarChart(props: Props) {
           .tickSizeOuter(0)
           .tickFormat((id) => {
             const date = getDateById(id as string);
-            return date.toLocaleTimeString("fr-FR", {
-              hour: "2-digit",
-              minute: "2-digit",
+
+            if (date == null) return "";
+
+            if (props.xAxisUnit === "hours") {
+              if (props.timePeriod == TimePeriodId.Last2Days) {
+                return date.toLocaleTimeString("fr-FR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  weekday: "short",
+                });
+              }
+
+              return date.toLocaleTimeString("fr-FR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            }
+
+            return date.toLocaleDateString("fr-FR", {
+              month: "short",
+              day: "numeric",
             });
           })
       )
@@ -343,7 +378,7 @@ export function BarChart(props: Props) {
           "height",
           (datapoint) => yScale(0) - yScale((datapoint as Datapoint).value)
         )
-        .delay((datapoint, index) => index * 50)
+        .delay((datapoint, index) => index * 10)
         .on("end", (datapoint, index) => {
           if (index !== 0) return;
           showBarValueLabels();
@@ -358,7 +393,15 @@ export function BarChart(props: Props) {
       overlay.style.width = `${chartMarginLeft}px`;
       overlay.style.height = `${chartHeight}px`;
     }
-  }, [datapoints, props.yAxisType, theme.palette.primary.main]);
+  }, [
+    datapoints,
+    props.yAxisType,
+    theme.palette.primary.main,
+    theme.palette.text.primary,
+    theme.palette.text.secondary,
+    props.xAxisUnit,
+    props.timePeriod,
+  ]);
 
   const renderSVG = (id: string, ref: React.RefObject<SVGSVGElement>) => (
     <svg

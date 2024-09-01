@@ -49,7 +49,8 @@ export function ChartsPage() {
     }
 
     if (recentTimePeriods.includes(timePeriod)) {
-      setEntries(filterTimePeriodEntries(recentEntries, timePeriod));
+      const newEntries = filterTimePeriodEntries(recentEntries, timePeriod);
+      setEntries(newEntries);
       return;
     }
 
