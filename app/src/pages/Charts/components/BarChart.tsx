@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 import { Box, Paper, useTheme } from "@mui/material";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
@@ -12,6 +12,7 @@ import { YAxisUnit } from "@/types/YAxisUnit";
 import { chartHeight } from "@/utils/constants";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import { getDaysCountForTimePeriod } from "@/pages/Charts/utils/getDaysCountForTimePeriod";
 import { getHoursCountForTimePeriod } from "@/pages/Charts/utils/getHoursCountForTimePeriod";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
@@ -86,25 +87,28 @@ export function BarChart(props: Props) {
     }
   }
 
-  const filterEntriesByUnit = (
-    entries: Entry[],
-    date: Date,
-    unit: XAxisUnit
-  ): Entry[] => {
-    return entries.filter((entry) => {
-      const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
+  const filterEntries = useCallback(
+    (entries: Entry[], date: Date, unit: XAxisUnit): Entry[] => {
+      return entries.filter((entry) => {
+        const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
 
-      if (!isSameDay({ targetDate: entryStartDate, comparisonDate: date })) {
-        return false;
-      }
+        if (!isSameDay({ targetDate: entryStartDate, comparisonDate: date })) {
+          return false;
+        }
 
-      if (unit === "hours") {
-        return entryStartDate.getHours() === date.getHours();
-      }
+        if (entry.entryTypeId != props.entryTypeId) {
+          return false;
+        }
 
-      return true;
-    });
-  };
+        if (unit === "hours") {
+          return entryStartDate.getHours() === date.getHours();
+        }
+
+        return true;
+      });
+    },
+    [props.entryTypeId] // Add dependencies here if needed
+  );
 
   const calculateValue = (entries: Entry[], yAxisType: string): number => {
     if (yAxisType === "count") {
@@ -131,11 +135,7 @@ export function BarChart(props: Props) {
   const datapoints: Datapoint[] = useMemo(() => {
     return dates
       .map((date) => {
-        const entries = filterEntriesByUnit(
-          props.entries,
-          date,
-          props.xAxisUnit
-        );
+        const entries = filterEntries(props.entries, date, props.xAxisUnit);
 
         const result = {
           id: uuid(),
@@ -185,17 +185,62 @@ export function BarChart(props: Props) {
     d3.select(svgOverlayRef.current).selectAll("*").remove();
     chartRef.current = false;
 
+    const getMax = () => {
+      const maxValue = d3.max(datapoints, (d) => d.value) as number;
+      if (props.yAxisType === "duration") {
+        if (props.xAxisUnit === "hours") {
+          if (maxValue >= 60) {
+            return Math.max(maxValue, 60);
+          } else if (maxValue >= 45) {
+            return 60;
+          } else if (maxValue >= 30) {
+            return 45;
+          } else if (maxValue >= 15) {
+            return 30;
+          } else if (maxValue >= 5) {
+            return 15;
+          } else {
+            return 5;
+          }
+        }
+      }
+      return maxValue;
+    };
+
     // const min = d3.min(datapoints, (d) => d.value) as number;
     const min = 0;
-    const _maxValue = d3.max(datapoints, (d) => d.value) as number;
-    const max =
-      props.xAxisUnit === "hours" ? Math.max(_maxValue, 60) : _maxValue;
+    const max = getMax();
 
     const yAxisUnit = getYAxisUnit({
       yAxisType: props.yAxisType,
       min,
       max,
     });
+
+    const getYAxisTicksCount = () => {
+      if (max <= 5) {
+        return max;
+      }
+      if (props.yAxisType === "duration") {
+        if (props.xAxisUnit === "hours") {
+          if (max > 60) {
+            return undefined;
+          } else if (max > 45) {
+            return 12;
+          } else if (max > 30) {
+            return 9;
+          } else if (max > 15) {
+            return 6;
+          } else if (max > 5) {
+            return 3;
+          } else {
+            return undefined;
+          }
+        }
+        return undefined;
+      }
+      return undefined;
+    };
 
     const getValueById = (id: string) => {
       const dataPoint = datapoints.find((d) => d.id === id);
@@ -244,7 +289,7 @@ export function BarChart(props: Props) {
 
     const yScale = d3
       .scaleLinear()
-      .domain([min, 60])
+      .domain([min, max])
       .nice()
       .range([chartHeight - chartMarginBottom, chartMarginTop]);
 
@@ -383,7 +428,7 @@ export function BarChart(props: Props) {
           .tickFormat((y) => {
             return valueFormatter(y as number, "y");
           })
-          .ticks(12)
+          .ticks(getYAxisTicksCount())
       )
       .call((g: any) => g.select(".domain").remove());
 
@@ -405,7 +450,7 @@ export function BarChart(props: Props) {
           .tickFormat((y) => {
             return valueFormatter(y as number, "y");
           })
-          .ticks(12)
+          .ticks(getYAxisTicksCount())
       )
       .call((g: any) =>
         g

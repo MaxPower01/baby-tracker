@@ -21,12 +21,16 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 import { db } from "@/firebase";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
+import { getDaysCountForTimePeriod } from "@/pages/Charts/utils/getDaysCountForTimePeriod";
 import { getEntryToSave } from "@/pages/Entry/utils/getEntryToSave";
 import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
+import { getTimePeriodForRecentEntries } from "@/utils/getTimePeriodForRecentEntries";
 import { getTimestamp } from "@/utils/getTimestamp";
 import { getTimestampFromDateKey } from "@/utils/getTimestampFromDateKey";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { isRecentTimePeriod } from "@/utils/isRecentTimePeriod";
+import { isSameDay } from "@/utils/isSameDay";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 interface EntriesContextType {
@@ -113,6 +117,12 @@ export function EntriesProvider(props: Props) {
           }
         });
 
+        const maxDate = new Date();
+        const daysCount = getDaysCountForTimePeriod(
+          getTimePeriodForRecentEntries()
+        );
+        maxDate.setDate(maxDate.getDate() - daysCount);
+
         setRecentEntries((prevEntries) => {
           let entries = [...prevEntries];
           if (removedDailyEntries.length) {
@@ -155,6 +165,21 @@ export function EntriesProvider(props: Props) {
             .sort((a, b) => b.startTimestamp - a.startTimestamp)
             .filter((entry, index, self) => {
               return index === self.findIndex((e) => e.id === entry.id);
+            })
+            .filter((entry) => {
+              const startDate = getDateFromTimestamp(entry.startTimestamp);
+              if (startDate < maxDate) {
+                return false;
+              }
+              if (
+                isSameDay({ targetDate: startDate, comparisonDate: maxDate })
+              ) {
+                const startHour = startDate.getHours();
+                if (startHour < maxDate.getHours()) {
+                  return false;
+                }
+              }
+              return true;
             });
           return entries;
         });
@@ -181,7 +206,6 @@ export function EntriesProvider(props: Props) {
           const entryToSave = getEntryToSave(entry, babyId);
 
           const dateKey = getDateKeyFromTimestamp(entryToSave.startTimestamp);
-          console.log("🚀 ~ returnnewPromise<Entry> ~ dateKey:", dateKey);
           if (isNullOrWhiteSpace(dateKey)) {
             return reject("dateKey is not set");
           }
@@ -500,11 +524,50 @@ export function EntriesProvider(props: Props) {
 
           const dailyEntriesCollection: DailyEntriesCollection = {};
 
+          const maxDate = new Date();
+          let daysCount = 0;
+          if (
+            typeof props.range === "string" ||
+            typeof props.range === "number"
+          ) {
+            daysCount = getDaysCountForTimePeriod(props.range);
+            maxDate.setDate(maxDate.getDate() - daysCount);
+          }
+
           snapshot.forEach((doc) => {
-            const dailyEntries = doc.data() as DailyEntries;
-            dailyEntriesCollection[
-              getDateKeyFromTimestamp(dailyEntries.timestamp)
-            ] = dailyEntries;
+            const { entries, timestamp } = doc.data() as DailyEntries;
+            let filteredEntries = entries;
+            if (
+              typeof props.range === "string" ||
+              (typeof props.range === "number" && daysCount > 0)
+            ) {
+              maxDate.setDate(maxDate.getDate() - daysCount);
+              if (isRecentTimePeriod(props.range)) {
+                filteredEntries = entries.filter((entry) => {
+                  const startDate = getDateFromTimestamp(entry.startTimestamp);
+                  if (startDate < maxDate) {
+                    return false;
+                  }
+                  const startHour = startDate.getHours();
+                  if (startHour < maxDate.getHours()) {
+                    return false;
+                  }
+                  return true;
+                });
+              } else {
+                filteredEntries = entries.filter((entry) => {
+                  const startDate = getDateFromTimestamp(entry.startTimestamp);
+                  if (startDate < maxDate) {
+                    return false;
+                  }
+                  return true;
+                });
+              }
+            }
+            dailyEntriesCollection[getDateKeyFromTimestamp(timestamp)] = {
+              entries: filteredEntries,
+              timestamp,
+            };
           });
 
           setIsFetching(false);

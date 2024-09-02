@@ -93,11 +93,14 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
         return;
       }
       setPostingMockEntries(true);
-      const entries = getMockEntries(
-        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-        new Date(Date.now()),
-        babyId
-      );
+      const untilDate = new Date();
+      const fromDate = new Date();
+      fromDate.setDate(untilDate.getDate() - 90);
+      const entries = getMockEntries({
+        fromDate,
+        untilDate,
+        babyId,
+      });
       if (!entries || entries.length === 0) {
         setPostingMockEntries(false);
         return;

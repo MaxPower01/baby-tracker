@@ -34,7 +34,6 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { bottomBarNewEntryFabId } from "@/utils/constants";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
-import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";

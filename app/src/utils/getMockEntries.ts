@@ -1,29 +1,35 @@
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { getTimestamp } from "@/utils/getTimestamp";
+import { isSameDay } from "@/utils/isSameDay";
 
-export function getMockEntries(
-  fromDate: Date,
-  untilDate: Date,
-  babyId: string
-): Entry[] {
+export function getMockEntries(props: {
+  fromDate: Date;
+  untilDate: Date;
+  babyId: string;
+}): Entry[] {
   const result: Entry[] = [];
 
   try {
     const daysCount = Math.floor(
-      (untilDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+      (props.untilDate.getTime() - props.fromDate.getTime()) /
+        (1000 * 60 * 60 * 24)
     );
 
-    for (let i = 0; i < daysCount; i++) {
-      const date = new Date(fromDate.getTime() + i * 1000 * 60 * 60 * 24);
-      result.push(...getRandomActivityEntriesFor(date, babyId, i, daysCount));
+    for (let i = 0; i <= daysCount; i++) {
+      const date = new Date(props.fromDate.getTime() + i * 1000 * 60 * 60 * 24);
       result.push(
-        ...getRandomBreastFeedingEntriesFor(date, babyId, i, daysCount)
+        ...getRandomActivityEntriesFor(date, props.babyId, i, daysCount)
       );
       result.push(
-        ...getRandomBottleFeedingEntriesFor(date, babyId, i, daysCount)
+        ...getRandomBreastFeedingEntriesFor(date, props.babyId, i, daysCount)
       );
-      result.push(...getRandomDiaperEntriesFor(date, babyId, i, daysCount));
+      result.push(
+        ...getRandomBottleFeedingEntriesFor(date, props.babyId, i, daysCount)
+      );
+      result.push(
+        ...getRandomDiaperEntriesFor(date, props.babyId, i, daysCount)
+      );
     }
   } catch (error) {
     console.error(error);
@@ -44,18 +50,32 @@ function getRandomActivityEntriesFor(
 ): Entry[] {
   const result: Entry[] = [];
 
-  const entriesCount = getNumberWithinRange(0, 4);
+  const entriesCount = getNumberWithinRange(1, 4);
+  const step = Math.floor(24 / entriesCount);
 
   let startHour: number | null = null;
 
   for (let j = 0; j < entriesCount; j++) {
     if (startHour === null) {
-      startHour = 8;
+      startHour = 6;
     } else {
-      startHour += 2;
+      startHour += step;
     }
 
-    const durationInMinutes = getNumberWithinRange(15, 120);
+    const now = new Date();
+
+    if (
+      isSameDay({
+        targetDate: date,
+        comparisonDate: now,
+      })
+    ) {
+      if (startHour >= now.getHours()) {
+        break;
+      }
+    }
+
+    const durationInMinutes = getNumberWithinRange(15, 90);
 
     const startDate = new Date(date);
     startDate.setHours(startHour, 0, 0, 0);
@@ -102,7 +122,8 @@ function getRandomBreastFeedingEntriesFor(
 ): Entry[] {
   const result: Entry[] = [];
 
-  const entriesCount = getNumberWithinRange(3, 8);
+  const entriesCount = getNumberWithinRange(4, 12);
+  const step = Math.floor(24 / entriesCount);
 
   let startHour: number | null = null;
 
@@ -110,15 +131,25 @@ function getRandomBreastFeedingEntriesFor(
     const currentSide: "left" | "right" = j % 2 === 0 ? "left" : "right";
 
     if (startHour === null) {
-      startHour = 8;
+      startHour = 0;
     } else {
-      startHour += 1;
+      startHour += step;
     }
 
-    const duration =
-      j == entriesCount - 1
-        ? getNumberWithinRange(60, 180)
-        : getNumberWithinRange(5, 45);
+    const now = new Date();
+
+    if (
+      isSameDay({
+        targetDate: date,
+        comparisonDate: now,
+      })
+    ) {
+      if (startHour >= now.getHours()) {
+        break;
+      }
+    }
+
+    const duration = getNumberWithinRange(5, 45);
 
     const startDate = new Date(date);
     startDate.setHours(startHour, 0, 0, 0);
@@ -165,20 +196,31 @@ function getRandomBottleFeedingEntriesFor(
 ): Entry[] {
   const result: Entry[] = [];
 
-  const entriesCount = getNumberWithinRange(3, 8);
+  const entriesCount = getNumberWithinRange(4, 12);
+  const step = Math.floor(24 / entriesCount);
 
   let startHour: number | null = null;
   for (let j = 0; j < entriesCount; j++) {
     if (startHour === null) {
       startHour = 8;
     } else {
-      startHour += 1;
+      startHour += step;
     }
 
-    const duration =
-      j == entriesCount - 1
-        ? getNumberWithinRange(60, 180)
-        : getNumberWithinRange(5, 45);
+    const now = new Date();
+
+    if (
+      isSameDay({
+        targetDate: date,
+        comparisonDate: now,
+      })
+    ) {
+      if (startHour >= now.getHours()) {
+        break;
+      }
+    }
+
+    const duration = getNumberWithinRange(5, 45);
 
     const volume = getNumberWithinRange(30, 180);
 
@@ -227,7 +269,8 @@ function getRandomDiaperEntriesFor(
 ): Entry[] {
   const result: Entry[] = [];
 
-  const entriesCount = getNumberWithinRange(2, 5);
+  const entriesCount = getNumberWithinRange(4, 8);
+  const step = Math.floor(24 / entriesCount);
 
   let startHour: number | null = null;
 
@@ -235,7 +278,20 @@ function getRandomDiaperEntriesFor(
     if (startHour === null) {
       startHour = 8;
     } else {
-      startHour += 3;
+      startHour += step;
+    }
+
+    const now = new Date();
+
+    if (
+      isSameDay({
+        targetDate: date,
+        comparisonDate: now,
+      })
+    ) {
+      if (startHour >= now.getHours()) {
+        break;
+      }
     }
 
     const diaperType: "pee" | "poop" = j % 2 === 0 ? "pee" : "poop";
