@@ -35,25 +35,6 @@ export function EntriesWidget(props: Props) {
         sx={{
           width: "100%",
           overflowX: "scroll",
-          // scrollbarWidth: "none",
-          // msOverflowStyle: "none",
-          // "&::-webkit-scrollbar": {
-          //   display: "none",
-          // },
-          // Style the scrollbar
-          "&::-webkit-scrollbar": {
-            width: "5em",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: theme.palette.divider,
-            borderRadius: theme.shape.borderRadius,
-            transition: theme.transitions.create("box-shadow", {
-              duration: theme.transitions.duration.shortest,
-            }),
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            boxShadow: `inset 0 0 0 20px ${theme.palette.action.hover}`,
-          },
         }}
       >
         <Stack

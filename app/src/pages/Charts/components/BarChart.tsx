@@ -546,11 +546,6 @@ export function BarChart(props: Props) {
           position: "relative",
           width: "100%",
           overflowX: "scroll",
-          // scrollbarWidth: "none",
-          // msOverflowStyle: "none",
-          // "&::-webkit-scrollbar": {
-          //   display: "none",
-          // },
         }}
       >
         {renderSVG(chartSVGId, svgRef)}

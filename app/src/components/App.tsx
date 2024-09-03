@@ -1,6 +1,7 @@
+import { Container, useTheme } from "@mui/material";
+
 import { BottomBar } from "@/components/BottomBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
-import { Container } from "@mui/material";
 import { MenuProvider } from "@/components/MenuProvider";
 import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
@@ -17,6 +18,7 @@ export function App() {
   const { user } = useAuthentication();
   const babyId = user?.babyId ?? "";
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   useEffect(() => {
     if (!didInit) {
@@ -42,6 +44,22 @@ export function App() {
         sx={{
           paddingTop: 2,
           paddingBottom: 20,
+          // Default scrollbar styles
+          "& *": {
+            "&::-webkit-scrollbar": {
+              width: "5em",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: theme.palette.divider,
+              borderRadius: theme.shape.borderRadius,
+              transition: theme.transitions.create("box-shadow", {
+                duration: theme.transitions.duration.shortest,
+              }),
+            },
+            "&::-webkit-scrollbar-thumb:hover": {
+              boxShadow: `inset 0 0 0 20px ${theme.palette.action.hover}`,
+            },
+          },
         }}
       >
         {user == null ? <PublicRoutes /> : <PrivateRoutes />}
