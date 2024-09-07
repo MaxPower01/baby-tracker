@@ -30,7 +30,7 @@ type Props = {
   backgroundColor: string;
 };
 
-export function BarChart(props: Props) {
+export function StackedBarChart(props: Props) {
   const theme = useTheme();
 
   const svgRef = useRef<SVGSVGElement | null>(null);

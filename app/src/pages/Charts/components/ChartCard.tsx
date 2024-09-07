@@ -13,9 +13,11 @@ import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
 import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
+import { StackedBarChart } from "@/pages/Charts/components/StackedBarChart";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
+import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { getChartCardSubtitle } from "@/pages/Charts/utils/getChardCardSubtitle";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 
@@ -37,6 +39,10 @@ export function ChartCard(props: Props) {
 
   const title = getEntryTypeName(props.entryTypeId);
   const subtitle = getChartCardSubtitle(xAxisUnit, props.yAxisType);
+
+  const hasSides = entryTypeHasSides(props.entryTypeId);
+
+  const stacked = hasSides && props.yAxisType == "duration";
 
   return (
     <Card>
@@ -103,14 +109,25 @@ export function ChartCard(props: Props) {
             </Stack>
           </Stack>
 
-          <BarChart
-            backgroundColor={theme.palette.background.paper}
-            entries={props.entries}
-            entryTypeId={props.entryTypeId}
-            timePeriod={props.timePeriod}
-            xAxisUnit={xAxisUnit}
-            yAxisType={props.yAxisType}
-          />
+          {stacked == true ? (
+            <StackedBarChart
+              backgroundColor={theme.palette.background.paper}
+              entries={props.entries}
+              entryTypeId={props.entryTypeId}
+              timePeriod={props.timePeriod}
+              xAxisUnit={xAxisUnit}
+              yAxisType={props.yAxisType}
+            />
+          ) : (
+            <BarChart
+              backgroundColor={theme.palette.background.paper}
+              entries={props.entries}
+              entryTypeId={props.entryTypeId}
+              timePeriod={props.timePeriod}
+              xAxisUnit={xAxisUnit}
+              yAxisType={props.yAxisType}
+            />
+          )}
         </Stack>
       </CardContent>
     </Card>
