@@ -128,7 +128,11 @@ function getRandomBreastFeedingEntriesFor(
   let startHour: number | null = null;
 
   for (let j = 0; j < entriesCount; j++) {
-    const currentSide: "left" | "right" = j % 2 === 0 ? "left" : "right";
+    let currentSide: "left" | "right" | "both" = j % 2 === 0 ? "left" : "right";
+
+    if (j % 3 === 0) {
+      currentSide = "both";
+    }
 
     if (startHour === null) {
       startHour = 0;
@@ -149,13 +153,31 @@ function getRandomBreastFeedingEntriesFor(
       }
     }
 
-    const duration = getNumberWithinRange(5, 45);
+    const durations = [
+      getNumberWithinRange(5, 45),
+      getNumberWithinRange(5, 45),
+    ];
+
+    const totalDuration =
+      currentSide === "both" ? durations[0] + durations[1] : durations[0];
+
+    let leftTime: number | null = null;
+    let rightTime: number | null = null;
+
+    if (currentSide === "left") {
+      leftTime = durations[0] * 60 * 1000;
+    } else if (currentSide === "right") {
+      rightTime = durations[0] * 60 * 1000;
+    } else {
+      leftTime = durations[0] * 60 * 1000;
+      rightTime = durations[1] * 60 * 1000;
+    }
 
     const startDate = new Date(date);
     startDate.setHours(startHour, 0, 0, 0);
 
     const endDate = new Date(startDate);
-    endDate.setMinutes(startDate.getMinutes() + duration);
+    endDate.setMinutes(startDate.getMinutes() + totalDuration);
 
     const entry: Entry = {
       babyId: babyId,
@@ -170,10 +192,10 @@ function getRandomBreastFeedingEntriesFor(
       weight: null,
       size: null,
       temperature: null,
-      leftTime: currentSide === "left" ? duration * 60 * 1000 : null,
+      leftTime: leftTime,
       leftStopwatchIsRunning: false,
       leftStopwatchLastUpdateTime: null,
-      rightTime: currentSide === "right" ? duration * 60 * 1000 : null,
+      rightTime: rightTime,
       rightStopwatchIsRunning: false,
       rightStopwatchLastUpdateTime: null,
       urineAmount: null,

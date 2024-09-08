@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+import { DatapointCategory } from "@/pages/Charts/enums/DatapointCategory";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { StackedBarChartDatapoint } from "@/pages/Charts/types/StackedBarChartDatapoint";
@@ -38,13 +39,13 @@ export function getStackedBarChartDatapoints(
           id: uuid(),
           date,
           value: leftValue,
-          category: "left",
+          category: DatapointCategory.Left,
         },
         {
           id: uuid(),
           date,
           value: rightValue,
-          category: "right",
+          category: DatapointCategory.Right,
         },
       ];
 

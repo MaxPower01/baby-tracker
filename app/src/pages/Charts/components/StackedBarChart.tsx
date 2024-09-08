@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { Box, Paper, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
+import { DatapointCategory } from "@/pages/Charts/enums/DatapointCategory";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { StackedBarChartDatapoint } from "@/pages/Charts/types/StackedBarChartDatapoint";
@@ -152,16 +153,35 @@ export function StackedBarChart(props: Props) {
 
     svg
       .append("g")
-      .attr("fill", () => getBarColor(props.entryTypeId, theme))
       .selectAll()
-      .data(datapoints)
+      .data(series)
       .join("rect")
-      .attr("x", (datapoint) => xScale(datapoint.id) as number)
-      .attr("y", (datapoint) => yScale(0)) // Set to 0 to animate bars from bottom to top
-      .attr("height", 0) // Set to 0 to animate bars from bottom to top
-      .attr("width", xScale.bandwidth())
-      .attr("class", "bar")
-      .attr("id", (datapoint) => `bar-${datapoint.id}`);
+      .attr("fill", (serie) =>
+        getBarColor(props.entryTypeId, theme, serie.key as DatapointCategory)
+      )
+      .selectAll("rect")
+      .data((serie) =>
+        serie.map((point) => (((point as any).key = serie.key), point))
+      )
+      .join("rect")
+      // .attr("x", (d) => {
+      //   console.log(d);
+      //   console.log(
+      //     (d.data[1] as any as d3.InternMap).entries().next().value[1].id
+      //   );
+      //   return 0;
+      // })
+      .attr("x", (point) => {
+        console.log(xScale(point.data[0] as any) as number);
+        return xScale(point.data[0] as any) as number;
+      })
+      .attr("y", (point) => yScale(point[1]) as number);
+    // .attr("x", (serie) => xScale(datapoint.id) as number)
+    // .attr("y", (serie) => yScale(0)) // Set to 0 to animate bars from bottom to top
+    // .attr("height", 0) // Set to 0 to animate bars from bottom to top
+    // .attr("width", xScale.bandwidth())
+    // .attr("class", "bar")
+    // .attr("id", (datapoint) => `bar-${datapoint.id}`);
 
     // Adding the bottom x-axis with date labels
 
