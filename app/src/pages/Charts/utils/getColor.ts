@@ -5,6 +5,9 @@ export function getColor(
   entryTypeId: EntryTypeId,
   category?: DatapointCategory
 ) {
+  if (entryTypeId == EntryTypeId.Diaper) {
+    return "grey";
+  }
   if (category != null) {
     if (category === DatapointCategory.Right) {
       return "lightGreen";

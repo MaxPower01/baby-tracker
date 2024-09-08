@@ -18,6 +18,23 @@ export function filterEntries(
     }
 
     if (entry.entryTypeId != entryTypeId) {
+      if (entry.entryTypeId == EntryTypeId.Diaper) {
+        if (
+          entryTypeId == EntryTypeId.Poop &&
+          entry.poopAmount != null &&
+          entry.poopAmount > 0
+        ) {
+          return true;
+        }
+        if (
+          entryTypeId == EntryTypeId.Urine &&
+          entry.urineAmount != null &&
+          entry.urineAmount > 0
+        ) {
+          return true;
+        }
+      }
+
       return false;
     }
 

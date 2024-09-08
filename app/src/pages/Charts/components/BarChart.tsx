@@ -92,13 +92,14 @@ export function BarChart(props: Props) {
     if (!svgRef.current || chartRef.current) return;
 
     // Clear the existing SVG content before re-rendering
+
     d3.select(svgRef.current).selectAll("*").remove();
     d3.select(svgOverlayRef.current).selectAll("*").remove();
 
-    // TODO: Is this necessary?
     chartRef.current = false;
 
     // Get the chart layout values
+
     const {
       barPadding,
       barWidth,

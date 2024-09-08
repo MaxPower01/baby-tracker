@@ -98,13 +98,14 @@ export function StackedBarChart(props: Props) {
     if (!svgRef.current || chartRef.current) return;
 
     // Clear the existing SVG content before re-rendering
+
     d3.select(svgRef.current).selectAll("*").remove();
     d3.select(svgOverlayRef.current).selectAll("*").remove();
 
-    // TODO: Is this necessary?
     chartRef.current = false;
 
     // Get the chart layout values
+
     const {
       barPadding,
       barWidth,
@@ -135,7 +136,7 @@ export function StackedBarChart(props: Props) {
 
     const xScale = d3
       .scaleBand()
-      .domain(datapoints.map((d) => d.dateISOString)) // Map over dates for the domain
+      .domain(datapoints.map((d) => d.dateISOString))
       .rangeRound([
         chartMarginLeft,
         chartMarginLeft + barWidth * (barsCount + 1 + barPadding),
@@ -154,19 +155,6 @@ export function StackedBarChart(props: Props) {
     const svgOverlay = d3.select(svgOverlayRef.current);
 
     // Append a group for each series, and a rect for each element in the series.
-
-    // svg
-    //   .append("g")
-    //   .attr("fill", () => getBarColor(props.entryTypeId, theme))
-    //   .selectAll()
-    //   .data(datapoints)
-    //   .join("rect")
-    //   .attr("x", (datapoint) => xScale(datapoint.id) as number)
-    //   .attr("y", (datapoint) => yScale(0)) // Set to 0 to animate bars from bottom to top
-    //   .attr("height", 0) // Set to 0 to animate bars from bottom to top
-    //   .attr("width", xScale.bandwidth())
-    //   .attr("class", "bar")
-    //   .attr("id", (datapoint) => `bar-${datapoint.id}`);
 
     svg
       .append("g")

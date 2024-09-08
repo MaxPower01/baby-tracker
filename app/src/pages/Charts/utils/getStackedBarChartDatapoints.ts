@@ -32,6 +32,9 @@ export function getStackedBarChartDatapoints(
         date,
         xAxisUnit,
         entryTypeId
+      ).filter(
+        (entry, index, self) =>
+          self.findIndex((t) => t.id === entry.id) === index
       );
 
       const leftValue = getEntriesValue(filteredEntries, yAxisType, "left");
