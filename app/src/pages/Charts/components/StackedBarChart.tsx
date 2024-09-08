@@ -3,9 +3,9 @@ import * as d3 from "d3";
 import { Box, Paper, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
-import { Datapoint } from "@/pages/Charts/types/Datapoint";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { StackedBarChartDatapoint } from "@/pages/Charts/types/StackedBarChartDatapoint";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
@@ -14,8 +14,9 @@ import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointValue } from "@/pages/Charts/utils/getDatapointValue";
-import { getDatapoints } from "@/pages/Charts/utils/getDatapoints";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
+import { getStackedBarChartDatapoints } from "@/pages/Charts/utils/getStackedBarChartDatapoints";
+import { getStackedBarChartSeries } from "@/pages/Charts/utils/getStackedBarChartSeries";
 import { getYAxisTicksCount } from "@/pages/Charts/utils/getYAxisTicksCount";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
 import { v4 as uuid } from "uuid";
@@ -50,7 +51,7 @@ export function StackedBarChart(props: Props) {
 
   const datapoints = useMemo(
     () =>
-      getDatapoints(
+      getStackedBarChartDatapoints(
         props.entries,
         props.xAxisUnit,
         props.entryTypeId,
@@ -66,6 +67,11 @@ export function StackedBarChart(props: Props) {
       barsCount,
       props.timePeriod,
     ]
+  );
+
+  const series = useMemo(
+    () => getStackedBarChartSeries(datapoints),
+    [datapoints]
   );
 
   const chartLayout = useMemo(
@@ -317,10 +323,13 @@ export function StackedBarChart(props: Props) {
         .selectAll(".bar")
         .transition()
         .duration(500)
-        .attr("y", (datapoint) => yScale((datapoint as Datapoint).value))
+        .attr("y", (datapoint) =>
+          yScale((datapoint as StackedBarChartDatapoint).value)
+        )
         .attr(
           "height",
-          (datapoint) => yScale(0) - yScale((datapoint as Datapoint).value)
+          (datapoint) =>
+            yScale(0) - yScale((datapoint as StackedBarChartDatapoint).value)
         )
         .delay((datapoint, index) => index * 10)
         .on("end", (datapoint, index) => {

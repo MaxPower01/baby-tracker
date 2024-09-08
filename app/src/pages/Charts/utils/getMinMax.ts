@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 
-import { Datapoint } from "@/pages/Charts/types/Datapoint";
+import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
 
 export function getMinMax(
-  datapoints: Datapoint[],
+  datapoints: BarChartDatapoint[],
   yAxisType: YAxisType,
   xAxisUnit: XAxisUnit
 ) {

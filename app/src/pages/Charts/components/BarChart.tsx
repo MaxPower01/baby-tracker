@@ -3,18 +3,18 @@ import * as d3 from "d3";
 import { Box, Paper, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
-import { Datapoint } from "@/pages/Charts/types/Datapoint";
+import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
+import { getBarChartDatapoints } from "@/pages/Charts/utils/getBarChartDatapoints";
 import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointValue } from "@/pages/Charts/utils/getDatapointValue";
-import { getDatapoints } from "@/pages/Charts/utils/getDatapoints";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
 import { getYAxisTicksCount } from "@/pages/Charts/utils/getYAxisTicksCount";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
@@ -50,7 +50,7 @@ export function BarChart(props: Props) {
 
   const datapoints = useMemo(
     () =>
-      getDatapoints(
+      getBarChartDatapoints(
         props.entries,
         props.xAxisUnit,
         props.entryTypeId,
@@ -317,10 +317,13 @@ export function BarChart(props: Props) {
         .selectAll(".bar")
         .transition()
         .duration(500)
-        .attr("y", (datapoint) => yScale((datapoint as Datapoint).value))
+        .attr("y", (datapoint) =>
+          yScale((datapoint as BarChartDatapoint).value)
+        )
         .attr(
           "height",
-          (datapoint) => yScale(0) - yScale((datapoint as Datapoint).value)
+          (datapoint) =>
+            yScale(0) - yScale((datapoint as BarChartDatapoint).value)
         )
         .delay((datapoint, index) => index * 10)
         .on("end", (datapoint, index) => {

@@ -1,4 +1,4 @@
-export type Datapoint = {
+export type BarChartDatapoint = {
   id: string;
   date: Date;
   /**

@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -10,14 +11,14 @@ import { getDates } from "@/pages/Charts/utils/getDates";
 import { getEntriesValue } from "@/pages/Charts/utils/getEntriesValue";
 import { v4 as uuid } from "uuid";
 
-export function getDatapoints(
+export function getBarChartDatapoints(
   entries: Entry[],
   xAxisUnit: XAxisUnit,
   entryTypeId: EntryTypeId,
   yAxisType: YAxisType,
   barsCount: number,
   timePeriod: TimePeriodId
-): { id: string; date: Date; value: number }[] {
+): BarChartDatapoint[] {
   const dates = getDates(timePeriod, barsCount, xAxisUnit);
 
   const datapoints = dates
