@@ -125,7 +125,7 @@ export function ChartsPage() {
         />
       )}
 
-      {entries.length > 0 && (
+      {entries.length > 0 && !isFetching && (
         <Stack
           spacing={2}
           sx={{
