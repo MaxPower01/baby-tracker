@@ -3,4 +3,5 @@ import { DatapointCategory } from "@/pages/Charts/enums/DatapointCategory";
 
 export type StackedBarChartDatapoint = BarChartDatapoint & {
   category: DatapointCategory;
+  dateISOString: string;
 };

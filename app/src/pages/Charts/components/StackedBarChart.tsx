@@ -15,9 +15,9 @@ import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointValue } from "@/pages/Charts/utils/getDatapointValue";
+import { getDates } from "@/pages/Charts/utils/getDates";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
 import { getStackedBarChartDatapoints } from "@/pages/Charts/utils/getStackedBarChartDatapoints";
-import { getStackedBarChartSeries } from "@/pages/Charts/utils/getStackedBarChartSeries";
 import { getYAxisTicksCount } from "@/pages/Charts/utils/getYAxisTicksCount";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
 import { v4 as uuid } from "uuid";
@@ -50,6 +50,8 @@ export function StackedBarChart(props: Props) {
 
   const barsCount = getBarsCount(props.timePeriod, props.xAxisUnit);
 
+  const dates = getDates(props.timePeriod, barsCount, props.xAxisUnit);
+
   const datapoints = useMemo(
     () =>
       getStackedBarChartDatapoints(
@@ -58,7 +60,8 @@ export function StackedBarChart(props: Props) {
         props.entryTypeId,
         props.yAxisType,
         barsCount,
-        props.timePeriod
+        props.timePeriod,
+        dates
       ),
     [
       props.entries,
@@ -67,12 +70,8 @@ export function StackedBarChart(props: Props) {
       props.yAxisType,
       barsCount,
       props.timePeriod,
+      dates,
     ]
-  );
-
-  const series = useMemo(
-    () => getStackedBarChartSeries(datapoints),
-    [datapoints]
   );
 
   const chartLayout = useMemo(
@@ -121,17 +120,22 @@ export function StackedBarChart(props: Props) {
       chartHeight,
     } = chartLayout;
 
+    const series = d3
+      .stack()
+      .keys(d3.union(datapoints.map((d) => d.category)))
+      .value(([, D]: any, key) => D.get(key).value)(
+      d3.index(
+        datapoints,
+        (d) => d.dateISOString,
+        (d) => d.category
+      ) as any
+    );
+
     // Setting up the scales
 
     const xScale = d3
       .scaleBand()
-      .domain(
-        d3.groupSort(
-          datapoints,
-          ([d]) => d.date,
-          (d) => d.id
-        )
-      )
+      .domain(datapoints.map((d) => d.dateISOString)) // Map over dates for the domain
       .rangeRound([
         chartMarginLeft,
         chartMarginLeft + barWidth * (barsCount + 1 + barPadding),
@@ -149,46 +153,45 @@ export function StackedBarChart(props: Props) {
     const svg = d3.select(svgRef.current);
     const svgOverlay = d3.select(svgOverlayRef.current);
 
-    // Adding rectangles for each bar
+    // Append a group for each series, and a rect for each element in the series.
+
+    // svg
+    //   .append("g")
+    //   .attr("fill", () => getBarColor(props.entryTypeId, theme))
+    //   .selectAll()
+    //   .data(datapoints)
+    //   .join("rect")
+    //   .attr("x", (datapoint) => xScale(datapoint.id) as number)
+    //   .attr("y", (datapoint) => yScale(0)) // Set to 0 to animate bars from bottom to top
+    //   .attr("height", 0) // Set to 0 to animate bars from bottom to top
+    //   .attr("width", xScale.bandwidth())
+    //   .attr("class", "bar")
+    //   .attr("id", (datapoint) => `bar-${datapoint.id}`);
 
     svg
       .append("g")
       .selectAll()
       .data(series)
-      .join("rect")
-      .attr("fill", (serie) =>
-        getBarColor(props.entryTypeId, theme, serie.key as DatapointCategory)
+      .join("g")
+      .attr("fill", (point) =>
+        getBarColor(props.entryTypeId, theme, point.key as DatapointCategory)
       )
       .selectAll("rect")
       .data((serie) =>
         serie.map((point) => (((point as any).key = serie.key), point))
       )
       .join("rect")
-      // .attr("x", (d) => {
-      //   console.log(d);
-      //   console.log(
-      //     (d.data[1] as any as d3.InternMap).entries().next().value[1].id
-      //   );
-      //   return 0;
-      // })
-      .attr("x", (point) => {
-        console.log(xScale(point.data[0] as any) as number);
-        return xScale(point.data[0] as any) as number;
-      })
-      .attr("y", (point) => yScale(point[1]) as number);
-    // .attr("x", (serie) => xScale(datapoint.id) as number)
-    // .attr("y", (serie) => yScale(0)) // Set to 0 to animate bars from bottom to top
-    // .attr("height", 0) // Set to 0 to animate bars from bottom to top
-    // .attr("width", xScale.bandwidth())
-    // .attr("class", "bar")
-    // .attr("id", (datapoint) => `bar-${datapoint.id}`);
+      .attr("x", (d) => xScale(d.data[0] as any) as number)
+      .attr("y", (d) => yScale(d[1]))
+      .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+      .attr("width", xScale.bandwidth());
 
     // Adding the bottom x-axis with date labels
 
     const bottomXAxis = d3
       .axisBottom(xScale)
-      .tickFormat((id) => {
-        const date = getDatapointDate(id as string, datapoints);
+      .tickFormat((dateISOString) => {
+        const date = new Date(dateISOString);
         if (date == null) return "";
         return valueFormatter(
           date,
@@ -369,6 +372,7 @@ export function StackedBarChart(props: Props) {
   }, [
     theme,
     datapoints,
+    dates,
     props,
     barsCount,
     chartLayout,

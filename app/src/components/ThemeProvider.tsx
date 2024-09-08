@@ -3,6 +3,27 @@ import {
   createTheme,
 } from "@mui/material/styles";
 import React, { useEffect } from "react";
+import {
+  amber,
+  blue,
+  blueGrey,
+  brown,
+  cyan,
+  deepOrange,
+  deepPurple,
+  green,
+  grey,
+  indigo,
+  lightBlue,
+  lightGreen,
+  lime,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+} from "@mui/material/colors";
 
 import { selectThemeMode } from "@/state/slices/settingsSlice";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -11,6 +32,8 @@ import { useSelector } from "react-redux";
 const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
+
+const x = red;
 
 type CustomPalette = {
   background: {
@@ -23,6 +46,25 @@ type CustomPalette = {
     tertiary: string;
     disabled: string;
   };
+  red: typeof red;
+  pink: typeof pink;
+  purple: typeof purple;
+  deepPurple: typeof deepPurple;
+  indigo: typeof indigo;
+  blue: typeof blue;
+  lightBlue: typeof lightBlue;
+  cyan: typeof cyan;
+  teal: typeof teal;
+  green: typeof green;
+  lightGreen: typeof lightGreen;
+  lime: typeof lime;
+  yellow: typeof yellow;
+  amber: typeof amber;
+  orange: typeof orange;
+  deepOrange: typeof deepOrange;
+  brown: typeof brown;
+  grey: typeof grey;
+  blueGrey: typeof blueGrey;
 };
 
 type ThemeOpacity = {
@@ -112,6 +154,25 @@ export function ThemeProvider(props: ThemeProviderProps) {
             tertiary: themeMode === "dark" ? "#ffffffb3" : "#000000b3",
             disabled: themeMode === "dark" ? "#ffffff66" : "#00000066",
           },
+          red,
+          pink,
+          purple,
+          deepPurple,
+          indigo,
+          blue,
+          lightBlue,
+          cyan,
+          teal,
+          green,
+          lightGreen,
+          lime,
+          yellow,
+          amber,
+          orange,
+          deepOrange,
+          brown,
+          grey,
+          blueGrey,
         },
         opacity: {
           primary: 1,

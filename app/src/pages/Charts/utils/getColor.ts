@@ -1,18 +1,14 @@
 import { DatapointCategory } from "@/pages/Charts/enums/DatapointCategory";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { Theme } from "@mui/material";
-import { getColor } from "@/pages/Charts/utils/getColor";
 
-export function getBarColor(
+export function getColor(
   entryTypeId: EntryTypeId,
-  theme: Theme,
   category?: DatapointCategory
 ) {
-  const color = getColor(entryTypeId, category);
   if (category != null) {
     if (category === DatapointCategory.Right) {
-      return theme.customPalette[color][500];
+      return "lightGreen";
     }
   }
-  return theme.customPalette[color][500];
+  return "lightBlue";
 }

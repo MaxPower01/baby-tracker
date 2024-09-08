@@ -18,9 +18,12 @@ export function getStackedBarChartDatapoints(
   entryTypeId: EntryTypeId,
   yAxisType: YAxisType,
   barsCount: number,
-  timePeriod: TimePeriodId
+  timePeriod: TimePeriodId,
+  dates?: Date[]
 ): StackedBarChartDatapoint[] {
-  const dates = getDates(timePeriod, barsCount, xAxisUnit);
+  if (!dates) {
+    dates = getDates(timePeriod, barsCount, xAxisUnit);
+  }
 
   const datapoints = dates
     .map((date) => {
@@ -38,12 +41,14 @@ export function getStackedBarChartDatapoints(
         {
           id: uuid(),
           date,
+          dateISOString: date.toISOString(),
           value: leftValue,
           category: DatapointCategory.Left,
         },
         {
           id: uuid(),
           date,
+          dateISOString: date.toISOString(),
           value: rightValue,
           category: DatapointCategory.Right,
         },
@@ -51,7 +56,7 @@ export function getStackedBarChartDatapoints(
 
       return results;
     })
-    .sort((a, b) => d3.ascending(a[0].date, b[0].date))
+    .sort((a, b) => d3.descending(a[0].date, b[0].date))
     .flat();
 
   if (yAxisType === "duration" && xAxisUnit === "hours") {
