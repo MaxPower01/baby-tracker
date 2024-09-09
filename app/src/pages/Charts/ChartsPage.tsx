@@ -28,7 +28,7 @@ export function ChartsPage() {
 
   const { user } = useAuthentication();
 
-  // TODO: Optimize the cache to make sure that the same entries aren't store in multiple time periods
+  // TODO: Optimize the cache to make sure that the same entries aren't stored in multiple time periods
   // e.g. if the user switches from Last7Days to Last14Days, the entries from the last 7 days should be reused
   // and in the Last14Days time period, only the new entries should be cached
   const cache = useRef<{ [timePeriod: string]: Entry[] }>({});

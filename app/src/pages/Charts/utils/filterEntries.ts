@@ -10,7 +10,7 @@ export function filterEntries(
   unit: XAxisUnit,
   entryTypeId: EntryTypeId
 ): Entry[] {
-  return entries.filter((entry) => {
+  const result = entries.filter((entry) => {
     const entryStartDate = getDateFromTimestamp(entry.startTimestamp);
 
     if (!isSameDay({ targetDate: entryStartDate, comparisonDate: date })) {
@@ -24,14 +24,15 @@ export function filterEntries(
           entry.poopAmount != null &&
           entry.poopAmount > 0
         ) {
-          return true;
+          return entryStartDate.getHours() === date.getHours();
         }
+
         if (
           entryTypeId == EntryTypeId.Urine &&
           entry.urineAmount != null &&
           entry.urineAmount > 0
         ) {
-          return true;
+          return entryStartDate.getHours() === date.getHours();
         }
       }
 
@@ -44,4 +45,7 @@ export function filterEntries(
 
     return true;
   });
+
+  console.log(result);
+  return result;
 }

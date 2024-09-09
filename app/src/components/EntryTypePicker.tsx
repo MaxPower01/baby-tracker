@@ -84,15 +84,17 @@ export function EntryTypePicker(props: Props) {
     return selected;
   };
 
+  const label = "Type d'entrée";
+
   return (
     <>
       <FormControl fullWidth variant="outlined">
-        <InputLabel id="entry-type-picker-label">Type d'entrée</InputLabel>
+        <InputLabel id="entry-type-picker-label">{label}</InputLabel>
         <Select
           id="entry-type-picker"
           labelId="entry-type-picker-label"
           value={props.value ?? ""}
-          label={renderItem(props.value)}
+          label={label}
           onChange={(e) => props.setValue(e.target.value as EntryTypeId)}
           renderValue={renderItem}
         >
