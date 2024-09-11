@@ -1,10 +1,14 @@
 import {
   DocumentData,
   WithFieldValue,
+  collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
+  query,
   setDoc,
+  where,
 } from "firebase/firestore";
 import {
   User,
@@ -35,6 +39,13 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const dispatch = useAppDispatch();
 
   const [user, setUser] = useState<CustomUser | null>(null);
+
+  const checkIfEmailIsAuthorized = async (email: string): Promise<boolean> => {
+    const authorizedUsersRef = collection(db, "authorizedUsers");
+    const q = query(authorizedUsersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
 
   const dispatchUserPreferences = (newUser: CustomUser) => {
     dispatch(
@@ -200,26 +211,23 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
         const result = await signInWithPopup(auth, googleAuthProvider);
         // const credential = GoogleAuthProvider.credentialFromResult(result);
         // const token = credential?.accessToken;
-        const authorizedEmails = [
-          "max.manseau01@gmail.com",
-          "audrey_ann.piscine@hotmail.com",
-          "cadieuxsimon91@gmail.com",
-          "sophie.manseau@gmail.com",
-          "thalyvon@cablevision.qc.ca",
-          "fcote112@gmail.com",
-          "paulette.manseau@gmail.com",
-          "alessard18@hotmail.com",
-        ];
+
+        if (result.user.email == null) {
+          return reject("Email is null");
+        }
+
+        const isAuthorized = await checkIfEmailIsAuthorized(result.user.email);
+
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
-        const isAuthorizedUser = authorizedEmails.includes(
-          result.user.email ?? ""
-        );
-        if (isAuthorizedUser || isDevelopment()) {
+
+        if (isAuthorized || isDevelopment()) {
           user = result.user;
         } else {
+          setUser(null);
+          await signOut();
           await deleteUser(result.user);
-          return reject("New users are not allowed to sign up right now");
+          return reject("User is not authorized");
         }
       } catch (error: any) {
         return reject(error);
@@ -262,6 +270,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     return new Promise<boolean>(async (resolve, reject) => {
       try {
         await auth.signOut();
+        setUser(null);
         resolve(true);
       } catch (error: any) {
         console.error(error);
@@ -276,13 +285,9 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       setUser,
       googleSignInWithPopup,
       signOut,
+      checkIfEmailIsAuthorized,
     };
   }, [user, setUser, googleSignInWithPopup, signOut]);
 
-  return (
-    <AuthenticationContext.Provider
-      value={context as AuthenticationContextValue}
-      {...props}
-    />
-  );
+  return <AuthenticationContext.Provider value={context} {...props} />;
 }

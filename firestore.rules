@@ -15,5 +15,11 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow read, update, delete: if request.auth != null;
     }
+
+    // Allow authenticated users to read from authorizedUsers
+    match /authorizedUsers/{emailId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
   }
 }

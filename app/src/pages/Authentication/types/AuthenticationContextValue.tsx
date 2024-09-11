@@ -11,4 +11,5 @@ export default interface AuthenticationContextValue {
     isNewUser: boolean | undefined;
   }>;
   signOut: () => Promise<boolean>;
+  checkIfEmailIsAuthorized: (email: string) => Promise<boolean>;
 }
