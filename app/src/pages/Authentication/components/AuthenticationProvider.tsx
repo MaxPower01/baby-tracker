@@ -1,5 +1,7 @@
 import {
   DocumentData,
+  FieldValue,
+  Timestamp,
   WithFieldValue,
   collection,
   doc,
@@ -7,6 +9,7 @@ import {
   getDocs,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
@@ -27,7 +30,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
@@ -254,6 +257,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           (data as CustomUser).intervalMethodByEntryTypeId =
             getDefaulIntervalMethodByEntryTypeId();
           (data as CustomUser).entryTypesOrder = getDefaultEntryTypesOrder();
+          (data as CustomUser).createdAt = serverTimestamp();
         }
         await setDoc(userRef, data, { merge: true });
         if (!isNewUser) {

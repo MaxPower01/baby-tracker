@@ -15,7 +15,7 @@ import {
   useState,
 } from "react";
 
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 

@@ -1,7 +1,7 @@
 import { Avatar, Stack, SxProps, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import formatBabyAge from "@/utils/formatBabyAge";
 import { isNullOrWhiteSpace } from "@/utils/utils";

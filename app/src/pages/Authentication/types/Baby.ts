@@ -1,6 +1,7 @@
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
+import { FirestoreDocument } from "@/types/FirestoreDocument";
 
-export default interface Baby {
+export interface Baby extends FirestoreDocument {
   id: string;
   name: string;
   sex: string;
