@@ -44,10 +44,14 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const [user, setUser] = useState<CustomUser | null>(null);
 
   const checkIfEmailIsAuthorized = async (email: string): Promise<boolean> => {
-    const authorizedUsersRef = collection(db, "authorizedUsers");
-    const q = query(authorizedUsersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    const authorizedUsersDoc = await getDoc(doc(db, "appSettings", "authorizedUsers"));
+    if (authorizedUsersDoc.exists()) {
+      const authorizedUsers = authorizedUsersDoc.data();
+      if (authorizedUsers) {
+        return (authorizedUsers.emails as string[]).includes(email);
+      }
+    }
+    return false;
   };
 
   const dispatchUserPreferences = (newUser: CustomUser) => {

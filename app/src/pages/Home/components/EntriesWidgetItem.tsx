@@ -4,6 +4,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import React from "react";
 import { Stack } from "@mui/material";
+import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 
 type Props = {
   entryType: EntryTypeId;
@@ -14,7 +15,16 @@ type Props = {
 
 export function EntriesWidgetItem(props: Props) {
   return (
-    <Stack>
+    <Stack
+      sx={{
+        order:
+          props.mostRecentEntryOfType == null
+            ? 2
+            : entryHasStopwatchRunning(props.mostRecentEntryOfType)
+            ? 1
+            : 2,
+      }}
+    >
       <EntriesWidgetItemBody
         entryType={props.entryType}
         padding={props.padding}

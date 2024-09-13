@@ -2,9 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Make sure the uid of the requesting user matches name of the user
-    // document. The wildcard expression {userId} makes the userId variable
-    // available in rules.
+    // Allow users to read, update, and delete their own user document
+    // Allow users to create a user document if they are authenticated
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
@@ -12,14 +11,15 @@ service cloud.firestore {
 
     // Allow users to create, update, and delete their own babies
     match /babies/{babyId}/{document=**} {
-      allow create: if request.auth != null;
-      allow read, update, delete: if request.auth != null;
+      allow create, read, update, delete: if request.auth != null;
     }
 
-    // Allow authenticated users to read from authorizedUsers
-    match /authorizedUsers/{emailId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.token.admin == true;
+    // Allow read of authorizedUsers for app settings to all users
+    // Allow read of other app settings only to authenticated users
+    // Do not allow write to any app settings
+    match /appSettings/{appSettingsId} {
+      allow read: if request.auth != null || appSettingsId == 'authorizedUsers';
+      allow write: if false;
     }
   }
 }

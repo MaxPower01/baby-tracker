@@ -46,6 +46,5 @@ export function filterEntries(
     return true;
   });
 
-  console.log(result);
   return result;
 }

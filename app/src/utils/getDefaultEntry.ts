@@ -10,7 +10,6 @@ export function getDefaultEntry(
   babyId: string
 ): Entry | null {
   if (isNullOrWhiteSpace(entryType) || typeof entryType !== "string") {
-    console.log("🚀 ~ entryType:", entryType);
     return null;
   }
   const parsedEntryType = parseEnumValue(entryType, EntryTypeId);

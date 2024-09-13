@@ -122,7 +122,7 @@ export function BarChart(props: Props) {
       .domain(
         d3.groupSort(
           datapoints,
-          ([d]) => d.date,
+          ([d]) => -d.date,
           (d) => d.id
         )
       )
