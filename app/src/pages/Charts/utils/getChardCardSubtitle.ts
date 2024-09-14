@@ -9,7 +9,7 @@ export function getChartCardSubtitle(
 
   switch (yAxisType) {
     case "count":
-      result = "Nombre par";
+      result = "Fréquence par";
       break;
     case "duration":
       result = "Durée par";

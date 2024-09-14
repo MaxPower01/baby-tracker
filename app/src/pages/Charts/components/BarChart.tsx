@@ -1,9 +1,11 @@
 import * as d3 from "d3";
 
-import { Box, Paper, useTheme } from "@mui/material";
+import { Box, Paper, Stack, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
 import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
+import ChartHeader from "@/pages/Charts/components/ChartHeader";
+import { ChartLegend } from "@/pages/Charts/components/ChartLegend";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -13,6 +15,7 @@ import { getBarChartDatapoints } from "@/pages/Charts/utils/getBarChartDatapoint
 import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
+import { getChartLegendItem } from "@/pages/Charts/utils/getChartLegendItem";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointsValue } from "@/pages/Charts/utils/getDatapointsValue";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
@@ -147,7 +150,12 @@ export function BarChart(props: Props) {
 
     svg
       .append("g")
-      .attr("fill", () => getBarColor(props.entryTypeId, theme))
+      .attr("fill", () =>
+        getBarColor({
+          entryTypeId: props.entryTypeId,
+          theme,
+        })
+      )
       .selectAll()
       .data(datapoints)
       .join("rect")
@@ -376,44 +384,54 @@ export function BarChart(props: Props) {
   );
 
   return (
-    <Box
-      id={outerContainerId}
-      sx={{
-        maxHeight: chartLayout.chartContainerHeight,
-        position: "relative",
-        userSelect: "none",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        overflow: "hidden",
-      }}
-    >
+    <Stack>
+      <ChartHeader
+        entryType={props.entryTypeId}
+        yAxisUnit={yAxisUnit}
+        xAxisUnit={props.xAxisUnit}
+        yAxisType={props.yAxisType}
+        datapoints={datapoints}
+      />
+
       <Box
-        id={innerContainerId}
+        id={outerContainerId}
         sx={{
+          maxHeight: chartLayout.chartContainerHeight,
           position: "relative",
-          width: "100%",
-          overflowX: "scroll",
+          userSelect: "none",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden",
         }}
       >
-        {renderSVG(chartSVGId, svgRef)}
+        <Box
+          id={innerContainerId}
+          sx={{
+            position: "relative",
+            width: "100%",
+            overflowX: "scroll",
+          }}
+        >
+          {renderSVG(chartSVGId, svgRef)}
+        </Box>
+        <Paper
+          id={chartOverlayId}
+          ref={overlayRef}
+          sx={{
+            pointerEvents: "none",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: chartLayout.chartHeight,
+            width: chartLayout.chartMarginLeft,
+            borderRadius: 0,
+            boxShadow: "none",
+            backgroundColor: props.backgroundColor,
+          }}
+        />
+        {renderSVG(chartSVGOverlayId, svgOverlayRef)}
       </Box>
-      <Paper
-        id={chartOverlayId}
-        ref={overlayRef}
-        sx={{
-          pointerEvents: "none",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          height: chartLayout.chartHeight,
-          width: chartLayout.chartMarginLeft,
-          borderRadius: 0,
-          boxShadow: "none",
-          backgroundColor: props.backgroundColor,
-        }}
-      />
-      {renderSVG(chartSVGOverlayId, svgOverlayRef)}
-    </Box>
+    </Stack>
   );
 }

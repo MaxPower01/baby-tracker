@@ -24,7 +24,14 @@ export function filterEntries(
           entry.poopAmount != null &&
           entry.poopAmount > 0
         ) {
-          return entryStartDate.getHours() === date.getHours();
+          if (unit === "hours") {
+            return entryStartDate.getHours() == date.getHours();
+          } else {
+            return isSameDay({
+              targetDate: entryStartDate,
+              comparisonDate: date,
+            });
+          }
         }
 
         if (
@@ -32,7 +39,14 @@ export function filterEntries(
           entry.urineAmount != null &&
           entry.urineAmount > 0
         ) {
-          return entryStartDate.getHours() === date.getHours();
+          if (unit === "hours") {
+            return entryStartDate.getHours() == date.getHours();
+          } else {
+            return isSameDay({
+              targetDate: entryStartDate,
+              comparisonDate: date,
+            });
+          }
         }
       }
 
@@ -40,7 +54,7 @@ export function filterEntries(
     }
 
     if (unit === "hours") {
-      return entryStartDate.getHours() === date.getHours();
+      return entryStartDate.getHours() == date.getHours();
     }
 
     return true;
