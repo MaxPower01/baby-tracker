@@ -1,13 +1,19 @@
+import {
+  FiltersPicker,
+  FiltersProps,
+} from "@/components/Filters/FiltersPicker";
 import React, { useState } from "react";
 
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { FiltersPicker } from "@/components/Filters/FiltersPicker";
 import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
-import { TimePeriodPicker } from "@/components/Filters/TimePeriodPicker";
+import { TimePeriodPicker } from "@/components/TimePeriodPicker";
 
-type Props = {};
+type Props = {
+  filtersProps: FiltersProps;
+  hideFilters?: boolean;
+};
 
 export function SearchToolbar(props: Props) {
   return (
@@ -22,11 +28,14 @@ export function SearchToolbar(props: Props) {
           flexGrow: 1,
         }}
       />
-      <FiltersPicker
-        sx={{
-          flexShrink: 0,
-        }}
-      />
+      {!props.hideFilters && (
+        <FiltersPicker
+          sx={{
+            flexShrink: 0,
+          }}
+          filtersProps={props.filtersProps}
+        />
+      )}
     </Stack>
   );
 }

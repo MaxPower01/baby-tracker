@@ -2,19 +2,23 @@ import { PageId } from "@/enums/PageId";
 
 export default function getPath({
   page,
-  id,
+  paths,
   params,
 }: {
   page: PageId;
-  id?: string | number;
+  paths?: string[];
   params?: Record<string, string>;
 }) {
   let path = "";
   if (Object.values(PageId).includes(page)) {
     path = `/${page}`;
   }
-  if (typeof id !== "undefined") {
-    path += `/${id}`;
+  if (typeof paths !== "undefined") {
+    if (Array.isArray(paths) && paths.length > 0) {
+      path += `/${paths.join("/")}`;
+    } else {
+      path += `/${paths}`;
+    }
   }
   if (params) {
     path += `?${new URLSearchParams(params).toString()}`;

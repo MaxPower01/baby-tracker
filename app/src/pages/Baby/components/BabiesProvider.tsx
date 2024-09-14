@@ -15,7 +15,7 @@ import {
   useState,
 } from "react";
 
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import { db } from "@/firebase";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
@@ -26,13 +26,13 @@ interface BabiesContext {
 const Context = createContext(null) as React.Context<BabiesContext | null>;
 
 export function useBabies() {
-  const entries = useContext(Context);
-  if (entries == null) {
+  const context = useContext(Context);
+  if (context == null) {
     throw new Error(
       "Children context is null. Make sure to call useChidlren() inside of a <ChildrenProvider />"
     );
   }
-  return entries;
+  return context;
 }
 
 export function BabiesProvider(props: React.PropsWithChildren<{}>) {

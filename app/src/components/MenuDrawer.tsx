@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   Container,
   Dialog,
@@ -14,6 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { db, functions } from "@/firebase";
 import { useCallback, useMemo, useState } from "react";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -21,27 +23,34 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import GetAppIcon from "@mui/icons-material/GetApp";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SortIcon from "@mui/icons-material/Sort";
-import { functions } from "@/firebase";
+import { getMockEntries } from "@/utils/getMockEntries";
 import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
+import { writeBatch } from "firebase/firestore";
 
 export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const addParentFunction = httpsCallable(functions, "addParent");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { user, signOut } = useAuthentication();
   const theme = useTheme();
   const [dialogOpened, setDialogOpened] = useState(false);
   const handleDialogClose = () => setDialogOpened(false);
   const [email, setEmail] = useState("");
+  const { saveEntries } = useEntries();
+  const [postingMockEntries, setPostingMockEntries] = useState(false);
 
   const babyId = useMemo(() => {
     return user?.babyId ?? "";
@@ -77,6 +86,32 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
       });
     handleDialogClose();
   }, [babyId, user, addParentFunction, email]);
+
+  const handlePostMockEntriesButtonClick = useCallback(async () => {
+    try {
+      if (postingMockEntries || user == null) {
+        return;
+      }
+      setPostingMockEntries(true);
+      const untilDate = new Date();
+      const fromDate = new Date();
+      fromDate.setDate(untilDate.getDate() - 90);
+      const entries = getMockEntries({
+        fromDate,
+        untilDate,
+        babyId,
+      });
+      if (!entries || entries.length === 0) {
+        setPostingMockEntries(false);
+        return;
+      }
+      await saveEntries(entries);
+      setPostingMockEntries(false);
+    } catch (error) {
+      console.error(error);
+      setPostingMockEntries(false);
+    }
+  }, [postingMockEntries, babyId]);
 
   const avatarWidth = 100;
   const avatarFontSize = avatarWidth / 2.5;
@@ -240,7 +275,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 <Typography variant="body1">Paramètres</Typography>
               </Button>
             </Stack>
-            {/* <Divider />
+            <Divider />
             <Stack
               sx={{
                 width: "100%",
@@ -257,16 +292,38 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     textAlign: "left",
                     justifyContent: "flex-start",
                   }}
+                  disabled={postingMockEntries}
+                  onClick={() => handlePostMockEntriesButtonClick()}
                 >
                   <FileUploadIcon
                     sx={{
                       marginRight: 1,
                     }}
                   />
-                  <Typography variant="body1">Importer des entrées</Typography>
+                  <Typography variant="body1">
+                    Générer des fausses entrées
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: postingMockEntries ? "flex" : "none",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LoadingIndicator
+                      size={`calc(${theme.typography.button.fontSize} * 2)`}
+                    />
+                  </Box>
                 </Button>
               )}
-              <Button
+              {/* <Button
                 variant="text"
                 fullWidth
                 sx={{
@@ -283,8 +340,8 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 <Typography variant="body1">
                   Exporter les entrées récentes
                 </Typography>
-              </Button>
-            </Stack> */}
+              </Button> */}
+            </Stack>
             <Divider />
             <Stack
               sx={{

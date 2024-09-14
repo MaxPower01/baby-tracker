@@ -1,15 +1,12 @@
 import { Box, Stack, useTheme } from "@mui/material";
 import React, { useCallback, useState } from "react";
-import {
-  selectEntryTypesInFiltersState,
-  toggleEntryTypeInFiltersState,
-} from "@/state/slices/filtersSlice";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -26,9 +23,10 @@ export function EntryTypesChips(props: Props) {
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
 
-  const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
-  const sortedSelectedEntryTypes = entryTypesOrder.filter((entryTypeId) =>
-    selectedEntryTypes.includes(entryTypeId)
+  const { entryTypes, toggleEntryType } = useFilters();
+
+  const sortedEntryTypes = entryTypesOrder.filter((entryTypeId) =>
+    entryTypes.includes(entryTypeId)
   );
 
   const entries = [...props.entries];
@@ -64,26 +62,19 @@ export function EntryTypesChips(props: Props) {
         }, {} as Record<string, Entry[]>)
       : {};
 
-  let entryTypes = [];
+  let localEntryTypes = [];
 
   if (!props.useFiltersEntryTypes || props.readonly) {
-    entryTypes = entryTypesOrder.filter(
+    localEntryTypes = entryTypesOrder.filter(
       (entryTypeId) => entriesByEntryType[entryTypeId]
     );
   } else {
-    entryTypes = (sortedSelectedEntryTypes ?? []).concat(
+    localEntryTypes = (sortedEntryTypes ?? []).concat(
       entryTypesOrder.filter(
-        (entryTypeId) => !sortedSelectedEntryTypes.includes(entryTypeId)
+        (entryTypeId) => !sortedEntryTypes.includes(entryTypeId)
       )
     );
   }
-
-  const toggleEntryType = useCallback(
-    (entryTypeId: EntryTypeId) => {
-      dispatch(toggleEntryTypeInFiltersState({ entryTypeId }));
-    },
-    [props, dispatch]
-  );
 
   if (entriesByEntryType == null) {
     return null;
@@ -106,9 +97,9 @@ export function EntryTypesChips(props: Props) {
         alignItems={"flex-start"}
         spacing={1}
       >
-        {entryTypes.map((entryTypeId) => {
+        {localEntryTypes.map((entryTypeId) => {
           const entriesForEntryType = entriesByEntryType[entryTypeId];
-          const isSelectedEntryType = selectedEntryTypes?.includes(entryTypeId);
+          const isSelectedEntryType = entryTypes?.includes(entryTypeId);
           if (!entriesForEntryType && !isSelectedEntryType) {
             return null;
           }
@@ -118,7 +109,7 @@ export function EntryTypesChips(props: Props) {
               isSelected={
                 props.readonly || !props.useFiltersEntryTypes
                   ? false
-                  : selectedEntryTypes?.includes(entryTypeId)
+                  : entryTypes?.includes(entryTypeId)
               }
               entryType={entryTypeId as any}
               entries={entriesForEntryType}

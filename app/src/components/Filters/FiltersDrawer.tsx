@@ -1,41 +1,17 @@
 import {
-  Avatar,
   Box,
   Button,
-  Chip,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Divider,
-  FormControl,
   IconButton,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
   SwipeableDrawer,
-  TextField,
   Toolbar,
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  resetFiltersInState,
-  selectActivityContextsInFiltersState,
-  selectEntryTypesInFiltersState,
-  selectFiltersCount,
-  selectSortOrderInFiltersState,
-  selectTimePeriodInFiltersState,
-  toggleActivityContextInFiltersState,
-  toggleEntryTypeInFiltersState,
-} from "@/state/slices/filtersSlice";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextChip } from "@/pages/Activities/components/ActivityContextChip";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
@@ -43,32 +19,14 @@ import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
-import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import GetAppIcon from "@mui/icons-material/GetApp";
+import { FiltersProps } from "@/components/Filters/FiltersPicker";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { PageId } from "@/enums/PageId";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import SettingsIcon from "@mui/icons-material/Settings";
-import SortIcon from "@mui/icons-material/Sort";
-import { SortOrderId } from "@/enums/SortOrderId";
-import { functions } from "@/firebase";
 import { getActivityContextTypesItems } from "@/utils/getActivityContextTypesItems";
 import { getEntryTypeIdFromActivityContextType } from "@/utils/getEntryTypeIdFromActivityContextType";
-import { getEntryTypeName } from "@/utils/getEntryTypeName";
-import getPath from "@/utils/getPath";
-import { getSortOrderItems } from "@/utils/getSortOrderItems";
-import { httpsCallable } from "firebase/functions";
-import isDevelopment from "@/utils/isDevelopment";
-import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetFiltersButtonId } from "@/utils/constants";
-import { selectActivityContexts } from "@/state/slices/activitiesSlice";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useNavigate } from "react-router-dom";
+import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
 type SectionProps = {
@@ -105,19 +63,29 @@ function FiltersSection(props: SectionProps) {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  filtersProps: FiltersProps;
 };
 
 export function FiltersDrawer(props: Props) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
 
-  const selectedTimePeriod = useSelector(selectTimePeriodInFiltersState);
-  const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
-  const selectedSortOrder = useSelector(selectSortOrderInFiltersState);
-  const selectedActivityContexts = useSelector(
-    selectActivityContextsInFiltersState
-  );
-  const activityContexts = useSelector(selectActivityContexts);
+  // const selectedTimePeriod = useSelector(selectTimePeriodInFiltersState);
+  // const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
+  // const selectedSortOrder = useSelector(selectSortOrderInFiltersState);
+  // const selectedActivityContexts = useSelector(
+  //   selectActivityContextsInFiltersState
+  // );
+  // const activityContexts = useSelector(selectActivityContexts);
+
+  const {
+    filtersCount,
+    activityContexts,
+    entryTypes,
+    toggleEntryType,
+    toggleActivityContext,
+    reset,
+  } = useFilters();
 
   const activityContextTypesItems = getActivityContextTypesItems();
 
@@ -144,8 +112,6 @@ export function FiltersDrawer(props: Props) {
 
   // const sortItems = getSortOrderItems();
 
-  const filtersCount = useSelector(selectFiltersCount);
-
   const confirmButtonLabel = useMemo(() => {
     if (filtersCount === 0) {
       return "Confirmer";
@@ -157,42 +123,21 @@ export function FiltersDrawer(props: Props) {
   const resetButtonLabel = "Réinitialiser les filtres";
 
   const activitiesSectionTitle = useMemo(() => {
-    if (selectedEntryTypes.length === 0) {
+    if (entryTypes.length === 0) {
       return "Activités";
     } else {
-      return `Activités (${selectedEntryTypes.length})`;
+      return `Activités (${entryTypes.length})`;
     }
-  }, [selectedEntryTypes]);
-
-  const toggleEntryType = useCallback(
-    (entryTypeId: EntryTypeId) => {
-      dispatch(toggleEntryTypeInFiltersState({ entryTypeId }));
-    },
-    [dispatch]
-  );
-
-  const toggleActivityContext = useCallback(
-    (activityContext: ActivityContext) => {
-      dispatch(toggleActivityContextInFiltersState({ activityContext }));
-    },
-    [dispatch]
-  );
+  }, [entryTypes]);
 
   const handleClose = useCallback(
     (action: "confirm" | "cancel" | "reset") => {
       if (action == "reset") {
-        dispatch(resetFiltersInState());
+        reset();
       }
       props.onClose();
     },
-    [
-      // referenceSelectedEntryTypes,
-      selectedEntryTypes,
-      props,
-      // referenceSelectedSortOrder,
-      selectedSortOrder,
-      dispatch,
-    ]
+    [props]
   );
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
@@ -254,27 +199,33 @@ export function FiltersDrawer(props: Props) {
               }}
             >
               <FiltersSection title={activitiesSectionTitle}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 1,
-                  }}
-                >
-                  {entryTypesOrder.map((entryTypeId) => {
-                    return (
-                      <EntryTypeChip
-                        key={entryTypeId}
-                        entryType={entryTypeId}
-                        isSelected={selectedEntryTypes.includes(entryTypeId)}
-                        onClick={toggleEntryType}
-                      />
-                    );
-                  })}
-                </Box>
+                {props.filtersProps.entryTypeIdFilterMode === "multiple" && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1,
+                    }}
+                  >
+                    {entryTypesOrder.map((entryTypeId, index) => {
+                      return (
+                        <EntryTypeChip
+                          key={index}
+                          entryType={entryTypeId}
+                          isSelected={entryTypes.includes(entryTypeId)}
+                          onClick={toggleEntryType}
+                        />
+                      );
+                    })}
+                  </Box>
+                )}
+
+                {
+                  props.filtersProps.entryTypeIdFilterMode === "single" && null // TODO: implement single entry type filter
+                }
               </FiltersSection>
 
-              {activityContextsGroups.map((activityContextGroup) => {
+              {activityContextsGroups.map((activityContextGroup, index) => {
                 if (!activityContextGroup.activityContexts.length) {
                   return null;
                 }
@@ -282,7 +233,7 @@ export function FiltersDrawer(props: Props) {
                   activityContextGroup.activityContextType
                 );
                 let title = activityContextGroup.label;
-                const selectedItemsCount = selectedActivityContexts.filter(
+                const selectedItemsCount = activityContexts.filter(
                   (context) =>
                     context.type === activityContextGroup.activityContextType
                 ).length;
@@ -291,6 +242,7 @@ export function FiltersDrawer(props: Props) {
                 }
                 return (
                   <FiltersSection
+                    key={index}
                     title={title}
                     icon={
                       entryTypeId == null ? undefined : (
@@ -317,7 +269,7 @@ export function FiltersDrawer(props: Props) {
                               key={activityContext.id}
                               // entryTypeId={entryTypeId}
                               activityContext={activityContext}
-                              isSelected={selectedActivityContexts
+                              isSelected={activityContexts
                                 .map((context) => context.id)
                                 .includes(activityContext.id)}
                               onClick={toggleActivityContext}

@@ -16,12 +16,11 @@ import { groupEntriesByDate, groupEntriesByTime } from "@/utils/utils";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { DateHeader } from "@/components/DateHeader";
-import { EntriesCardsList } from "@/components/EntriesList/CardsFormat/EntriesCardsList";
-import { EntriesTable } from "@/components/EntriesList/TableFormat/EntriesTable";
+import { EntriesCardsList } from "@/components/Entries/EntriesList/CardsFormat/EntriesCardsList";
+import { EntriesTable } from "@/components/Entries/EntriesList/TableFormat/EntriesTable";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { MenuProvider } from "@/components/MenuProvider";
-import { addRecentEntryInState } from "@/state/slices/entriesSlice";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
 import removeLeadingCharacters from "@/utils/removeLeadingCharacters";
@@ -100,7 +99,6 @@ export function EntriesList(props: Props) {
 
   const handleEntriesTableRowClick = useCallback(
     (entry: Entry) => {
-      dispatch(addRecentEntryInState({ entry: serializeEntry(entry) }));
       setEntryForModal(entry);
     },
     [dispatch]

@@ -48,9 +48,9 @@ import { getEntryTime } from "@/pages/Entry/utils/getEntryTime";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimestamp } from "@/utils/getTimestamp";
-import { saveEntryInDB } from "@/state/slices/entriesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/components/SnackbarProvider";
@@ -61,6 +61,7 @@ type EntryFormProps = {
 
 export default function EntryForm(props: EntryFormProps) {
   const layout = useLayout();
+  const { saveEntry } = useEntries();
   useEffect(() => {
     layout.setBottomBarVisibility("hidden");
     return () => {
@@ -231,19 +232,6 @@ export default function EntryForm(props: EntryFormProps) {
   const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(
     props.entry.rightStopwatchIsRunning
   );
-  const handleStopwatchIsRunningChange = useCallback(
-    (
-      side: "left" | "right",
-      isRunning: React.SetStateAction<boolean> | boolean
-    ) => {
-      if (side === "left") {
-        setLeftStopwatchIsRunning(isRunning);
-      } else {
-        setRightStopwatchIsRunning(isRunning);
-      }
-    },
-    [leftStopwatchIsRunning, rightStopwatchIsRunning]
-  );
   const stopwatchIsRunning = useMemo(
     () => leftStopwatchIsRunning || rightStopwatchIsRunning,
     [leftStopwatchIsRunning, rightStopwatchIsRunning]
@@ -268,6 +256,19 @@ export default function EntryForm(props: EntryFormProps) {
       }
     },
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
+  );
+  const handleStopwatchIsRunningChange = useCallback(
+    (
+      side: "left" | "right",
+      isRunning: React.SetStateAction<boolean> | boolean
+    ) => {
+      if (side === "left") {
+        setLeftStopwatchIsRunning(isRunning);
+      } else {
+        setRightStopwatchIsRunning(isRunning);
+      }
+    },
+    [leftStopwatchIsRunning, rightStopwatchIsRunning]
   );
   const lastStopwatchUpdateTime = useMemo(
     () =>
@@ -296,43 +297,47 @@ export default function EntryForm(props: EntryFormProps) {
   );
   const [isSaving, setIsSaving] = useState(false);
 
-  const saveEntry = useCallback(() => {
-    return new Promise<boolean>(async (resolve, reject) => {
-      try {
-        if (isSaving || user == null) {
-          return resolve(false);
-        }
-        setIsSaving(true);
-        const entry: Entry = {
-          id: props.entry.id,
-          babyId: props.entry.babyId,
-          entryTypeId: props.entry.entryTypeId,
-          startTimestamp: getTimestamp(startDateTime),
-          endTimestamp: getTimestamp(endDateTime),
-          note: note,
-          imageURLs: imageURLs,
-          activityContexts: selectedActivityContexts,
-          leftVolume: leftVolume,
-          rightVolume: rightVolume,
-          weight: weight,
-          size: size,
-          temperature: temperature,
-          leftTime: leftTime,
-          leftStopwatchIsRunning: leftStopwatchIsRunning,
-          leftStopwatchLastUpdateTime: leftStopwatchLastUpdateTime,
-          rightTime: rightTime,
-          rightStopwatchIsRunning: rightStopwatchIsRunning,
-          rightStopwatchLastUpdateTime: rightStopwatchLastUpdateTime,
-          urineAmount: urineAmount,
-          poopAmount: poopAmount,
-          poopColorId: poopColorId,
-          poopTextureId: poopTextureId,
-          poopHasUndigestedPieces: poopHasUndigestedPieces,
-        };
-        await dispatch(saveEntryInDB({ entry, user })).unwrap();
+  const handleSubmit = useCallback(() => {
+    if (isSaving || user == null) {
+      return;
+    }
+    setIsSaving(true);
+    const entry: Entry = {
+      id: props.entry.id,
+      babyId: props.entry.babyId,
+      entryTypeId: props.entry.entryTypeId,
+      startTimestamp: getTimestamp(startDateTime),
+      endTimestamp: getTimestamp(endDateTime),
+      note: note,
+      imageURLs: imageURLs,
+      activityContexts: selectedActivityContexts,
+      leftVolume: leftVolume,
+      rightVolume: rightVolume,
+      weight: weight,
+      size: size,
+      temperature: temperature,
+      leftTime: leftTime,
+      leftStopwatchIsRunning: leftStopwatchIsRunning,
+      leftStopwatchLastUpdateTime: leftStopwatchLastUpdateTime,
+      rightTime: rightTime,
+      rightStopwatchIsRunning: rightStopwatchIsRunning,
+      rightStopwatchLastUpdateTime: rightStopwatchLastUpdateTime,
+      urineAmount: urineAmount,
+      poopAmount: poopAmount,
+      poopColorId: poopColorId,
+      poopTextureId: poopTextureId,
+      poopHasUndigestedPieces: poopHasUndigestedPieces,
+    };
+    saveEntry(entry)
+      .then((success) => {
         setIsSaving(false);
-        return resolve(true);
-      } catch (error) {
+        navigate(
+          getPath({
+            page: PageId.Home,
+          })
+        );
+      })
+      .catch((error) => {
         setIsSaving(false);
         showSnackbar({
           id: "save-entry-error",
@@ -341,48 +346,6 @@ export default function EntryForm(props: EntryFormProps) {
             "Une erreur s'est produite lors de l'enregistrement de l'entrée.",
           severity: "error",
         });
-        return reject(error);
-      }
-    });
-  }, [
-    startDateTime,
-    endDateTime,
-    note,
-    imageURLs,
-    selectedActivityContexts,
-    leftVolume,
-    rightVolume,
-    weight,
-    size,
-    temperature,
-    leftTime,
-    leftStopwatchIsRunning,
-    rightTime,
-    rightStopwatchIsRunning,
-    urineAmount,
-    poopAmount,
-    poopColorId,
-    poopTextureId,
-    isSaving,
-    user,
-    poopHasUndigestedPieces,
-    dispatch,
-    showSnackbar,
-  ]);
-
-  const handleSubmit = useCallback(() => {
-    saveEntry()
-      .then((success) => {
-        if (success) {
-          navigate(
-            getPath({
-              page: PageId.Home,
-            })
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Error saving entry", error);
       });
   }, [
     startDateTime,
@@ -407,7 +370,97 @@ export default function EntryForm(props: EntryFormProps) {
     saveEntry,
     user,
     navigate,
+    showSnackbar,
   ]);
+
+  const handlePlayPause = useCallback(
+    (
+      side: "right" | "left",
+      time: number,
+      isRunning: boolean,
+      lastUpdateTime: number | null
+    ) => {
+      return new Promise<boolean>(async (resolve, reject) => {
+        try {
+          if (isSaving || user == null) {
+            return resolve(false);
+          }
+          setIsSaving(true);
+          const newLeftTime = side === "left" ? time : leftTime;
+          const newRightTime = side === "right" ? time : rightTime;
+          const totalTime = newLeftTime + newRightTime;
+          const newLeftStopwatchIsRunning =
+            side === "left" ? isRunning : leftStopwatchIsRunning;
+          const newRightStopwatchIsRunning =
+            side === "right" ? isRunning : rightStopwatchIsRunning;
+          const newLeftStopwatchLastUpdateTime =
+            side === "left" ? lastUpdateTime : leftStopwatchLastUpdateTime;
+          const newRightStopwatchLastUpdateTime =
+            side === "right" ? lastUpdateTime : rightStopwatchLastUpdateTime;
+          const newEndTimestamp = getTimestamp(
+            computeEndDate(startDateTime, totalTime)
+          );
+          const entry: Entry = {
+            leftTime: newLeftTime,
+            leftStopwatchIsRunning: newLeftStopwatchIsRunning,
+            leftStopwatchLastUpdateTime: newLeftStopwatchLastUpdateTime,
+            rightTime: newRightTime,
+            rightStopwatchIsRunning: newRightStopwatchIsRunning,
+            rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
+            endTimestamp: newEndTimestamp,
+            id: props.entry.id,
+            babyId: props.entry.babyId,
+            entryTypeId: props.entry.entryTypeId,
+            startTimestamp: getTimestamp(startDateTime),
+            note: note,
+            imageURLs: imageURLs,
+            activityContexts: selectedActivityContexts,
+            leftVolume: leftVolume,
+            rightVolume: rightVolume,
+            weight: weight,
+            size: size,
+            temperature: temperature,
+            urineAmount: urineAmount,
+            poopAmount: poopAmount,
+            poopColorId: poopColorId,
+            poopTextureId: poopTextureId,
+            poopHasUndigestedPieces: poopHasUndigestedPieces,
+          };
+          await saveEntry(entry);
+          setIsSaving(false);
+          return resolve(true);
+        } catch (error) {
+          setIsSaving(false);
+          return reject(error);
+        }
+      });
+    },
+    [
+      startDateTime,
+      endDateTime,
+      note,
+      imageURLs,
+      selectedActivityContexts,
+      leftVolume,
+      rightVolume,
+      weight,
+      size,
+      temperature,
+      leftTime,
+      leftStopwatchIsRunning,
+      rightTime,
+      rightStopwatchIsRunning,
+      urineAmount,
+      poopAmount,
+      poopColorId,
+      poopTextureId,
+      isSaving,
+      saveEntry,
+      user,
+      navigate,
+      showSnackbar,
+    ]
+  );
 
   return (
     <>
@@ -602,6 +655,9 @@ export default function EntryForm(props: EntryFormProps) {
               setRightLastUpdateTime={(lastUpdateTime) =>
                 handleStopwatchLastUpdateTimeChange("right", lastUpdateTime)
               }
+              onPlayPause={(side, time, isRunning, lastUpdateTime) => {
+                handlePlayPause(side, time, isRunning, lastUpdateTime);
+              }}
             />
           </Section>
         )}

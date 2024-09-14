@@ -50,7 +50,7 @@ export function FamilyPage() {
                 navigate(
                   getPath({
                     page: PageId.Baby,
-                    id: baby.id,
+                    paths: [baby.id],
                   })
                 );
               }}

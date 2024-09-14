@@ -1,5 +1,7 @@
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { isNullOrWhiteSpace } from "@/utils/utils";
+import { v4 as uuid } from "uuid";
 
 export function getEntryToSave(entry: Entry, babyId: string): Entry {
   const newEntry = { ...entry };
@@ -47,6 +49,9 @@ export function getEntryToSave(entry: Entry, babyId: string): Entry {
   }
   if (newEntry.poopHasUndigestedPieces == null) {
     newEntry.poopHasUndigestedPieces = false;
+  }
+  if (isNullOrWhiteSpace(newEntry.id)) {
+    newEntry.id = uuid();
   }
   return newEntry;
 }

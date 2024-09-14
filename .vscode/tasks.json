@@ -31,7 +31,7 @@
 			"script": "dev",
 			"problemMatcher": [],
 			"detail": "Starts the app in development mode (Firebase Emulator Suite, hot-code reloading, error reporting, etc.).",
-			"label": "dev"
+			"label": "dev",
 		},
 		{
 			"type": "npm",
@@ -39,6 +39,13 @@
 			"problemMatcher": [],
 			"detail": "Installs dependencies.",
 			"label": "install"
-		}
+		},
+		{
+			"label": "kill-firebase-emulators",
+			"detail": "Kills all running Firebase emulators by finding tne PIDs of specific processes and killing them.",
+			"type": "shell",
+			"command": "${workspaceFolder}/kill-firebase-emulators.bat",
+			"problemMatcher": []
+		},
 	]
 }

@@ -38,7 +38,7 @@ import { db, storage } from "@/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { LoadingIndicator } from "@/components/LoadingIndicator";

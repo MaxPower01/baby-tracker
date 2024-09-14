@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -9,13 +10,6 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import {
-  addRecentEntriesInState,
-  removeRecentEntriesFromState,
-  selectEntriesStatus,
-  selectRecentEntries,
-  updateRecentEntriesInState,
-} from "@/state/slices/entriesSlice";
 import {
   collection,
   onSnapshot,
@@ -28,7 +22,7 @@ import { useEffect, useState } from "react";
 import { BabyWidget } from "@/components/BabyWidget";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
-import { EntriesList } from "@/components/EntriesList/EntriesList";
+import { EntriesList } from "@/components/Entries/EntriesList/EntriesList";
 import { EntriesWidget } from "@/pages/Home/components/EntriesWidget";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -40,19 +34,17 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { bottomBarNewEntryFabId } from "@/utils/constants";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
-import { getRangeStartTimestampForRecentEntries } from "@/utils/getRangeStartTimestampForRecentEntries";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export function HomePage() {
   const { user } = useAuthentication();
   const navigate = useNavigate();
-  const entries = useSelector(selectRecentEntries);
-  const entriesStatus = useSelector(selectEntriesStatus);
-  const dispatch = useAppDispatch();
+  const { recentEntries, isFetching } = useEntries();
 
   // TODO: Subscribe to entries changes only if user is Premium
   useEffect(() => {}, [user?.babyId]);
@@ -75,7 +67,7 @@ export function HomePage() {
           navigate(
             getPath({
               page: PageId.Baby,
-              id: user.babyId,
+              paths: [user.babyId],
             })
           )
         }
@@ -91,19 +83,19 @@ export function HomePage() {
       </Section>
 
       <Section>
-        <EntriesWidget entries={entries} />
+        <EntriesWidget entries={recentEntries} />
       </Section>
 
       <Section>
-        {entriesStatus === "busy" ? (
+        {isFetching && recentEntries.length == 0 ? (
           <LoadingIndicator />
-        ) : entries.length === 0 ? (
+        ) : recentEntries.length == 0 ? (
           <EmptyState
             context={EmptyStateContext.Entries}
             onClick={handleEmptyStateClick}
           />
         ) : (
-          <EntriesList entries={entries} format="cards" />
+          <EntriesList entries={recentEntries} format="cards" />
         )}
       </Section>
     </SectionStack>

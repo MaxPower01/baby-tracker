@@ -21,7 +21,7 @@ main {
 .ActivityIcon,
 .Icon,
 .Sticker {
-	padding: 0.1em;
+	// padding: 0.1em;
 
 	&>div {
 		display: flex;
@@ -37,4 +37,8 @@ main {
 
 .firebase-emulator-warning {
 	display: none;
+}
+
+:focus-visible {
+	outline: none;
 }

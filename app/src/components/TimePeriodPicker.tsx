@@ -1,29 +1,19 @@
 import {
   Box,
-  Divider,
   FormControl,
-  InputLabel,
   ListItemText,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Stack,
   SxProps,
   useTheme,
 } from "@mui/material";
-import React, { useCallback } from "react";
-import {
-  selectEntryTypesInFiltersState,
-  selectSortOrderInFiltersState,
-  selectTimePeriodInFiltersState,
-  setTimePeriodInFiltersState,
-} from "@/state/slices/filtersSlice";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { getTimePeriodPickerItems } from "@/utils/getTimePeriodPickerItems";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useSelector } from "react-redux";
+import { useFilters } from "@/components/Filters/FiltersProvider";
 
 type Props = {
   sx?: SxProps;
@@ -35,20 +25,11 @@ export function TimePeriodPicker(props: Props) {
 
   const dispatch = useAppDispatch();
 
-  const timePeriod = useSelector(selectTimePeriodInFiltersState);
-  const entryTypes = useSelector(selectEntryTypesInFiltersState);
-  const sortOrder = useSelector(selectSortOrderInFiltersState);
+  // const timePeriod = useSelector(selectTimePeriodInFiltersState);
+  // const entryTypes = useSelector(selectEntryTypesInFiltersState);
+  // const sortOrder = useSelector(selectSortOrderInFiltersState);
 
-  const handleChange = useCallback(
-    (event: SelectChangeEvent<TimePeriodId>) => {
-      dispatch(
-        setTimePeriodInFiltersState({
-          timePeriod: event.target.value as TimePeriodId,
-        })
-      );
-    },
-    [dispatch, entryTypes, sortOrder]
-  );
+  const { timePeriod, setTimePeriod } = useFilters();
 
   const renderValue = (selected: TimePeriodId | null) => {
     if (selected === null) {
@@ -85,7 +66,9 @@ export function TimePeriodPicker(props: Props) {
           id="search-range-picker"
           labelId="search-range-picker-label"
           value={timePeriod ?? ""}
-          onChange={handleChange}
+          onChange={(event) =>
+            setTimePeriod(event.target.value as TimePeriodId)
+          }
           renderValue={renderValue}
         >
           {items.map((item) => {

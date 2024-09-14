@@ -1,10 +1,17 @@
 import {
   DocumentData,
+  FieldValue,
+  Timestamp,
   WithFieldValue,
+  collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
+  query,
+  serverTimestamp,
   setDoc,
+  where,
 } from "firebase/firestore";
 import {
   User,
@@ -23,7 +30,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
 import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
-import Baby from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
@@ -35,6 +42,19 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const dispatch = useAppDispatch();
 
   const [user, setUser] = useState<CustomUser | null>(null);
+
+  const checkIfEmailIsAuthorized = async (email: string): Promise<boolean> => {
+    const authorizedUsersDoc = await getDoc(
+      doc(db, "appSettings", "authorizedUsers")
+    );
+    if (authorizedUsersDoc.exists()) {
+      const authorizedUsers = authorizedUsersDoc.data();
+      if (authorizedUsers) {
+        return (authorizedUsers.emails as string[]).includes(email);
+      }
+    }
+    return false;
+  };
 
   const dispatchUserPreferences = (newUser: CustomUser) => {
     dispatch(
@@ -200,26 +220,25 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
         const result = await signInWithPopup(auth, googleAuthProvider);
         // const credential = GoogleAuthProvider.credentialFromResult(result);
         // const token = credential?.accessToken;
-        const authorizedEmails = [
-          "max.manseau01@gmail.com",
-          "audrey_ann.piscine@hotmail.com",
-          "cadieuxsimon91@gmail.com",
-          "sophie.manseau@gmail.com",
-          "thalyvon@cablevision.qc.ca",
-          "fcote112@gmail.com",
-          "paulette.manseau@gmail.com",
-          "alessard18@hotmail.com",
-        ];
+
+        if (result.user.email == null) {
+          return reject("Email is null");
+        }
+
+        const isAuthorized =
+          isDevelopment() ||
+          (await checkIfEmailIsAuthorized(result.user.email));
+
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
-        const isAuthorizedUser = authorizedEmails.includes(
-          result.user.email ?? ""
-        );
-        if (isAuthorizedUser || isDevelopment()) {
+
+        if (isAuthorized) {
           user = result.user;
         } else {
+          setUser(null);
+          await signOut();
           await deleteUser(result.user);
-          return reject("New users are not allowed to sign up right now");
+          return reject("User is not authorized");
         }
       } catch (error: any) {
         return reject(error);
@@ -246,6 +265,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           (data as CustomUser).intervalMethodByEntryTypeId =
             getDefaulIntervalMethodByEntryTypeId();
           (data as CustomUser).entryTypesOrder = getDefaultEntryTypesOrder();
+          (data as CustomUser).createdAt = serverTimestamp();
         }
         await setDoc(userRef, data, { merge: true });
         if (!isNewUser) {
@@ -262,6 +282,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     return new Promise<boolean>(async (resolve, reject) => {
       try {
         await auth.signOut();
+        setUser(null);
         resolve(true);
       } catch (error: any) {
         console.error(error);
@@ -276,13 +297,9 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       setUser,
       googleSignInWithPopup,
       signOut,
+      checkIfEmailIsAuthorized,
     };
   }, [user, setUser, googleSignInWithPopup, signOut]);
 
-  return (
-    <AuthenticationContext.Provider
-      value={context as AuthenticationContextValue}
-      {...props}
-    />
-  );
+  return <AuthenticationContext.Provider value={context} {...props} />;
 }

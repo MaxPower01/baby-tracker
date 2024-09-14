@@ -16,10 +16,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  deleteEntryInDB,
-  selectRecentEntries,
-} from "@/state/slices/entriesSlice";
 import { useCallback, useState } from "react";
 
 import ActivityType from "@/pages/Activity/enums/ActivityType";
@@ -35,9 +31,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PageId } from "@/enums/PageId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
+import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -57,7 +56,7 @@ export function EntriesCard(props: Props) {
   const dispatch = useAppDispatch();
   const { user } = useAuthentication();
   const babyId = user?.babyId ?? "";
-  const allEntries = useSelector(selectRecentEntries);
+  const { recentEntries, deleteEntry } = useEntries();
   if (!entries || entries.length === 0) return null;
   const theme = useTheme();
   const { Menu, openMenu, closeMenu } = useMenu();
@@ -85,13 +84,11 @@ export function EntriesCard(props: Props) {
     }
     setIsDeleting(true);
     try {
-      await dispatch(
-        deleteEntryInDB({
-          entryId: menuEntry.id,
-          timestamp: menuEntry.startTimestamp,
-          babyId: user.babyId,
-        })
-      ).unwrap();
+      await deleteEntry({
+        id: menuEntry.id,
+        babyId: user.babyId,
+        dateKey: getDateKeyFromTimestamp(menuEntry.startTimestamp),
+      });
       setIsDeleting(false);
       handleDeleteEntryDialogClose();
     } catch (error) {
@@ -110,7 +107,7 @@ export function EntriesCard(props: Props) {
           const nextEntryExists = entryIndex < entries.length - 1;
           const stopwatchRunning = entryHasStopwatchRunning(entry);
           if (entry.id == null) return null;
-          const previousEntry = allEntries
+          const previousEntry = recentEntries
             .slice()
             .find(
               (e) =>
@@ -126,7 +123,12 @@ export function EntriesCard(props: Props) {
                   navigate(
                     getPath({
                       page: PageId.Entry,
-                      id: entry.id ?? "",
+                      paths: isNullOrWhiteSpace(entry.id)
+                        ? undefined
+                        : [
+                            getDateKeyFromTimestamp(entry.startTimestamp),
+                            entry.id as string,
+                          ],
                     })
                   );
                 }}
@@ -147,9 +149,8 @@ export function EntriesCard(props: Props) {
                     // borderColor: theme.palette.divider,
                   }}
                 >
-                  <Stack
+                  <Box
                     sx={{
-                      fontSize: "0.65em",
                       position: "relative",
                     }}
                   >
@@ -158,8 +159,8 @@ export function EntriesCard(props: Props) {
                         sx={{
                           display: undefined,
                           position: "absolute",
-                          top: "3.65em",
-                          left: "calc(2.25em - 2px)",
+                          top: "3em",
+                          left: "calc(1.75em - 2px)",
                           height: "100%",
                           // opacity: 0.5,
                           paddingTop: 2.5,
@@ -189,8 +190,8 @@ export function EntriesCard(props: Props) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          width: "4.5em",
-                          height: "4.5em",
+                          width: "3.5em",
+                          height: "3.5em",
                           borderRadius: "50%",
                           border: "1px solid",
                           // backgroundColor: theme.customPalette.background.avatar,
@@ -210,7 +211,7 @@ export function EntriesCard(props: Props) {
                         <EntryTypeIcon
                           type={entry.entryTypeId}
                           sx={{
-                            fontSize: "3.5em",
+                            fontSize: "2.75em",
                             transform:
                               entryTypeHasSides(entry.entryTypeId) &&
                               entry.leftTime &&
@@ -269,7 +270,7 @@ export function EntriesCard(props: Props) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          width: "4.5em",
+                          width: "3.5em",
                           borderRadius: "50%",
                           borderColor: "transparent",
                           flexShrink: 0,
@@ -283,7 +284,7 @@ export function EntriesCard(props: Props) {
                         }}
                       />
                     </Stack>
-                  </Stack>
+                  </Box>
                 </CardContent>
               </CardActionArea>
 

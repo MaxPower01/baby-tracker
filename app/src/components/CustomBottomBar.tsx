@@ -51,10 +51,15 @@ export function CustomBottomBar(props: Props) {
               size="large"
               disabled={props.saveButtonDisabled}
               sx={{
-                height: `calc(${theme.typography.button.fontSize} * 2.5)`,
+                height: `calc(${theme.typography.body1.fontSize} * 2.5)`,
               }}
             >
-              <Typography variant="button">Enregistrer</Typography>
+              <Typography
+                variant="button"
+                sx={{ fontSize: theme.typography.body1.fontSize }}
+              >
+                Enregistrer
+              </Typography>
               <Box
                 sx={{
                   display: props.saveButtonDisabled ? "flex" : "none",
@@ -70,7 +75,7 @@ export function CustomBottomBar(props: Props) {
                 }}
               >
                 <LoadingIndicator
-                  size={`calc(${theme.typography.button.fontSize} * 2)`}
+                  size={`calc(${theme.typography.body1.fontSize} * 2)`}
                 />
               </Box>
             </Button>

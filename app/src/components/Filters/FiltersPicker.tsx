@@ -6,8 +6,13 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { FiltersDrawer } from "@/components/Filters/FiltersDrawer";
 import { SortOrderId } from "@/enums/SortOrderId";
 
+export type FiltersProps = {
+  entryTypeIdFilterMode: "single" | "multiple";
+};
+
 type Props = {
   sx?: SxProps;
+  filtersProps: FiltersProps;
 };
 
 export function FiltersPicker(props: Props) {
@@ -35,6 +40,7 @@ export function FiltersPicker(props: Props) {
         onClose={() => {
           setDrawerIsOpen(false);
         }}
+        filtersProps={props.filtersProps}
       />
     </>
   );
