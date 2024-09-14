@@ -45,7 +45,6 @@ export function HomePage() {
   const { user } = useAuthentication();
   const navigate = useNavigate();
   const { recentEntries, isFetching } = useEntries();
-  const dispatch = useAppDispatch();
 
   // TODO: Subscribe to entries changes only if user is Premium
   useEffect(() => {}, [user?.babyId]);

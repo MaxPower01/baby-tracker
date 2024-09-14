@@ -44,7 +44,9 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const [user, setUser] = useState<CustomUser | null>(null);
 
   const checkIfEmailIsAuthorized = async (email: string): Promise<boolean> => {
-    const authorizedUsersDoc = await getDoc(doc(db, "appSettings", "authorizedUsers"));
+    const authorizedUsersDoc = await getDoc(
+      doc(db, "appSettings", "authorizedUsers")
+    );
     if (authorizedUsersDoc.exists()) {
       const authorizedUsers = authorizedUsersDoc.data();
       if (authorizedUsers) {
@@ -223,12 +225,14 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           return reject("Email is null");
         }
 
-        const isAuthorized = await checkIfEmailIsAuthorized(result.user.email);
+        const isAuthorized =
+          isDevelopment() ||
+          (await checkIfEmailIsAuthorized(result.user.email));
 
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
 
-        if (isAuthorized || isDevelopment()) {
+        if (isAuthorized) {
           user = result.user;
         } else {
           setUser(null);

@@ -14,7 +14,7 @@ import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
-import { getDatapointValue } from "@/pages/Charts/utils/getDatapointValue";
+import { getDatapointsValue } from "@/pages/Charts/utils/getDatapointsValue";
 import { getDates } from "@/pages/Charts/utils/getDates";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
 import { getStackedBarChartDatapoints } from "@/pages/Charts/utils/getStackedBarChartDatapoints";
@@ -171,6 +171,8 @@ export function StackedBarChart(props: Props) {
       .join("rect")
       .attr("x", (d) => xScale(d.data[0] as any) as number)
       .attr("y", (d) => yScale(d[1]))
+      .attr("class", "bar")
+      .style("opacity", 0) // Hide the bars until they are animated
       .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
       .attr("width", xScale.bandwidth());
 
@@ -215,9 +217,12 @@ export function StackedBarChart(props: Props) {
 
     const topXAxis = d3
       .axisTop(xScale)
-      .tickFormat((id) => {
-        const value = getDatapointValue(id as string, datapoints);
-        if (value === 0) {
+      .tickFormat((dateISOString) => {
+        const value = getDatapointsValue({
+          dateISOString,
+          datapoints,
+        });
+        if (value == 0) {
           return "";
         }
         return valueFormatter(
@@ -238,10 +243,15 @@ export function StackedBarChart(props: Props) {
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").remove())
       .selectAll("text")
-      .attr("transform", (id) => {
-        if (id == null) return "";
+      .attr("transform", (dateISOString) => {
+        if (dateISOString == null) return "";
         const y =
-          yScale(getDatapointValue(id as string, datapoints)) -
+          yScale(
+            getDatapointsValue({
+              dateISOString: dateISOString as string,
+              datapoints,
+            })
+          ) -
           (spacing * 2 + mainFontSize);
         return `translate(0, ${y})`;
       })
@@ -334,15 +344,8 @@ export function StackedBarChart(props: Props) {
         .selectAll(".bar")
         .transition()
         .duration(500)
-        .attr("y", (datapoint) =>
-          yScale((datapoint as StackedBarChartDatapoint).value)
-        )
-        .attr(
-          "height",
-          (datapoint) =>
-            yScale(0) - yScale((datapoint as StackedBarChartDatapoint).value)
-        )
-        .delay((datapoint, index) => index * 10)
+        .style("opacity", 1)
+        // .delay((datapoint, index) => index * 10)
         .on("end", (datapoint, index) => {
           if (index !== 0) return;
           showBarValueLabels();

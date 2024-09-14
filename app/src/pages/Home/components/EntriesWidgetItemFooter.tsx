@@ -11,9 +11,11 @@ import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchR
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { getDateFromTimestamp } from "@/utils/getDateFromTimestamp";
+import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
 import { getTimestamp } from "@/utils/getTimestamp";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -158,11 +160,13 @@ export function EntriesWidgetItemFooter(props: Props) {
         }
         navigate(
           getPath({
-            paths: [props.mostRecentEntryOfType.id ?? ""],
+            paths: [
+              getDateKeyFromTimestamp(
+                props.mostRecentEntryOfType.startTimestamp
+              ),
+              props.mostRecentEntryOfType.id ?? "",
+            ],
             page: PageId.Entry,
-            params: {
-              type: props.entryType.toString(),
-            },
           })
         );
       }}

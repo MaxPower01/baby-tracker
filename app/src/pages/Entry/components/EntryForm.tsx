@@ -232,19 +232,6 @@ export default function EntryForm(props: EntryFormProps) {
   const [rightStopwatchIsRunning, setRightStopwatchIsRunning] = useState(
     props.entry.rightStopwatchIsRunning
   );
-  const handleStopwatchIsRunningChange = useCallback(
-    (
-      side: "left" | "right",
-      isRunning: React.SetStateAction<boolean> | boolean
-    ) => {
-      if (side === "left") {
-        setLeftStopwatchIsRunning(isRunning);
-      } else {
-        setRightStopwatchIsRunning(isRunning);
-      }
-    },
-    [leftStopwatchIsRunning, rightStopwatchIsRunning]
-  );
   const stopwatchIsRunning = useMemo(
     () => leftStopwatchIsRunning || rightStopwatchIsRunning,
     [leftStopwatchIsRunning, rightStopwatchIsRunning]
@@ -269,6 +256,19 @@ export default function EntryForm(props: EntryFormProps) {
       }
     },
     [leftStopwatchLastUpdateTime, rightStopwatchLastUpdateTime]
+  );
+  const handleStopwatchIsRunningChange = useCallback(
+    (
+      side: "left" | "right",
+      isRunning: React.SetStateAction<boolean> | boolean
+    ) => {
+      if (side === "left") {
+        setLeftStopwatchIsRunning(isRunning);
+      } else {
+        setRightStopwatchIsRunning(isRunning);
+      }
+    },
+    [leftStopwatchIsRunning, rightStopwatchIsRunning]
   );
   const lastStopwatchUpdateTime = useMemo(
     () =>
@@ -372,6 +372,95 @@ export default function EntryForm(props: EntryFormProps) {
     navigate,
     showSnackbar,
   ]);
+
+  const handlePlayPause = useCallback(
+    (
+      side: "right" | "left",
+      time: number,
+      isRunning: boolean,
+      lastUpdateTime: number | null
+    ) => {
+      return new Promise<boolean>(async (resolve, reject) => {
+        try {
+          if (isSaving || user == null) {
+            return resolve(false);
+          }
+          setIsSaving(true);
+          const newLeftTime = side === "left" ? time : leftTime;
+          const newRightTime = side === "right" ? time : rightTime;
+          const totalTime = newLeftTime + newRightTime;
+          const newLeftStopwatchIsRunning =
+            side === "left" ? isRunning : leftStopwatchIsRunning;
+          const newRightStopwatchIsRunning =
+            side === "right" ? isRunning : rightStopwatchIsRunning;
+          const newLeftStopwatchLastUpdateTime =
+            side === "left" ? lastUpdateTime : leftStopwatchLastUpdateTime;
+          const newRightStopwatchLastUpdateTime =
+            side === "right" ? lastUpdateTime : rightStopwatchLastUpdateTime;
+          const newEndTimestamp = getTimestamp(
+            computeEndDate(startDateTime, totalTime)
+          );
+          const entry: Entry = {
+            leftTime: newLeftTime,
+            leftStopwatchIsRunning: newLeftStopwatchIsRunning,
+            leftStopwatchLastUpdateTime: newLeftStopwatchLastUpdateTime,
+            rightTime: newRightTime,
+            rightStopwatchIsRunning: newRightStopwatchIsRunning,
+            rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
+            endTimestamp: newEndTimestamp,
+            id: props.entry.id,
+            babyId: props.entry.babyId,
+            entryTypeId: props.entry.entryTypeId,
+            startTimestamp: getTimestamp(startDateTime),
+            note: note,
+            imageURLs: imageURLs,
+            activityContexts: selectedActivityContexts,
+            leftVolume: leftVolume,
+            rightVolume: rightVolume,
+            weight: weight,
+            size: size,
+            temperature: temperature,
+            urineAmount: urineAmount,
+            poopAmount: poopAmount,
+            poopColorId: poopColorId,
+            poopTextureId: poopTextureId,
+            poopHasUndigestedPieces: poopHasUndigestedPieces,
+          };
+          await saveEntry(entry);
+          setIsSaving(false);
+          return resolve(true);
+        } catch (error) {
+          setIsSaving(false);
+          return reject(error);
+        }
+      });
+    },
+    [
+      startDateTime,
+      endDateTime,
+      note,
+      imageURLs,
+      selectedActivityContexts,
+      leftVolume,
+      rightVolume,
+      weight,
+      size,
+      temperature,
+      leftTime,
+      leftStopwatchIsRunning,
+      rightTime,
+      rightStopwatchIsRunning,
+      urineAmount,
+      poopAmount,
+      poopColorId,
+      poopTextureId,
+      isSaving,
+      saveEntry,
+      user,
+      navigate,
+      showSnackbar,
+    ]
+  );
 
   return (
     <>
@@ -566,6 +655,9 @@ export default function EntryForm(props: EntryFormProps) {
               setRightLastUpdateTime={(lastUpdateTime) =>
                 handleStopwatchLastUpdateTimeChange("right", lastUpdateTime)
               }
+              onPlayPause={(side, time, isRunning, lastUpdateTime) => {
+                handlePlayPause(side, time, isRunning, lastUpdateTime);
+              }}
             />
           </Section>
         )}

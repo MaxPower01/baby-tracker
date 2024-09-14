@@ -14,7 +14,7 @@ import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
-import { getDatapointValue } from "@/pages/Charts/utils/getDatapointValue";
+import { getDatapointsValue } from "@/pages/Charts/utils/getDatapointsValue";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
 import { getYAxisTicksCount } from "@/pages/Charts/utils/getYAxisTicksCount";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
@@ -199,8 +199,11 @@ export function BarChart(props: Props) {
 
     const topXAxis = d3
       .axisTop(xScale)
-      .tickFormat((id) => {
-        const value = getDatapointValue(id as string, datapoints);
+      .tickFormat((id: string) => {
+        const value = getDatapointsValue({
+          id,
+          datapoints,
+        });
         if (value === 0) {
           return "";
         }
@@ -225,7 +228,12 @@ export function BarChart(props: Props) {
       .attr("transform", (id) => {
         if (id == null) return "";
         const y =
-          yScale(getDatapointValue(id as string, datapoints)) -
+          yScale(
+            getDatapointsValue({
+              id: id as string,
+              datapoints,
+            })
+          ) -
           (spacing * 2 + mainFontSize);
         return `translate(0, ${y})`;
       })

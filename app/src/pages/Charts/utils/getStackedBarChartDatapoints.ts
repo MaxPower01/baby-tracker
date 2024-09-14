@@ -62,28 +62,29 @@ export function getStackedBarChartDatapoints(
     .sort((a, b) => d3.descending(a[0].date, b[0].date))
     .flat();
 
-  if (yAxisType === "duration" && xAxisUnit === "hours") {
-    for (let i = 0; i < datapoints.length; i++) {
-      const datapoint = datapoints[i];
+  // if (yAxisType === "duration" && xAxisUnit === "hours") {
+  //   for (let i = 0; i < datapoints.length; i++) {
+  //     const datapoint = datapoints[i];
+  //     const stackedDatapoints = datapoints.filter(
+  //       (d) =>
+  //         d.category === datapoint.category &&
+  //         d.dateISOString === datapoint.dateISOString
+  //     );
 
-      const isLastOrBeforeLast =
-        i === datapoints.length - 1 || i === datapoints.length - 2;
+  //     if (!stackedDatapoints) continue;
 
-      if (isLastOrBeforeLast) continue;
+  //     const isLastOrBeforeLast =
+  //       i === datapoints.length - 1 || i === datapoints.length - 2;
 
-      const nextDatapoint = datapoints
-        .slice(i + 1)
-        .find((d) => d.category === datapoint.category);
+  //     if (isLastOrBeforeLast) continue;
 
-      if (nextDatapoint == null) continue;
+  //     const stackedValue = d3.sum(stackedDatapoints.map((d) => d.value));
 
-      if (datapoint.value > 60) {
-        const excess = datapoint.value - 60;
-        datapoint.value = 60;
-        nextDatapoint.value += excess;
-      }
-    }
-  }
+  //     if (stackedValue > 60) {
+  //       // TODO: Dispatch the excess to the next date's datapoints
+  //     }
+  //   }
+  // }
 
   return datapoints;
 }
