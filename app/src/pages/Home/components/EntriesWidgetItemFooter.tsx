@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntrySubtitle } from "@/pages/Entry/components/EntrySubtitle";
@@ -39,6 +39,7 @@ export function EntriesWidgetItemFooter(props: Props) {
     props.mostRecentEntryOfType == null
       ? null
       : getTimeElapsedSinceLastEntry(props.mostRecentEntryOfType);
+
   const stopwatchIsRunning =
     props.mostRecentEntryOfType == null
       ? false
@@ -61,6 +62,7 @@ export function EntriesWidgetItemFooter(props: Props) {
   const [rightLastUpdateTime, setRightLastUpdateTime] = React.useState(
     props.mostRecentEntryOfType?.rightStopwatchLastUpdateTime ?? null
   );
+
   const [isSaving, setIsSaving] = useState(false);
   const handlePlayPause = useCallback(
     (
@@ -197,7 +199,7 @@ export function EntriesWidgetItemFooter(props: Props) {
             />
           )}
 
-          {showElapsedTime && (
+          {showElapsedTime && elapsedTime.label != null && (
             <Typography
               variant={"body2"}
               sx={{

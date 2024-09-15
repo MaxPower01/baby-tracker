@@ -1,7 +1,9 @@
 import { Box, Stack, useTheme } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
 import { EntriesWidgetItem } from "@/pages/Home/components/EntriesWidgetItem";
 import { Entry } from "@/pages/Entry/types/Entry";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useSelector } from "react-redux";
 
@@ -11,9 +13,9 @@ type Props = {
 
 export function EntriesWidget(props: Props) {
   const theme = useTheme();
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const itemPadding = 4;
   const itemWidth = "10em";
+  const entryTypesOrder = useSelector(selectEntryTypesOrder);
   const mostRecentEntryByType = props.entries.reduce((acc, entry) => {
     if (acc[entry.entryTypeId] === undefined) {
       acc[entry.entryTypeId] = entry;

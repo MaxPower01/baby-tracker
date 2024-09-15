@@ -35,6 +35,7 @@ import { bottomBarNewEntryFabId } from "@/utils/constants";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEntries } from "@/components/Entries/EntriesProvider";
@@ -81,7 +82,6 @@ export function HomePage() {
           }}
         />
       </Section>
-
       <Section>
         <EntriesWidget entries={recentEntries} />
       </Section>
