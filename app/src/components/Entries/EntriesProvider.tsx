@@ -136,21 +136,17 @@ export function EntriesProvider(props: Props) {
               );
             });
           }
-          if (addedDailyEntries.length) {
-            addedDailyEntries.forEach((dailyEntries) => {
-              const addedEntries = dailyEntries.entries;
-              if (!addedEntries || !Array.isArray(addedEntries)) {
-                return;
-              }
-              entries.push(...addedEntries);
-            });
-          }
           if (modifiedDailyEntries.length) {
             modifiedDailyEntries.forEach((dailyEntries) => {
               const modifiedEntries = dailyEntries.entries;
               if (!modifiedEntries || !Array.isArray(modifiedEntries)) {
                 return;
               }
+              entries = entries.filter(
+                (entry) =>
+                  getDateKeyFromTimestamp(entry.startTimestamp) !==
+                  getDateKeyFromTimestamp(dailyEntries.timestamp)
+              );
               modifiedEntries.forEach((entry) => {
                 const index = entries.findIndex((e) => e.id === entry.id);
                 if (index !== -1) {
@@ -159,6 +155,15 @@ export function EntriesProvider(props: Props) {
                   entries.push(entry);
                 }
               });
+            });
+          }
+          if (addedDailyEntries.length) {
+            addedDailyEntries.forEach((dailyEntries) => {
+              const addedEntries = dailyEntries.entries;
+              if (!addedEntries || !Array.isArray(addedEntries)) {
+                return;
+              }
+              entries.push(...addedEntries);
             });
           }
           entries = entries

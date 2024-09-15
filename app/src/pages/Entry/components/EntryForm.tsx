@@ -298,7 +298,11 @@ export default function EntryForm(props: EntryFormProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSubmit = useCallback(() => {
-    if (isSaving || user == null) {
+    if (isSaving) {
+      return;
+    }
+    if (user == null) {
+      setIsSaving(false);
       return;
     }
     setIsSaving(true);
