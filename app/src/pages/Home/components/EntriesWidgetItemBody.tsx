@@ -15,9 +15,11 @@ import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { PageId } from "@/enums/PageId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
+import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectIntervalMethodByEntryTypeId } from "@/state/slices/settingsSlice";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
@@ -104,15 +106,27 @@ export function EntriesWidgetItemBody(props: Props) {
             height: "100%",
           }}
           onClick={() => {
+            const shouldNavigateToEntry =
+              props.mostRecentEntryOfType != null &&
+              stopwatchIsRunning &&
+              !isNullOrWhiteSpace(props.mostRecentEntryOfType?.id ?? "");
+
             navigate(
               getPath({
-                paths: stopwatchIsRunning
-                  ? [props.mostRecentEntryOfType?.id ?? ""]
-                  : undefined,
                 page: PageId.Entry,
-                params: {
-                  type: props.entryType.toString(),
-                },
+                params: shouldNavigateToEntry
+                  ? undefined
+                  : {
+                      type: props.entryType.toString(),
+                    },
+                paths: shouldNavigateToEntry
+                  ? [
+                      getDateKeyFromTimestamp(
+                        (props.mostRecentEntryOfType as Entry).startTimestamp
+                      ),
+                      (props.mostRecentEntryOfType as Entry).id as string,
+                    ]
+                  : undefined,
               })
             );
           }}
