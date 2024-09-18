@@ -34,8 +34,8 @@ import { isSameDay } from "@/utils/isSameDay";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 interface EntriesContextType {
-  isFetching: boolean;
   recentEntries: Entry[];
+  status: "idle" | "busy";
   saveEntry: (entry: Entry) => Promise<Entry>;
   saveEntries: (entries: Entry[]) => Promise<Entry[]>;
   getEntry: (props: {
@@ -83,8 +83,9 @@ type Props = React.PropsWithChildren<{}>;
 export function EntriesProvider(props: Props) {
   const { user } = useAuthentication();
 
+  const [status, setStatus] = React.useState<"idle" | "busy">("idle");
+
   const [recentEntries, setRecentEntries] = React.useState<Entry[]>([]);
-  const [isFetching, setIsFetching] = React.useState(false);
 
   // Fetch recent entries and subscribe to changes
   useEffect(() => {
@@ -99,10 +100,16 @@ export function EntriesProvider(props: Props) {
         orderBy("timestamp", "desc")
       );
 
+      setStatus("busy");
+
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const addedDailyEntries: DailyEntries[] = [];
         const modifiedDailyEntries: DailyEntries[] = [];
         const removedDailyEntries: DailyEntries[] = [];
+
+        if (recentEntries.length === 0) {
+          setStatus("idle");
+        }
 
         snapshot.docChanges().forEach((change) => {
           if (change.doc.data() != null) {
@@ -200,11 +207,21 @@ export function EntriesProvider(props: Props) {
     (entry: Entry) => {
       return new Promise<Entry>(async (resolve, reject) => {
         try {
+          if (status === "busy") {
+            throw new Error("State is busy");
+          }
+
+          setStatus("busy");
+
           const babyId = entry.babyId;
+
           if (babyId !== user?.babyId) {
+            setStatus("idle");
             return reject("Entry does not belong to the current user's baby");
           }
+
           if (isNullOrWhiteSpace(babyId)) {
+            setStatus("idle");
             return reject("babyId is not set");
           }
 
@@ -212,6 +229,7 @@ export function EntriesProvider(props: Props) {
 
           const dateKey = getDateKeyFromTimestamp(entryToSave.startTimestamp);
           if (isNullOrWhiteSpace(dateKey)) {
+            setStatus("idle");
             return reject("dateKey is not set");
           }
 
@@ -238,6 +256,7 @@ export function EntriesProvider(props: Props) {
             : ([] as Entry[]);
 
           if (!entries || !Array.isArray(entries)) {
+            setStatus("idle");
             throw new Error("Entries is not an array");
           }
 
@@ -305,9 +324,11 @@ export function EntriesProvider(props: Props) {
             });
           }
 
+          setStatus("idle");
           return resolve({ ...entryToSave });
         } catch (error) {
           console.error(error);
+          setStatus("idle");
           return reject(error);
         }
       });
@@ -319,8 +340,16 @@ export function EntriesProvider(props: Props) {
     (entries: Entry[]) => {
       return new Promise<Entry[]>(async (resolve, reject) => {
         try {
+          if (status === "busy") {
+            throw new Error("State is busy");
+          }
+
+          setStatus("busy");
+
           const babyId = user?.babyId ?? "";
+
           if (isNullOrWhiteSpace(babyId)) {
+            setStatus("idle");
             return reject("babyId is not set");
           }
 
@@ -329,6 +358,7 @@ export function EntriesProvider(props: Props) {
           );
 
           if (!filteredEntries.length) {
+            setStatus("idle");
             return resolve([]);
           }
 
@@ -392,10 +422,11 @@ export function EntriesProvider(props: Props) {
               return entries;
             });
           }
-
+          setStatus("idle");
           return resolve(entries.map((entry) => ({ ...entry })));
         } catch (error) {
           console.error("Error saving entries: ", error);
+          setStatus("idle");
           return reject(error);
         }
       });
@@ -407,11 +438,9 @@ export function EntriesProvider(props: Props) {
     (props: { id: string; dateKey: string; babyId: string }) => {
       return new Promise<Entry | null>(async (resolve, reject) => {
         try {
-          if (isFetching) {
+          if (status === "busy") {
             throw new Error("Already fetching entries");
           }
-
-          setIsFetching(true);
 
           if (props.babyId !== user?.babyId) {
             throw new Error("Entry does not belong to the current user's baby");
@@ -424,11 +453,13 @@ export function EntriesProvider(props: Props) {
             throw new Error("dateKey is not set");
           }
 
+          setStatus("busy");
+
           const dailyEntriesDoc = await getDoc(
             doc(db, `babies/${props.babyId}/dailyEntries/${props.dateKey}`)
           );
           if (!dailyEntriesDoc.exists()) {
-            setIsFetching(false);
+            setStatus("idle");
             return resolve(null);
           }
 
@@ -439,20 +470,20 @@ export function EntriesProvider(props: Props) {
 
           const entry = entries.find((e) => e.id == props.id);
           if (!entry) {
-            setIsFetching(false);
+            setStatus("idle");
             return resolve(null);
           }
 
-          setIsFetching(false);
+          setStatus("idle");
           return resolve({ ...entry });
         } catch (error) {
           console.error("Error getting entry: ", error);
-          setIsFetching(false);
+          setStatus("idle");
           return reject(error);
         }
       });
     },
-    [user, isFetching]
+    [user, status]
   );
 
   const getDailyEntries = useCallback(
@@ -464,11 +495,9 @@ export function EntriesProvider(props: Props) {
     }) => {
       return new Promise<DailyEntriesCollection>(async (resolve, reject) => {
         try {
-          if (isFetching) {
-            throw new Error("Already fetching entries");
+          if (status === "busy") {
+            throw new Error("State is busy");
           }
-
-          setIsFetching(true);
 
           if (props.babyId !== user?.babyId) {
             throw new Error("Entries do not belong to the current user's baby");
@@ -476,6 +505,8 @@ export function EntriesProvider(props: Props) {
           if (isNullOrWhiteSpace(props.babyId)) {
             throw new Error("babyId is not set");
           }
+
+          setStatus("busy");
 
           let rangeStartTimestamp: number;
           let rangeEndTimestamp: number;
@@ -523,7 +554,7 @@ export function EntriesProvider(props: Props) {
 
           const snapshot = await getDocs(q);
           if (snapshot.empty) {
-            setIsFetching(false);
+            setStatus("idle");
             return resolve({});
           }
 
@@ -575,25 +606,30 @@ export function EntriesProvider(props: Props) {
             };
           });
 
-          setIsFetching(false);
+          setStatus("idle");
           return resolve(dailyEntriesCollection);
         } catch (error) {
           console.error("Error getting entries: ", error);
-          setIsFetching(false);
+          setStatus("idle");
           return reject(error);
         }
       });
     },
-    [user, isFetching]
+    [user, status]
   );
 
   const deleteEntry = useCallback(
     (props: { id: string; dateKey: string; babyId: string }) => {
       return new Promise<boolean>(async (resolve, reject) => {
         try {
+          if (status === "busy") {
+            throw new Error("State is busy");
+          }
+
           if (props.babyId !== user?.babyId) {
             throw new Error("Entry does not belong to the current user's baby");
           }
+
           if (isNullOrWhiteSpace(props.babyId)) {
             throw new Error("babyId is not set");
           }
@@ -602,6 +638,8 @@ export function EntriesProvider(props: Props) {
             throw new Error("dateKey is not set");
           }
 
+          setStatus("busy");
+
           const dailyEntriesDocRef = doc(
             db,
             `babies/${props.babyId}/dailyEntries/${props.dateKey}`
@@ -609,6 +647,7 @@ export function EntriesProvider(props: Props) {
 
           const dailyEntriesDoc = await getDoc(dailyEntriesDocRef);
           if (!dailyEntriesDoc.exists()) {
+            setStatus("idle");
             return resolve(false);
           }
 
@@ -619,6 +658,7 @@ export function EntriesProvider(props: Props) {
 
           const index = entries.findIndex((e) => e.id === props.id);
           if (index === -1) {
+            setStatus("idle");
             return resolve(false);
           }
 
@@ -626,9 +666,11 @@ export function EntriesProvider(props: Props) {
 
           await setDoc(dailyEntriesDocRef, { entries }, { merge: true });
 
+          setStatus("idle");
           return resolve(true);
         } catch (error) {
           console.error("Error deleting entry: ", error);
+          setStatus("idle");
           return reject(error);
         }
       });
@@ -640,14 +682,22 @@ export function EntriesProvider(props: Props) {
     (props: { dateKeys: string[]; babyId: string }) => {
       return new Promise<void>(async (resolve, reject) => {
         try {
+          if (status === "busy") {
+            throw new Error("State is busy");
+          }
+
           if (props.babyId !== user?.babyId) {
             throw new Error("Entries do not belong to the current user's baby");
           }
+
           if (isNullOrWhiteSpace(props.babyId)) {
             throw new Error("babyId is not set");
           }
 
+          setStatus("busy");
+
           if (!props.dateKeys.length) {
+            setStatus("idle");
             return resolve();
           }
 
@@ -663,6 +713,7 @@ export function EntriesProvider(props: Props) {
 
           await batch.commit();
 
+          setStatus("idle");
           return resolve();
         } catch (error) {
           console.error("Error deleting entries: ", error);
@@ -674,7 +725,7 @@ export function EntriesProvider(props: Props) {
 
   const value: EntriesContextType = useMemo(() => {
     return {
-      isFetching,
+      status,
       recentEntries,
       saveEntry,
       saveEntries,
@@ -684,7 +735,7 @@ export function EntriesProvider(props: Props) {
       deleteDailyEntries,
     };
   }, [
-    isFetching,
+    status,
     recentEntries,
     saveEntry,
     saveEntries,

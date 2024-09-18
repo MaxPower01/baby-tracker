@@ -61,13 +61,15 @@ type EntryFormProps = {
 
 export default function EntryForm(props: EntryFormProps) {
   const layout = useLayout();
-  const { saveEntry } = useEntries();
+  const { saveEntry, status } = useEntries();
+
   useEffect(() => {
     layout.setBottomBarVisibility("hidden");
     return () => {
       layout.setBottomBarVisibility("visible");
     };
   }, []);
+
   const { user } = useAuthentication();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -376,6 +378,8 @@ export default function EntryForm(props: EntryFormProps) {
     navigate,
     showSnackbar,
   ]);
+
+  // TODO: Use status of useEntries instead of "isSaving"
 
   const handlePlayPause = useCallback(
     (

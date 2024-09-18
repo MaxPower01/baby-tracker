@@ -31,7 +31,7 @@ import { useSelector } from "react-redux";
 export function HistoryPage() {
   const { timePeriod, entryTypes, sortOrder, activityContexts, reset } =
     useFilters();
-  const { recentEntries, getDailyEntries, isFetching } = useEntries();
+  const { recentEntries, getDailyEntries, status } = useEntries();
 
   const { user } = useAuthentication();
 
@@ -61,7 +61,7 @@ export function HistoryPage() {
       return;
     }
 
-    if (isFetching) {
+    if (status === "busy") {
       return;
     }
 
@@ -86,7 +86,7 @@ export function HistoryPage() {
       .catch((error) => {
         console.error(error);
       });
-  }, [timePeriod, entryTypeId, recentEntries, isFetching]);
+  }, [timePeriod, entryTypeId, recentEntries, status]);
 
   useEffect(() => {
     return () => {
@@ -119,7 +119,7 @@ export function HistoryPage() {
           }}
         />
 
-        {!isFetching && (
+        {status === "idle" && (
           <>
             <EntryTypesChips
               entries={entries}
@@ -131,9 +131,9 @@ export function HistoryPage() {
         )}
       </Stack>
 
-      {isFetching && <LoadingIndicator />}
+      {status === "busy" && <LoadingIndicator />}
 
-      {!filteredEntries.length && !isFetching && (
+      {!filteredEntries.length && status === "idle" && (
         <EmptyState
           context={EmptyStateContext.Entries}
           override={{

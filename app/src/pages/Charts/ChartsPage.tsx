@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 
 export function ChartsPage() {
   const { timePeriod, reset } = useFilters();
-  const { recentEntries, getDailyEntries, isFetching } = useEntries();
+  const { recentEntries, getDailyEntries, status } = useEntries();
 
   const { user } = useAuthentication();
 
@@ -54,7 +54,7 @@ export function ChartsPage() {
       return;
     }
 
-    if (isFetching) {
+    if (status === "busy") {
       return;
     }
 
@@ -79,7 +79,7 @@ export function ChartsPage() {
       .catch((error) => {
         console.error(error);
       });
-  }, [timePeriod, entryTypeId, recentEntries, isFetching]);
+  }, [timePeriod, entryTypeId, recentEntries, status]);
 
   useEffect(() => {
     return () => {
@@ -111,9 +111,9 @@ export function ChartsPage() {
         />
       </Stack>
 
-      {isFetching && <LoadingIndicator />}
+      {status === "busy" && <LoadingIndicator />}
 
-      {!entries.length && !isFetching && (
+      {!entries.length && status === "idle" && (
         <EmptyState
           context={EmptyStateContext.Graphics}
           override={{
@@ -125,7 +125,7 @@ export function ChartsPage() {
         />
       )}
 
-      {entries.length > 0 && !isFetching && (
+      {entries.length > 0 && status === "idle" && (
         <Stack
           spacing={2}
           sx={{

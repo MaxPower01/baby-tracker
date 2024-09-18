@@ -14,7 +14,7 @@ export function EntryPage() {
   const [searchParams] = useSearchParams();
   const { dateKey, entryId } = useParams();
   const { user } = useAuthentication();
-  const { getEntry, isFetching } = useEntries();
+  const { getEntry, status } = useEntries();
 
   const babyId = user?.babyId ?? "";
   const entryType = searchParams.get("type");
@@ -28,6 +28,8 @@ export function EntryPage() {
   const [entry, setEntry] = useState<Entry | null | undefined>(
     isNewEntry ? getDefaultEntry(entryType as string, babyId) : undefined
   );
+  console.log("🚀 ~ EntryPage ~ status:", status);
+  console.log("🚀 ~ EntryPage ~ entry:", entry);
 
   useEffect(() => {
     if (
@@ -36,7 +38,7 @@ export function EntryPage() {
       !isNullOrWhiteSpace(dateKey) &&
       !isNullOrWhiteSpace(babyId) &&
       entry == null &&
-      !isFetching
+      status === "idle"
     ) {
       getEntry({
         id: entryId as string,
@@ -46,10 +48,10 @@ export function EntryPage() {
         setEntry(entry);
       });
     }
-  }, [entry, entryId, getEntry, isNewEntry, isFetching, babyId, dateKey, user]);
+  }, [entry, entryId, getEntry, isNewEntry, status, babyId, dateKey, user]);
 
   if (entry == null) {
-    if (!isNewEntry && isFetching) {
+    if (!isNewEntry && status === "busy") {
       return <LoadingIndicator />;
     } else {
       // TODO: Show error message
