@@ -206,7 +206,7 @@ export function EntriesProvider(props: Props) {
   const saveEntry = useCallback(
     (entry: Entry) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<Entry>(async (resolve, reject) => {
           try {
             if (status === "busy") {
@@ -342,7 +342,7 @@ export function EntriesProvider(props: Props) {
   const saveEntries = useCallback(
     (entries: Entry[]) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<Entry[]>(async (resolve, reject) => {
           try {
             if (status === "busy") {
@@ -446,7 +446,7 @@ export function EntriesProvider(props: Props) {
   const getEntry = useCallback(
     (props: { id: string; dateKey: string; babyId: string }) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<Entry | null>(async (resolve, reject) => {
           try {
             if (status === "busy") {
@@ -508,7 +508,7 @@ export function EntriesProvider(props: Props) {
       babyId: string;
     }) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<DailyEntriesCollection>(async (resolve, reject) => {
           try {
             if (status === "busy") {
@@ -644,7 +644,7 @@ export function EntriesProvider(props: Props) {
   const deleteEntry = useCallback(
     (props: { id: string; dateKey: string; babyId: string }) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<boolean>(async (resolve, reject) => {
           try {
             if (status === "busy") {
@@ -709,7 +709,7 @@ export function EntriesProvider(props: Props) {
   const deleteDailyEntries = useCallback(
     (props: { dateKeys: string[]; babyId: string }) => {
       return Promise.race([
-        createTimeoutPromise(5000),
+        createTimeoutPromise(10000),
         new Promise<void>(async (resolve, reject) => {
           try {
             if (status === "busy") {
