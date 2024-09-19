@@ -23,6 +23,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 type Props = {
   id?: string;
   time: number;
+  isDisabled?: boolean;
   setTime: (time: number) => void;
   sx?: SxProps;
 };
@@ -70,6 +71,9 @@ export function StopwatchTimePicker(props: Props) {
       <Box
         id={props.id}
         onClick={() => {
+          if (props.isDisabled) {
+            return;
+          }
           setDialogIsOpen(true);
         }}
         sx={{

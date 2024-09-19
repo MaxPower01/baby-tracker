@@ -36,6 +36,7 @@ import { v4 as uuid } from "uuid";
 type Props = {
   size: "big" | "small";
   hasSides?: boolean;
+  isDisabled?: boolean;
   leftTime: number;
   setLeftTime: React.Dispatch<React.SetStateAction<number>>;
   rightTime: number;
@@ -235,11 +236,13 @@ export function StopwatchContainer(props: Props) {
                   sx={{
                     position: "relative",
                   }}
+                  disabled={props.isDisabled}
                 >
                   <EditIcon />
                   <StopwatchTimePicker
                     time={props.leftTime}
                     setTime={props.setLeftTime}
+                    isDisabled={props.isDisabled}
                     sx={{
                       position: "absolute",
                       top: 0,
@@ -284,6 +287,7 @@ export function StopwatchContainer(props: Props) {
                           1
                         )}))`,
                       }}
+                      disabled={props.isDisabled}
                       onClick={() => {
                         const stopwatchContainer =
                           document.getElementById(stopwatchContainerId);
@@ -301,6 +305,7 @@ export function StopwatchContainer(props: Props) {
                     id={stopwatchContainerId}
                     time={props.leftTime}
                     setTime={props.setLeftTime}
+                    isDisabled={props.isDisabled}
                     sx={{
                       position: "absolute",
                       top: 0,
@@ -318,11 +323,13 @@ export function StopwatchContainer(props: Props) {
                   sx={{
                     position: "relative",
                   }}
+                  disabled={props.isDisabled}
                 >
                   <EditIcon />
                   <StopwatchTimePicker
                     time={props.rightTime}
                     setTime={props.setRightTime}
+                    isDisabled={props.isDisabled}
                     sx={{
                       position: "absolute",
                       top: 0,
@@ -358,6 +365,7 @@ export function StopwatchContainer(props: Props) {
             size={props.size}
             label={props.hasSides ? "Gauche" : undefined}
             time={props.leftTime}
+            isDisabled={props.isDisabled}
             setTime={props.setLeftTime}
             isRunning={props.leftIsRunning}
             setIsRunning={props.setLeftIsRunning}
@@ -377,6 +385,7 @@ export function StopwatchContainer(props: Props) {
               size={props.size}
               label={"Droite"}
               time={props.rightTime}
+              isDisabled={props.isDisabled}
               setTime={props.setRightTime}
               isRunning={props.rightIsRunning}
               setIsRunning={props.setRightIsRunning}

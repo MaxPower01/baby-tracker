@@ -28,8 +28,6 @@ export function EntryPage() {
   const [entry, setEntry] = useState<Entry | null | undefined>(
     isNewEntry ? getDefaultEntry(entryType as string, babyId) : undefined
   );
-  console.log("🚀 ~ EntryPage ~ status:", status);
-  console.log("🚀 ~ EntryPage ~ entry:", entry);
 
   useEffect(() => {
     if (

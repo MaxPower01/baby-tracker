@@ -13,6 +13,7 @@ type Props = {
   hideTimeLabel?: boolean;
   time: number;
   showTitle?: boolean;
+  isDisabled?: boolean;
   setTime: React.Dispatch<React.SetStateAction<number>>;
   isRunning: boolean;
   setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
@@ -70,6 +71,7 @@ export function Stopwatch(props: Props) {
         time={props.time}
         isRunning={props.isRunning}
         size={props.size}
+        isDisabled={props.isDisabled}
         label={props.label}
         handleClick={handleButtonClick}
         type="play/pause"

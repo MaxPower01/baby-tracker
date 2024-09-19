@@ -435,6 +435,12 @@ export default function EntryForm(props: EntryFormProps) {
             poopHasUndigestedPieces: poopHasUndigestedPieces,
           };
           await saveEntry(entry);
+          setLeftStopwatchIsRunning(newLeftStopwatchIsRunning);
+          setRightStopwatchIsRunning(newRightStopwatchIsRunning);
+          setLeftStopwatchLastUpdateTime(newLeftStopwatchLastUpdateTime);
+          setRightStopwatchLastUpdateTime(newRightStopwatchLastUpdateTime);
+          setLeftTime(newLeftTime);
+          setRightTime(newRightTime);
           setIsSaving(false);
           return resolve(true);
         } catch (error) {
@@ -638,6 +644,7 @@ export default function EntryForm(props: EntryFormProps) {
             <SectionTitle title="Durée" />
             <StopwatchContainer
               size="big"
+              isDisabled={isSaving}
               hasSides={hasSides}
               leftTime={leftTime}
               setLeftTime={(time) =>

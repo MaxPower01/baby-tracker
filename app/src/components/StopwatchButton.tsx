@@ -12,6 +12,7 @@ type Props = {
   type: "play/pause" | "stop";
   label?: string;
   time: number;
+  isDisabled?: boolean;
   isRunning: boolean;
   hideTimeLabel?: boolean;
   handleClick: () => void;
@@ -34,6 +35,7 @@ export function StopwatchButton(props: Props) {
     <Button
       color="primary"
       variant={props.isRunning ? "contained" : "outlined"}
+      disabled={props.isDisabled}
       sx={{
         display: "flex",
         justifyContent: "center",

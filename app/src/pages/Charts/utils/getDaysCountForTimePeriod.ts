@@ -19,6 +19,7 @@ export function getDaysCountForTimePeriod(timePeriod: TimePeriodId): number {
     case TimePeriodId.ThisYear:
       return 365;
     case TimePeriodId.AllTime:
+      return 365 * 5;
     case TimePeriodId.Custom:
     default:
       return 1;
