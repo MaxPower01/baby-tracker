@@ -70,6 +70,8 @@ export default function EntryForm(props: EntryFormProps) {
     };
   }, []);
 
+  const [entryId, setEntryId] = useState(props.entry.id);
+
   const { user } = useAuthentication();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -309,7 +311,7 @@ export default function EntryForm(props: EntryFormProps) {
     }
     setIsSaving(true);
     const entry: Entry = {
-      id: props.entry.id,
+      id: entryId,
       babyId: props.entry.babyId,
       entryTypeId: props.entry.entryTypeId,
       startTimestamp: getTimestamp(startDateTime),
@@ -377,6 +379,7 @@ export default function EntryForm(props: EntryFormProps) {
     user,
     navigate,
     showSnackbar,
+    entryId,
   ]);
 
   // TODO: Use status of useEntries instead of "isSaving"
@@ -416,7 +419,7 @@ export default function EntryForm(props: EntryFormProps) {
             rightStopwatchIsRunning: newRightStopwatchIsRunning,
             rightStopwatchLastUpdateTime: newRightStopwatchLastUpdateTime,
             endTimestamp: newEndTimestamp,
-            id: props.entry.id,
+            id: entryId,
             babyId: props.entry.babyId,
             entryTypeId: props.entry.entryTypeId,
             startTimestamp: getTimestamp(startDateTime),
@@ -434,7 +437,8 @@ export default function EntryForm(props: EntryFormProps) {
             poopTextureId: poopTextureId,
             poopHasUndigestedPieces: poopHasUndigestedPieces,
           };
-          await saveEntry(entry);
+          const savedEntry = await saveEntry(entry);
+          setEntryId(savedEntry.id);
           setLeftStopwatchIsRunning(newLeftStopwatchIsRunning);
           setRightStopwatchIsRunning(newRightStopwatchIsRunning);
           setLeftStopwatchLastUpdateTime(newLeftStopwatchLastUpdateTime);
@@ -465,6 +469,7 @@ export default function EntryForm(props: EntryFormProps) {
       rightTime,
       rightStopwatchIsRunning,
       urineAmount,
+      entryId,
       poopAmount,
       poopColorId,
       poopTextureId,
