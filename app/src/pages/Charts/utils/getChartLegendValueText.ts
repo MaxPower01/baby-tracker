@@ -7,7 +7,7 @@ import formatStopwatchTime from "@/utils/formatStopwatchTime";
 
 export function getChartLegendValueText(props: {
   entryType: EntryTypeId;
-  yAxisunit: YAxisUnit;
+  yAxisUnit: YAxisUnit;
   xAxisUnit: XAxisUnit;
   yAxisType: YAxisType;
   category?: DatapointCategory;

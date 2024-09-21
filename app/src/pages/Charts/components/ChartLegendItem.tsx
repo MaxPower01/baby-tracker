@@ -10,6 +10,7 @@ export type ChartLegendItemProps = {
   textColor: string;
   labelText: string;
   valueText: string;
+  value: number;
 };
 
 export default function ChartLegendItem(props: ChartLegendItemProps) {

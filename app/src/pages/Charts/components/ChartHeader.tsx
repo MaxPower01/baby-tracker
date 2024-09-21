@@ -1,17 +1,19 @@
 import * as d3 from "d3";
 
+import React, { useMemo } from "react";
+import { Stack, Typography, useTheme } from "@mui/material";
+
 import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import { ChartLegend } from "@/pages/Charts/components/ChartLegend";
 import { ChartLegendItemProps } from "@/pages/Charts/components/ChartLegendItem";
 import { DatapointCategory } from "@/pages/Charts/enums/DatapointCategory";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import React from "react";
 import { StackedBarChartDatapoint } from "@/pages/Charts/types/StackedBarChartDatapoint";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
 import { YAxisUnit } from "@/types/YAxisUnit";
 import { getChartLegendItem } from "@/pages/Charts/utils/getChartLegendItem";
-import { useTheme } from "@mui/material";
+import { getChartLegendTotalValueLabel } from "@/pages/Charts/utils/getChartLegendTotalValueLabel";
 
 type Props = {
   entryType: EntryTypeId;
@@ -39,7 +41,7 @@ export default function ChartHeader(props: Props) {
       legendItems.push(
         getChartLegendItem({
           entryType: props.entryType,
-          yAxisunit: props.yAxisUnit,
+          yAxisUnit: props.yAxisUnit,
           xAxisUnit: props.xAxisUnit,
           yAxisType: props.yAxisType,
           category: category,
@@ -52,7 +54,7 @@ export default function ChartHeader(props: Props) {
     legendItems.push(
       getChartLegendItem({
         entryType: props.entryType,
-        yAxisunit: props.yAxisUnit,
+        yAxisUnit: props.yAxisUnit,
         xAxisUnit: props.xAxisUnit,
         yAxisType: props.yAxisType,
         value: d3.sum(props.datapoints, (d) => d.value),
@@ -61,5 +63,32 @@ export default function ChartHeader(props: Props) {
     );
   }
 
-  return <ChartLegend items={legendItems} />;
+  const totalLabel = useMemo(() => {
+    return getChartLegendTotalValueLabel({
+      entryType: props.entryType,
+      yAxisUnit: props.yAxisUnit,
+      xAxisUnit: props.xAxisUnit,
+      yAxisType: props.yAxisType,
+      legendItems: legendItems,
+    });
+  }, [legendItems]);
+
+  return (
+    <Stack>
+      <ChartLegend items={legendItems} />
+
+      {legendItems.length > 1 && (
+        <Stack
+          direction={"row"}
+          justifyContent={"flex-start"}
+          alignItems={"center"}
+        >
+          <Typography variant={"h6"}>
+            <span>Total :</span>
+            <span></span>
+          </Typography>
+        </Stack>
+      )}
+    </Stack>
+  );
 }

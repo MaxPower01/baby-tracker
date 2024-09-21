@@ -12,7 +12,7 @@ import { getChartLegendValueText } from "@/pages/Charts/utils/getChartLegendValu
 
 export function getChartLegendItem(props: {
   entryType: EntryTypeId;
-  yAxisunit: YAxisUnit;
+  yAxisUnit: YAxisUnit;
   xAxisUnit: XAxisUnit;
   yAxisType: YAxisType;
   category?: DatapointCategory;
@@ -32,5 +32,6 @@ export function getChartLegendItem(props: {
     }),
     labelText: getChartLegendText({ ...props }),
     valueText: getChartLegendValueText({ ...props }),
+    value: props.value,
   };
 }

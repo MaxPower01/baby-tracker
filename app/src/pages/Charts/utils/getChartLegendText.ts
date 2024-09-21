@@ -7,7 +7,7 @@ import { YAxisUnit } from "@/types/YAxisUnit";
 
 export function getChartLegendText(props: {
   entryType: EntryTypeId;
-  yAxisunit: YAxisUnit;
+  yAxisUnit: YAxisUnit;
   xAxisUnit: XAxisUnit;
   yAxisType: YAxisType;
   category?: DatapointCategory;
