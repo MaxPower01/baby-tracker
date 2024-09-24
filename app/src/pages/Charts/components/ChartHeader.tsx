@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
-import { Stack, Typography, useTheme } from "@mui/material";
 
 import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import { ChartLegend } from "@/pages/Charts/components/ChartLegend";
@@ -84,8 +84,22 @@ export default function ChartHeader(props: Props) {
           alignItems={"center"}
         >
           <Typography variant={"h6"}>
-            <span>Total :</span>
-            <span></span>
+            <Box
+              sx={{
+                display: "inline",
+                color: theme.palette.text.secondary,
+              }}
+            >
+              Total :
+            </Box>
+            <Box
+              sx={{
+                display: "inline",
+                color: theme.palette.text.primary,
+              }}
+            >
+              {" " + totalLabel}
+            </Box>
           </Typography>
         </Stack>
       )}

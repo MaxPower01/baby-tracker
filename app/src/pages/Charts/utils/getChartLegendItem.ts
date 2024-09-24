@@ -5,7 +5,7 @@ import { Theme } from "@mui/material";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
 import { YAxisUnit } from "@/types/YAxisUnit";
-import { getBarColor } from "@/pages/Charts/utils/getBarColor";
+import { getChartBarColor } from "@/pages/Charts/utils/getChartBarColor";
 import { getChartLegendText } from "@/pages/Charts/utils/getChartLegendText";
 import { getChartLegendTextColor } from "@/pages/Charts/utils/getChartLegendTextColor";
 import { getChartLegendValueText } from "@/pages/Charts/utils/getChartLegendValueText";
@@ -20,7 +20,7 @@ export function getChartLegendItem(props: {
   theme: Theme;
 }): ChartLegendItemProps {
   return {
-    dotColor: getBarColor({
+    dotColor: getChartBarColor({
       entryTypeId: props.entryType,
       theme: props.theme,
       category: props.category,

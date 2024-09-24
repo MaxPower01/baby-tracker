@@ -12,8 +12,8 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
 import { getBarChartDatapoints } from "@/pages/Charts/utils/getBarChartDatapoints";
-import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
+import { getChartBarColor } from "@/pages/Charts/utils/getChartBarColor";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getChartLegendItem } from "@/pages/Charts/utils/getChartLegendItem";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
@@ -151,7 +151,7 @@ export function BarChart(props: Props) {
     svg
       .append("g")
       .attr("fill", () =>
-        getBarColor({
+        getChartBarColor({
           entryTypeId: props.entryTypeId,
           theme,
         })

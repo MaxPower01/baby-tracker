@@ -11,8 +11,8 @@ import { StackedBarChartDatapoint } from "@/pages/Charts/types/StackedBarChartDa
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
-import { getBarColor } from "@/pages/Charts/utils/getBarColor";
 import { getBarsCount } from "@/pages/Charts/utils/getBarsCount";
+import { getChartBarColor } from "@/pages/Charts/utils/getChartBarColor";
 import { getChartLayout } from "@/pages/Charts/utils/getChartLayout";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointsValue } from "@/pages/Charts/utils/getDatapointsValue";
@@ -163,7 +163,7 @@ export function StackedBarChart(props: Props) {
       .data(series)
       .join("g")
       .attr("fill", (point) =>
-        getBarColor({
+        getChartBarColor({
           entryTypeId: props.entryTypeId,
           category: point.key as DatapointCategory,
           theme,
