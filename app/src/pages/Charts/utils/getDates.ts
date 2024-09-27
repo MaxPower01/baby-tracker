@@ -26,7 +26,7 @@ export function getDates(
       dates.unshift(newDate);
     }
   } else {
-    for (let i = barsCount - 1; i >= 1; i--) {
+    for (let i = barsCount - 1; i >= 0; i--) {
       const newDate = new Date();
       newDate.setHours(now.getHours() - i, 0, 0, 0);
       dates.unshift(newDate);
