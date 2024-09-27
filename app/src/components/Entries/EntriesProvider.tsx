@@ -88,6 +88,12 @@ export function EntriesProvider(props: Props) {
 
   const [recentEntries, setRecentEntries] = React.useState<Entry[]>([]);
 
+  useEffect(() => {
+    return () => {
+      setStatus("idle");
+    };
+  }, []);
+
   // Fetch recent entries and subscribe to changes
   useEffect(() => {
     const babyId = user?.babyId ?? "";
@@ -101,14 +107,10 @@ export function EntriesProvider(props: Props) {
         orderBy("timestamp", "desc")
       );
 
-      setStatus("busy");
-
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const addedDailyEntries: DailyEntries[] = [];
         const modifiedDailyEntries: DailyEntries[] = [];
         const removedDailyEntries: DailyEntries[] = [];
-
-        setStatus("idle");
 
         snapshot.docChanges().forEach((change) => {
           if (change.doc.data() != null) {
@@ -198,7 +200,6 @@ export function EntriesProvider(props: Props) {
 
       return () => {
         unsubscribe();
-        setStatus("idle");
       };
     }
   }, [user]);
