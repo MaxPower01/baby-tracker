@@ -195,6 +195,7 @@ export default function ActivitiesPage() {
                                 variant={"body1"}
                                 sx={{
                                   marginLeft: 2,
+                                  color: theme.customPalette.text.primary,
                                 }}
                               >
                                 {getEntryTypeName(entryTypeId)}

@@ -247,6 +247,7 @@ export function BottomBar(props: Props) {
                       textAlign="center"
                       sx={{
                         // fontSize: "50%",
+                        color: theme.customPalette.text.secondary,
                         fontWeight: isCurrentPage == true ? "bold" : 400,
                       }}
                     >

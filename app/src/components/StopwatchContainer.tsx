@@ -268,13 +268,14 @@ export function StopwatchContainer(props: Props) {
                 >
                   <Typography
                     variant={props.size === "big" ? "h4" : "body2"}
-                    color={
-                      props.size === "big"
-                        ? theme.customPalette.text.primary
-                        : theme.palette.primary.main
-                    }
                     fontWeight={props.size === "big" ? undefined : 600}
                     textAlign={"center"}
+                    sx={{
+                      color:
+                        props.size === "big"
+                          ? theme.customPalette.text.primary
+                          : theme.palette.primary.main,
+                    }}
                   >
                     {title}
                   </Typography>

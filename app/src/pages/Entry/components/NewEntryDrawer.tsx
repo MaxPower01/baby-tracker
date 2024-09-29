@@ -65,7 +65,14 @@ export function NewEntryDrawer(props: {
       >
         <Container maxWidth={CSSBreakpoint.Small} disableGutters>
           <Toolbar>
-            <Typography variant="h6">Ajouter une entrée</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: theme.customPalette.text.primary,
+              }}
+            >
+              Ajouter une entrée
+            </Typography>
             <Box sx={{ flexGrow: 1 }} />
             <IconButton
               onClick={() => {
@@ -152,6 +159,7 @@ export function NewEntryDrawer(props: {
                           lineHeight={1.2}
                           sx={{
                             wordBreak: "break-word",
+                            color: theme.customPalette.text.primary,
                           }}
                         >
                           {buttonLabel}

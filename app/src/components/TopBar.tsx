@@ -5,6 +5,7 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -27,6 +28,8 @@ type Props = {
 
 export function TopBar(props: Props) {
   const navigate = useNavigate();
+
+  const theme = useTheme();
 
   // const editingEntryId = useSelector(selectEditingEntryId);
 
@@ -80,7 +83,14 @@ export function TopBar(props: Props) {
               <ArrowBackIcon />
             </IconButton>
           )}
-          <Typography variant="h6">{pageTitle}</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.customPalette.text.primary,
+            }}
+          >
+            {pageTitle}
+          </Typography>
 
           <Box sx={{ flexGrow: 1 }} />
 

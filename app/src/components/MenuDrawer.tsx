@@ -148,7 +148,13 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                         fontSize: "6em",
                       }}
                     />
-                    <Typography variant="body1" textAlign={"center"}>
+                    <Typography
+                      variant="body1"
+                      textAlign={"center"}
+                      sx={{
+                        color: theme.customPalette.text.secondary,
+                      }}
+                    >
                       Connectez-vous pour sauvegarder vos données
                     </Typography>
                   </Stack>
@@ -175,7 +181,13 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                       ?.split(" ")
                       .map((name) => name[0].toUpperCase())}
                   </Avatar>
-                  <Typography variant="h5" textAlign={"center"}>
+                  <Typography
+                    variant="h5"
+                    textAlign={"center"}
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                    }}
+                  >
                     {user.displayName}
                   </Typography>
                 </>
@@ -207,7 +219,14 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Ma famille</Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
+                  Ma famille
+                </Typography>
               </Button>
               {!isNullOrWhiteSpace(babyId) && (
                 <Button
@@ -229,7 +248,14 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                       marginRight: 1,
                     }}
                   />
-                  <Typography variant="body1">Inviter quelqu'un</Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                    }}
+                  >
+                    Inviter quelqu'un
+                  </Typography>
                 </Button>
               )}
               <Button
@@ -250,7 +276,12 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
                   Modifier l'ordre des activités
                 </Typography>
               </Button>
@@ -272,7 +303,14 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Paramètres</Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
+                  Paramètres
+                </Typography>
               </Button>
             </Stack>
             <Divider />
@@ -300,7 +338,12 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                       marginRight: 1,
                     }}
                   />
-                  <Typography variant="body1">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                    }}
+                  >
                     Générer des fausses entrées
                   </Typography>
                   <Box
@@ -368,7 +411,14 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     marginRight: 1,
                   }}
                 />
-                <Typography variant="body1">Déconnexion</Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
+                  Déconnexion
+                </Typography>
               </Button>
             </Stack>
           </Stack>

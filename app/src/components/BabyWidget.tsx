@@ -66,7 +66,13 @@ export function BabyWidget(props: Props) {
                 .map((name) => (name[0] ?? "").toUpperCase())}
             </Avatar>
             <Stack>
-              <Typography variant="h6" textAlign={"center"}>
+              <Typography
+                variant="h6"
+                textAlign={"center"}
+                sx={{
+                  color: theme.customPalette.text.primary,
+                }}
+              >
                 {getBabyAgeLabel(baby)}
               </Typography>
               {/* {!isNullOrWhiteSpace(ageLabels.next) && (

@@ -120,7 +120,7 @@ export function ImagesInput(props: Props) {
             }
           }}
         >
-          Ajouter une image
+          Ajouter des images
         </Button>
       </label>
       {(props.imageUrls?.length ?? 0) > 0 && (

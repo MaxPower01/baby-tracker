@@ -28,13 +28,22 @@ export function BabiesLanding({ setShowForm }: Props) {
           <ReactSVG src="/stickers/baby.svg" className="Sticker" />
         </Box>
         <Stack spacing={1}>
-          <Typography variant={"h4"} textAlign={"center"} fontWeight={"bold"}>
+          <Typography
+            variant={"h4"}
+            textAlign={"center"}
+            fontWeight={"bold"}
+            sx={{
+              color: theme.customPalette.text.primary,
+            }}
+          >
             Ajoutez votre enfant
           </Typography>
           <Typography
             variant={"body1"}
             textAlign={"center"}
-            color={theme.customPalette.text.secondary}
+            sx={{
+              color: theme.customPalette.text.secondary,
+            }}
           >
             La première étape pour utiliser l'application est d'ajouter un
             enfant à votre compte.
@@ -66,26 +75,22 @@ export function BabiesLanding({ setShowForm }: Props) {
         <Typography
           variant={"body2"}
           textAlign={"center"}
-          color={theme.customPalette.text.secondary}
-          sx={
-            {
-              // fontStyle: "italic",
-              // opacity: 0.8,
-            }
-          }
+          sx={{
+            color: theme.customPalette.text.secondary,
+            // fontStyle: "italic",
+            // opacity: 0.8,
+          }}
         >
           Votre paretenaire utilise déjà l'application ?
         </Typography>
         <Typography
           variant={"body2"}
           textAlign={"center"}
-          color={theme.customPalette.text.tertiary}
-          sx={
-            {
-              // fontStyle: "italic",
-              // opacity: 0.5,
-            }
-          }
+          sx={{
+            color: theme.customPalette.text.tertiary,
+            // fontStyle: "italic",
+            // opacity: 0.5,
+          }}
         >
           Demandez-lui de vous ajouter en tant que parent, puis rafraichissez la
           page.

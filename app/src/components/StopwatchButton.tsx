@@ -57,7 +57,7 @@ export function StopwatchButton(props: Props) {
               variant="body2"
               textAlign={"center"}
               sx={{
-                opacity: theme.opacity.secondary,
+                color: theme.customPalette.text.secondary,
               }}
             >
               {props.label}
@@ -71,6 +71,7 @@ export function StopwatchButton(props: Props) {
                 textAlign={"center"}
                 sx={{
                   fontWeight: "bold",
+                  color: theme.customPalette.text.primary,
                 }}
               >
                 {timeLabel}

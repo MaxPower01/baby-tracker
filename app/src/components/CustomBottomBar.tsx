@@ -56,7 +56,10 @@ export function CustomBottomBar(props: Props) {
             >
               <Typography
                 variant="button"
-                sx={{ fontSize: theme.typography.body1.fontSize }}
+                sx={{
+                  fontSize: theme.typography.body1.fontSize,
+                  color: theme.customPalette.text.primary,
+                }}
               >
                 Enregistrer
               </Typography>

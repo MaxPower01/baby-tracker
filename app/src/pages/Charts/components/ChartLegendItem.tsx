@@ -22,6 +22,7 @@ export default function ChartLegendItem(props: ChartLegendItemProps) {
         variant="body1"
         sx={{
           fontWeight: 600,
+          color: theme.customPalette.text.primary,
         }}
       >
         {props.valueText}

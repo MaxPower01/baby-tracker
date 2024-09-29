@@ -480,7 +480,14 @@ export function ActivityContextDrawer(props: Props) {
                     }}
                   />
                 )}
-                <Typography variant="h6">{drawerTitle}</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
+                  {drawerTitle}
+                </Typography>
               </Stack>
               <Box sx={{ flexGrow: 1 }} />
               <IconButton

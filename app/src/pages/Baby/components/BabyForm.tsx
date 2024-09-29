@@ -57,15 +57,19 @@ import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
 ) {
+  const theme = useTheme();
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ width: "100%", mr: 1 }}>
         <LinearProgress variant="determinate" {...props} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            color: theme.customPalette.text.tertiary,
+          }}
+        >{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>
   );
@@ -94,7 +98,12 @@ function ItemLabel(props: ItemLabelProps) {
           <ReactSVG src={`/icons/${props.icon}.svg`} className="Icon" />
         </Box>
       )}
-      <Typography variant="body1" color={theme.customPalette.text.secondary}>
+      <Typography
+        variant="body1"
+        sx={{
+          color: theme.customPalette.text.secondary,
+        }}
+      >
         {props.label}
       </Typography>
     </Stack>

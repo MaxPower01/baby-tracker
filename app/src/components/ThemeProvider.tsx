@@ -149,10 +149,22 @@ export function ThemeProvider(props: ThemeProviderProps) {
                 : "hsl(0 0% 0% / 0.035)",
           },
           text: {
-            primary: themeMode === "dark" ? "#ffffff" : "#000000",
-            secondary: themeMode === "dark" ? "#ffffffde" : "#000000de",
-            tertiary: themeMode === "dark" ? "#ffffffb3" : "#000000b3",
-            disabled: themeMode === "dark" ? "#ffffff66" : "#00000066",
+            primary:
+              themeMode === "dark"
+                ? "rgba(255,255,255,0.87)"
+                : "rgba(0,0,0,0.87)",
+            secondary:
+              themeMode === "dark"
+                ? "rgba(255,255,255,0.7)"
+                : "rgba(0,0,0,0.7)",
+            tertiary:
+              themeMode === "dark"
+                ? "rgba(255,255,255,0.5)"
+                : "rgba(0,0,0,0.5)",
+            disabled:
+              themeMode === "dark"
+                ? "rgba(255,255,255,0.3)"
+                : "rgba(0,0,0,0.3)",
           },
           red,
           pink,
@@ -175,10 +187,10 @@ export function ThemeProvider(props: ThemeProviderProps) {
           blueGrey,
         },
         opacity: {
-          primary: 1,
-          secondary: 0.87,
-          tertiary: 0.6,
-          disabled: 0.38,
+          primary: 0.87,
+          secondary: 0.7,
+          tertiary: 0.5,
+          disabled: 0.3,
         },
         shape: {
           borderRadius: 16,

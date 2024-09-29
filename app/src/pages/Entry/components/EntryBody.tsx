@@ -98,7 +98,7 @@ export function EntryBody(props: Props) {
           <Typography
             variant={"body2"}
             sx={{
-              opacity: theme.opacity.secondary,
+              color: theme.customPalette.text.secondary,
               fontWeight: 400,
               display: "inline",
             }}
@@ -114,7 +114,7 @@ export function EntryBody(props: Props) {
             <Typography
               variant={"body2"}
               sx={{
-                opacity: theme.opacity.tertiary,
+                color: theme.customPalette.text.tertiary,
                 fontWeight: 400,
                 display: "inline",
               }}
@@ -124,7 +124,7 @@ export function EntryBody(props: Props) {
             <Typography
               variant={"body2"}
               sx={{
-                opacity: theme.opacity.secondary,
+                color: theme.customPalette.text.secondary,
                 fontWeight: 400,
                 display: "inline",
               }}
@@ -138,7 +138,7 @@ export function EntryBody(props: Props) {
         <Typography
           variant={"body2"}
           sx={{
-            opacity: theme.opacity.tertiary,
+            color: theme.customPalette.text.tertiary,
             fontWeight: 400,
           }}
           gutterBottom
@@ -172,7 +172,7 @@ export function EntryBody(props: Props) {
         <Typography
           variant={"caption"}
           sx={{
-            opacity: theme.opacity.disabled,
+            color: theme.customPalette.text.disabled,
             fontWeight: 300,
             display: "inline",
           }}

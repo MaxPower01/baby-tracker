@@ -4,6 +4,7 @@ export enum PageId {
   History = "history",
   Entry = "entry",
   Authentication = "authentication",
+  Landing = "landing",
   Family = "family",
   Baby = "baby",
   Settings = "settings",

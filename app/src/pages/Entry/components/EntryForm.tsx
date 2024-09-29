@@ -506,7 +506,13 @@ export default function EntryForm(props: EntryFormProps) {
                 }}
               />
               <Stack direction={"row"} alignItems={"center"}>
-                <Typography variant="h5" textAlign="center">
+                <Typography
+                  variant="h5"
+                  textAlign="center"
+                  sx={{
+                    color: theme.customPalette.text.primary,
+                  }}
+                >
                   {name}
                 </Typography>
               </Stack>

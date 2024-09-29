@@ -79,15 +79,19 @@ export function FamilyPage() {
                       width: "100%",
                     }}
                   >
-                    <Typography variant={"h6"}>{baby.name}</Typography>
+                    <Typography
+                      variant={"h6"}
+                      sx={{
+                        color: theme.customPalette.text.primary,
+                      }}
+                    >
+                      {baby.name}
+                    </Typography>
                     <Typography
                       variant={"body2"}
-                      color={theme.customPalette.text.secondary}
-                      sx={
-                        {
-                          // opacity: 0.8,
-                        }
-                      }
+                      sx={{
+                        color: theme.customPalette.text.secondary,
+                      }}
                     >
                       {baby.sex == "male" ? "Garçon" : "Fille"} •{" "}
                       {baby.sex == "male" ? "Né" : "Née"} le{" "}

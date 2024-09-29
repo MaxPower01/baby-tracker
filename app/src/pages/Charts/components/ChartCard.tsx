@@ -91,7 +91,7 @@ export function ChartCard(props: Props) {
                   variant={"body1"}
                   fontWeight={600}
                   sx={{
-                    opacity: theme.opacity.primary,
+                    color: theme.palette.text.primary,
                   }}
                 >
                   {title}
@@ -100,7 +100,7 @@ export function ChartCard(props: Props) {
                   variant={"body2"}
                   fontWeight={400}
                   sx={{
-                    opacity: theme.opacity.secondary,
+                    color: theme.palette.text.secondary,
                   }}
                 >
                   {subtitle}

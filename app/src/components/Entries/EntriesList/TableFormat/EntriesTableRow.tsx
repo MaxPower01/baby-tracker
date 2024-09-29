@@ -137,7 +137,7 @@ export function EntriesTableRow(props: Props) {
                       variant={"caption"}
                       sx={{
                         lineHeight: 1,
-                        opacity: theme.opacity.tertiary,
+                        color: theme.customPalette.text.tertiary,
                         fontWeight: 300,
                         whiteSpace: "nowrap",
                       }}
@@ -148,6 +148,7 @@ export function EntriesTableRow(props: Props) {
                       variant="body2"
                       sx={{
                         whiteSpace: "nowrap",
+                        color: theme.customPalette.text.secondary,
                       }}
                     >
                       {title}

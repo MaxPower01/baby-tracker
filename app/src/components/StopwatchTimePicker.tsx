@@ -81,7 +81,13 @@ export function StopwatchTimePicker(props: Props) {
           cursor: "pointer",
         }}
       >
-        <Typography>{timeLabel}</Typography>
+        <Typography
+          sx={{
+            color: theme.palette.text.secondary,
+          }}
+        >
+          {timeLabel}
+        </Typography>
       </Box>
 
       <Dialog

@@ -99,6 +99,7 @@ export function DateHeader(props: Props) {
               sx={{
                 opacity: 0.5,
                 lineHeight: 1,
+                color: theme.customPalette.text.secondary,
               }}
             >
               {upperCaseFirst(

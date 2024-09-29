@@ -6,9 +6,9 @@ export function SectionTitle(props: { title: string }) {
     <Typography
       variant="h6"
       textAlign="left"
-      color={theme.customPalette.text.secondary}
       sx={{
         width: "100%",
+        color: theme.customPalette.text.secondary,
         // opacity: 0.6,
         // fontStyle: "italic",
       }}

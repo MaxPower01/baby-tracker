@@ -36,7 +36,9 @@ export function BabyPage() {
       return (
         <Typography
           variant={"body1"}
-          color={theme.customPalette.text.secondary}
+          sx={{
+            color: theme.customPalette.text.secondary,
+          }}
           textAlign={"center"}
         >
           Une erreur est survenue. Veuillez réessayer plus tard.

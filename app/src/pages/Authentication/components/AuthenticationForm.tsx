@@ -8,9 +8,6 @@ import { useAuthentication } from "@/pages/Authentication/hooks/useAuthenticatio
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-// import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
-// import { doc, setDoc } from "firebase/firestore";
-
 export default function AuthenticationForm() {
   const [isAuthenticating, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -49,6 +46,7 @@ export default function AuthenticationForm() {
         variant="contained"
         onClick={handleGoogleSignIn}
         fullWidth
+        color="primary"
         sx={{
           minHeight: `calc(${theme.typography.button.fontSize} * 2.5)`,
         }}

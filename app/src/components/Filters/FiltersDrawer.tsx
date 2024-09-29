@@ -36,6 +36,7 @@ type SectionProps = {
 };
 
 function FiltersSection(props: SectionProps) {
+  const theme = useTheme();
   return (
     <Stack spacing={1}>
       <Stack
@@ -50,6 +51,7 @@ function FiltersSection(props: SectionProps) {
           variant="body1"
           sx={{
             fontWeight: 600,
+            color: theme.customPalette.text.primary,
           }}
         >
           {props.title}
@@ -163,7 +165,14 @@ export function FiltersDrawer(props: Props) {
         >
           <Container maxWidth={CSSBreakpoint.Small} disableGutters>
             <Toolbar>
-              <Typography variant="h6">Filtres</Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: theme.customPalette.text.primary,
+                }}
+              >
+                Filtres
+              </Typography>
               <Box sx={{ flexGrow: 1 }} />
               <IconButton onClick={() => handleClose("cancel")}>
                 <CloseIcon />

@@ -118,6 +118,16 @@ export function EntriesCard(props: Props) {
 
           return (
             <Box key={entry.id}>
+              {entryIndex > 0 && (
+                <Divider
+                  sx={{
+                    marginLeft: 2,
+                    marginRight: 2,
+                    opacity: 0.5,
+                  }}
+                />
+              )}
+
               <CardActionArea
                 onClick={() => {
                   navigate(
@@ -154,7 +164,7 @@ export function EntriesCard(props: Props) {
                       position: "relative",
                     }}
                   >
-                    {nextEntryExists && (
+                    {/* {nextEntryExists && (
                       <Box
                         sx={{
                           display: undefined,
@@ -162,10 +172,8 @@ export function EntriesCard(props: Props) {
                           top: "3em",
                           left: "calc(1.75em - 2px)",
                           height: "100%",
-                          // opacity: 0.5,
                           paddingTop: 2.5,
                           paddingBottom: 2.5,
-                          // display: "none" : undefined,
                         }}
                       >
                         <Box
@@ -177,7 +185,7 @@ export function EntriesCard(props: Props) {
                           }}
                         ></Box>
                       </Box>
-                    )}
+                    )} */}
 
                     <Stack
                       direction={"row"}
@@ -194,7 +202,6 @@ export function EntriesCard(props: Props) {
                           height: "3.5em",
                           borderRadius: "50%",
                           border: "1px solid",
-                          // backgroundColor: theme.customPalette.background.avatar,
                           backgroundColor: stopwatchRunning
                             ? `${theme.palette.primary.main}30`
                             : "transparent",
@@ -265,7 +272,7 @@ export function EntriesCard(props: Props) {
                       alignItems={"center"}
                       spacing={2}
                     >
-                      <Box
+                      {/* <Box
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -275,7 +282,7 @@ export function EntriesCard(props: Props) {
                           borderColor: "transparent",
                           flexShrink: 0,
                         }}
-                      />
+                      /> */}
                       <EntryBody
                         entry={entry}
                         previousEntry={previousEntry}
@@ -287,16 +294,6 @@ export function EntriesCard(props: Props) {
                   </Box>
                 </CardContent>
               </CardActionArea>
-
-              {/* {nextEntryExists && (
-                <Divider
-                  sx={{
-                    marginLeft: 2,
-                    marginRight: 2,
-                    opacity: 0.5,
-                  }}
-                />
-              )} */}
             </Box>
           );
         })}
@@ -306,7 +303,13 @@ export function EntriesCard(props: Props) {
         <MenuItem onClick={(e) => handleDeleteButtonClick(e)}>
           <Stack direction={"row"} spacing={1}>
             <DeleteIcon />
-            <Typography>Supprimer</Typography>
+            <Typography
+              sx={{
+                color: theme.customPalette.text.primary,
+              }}
+            >
+              Supprimer
+            </Typography>
           </Stack>
         </MenuItem>
       </Menu>
