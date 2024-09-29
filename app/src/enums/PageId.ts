@@ -9,4 +9,5 @@ export enum PageId {
   Baby = "baby",
   Settings = "settings",
   Activities = "activities",
+  NewBaby = "new-baby",
 }

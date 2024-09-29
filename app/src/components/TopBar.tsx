@@ -16,6 +16,8 @@ import { PageId } from "@/enums/PageId";
 import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
+import { isNullOrWhiteSpace } from "@/utils/utils";
+import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useSelector } from "react-redux";
 
 // import { selectEditingEntryId } from "@/pages/History/state/entriesSlice";
@@ -30,6 +32,12 @@ export function TopBar(props: Props) {
   const navigate = useNavigate();
 
   const theme = useTheme();
+
+  const { user } = useAuthentication();
+
+  const babyId = useMemo(() => {
+    return user?.babyId ?? "";
+  }, [user?.babyId]);
 
   // const editingEntryId = useSelector(selectEditingEntryId);
 
@@ -68,6 +76,11 @@ export function TopBar(props: Props) {
       position="sticky"
       sx={{
         top: 0,
+        background:
+          isNullOrWhiteSpace(babyId) == true
+            ? theme.palette.background.default
+            : undefined,
+        boxShadow: isNullOrWhiteSpace(babyId) == true ? "none" : undefined,
         // backgroundImage: "none",
       }}
     >

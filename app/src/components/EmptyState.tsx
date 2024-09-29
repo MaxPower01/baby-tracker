@@ -109,7 +109,7 @@ export function EmptyState(props: EmptyStateProps) {
         )}
       </Stack>
       {!isNullOrWhiteSpace(buttonLabel) && (
-        <Button variant="contained" color="primary" onClick={onClick}>
+        <Button variant="contained" onClick={onClick}>
           {buttonLabel}
         </Button>
       )}

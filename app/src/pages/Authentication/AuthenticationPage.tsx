@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from "@mui/material";
 import AuthenticationForm from "@/pages/Authentication/components/AuthenticationForm";
 import { ReactSVG } from "react-svg";
 
-export default function AuthenticationPage() {
+export function AuthenticationPage() {
   const theme = useTheme();
   return (
     <Stack

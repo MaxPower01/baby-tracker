@@ -247,7 +247,6 @@ export default function BabyForm(props: Props) {
       ? 0
       : baby.birthWeight / 1000
   );
-
   const [size, setSize] = useState(baby.birthSize ?? 0);
   const [headCircumference, setHeadCircumference] = useState(
     baby.birthHeadCircumference ?? 0
@@ -458,8 +457,12 @@ export default function BabyForm(props: Props) {
                 style={{ display: "none" }}
               />
               <label htmlFor="baby-form-image-upload">
-                <Button variant="text" onClick={handleUploadImageButtonClick}>
-                  Définir la photo de profil
+                <Button
+                  variant="text"
+                  onClick={handleUploadImageButtonClick}
+                  fullWidth
+                >
+                  Définir une photo de profil
                 </Button>
               </label>
             </>
@@ -489,8 +492,8 @@ export default function BabyForm(props: Props) {
                 onChange={handleSexChange}
                 error={sexError !== ""}
               >
-                <MenuItem value={SexId.male}>Garçon</MenuItem>
-                <MenuItem value={SexId.female}>Fille</MenuItem>
+                <MenuItem value={SexId.Male}>Garçon</MenuItem>
+                <MenuItem value={SexId.Female}>Fille</MenuItem>
               </Select>
               <FormHelperText error={sexError !== ""}>
                 {sexError !== "" ? sexError : ""}
@@ -616,6 +619,7 @@ export default function BabyForm(props: Props) {
       <CustomBottomBar
         onSaveButtonClick={handleSubmit}
         saveButtonDisabled={isSaving}
+        saveButtonLoading={isSaving}
       />
     </>
   );

@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import LandingPage from "@/pages/Landing/LandingPage";
+import { LandingPage } from "@/pages/Landing/LandingPage";
 import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
 

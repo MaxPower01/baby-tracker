@@ -53,13 +53,7 @@ export function StopwatchButton(props: Props) {
       {props.size === "big" && (
         <>
           {props.label && !isNullOrWhiteSpace(props.label) && (
-            <Typography
-              variant="body2"
-              textAlign={"center"}
-              sx={{
-                color: theme.customPalette.text.secondary,
-              }}
-            >
+            <Typography variant="body2" textAlign={"center"}>
               {props.label}
             </Typography>
           )}

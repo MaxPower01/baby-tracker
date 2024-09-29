@@ -8,15 +8,20 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {
+  customBottomBarId,
+  customButtomBarSaveButtonId,
+} from "@/utils/constants";
 
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import React from "react";
-import { customButtomBarSaveButtonId } from "@/utils/constants";
 
 type Props = {
   onSaveButtonClick: () => void;
   saveButtonDisabled: boolean;
+  saveButtonLoading?: boolean;
+  overrideSaveButtonlabel?: string;
 };
 
 export function CustomBottomBar(props: Props) {
@@ -24,6 +29,7 @@ export function CustomBottomBar(props: Props) {
   return (
     <AppBar
       position="fixed"
+      id={customBottomBarId}
       component={"footer"}
       sx={{
         top: "auto",
@@ -58,14 +64,13 @@ export function CustomBottomBar(props: Props) {
                 variant="button"
                 sx={{
                   fontSize: theme.typography.body1.fontSize,
-                  color: theme.customPalette.text.primary,
                 }}
               >
-                Enregistrer
+                {props.overrideSaveButtonlabel ?? "Enregistrer"}
               </Typography>
               <Box
                 sx={{
-                  display: props.saveButtonDisabled ? "flex" : "none",
+                  display: props.saveButtonLoading ? "flex" : "none",
                   position: "absolute",
                   top: 0,
                   left: 0,

@@ -287,6 +287,7 @@ export function SettingsPage() {
       <CustomBottomBar
         onSaveButtonClick={saveChanges}
         saveButtonDisabled={isSaving}
+        saveButtonLoading={isSaving}
       />
     </>
   );

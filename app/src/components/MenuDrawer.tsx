@@ -193,199 +193,162 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                 </>
               )}
             </Stack>
-            <Divider />
-            <Stack
-              sx={{
-                width: "100%",
-              }}
-              alignItems={"flex-start"}
-              spacing={1}
-            >
-              <Button
-                variant="text"
-                fullWidth
-                sx={{
-                  color: theme.customPalette.text.primary,
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-                onClick={() => {
-                  props.onClose();
-                  navigate(getPath({ page: PageId.Family }));
-                }}
-              >
-                <PeopleAltIcon
+
+            {isNullOrWhiteSpace(babyId) == false && (
+              <>
+                <Divider />
+
+                <Stack
                   sx={{
-                    marginRight: 1,
+                    width: "100%",
                   }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                  }}
+                  alignItems={"flex-start"}
+                  spacing={1}
                 >
-                  Ma famille
-                </Typography>
-              </Button>
-              {!isNullOrWhiteSpace(babyId) && (
-                <Button
-                  variant="text"
-                  fullWidth
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                    textAlign: "left",
-                    justifyContent: "flex-start",
-                  }}
-                  onClick={() => {
-                    props.onClose();
-                    setEmail("");
-                    setDialogOpened(true);
-                  }}
-                >
-                  <PersonAddIcon
-                    sx={{
-                      marginRight: 1,
-                    }}
-                  />
-                  <Typography
-                    variant="body1"
+                  <Button
+                    variant="text"
+                    fullWidth
                     sx={{
                       color: theme.customPalette.text.primary,
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                    }}
+                    onClick={() => {
+                      props.onClose();
+                      navigate(getPath({ page: PageId.Family }));
                     }}
                   >
-                    Inviter quelqu'un
-                  </Typography>
-                </Button>
-              )}
-              <Button
-                variant="text"
-                fullWidth
-                sx={{
-                  color: theme.customPalette.text.primary,
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-                onClick={() => {
-                  props.onClose();
-                  navigate(getPath({ page: PageId.Activities }));
-                }}
-              >
-                <SortIcon
-                  sx={{
-                    marginRight: 1,
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                  }}
-                >
-                  Modifier l'ordre des activités
-                </Typography>
-              </Button>
-              <Button
-                variant="text"
-                fullWidth
-                sx={{
-                  color: theme.customPalette.text.primary,
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-                onClick={() => {
-                  props.onClose();
-                  navigate(getPath({ page: PageId.Settings }));
-                }}
-              >
-                <SettingsIcon
-                  sx={{
-                    marginRight: 1,
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                  }}
-                >
-                  Paramètres
-                </Typography>
-              </Button>
-            </Stack>
-            <Divider />
-            <Stack
-              sx={{
-                width: "100%",
-              }}
-              alignItems={"flex-start"}
-              spacing={1}
-            >
-              {isDevelopment() && (
-                <Button
-                  variant="text"
-                  fullWidth
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                    textAlign: "left",
-                    justifyContent: "flex-start",
-                  }}
-                  disabled={postingMockEntries}
-                  onClick={() => handlePostMockEntriesButtonClick()}
-                >
-                  <FileUploadIcon
-                    sx={{
-                      marginRight: 1,
-                    }}
-                  />
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: theme.customPalette.text.primary,
-                    }}
-                  >
-                    Générer des fausses entrées
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: postingMockEntries ? "flex" : "none",
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      width: "100%",
-                      height: "100%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <LoadingIndicator
-                      size={`calc(${theme.typography.button.fontSize} * 2)`}
+                    <PeopleAltIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
                     />
-                  </Box>
-                </Button>
-              )}
-              {/* <Button
-                variant="text"
-                fullWidth
-                sx={{
-                  color: theme.customPalette.text.primary,
-                  textAlign: "left",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <GetAppIcon
+                    <Typography variant="body1">Ma famille</Typography>
+                  </Button>
+                  {!isNullOrWhiteSpace(babyId) && (
+                    <Button
+                      variant="text"
+                      fullWidth
+                      sx={{
+                        color: theme.customPalette.text.primary,
+                        textAlign: "left",
+                        justifyContent: "flex-start",
+                      }}
+                      onClick={() => {
+                        props.onClose();
+                        setEmail("");
+                        setDialogOpened(true);
+                      }}
+                    >
+                      <PersonAddIcon
+                        sx={{
+                          marginRight: 1,
+                        }}
+                      />
+                      <Typography variant="body1">Inviter quelqu'un</Typography>
+                    </Button>
+                  )}
+                  <Button
+                    variant="text"
+                    fullWidth
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                    }}
+                    onClick={() => {
+                      props.onClose();
+                      navigate(getPath({ page: PageId.Activities }));
+                    }}
+                  >
+                    <SortIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                    <Typography variant="body1">
+                      Modifier l'ordre des activités
+                    </Typography>
+                  </Button>
+                  <Button
+                    variant="text"
+                    fullWidth
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                    }}
+                    onClick={() => {
+                      props.onClose();
+                      navigate(getPath({ page: PageId.Settings }));
+                    }}
+                  >
+                    <SettingsIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                    <Typography variant="body1">Paramètres</Typography>
+                  </Button>
+                </Stack>
+              </>
+            )}
+
+            {isNullOrWhiteSpace(babyId) == false && isDevelopment() && (
+              <>
+                <Divider />
+
+                <Stack
                   sx={{
-                    marginRight: 1,
+                    width: "100%",
                   }}
-                />
-                <Typography variant="body1">
-                  Exporter les entrées récentes
-                </Typography>
-              </Button> */}
-            </Stack>
+                  alignItems={"flex-start"}
+                  spacing={1}
+                >
+                  <Button
+                    variant="text"
+                    fullWidth
+                    sx={{
+                      color: theme.customPalette.text.primary,
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                    }}
+                    disabled={postingMockEntries}
+                    onClick={() => handlePostMockEntriesButtonClick()}
+                  >
+                    <FileUploadIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                    <Typography variant="body1">
+                      Générer des fausses entrées
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: postingMockEntries ? "flex" : "none",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        width: "100%",
+                        height: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <LoadingIndicator
+                        size={`calc(${theme.typography.button.fontSize} * 2)`}
+                      />
+                    </Box>
+                  </Button>
+                </Stack>
+              </>
+            )}
+
             <Divider />
+
             <Stack
               sx={{
                 width: "100%",
@@ -411,14 +374,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     marginRight: 1,
                   }}
                 />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.customPalette.text.primary,
-                  }}
-                >
-                  Déconnexion
-                </Typography>
+                <Typography variant="body1">Déconnexion</Typography>
               </Button>
             </Stack>
           </Stack>

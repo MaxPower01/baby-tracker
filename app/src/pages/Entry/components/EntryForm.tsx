@@ -707,6 +707,7 @@ export default function EntryForm(props: EntryFormProps) {
       <CustomBottomBar
         onSaveButtonClick={handleSubmit}
         saveButtonDisabled={isSaving}
+        saveButtonLoading={isSaving}
       />
     </>
   );

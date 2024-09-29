@@ -159,7 +159,6 @@ export function NewEntryDrawer(props: {
                           lineHeight={1.2}
                           sx={{
                             wordBreak: "break-word",
-                            color: theme.customPalette.text.primary,
                           }}
                         >
                           {buttonLabel}

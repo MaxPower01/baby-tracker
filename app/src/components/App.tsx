@@ -1,4 +1,5 @@
 import { Container, useTheme } from "@mui/material";
+import { useEffect, useMemo } from "react";
 
 import { BottomBar } from "@/components/BottomBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
@@ -7,16 +8,16 @@ import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { PublicRoutes } from "@/components/PublicRoutes";
 import { TopBar } from "@/components/TopBar";
 import { isNullOrWhiteSpace } from "@/utils/utils";
+import { topbarContainerId } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useEffect } from "react";
 
 let didInit = false;
 let didInitUser = false;
 
 export function App() {
   const { user } = useAuthentication();
-  const babyId = user?.babyId ?? "";
+  const babyId = useMemo(() => user?.babyId ?? "", [user]);
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
@@ -36,7 +37,9 @@ export function App() {
 
   return (
     <>
-      {user != null && <TopBar component={"header"} />}
+      {isNullOrWhiteSpace(babyId) == false && <TopBar component="header" />}
+
+      {/* {user == null ? <PublicRoutes /> : <PrivateRoutes />} */}
 
       <Container
         component={"main"}
@@ -65,7 +68,7 @@ export function App() {
         {user == null ? <PublicRoutes /> : <PrivateRoutes />}
       </Container>
 
-      {user != null && (
+      {isNullOrWhiteSpace(babyId) == false && (
         <MenuProvider>
           <BottomBar component={"footer"} />
         </MenuProvider>

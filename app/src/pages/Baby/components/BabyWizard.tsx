@@ -146,8 +146,8 @@ export function BabyWizard() {
                 onChange={handleSexChange}
                 error={sexError !== ""}
               >
-                <MenuItem value={SexId.male}>Garçon</MenuItem>
-                <MenuItem value={SexId.female}>Fille</MenuItem>
+                <MenuItem value={SexId.Male}>Garçon</MenuItem>
+                <MenuItem value={SexId.Female}>Fille</MenuItem>
               </Select>
               <FormHelperText error={sexError !== ""}>
                 {sexError !== "" ? sexError : ""}

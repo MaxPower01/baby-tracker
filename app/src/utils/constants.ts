@@ -33,6 +33,8 @@ export const bottomBarNewEntryFabId = "bottom-bar-new-entry-fab";
  */
 export const stopwatchDisplayTimeAfterStopInSeconds = 60 * 5;
 
+export const topbarContainerId = `top-bar-container-${uuid()}`;
+export const customTopBarId = `custom-top-bar-${uuid()}`;
 export const bottomBarId = `bottom-bar-${uuid()}`;
 export const customBottomBarId = `custom-bottom-bar-${uuid()}`;
 export const resetFiltersButtonId = `reset-filters-button-${uuid()}`;

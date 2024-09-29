@@ -217,6 +217,7 @@ export default function ActivitiesPage() {
       <CustomBottomBar
         onSaveButtonClick={saveChanges}
         saveButtonDisabled={isSaving}
+        saveButtonLoading={isSaving}
       />
     </>
   );

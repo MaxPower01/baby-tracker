@@ -53,6 +53,7 @@ type BottomBarItem = {
   color: "primary" | "inherit" | "secondary" | "default" | undefined;
   isFloatingActionButton?: boolean;
   isCurrentPage?: boolean;
+  isDisabled?: boolean;
   sx?: SxProps;
 };
 
@@ -89,9 +90,11 @@ export function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: HomeIcon,
       color: "inherit",
-      isCurrentPage: pageId === PageId.Home,
+      isCurrentPage:
+        isNullOrWhiteSpace(babyId) == false && pageId === PageId.Home,
+      isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: undefined,
+        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -101,9 +104,11 @@ export function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "inherit",
-      isCurrentPage: pageId === PageId.Graphics,
+      isCurrentPage:
+        isNullOrWhiteSpace(babyId) == false && pageId === PageId.Graphics,
+      isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: undefined,
+        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -122,7 +127,7 @@ export function BottomBar(props: Props) {
       isFloatingActionButton: true,
       sx: {
         display: isNullOrWhiteSpace(babyId) ? "none" : undefined,
-        opacity: undefined,
+        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -132,9 +137,11 @@ export function BottomBar(props: Props) {
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
       color: "inherit",
-      isCurrentPage: pageId === PageId.History,
+      isCurrentPage:
+        isNullOrWhiteSpace(babyId) == false && pageId === PageId.History,
+      isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: undefined,
+        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -151,13 +158,6 @@ export function BottomBar(props: Props) {
     },
   ];
 
-  // items.forEach((item) => {
-  //   if (item.sx && Object.keys(item.sx).includes("opacity")) {
-  //     // Assign the sx property to the theme.opacity.tertiary value
-  //     item.sx = { ...item.sx, opacity: theme.opacity.tertiary };
-  //   }
-  // });
-
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     if (
@@ -165,11 +165,11 @@ export function BottomBar(props: Props) {
       Object.keys(item.sx).includes("opacity") &&
       !item.isFloatingActionButton
     ) {
-      const opacity =
-        item.isCurrentPage == true
-          ? theme.opacity.secondary
-          : theme.opacity.tertiary;
-      item.sx = { ...item.sx, opacity };
+      // const opacity =
+      //   item.isCurrentPage == true
+      //     ? theme.opacity.secondary
+      //     : theme.opacity.tertiary;
+      // item.sx = { ...item.sx, opacity };
     }
   }
 
@@ -194,16 +194,6 @@ export function BottomBar(props: Props) {
             direction="row"
             sx={{ justifyContent: "space-between" }}
           >
-            {/* {shouldDisplaySaveButton && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {}}
-                fullWidth
-              >
-                Enregistrer
-              </Button>
-            )} */}
             {items.map(
               ({
                 id,
@@ -212,6 +202,7 @@ export function BottomBar(props: Props) {
                 IconWrapper,
                 Icon,
                 label,
+                isDisabled,
                 isFloatingActionButton,
                 isCurrentPage,
                 sx,
@@ -221,16 +212,12 @@ export function BottomBar(props: Props) {
                   key={id}
                   color={color}
                   onClick={onClick}
+                  disabled={isDisabled}
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     flex: 1,
                     borderRadius: isFloatingActionButton ? undefined : 1,
-                    // opacity:
-                    //   isCurrentPage == false
-                    //     ? theme.opacity.tertiary
-                    //     : theme.opacity.primary,
-
                     ...sx,
                   }}
                 >
@@ -238,6 +225,10 @@ export function BottomBar(props: Props) {
                     <Icon
                       sx={{
                         fontSize: isFloatingActionButton ? "2em" : "1em",
+                        opacity:
+                          isFloatingActionButton || isCurrentPage == true
+                            ? undefined
+                            : theme.opacity.secondary,
                       }}
                     />
                   )}
@@ -246,7 +237,6 @@ export function BottomBar(props: Props) {
                       variant="body2"
                       textAlign="center"
                       sx={{
-                        // fontSize: "50%",
                         color: theme.customPalette.text.secondary,
                         fontWeight: isCurrentPage == true ? "bold" : 400,
                       }}
