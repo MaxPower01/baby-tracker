@@ -17,19 +17,19 @@ export default function AuthenticationForm() {
     setIsLoading(true);
     googleSignInWithPopup()
       .then(({ user, isNewUser }) => {
-        // if (isNewUser == true) {
-        //   navigate(
-        //     getPath({
-        //       page: PageId.NewBaby,
-        //     })
-        //   );
-        // } else {
-        //   navigate(
-        //     getPath({
-        //       page: PageId.Home,
-        //     })
-        //   );
-        // }
+        if (isNewUser == true) {
+          navigate(
+            getPath({
+              page: PageId.NewBaby,
+            })
+          );
+        } else {
+          navigate(
+            getPath({
+              page: PageId.Home,
+            })
+          );
+        }
       })
       .catch((error) => {
         console.error(error);
