@@ -45,6 +45,9 @@ export default function UrineAmountSelector(props: Props) {
         icon={
           <EntryTypeIcon type={EntryTypeId.Urine} sx={{ fontSize: "1.5em" }} />
         }
+        sx={{
+          gap: 0.25,
+        }}
         emptyIcon={
           <EntryTypeIcon
             type={EntryTypeId.Urine}

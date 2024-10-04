@@ -45,6 +45,9 @@ export function PoopAmountPicker(props: Props) {
         icon={
           <EntryTypeIcon type={EntryTypeId.Poop} sx={{ fontSize: "1.5em" }} />
         }
+        sx={{
+          gap: 0.25,
+        }}
         emptyIcon={
           <EntryTypeIcon
             type={EntryTypeId.Poop}

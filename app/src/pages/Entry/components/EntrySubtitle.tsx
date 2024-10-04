@@ -80,7 +80,7 @@ export function EntrySubtitle(props: Props) {
         }}
       >
         {urineArray.length > 0 && (
-          <Stack direction={"row"}>
+          <Stack direction={"row"} spacing={0.25}>
             {urineArray.map((_, index) => (
               <EntryTypeIcon
                 key={index}
@@ -94,7 +94,7 @@ export function EntrySubtitle(props: Props) {
           </Stack>
         )}
         {poopArray.length > 0 && (
-          <Stack direction={"row"}>
+          <Stack direction={"row"} spacing={0.25}>
             {poopArray.map((_, index) => (
               <EntryTypeIcon
                 key={index}
