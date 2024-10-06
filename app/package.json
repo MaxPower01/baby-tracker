@@ -16,6 +16,7 @@
     "@mui/x-date-pickers": "^7.19.0",
     "@reduxjs/toolkit": "^2.2.3",
     "@types/d3": "^7.4.3",
+    "@types/uuid": "^10.0.0",
     "d3": "^7.9.0",
     "dayjs": "^1.11.10",
     "firebase": "^10.4.0",
@@ -33,7 +34,7 @@
     "react-virtuoso": "^4.7.10",
     "redux-logger": "^3.0.6",
     "sass": "^1.68.0",
-    "uuid": "^9.0.1"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.6.3",
@@ -41,7 +42,6 @@
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-dom": "^18.2.22",
     "@types/redux-logger": "^3.0.9",
-    "@types/uuid": "^9.0.4",
     "@vitejs/plugin-react": "^4.2.1",
     "jest": "^29.7.0",
     "typescript": "^5.2.2",
