@@ -18,6 +18,7 @@ import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
+import { PageLayout } from "@/components/PageLayout";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
@@ -132,7 +133,7 @@ export default function ActivitiesPage() {
   // See issue #2350 for more details: https://github.com/atlassian/react-beautiful-dnd/issues/2350
 
   return (
-    <>
+    <PageLayout>
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         <Droppable droppableId={droppableId}>
           {(provided, snapshot) => (
@@ -219,6 +220,6 @@ export default function ActivitiesPage() {
         saveButtonDisabled={isSaving}
         saveButtonLoading={isSaving}
       />
-    </>
+    </PageLayout>
   );
 }

@@ -7,6 +7,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypePicker } from "@/components/EntryTypePicker";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageLayout } from "@/components/PageLayout";
 import { SearchToolbar } from "@/components/SearchToolbar";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -89,75 +90,77 @@ export function ChartsPage() {
   }, []);
 
   return (
-    <Stack
-      spacing={4}
-      sx={{
-        width: "100%",
-      }}
-    >
+    <PageLayout>
       <Stack
-        spacing={1}
+        spacing={4}
         sx={{
           width: "100%",
         }}
       >
-        <EntryTypePicker value={entryTypeId} setValue={setEntryTypeId} />
-
-        <SearchToolbar
-          filtersProps={{
-            entryTypeIdFilterMode: "multiple",
-          }}
-          hideFilters
-        />
-      </Stack>
-
-      {status === "busy" && <LoadingIndicator />}
-
-      {!entries.length && status === "idle" && (
-        <EmptyState
-          context={EmptyStateContext.Graphics}
-          override={{
-            title: "Aucune entrée trouvée",
-            description:
-              "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
-            stickerSource: "/stickers/empty-state--graphics.svg",
-          }}
-        />
-      )}
-
-      {entries.length > 0 && status === "idle" && (
         <Stack
-          spacing={2}
+          spacing={1}
           sx={{
             width: "100%",
           }}
         >
-          {entryTypeHasVolume(entryTypeId) && (
-            <ChartCard
-              entries={entries}
-              entryTypeId={entryTypeId}
-              timePeriod={timePeriod}
-              yAxisType="volume"
-            />
-          )}
+          <EntryTypePicker value={entryTypeId} setValue={setEntryTypeId} />
 
-          {entryTypeHasStopwatch(entryTypeId) && (
-            <ChartCard
-              entries={entries}
-              entryTypeId={entryTypeId}
-              timePeriod={timePeriod}
-              yAxisType="duration"
-            />
-          )}
-
-          <ChartCard
-            entries={entries}
-            entryTypeId={entryTypeId}
-            timePeriod={timePeriod}
-            yAxisType="count"
+          <SearchToolbar
+            filtersProps={{
+              entryTypeIdFilterMode: "multiple",
+            }}
+            hideFilters
           />
         </Stack>
-      )}
-    </Stack>
+
+        {status === "busy" && <LoadingIndicator />}
+
+        {!entries.length && status === "idle" && (
+          <EmptyState
+            context={EmptyStateContext.Graphics}
+            override={{
+              title: "Aucune entrée trouvée",
+              description:
+                "Lorsqu'une entrée est ajoutée dans la période sélectionnée, elle apparaîtra ici.",
+              stickerSource: "/stickers/empty-state--graphics.svg",
+            }}
+          />
+        )}
+
+        {entries.length > 0 && status === "idle" && (
+          <Stack
+            spacing={2}
+            sx={{
+              width: "100%",
+            }}
+          >
+            {entryTypeHasVolume(entryTypeId) && (
+              <ChartCard
+                entries={entries}
+                entryTypeId={entryTypeId}
+                timePeriod={timePeriod}
+                yAxisType="volume"
+              />
+            )}
+
+            {entryTypeHasStopwatch(entryTypeId) && (
+              <ChartCard
+                entries={entries}
+                entryTypeId={entryTypeId}
+                timePeriod={timePeriod}
+                yAxisType="duration"
+              />
+            )}
+
+            <ChartCard
+              entries={entries}
+              entryTypeId={entryTypeId}
+              timePeriod={timePeriod}
+              yAxisType="count"
+            />
+          </Stack>
+        )}
+      </Stack>
+    </PageLayout>
   );
 }

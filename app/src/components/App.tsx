@@ -37,42 +37,15 @@ export function App() {
 
   return (
     <>
-      {isNullOrWhiteSpace(babyId) == false && <TopBar component="header" />}
+      {/* {isNullOrWhiteSpace(babyId) == false && <TopBar component="header" />} */}
 
-      {/* {user == null ? <PublicRoutes /> : <PrivateRoutes />} */}
+      {user == null ? <PublicRoutes /> : <PrivateRoutes />}
 
-      <Container
-        component={"main"}
-        maxWidth={CSSBreakpoint.Small}
-        sx={{
-          paddingTop: 2,
-          paddingBottom: 20,
-          // Default scrollbar styles
-          "& *": {
-            "&::-webkit-scrollbar": {
-              width: "5em",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: theme.palette.divider,
-              borderRadius: theme.shape.borderRadius,
-              transition: theme.transitions.create("box-shadow", {
-                duration: theme.transitions.duration.shortest,
-              }),
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              boxShadow: `inset 0 0 0 20px ${theme.palette.action.hover}`,
-            },
-          },
-        }}
-      >
-        {user == null ? <PublicRoutes /> : <PrivateRoutes />}
-      </Container>
-
-      {isNullOrWhiteSpace(babyId) == false && (
+      {/* {isNullOrWhiteSpace(babyId) == false && (
         <MenuProvider>
           <BottomBar component={"footer"} />
         </MenuProvider>
-      )}
+      )} */}
     </>
   );
 }

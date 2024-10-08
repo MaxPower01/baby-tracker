@@ -33,6 +33,7 @@ import GroupEntriesBy from "@/pages/Settings/enums/GroupEntriesBy";
 import GroupEntriesInterval from "@/pages/Settings/enums/GroupEntriesInterval";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { PageId } from "@/enums/PageId";
+import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
@@ -185,7 +186,7 @@ export function SettingsPage() {
   ]);
 
   return (
-    <>
+    <PageLayout>
       <Container maxWidth={CSSBreakpoint.ExtraSmall}>
         <Stack
           sx={{
@@ -289,6 +290,6 @@ export function SettingsPage() {
         saveButtonDisabled={isSaving}
         saveButtonLoading={isSaving}
       />
-    </>
+    </PageLayout>
   );
 }

@@ -36,6 +36,7 @@ import { Baby } from "@/pages/Authentication/types/Baby";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { CustomTopBar } from "@/components/CustomTopBar";
 import { PageId } from "@/enums/PageId";
+import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import { SexId } from "@/enums/SexId";
 import { SizeInput } from "@/components/SizeInput";
@@ -274,7 +275,7 @@ export function NewBabyPage() {
   ]);
 
   return (
-    <>
+    <PageLayout hideTopBar hideBottomBar>
       <CustomTopBar
         renderBackButton={step !== 0}
         onBackButtonClick={() => {
@@ -693,6 +694,6 @@ export function NewBabyPage() {
         saveButtonDisabled={saveButtonDisabled || isSaving}
         saveButtonLoading={isSaving}
       />
-    </>
+    </PageLayout>
   );
 }

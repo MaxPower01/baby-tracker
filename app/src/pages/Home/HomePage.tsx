@@ -5,6 +5,7 @@ import { EntriesList } from "@/components/Entries/EntriesList/EntriesList";
 import { EntriesWidget } from "@/pages/Home/components/EntriesWidget";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
+import { PageLayout } from "@/components/PageLayout";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { bottomBarNewEntryFabId } from "@/utils/constants";
@@ -31,46 +32,52 @@ export function HomePage() {
   };
 
   if (user?.babyId == null || isNullOrWhiteSpace(user?.babyId)) {
-    return <LoadingIndicator />;
+    return (
+      <PageLayout>
+        <LoadingIndicator />
+      </PageLayout>
+    );
   }
 
   return (
-    <SectionStack>
-      <Section
-        onClick={() =>
-          navigate(
-            getPath({
-              page: PageId.Baby,
-              paths: [user.babyId],
-            })
-          )
-        }
-        sx={{
-          position: "relative",
-        }}
-      >
-        <BabyWidget
+    <PageLayout>
+      <SectionStack>
+        <Section
+          onClick={() =>
+            navigate(
+              getPath({
+                page: PageId.Baby,
+                paths: [user.babyId],
+              })
+            )
+          }
           sx={{
-            zIndex: 1,
+            position: "relative",
           }}
-        />
-      </Section>
-      <Section>
-        <EntriesWidget entries={recentEntries} />
-      </Section>
-
-      <Section>
-        {status === "busy" && recentEntries.length == 0 ? (
-          <LoadingIndicator />
-        ) : recentEntries.length == 0 ? (
-          <EmptyState
-            context={EmptyStateContext.Entries}
-            onClick={handleEmptyStateClick}
+        >
+          <BabyWidget
+            sx={{
+              zIndex: 1,
+            }}
           />
-        ) : (
-          <EntriesList entries={recentEntries} format="cards" />
-        )}
-      </Section>
-    </SectionStack>
+        </Section>
+        <Section>
+          <EntriesWidget entries={recentEntries} />
+        </Section>
+
+        <Section>
+          {status === "busy" && recentEntries.length == 0 ? (
+            <LoadingIndicator />
+          ) : recentEntries.length == 0 ? (
+            <EmptyState
+              context={EmptyStateContext.Entries}
+              onClick={handleEmptyStateClick}
+            />
+          ) : (
+            <EntriesList entries={recentEntries} format="cards" />
+          )}
+        </Section>
+      </SectionStack>
+    </PageLayout>
   );
 }

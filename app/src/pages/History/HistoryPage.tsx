@@ -9,6 +9,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageLayout } from "@/components/PageLayout";
 import { SearchToolbar } from "@/components/SearchToolbar";
 import { Section } from "@/components/Section";
 import { SortOrderId } from "@/enums/SortOrderId";
@@ -101,62 +102,64 @@ export function HistoryPage() {
   );
 
   return (
-    <Stack
-      spacing={4}
-      sx={{
-        width: "100%",
-      }}
-    >
+    <PageLayout>
       <Stack
-        spacing={2}
+        spacing={4}
         sx={{
           width: "100%",
         }}
       >
-        <SearchToolbar
-          filtersProps={{
-            entryTypeIdFilterMode: "multiple",
-          }}
-        />
-
-        {status === "idle" && (
-          <>
-            <EntryTypesChips
-              entries={entries}
-              useFiltersEntryTypes
-              useChipLabel
-            />
-            <ActivityContextsChips />
-          </>
-        )}
-      </Stack>
-
-      {status === "busy" && <LoadingIndicator />}
-
-      {!filteredEntries.length && status === "idle" && (
-        <EmptyState
-          context={EmptyStateContext.Entries}
-          override={{
-            title: "Aucune entrée trouvée",
-            description:
-              "Aucune entrée ne correspond à vos critères de recherche",
-            stickerSource: "/stickers/empty-state--entries.svg",
-            buttonLabel: "Réinitialiser les filtres",
-            onClick: () => reset(),
-          }}
-        />
-      )}
-
-      {filteredEntries.length > 0 && (
         <Stack
           spacing={2}
           sx={{
             width: "100%",
           }}
         >
-          <EntriesList entries={filteredEntries} format="table" />
+          <SearchToolbar
+            filtersProps={{
+              entryTypeIdFilterMode: "multiple",
+            }}
+          />
+
+          {status === "idle" && (
+            <>
+              <EntryTypesChips
+                entries={entries}
+                useFiltersEntryTypes
+                useChipLabel
+              />
+              <ActivityContextsChips />
+            </>
+          )}
         </Stack>
-      )}
-    </Stack>
+
+        {status === "busy" && <LoadingIndicator />}
+
+        {!filteredEntries.length && status === "idle" && (
+          <EmptyState
+            context={EmptyStateContext.Entries}
+            override={{
+              title: "Aucune entrée trouvée",
+              description:
+                "Aucune entrée ne correspond à vos critères de recherche",
+              stickerSource: "/stickers/empty-state--entries.svg",
+              buttonLabel: "Réinitialiser les filtres",
+              onClick: () => reset(),
+            }}
+          />
+        )}
+
+        {filteredEntries.length > 0 && (
+          <Stack
+            spacing={2}
+            sx={{
+              width: "100%",
+            }}
+          >
+            <EntriesList entries={filteredEntries} format="table" />
+          </Stack>
+        )}
+      </Stack>
+    </PageLayout>
   );
 }

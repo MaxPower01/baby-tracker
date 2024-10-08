@@ -5,6 +5,7 @@ import { BabiesLanding } from "@/pages/Baby/components/BabiesLanding";
 import BabyForm from "@/pages/Baby/components/BabyForm";
 import { BabyWizard } from "@/pages/Baby/components/BabyWizard";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useLayout } from "@/components/LayoutProvider";
@@ -34,23 +35,37 @@ export function BabyPage() {
     // }
     if (baby == null) {
       return (
-        <Typography
-          variant={"body1"}
-          sx={{
-            color: theme.customPalette.text.secondary,
-          }}
-          textAlign={"center"}
-        >
-          Une erreur est survenue. Veuillez réessayer plus tard.
-        </Typography>
+        <PageLayout>
+          <Typography
+            variant={"body1"}
+            sx={{
+              color: theme.customPalette.text.secondary,
+            }}
+            textAlign={"center"}
+          >
+            Une erreur est survenue. Veuillez réessayer plus tard.
+          </Typography>
+        </PageLayout>
       );
     }
-    return <BabyForm baby={baby} />;
+    return (
+      <PageLayout>
+        <BabyForm baby={baby} />;
+      </PageLayout>
+    );
   }
 
   if (showForm) {
-    return <BabyForm />;
+    return (
+      <PageLayout>
+        <BabyForm />
+      </PageLayout>
+    );
   }
 
-  return <BabiesLanding setShowForm={setShowForm} />;
+  return (
+    <PageLayout>
+      <BabiesLanding setShowForm={setShowForm} />
+    </PageLayout>
+  );
 }

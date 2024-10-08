@@ -1,5 +1,10 @@
+import { PageLayout } from "@/components/PageLayout";
 import React from "react";
 
 export function TagsPage() {
-  return <div>index</div>;
+  return (
+    <PageLayout>
+      <div>index</div>
+    </PageLayout>
+  );
 }

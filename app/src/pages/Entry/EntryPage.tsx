@@ -5,6 +5,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import EntryForm from "@/pages/Entry/components/EntryForm";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { MenuProvider } from "@/components/MenuProvider";
+import { PageLayout } from "@/components/PageLayout";
 import { getDefaultEntry } from "@/utils/getDefaultEntry";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -50,16 +51,21 @@ export function EntryPage() {
 
   if (entry == null) {
     if (!isNewEntry && status === "busy") {
-      return <LoadingIndicator />;
+      return (
+        <PageLayout>
+          <LoadingIndicator />
+        </PageLayout>
+      );
     } else {
-      // TODO: Show error message
-      return <></>;
+      return <PageLayout></PageLayout>;
     }
   } else {
     return (
-      <MenuProvider>
-        <EntryForm entry={entry} />
-      </MenuProvider>
+      <PageLayout>
+        <MenuProvider>
+          <EntryForm entry={entry} />
+        </MenuProvider>
+      </PageLayout>
     );
   }
 }

@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import AuthenticationForm from "@/pages/Authentication/components/AuthenticationForm";
 import { CustomTopBar } from "@/components/CustomTopBar";
 import { PageId } from "@/enums/PageId";
+import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -28,7 +29,7 @@ export function LandingPage() {
 
   if (user == null) {
     return (
-      <>
+      <PageLayout hideTopBar>
         <CustomTopBar />
 
         <Stack
@@ -91,12 +92,12 @@ export function LandingPage() {
             <AuthenticationForm />
           </Stack>
         </Stack>
-      </>
+      </PageLayout>
     );
   }
 
   return (
-    <>
+    <PageLayout>
       <CustomTopBar />
 
       <Stack
@@ -203,6 +204,6 @@ export function LandingPage() {
           </Card>
         </Stack>
       </Stack>
-    </>
+    </PageLayout>
   );
 }

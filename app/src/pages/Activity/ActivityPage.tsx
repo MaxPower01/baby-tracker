@@ -1,5 +1,6 @@
+import { PageLayout } from "@/components/PageLayout";
 import React from "react";
 
 export function ActivityPage() {
-  return <div>index</div>;
+  return <PageLayout>Activity</PageLayout>;
 }
