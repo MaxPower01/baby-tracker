@@ -7,6 +7,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypePicker } from "@/components/EntryTypePicker";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { SearchToolbar } from "@/components/SearchToolbar";
 import { Stack } from "@mui/material";
@@ -15,6 +16,7 @@ import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { filterTimePeriodEntries } from "@/utils/filterTimePeriodEntries";
 import { getEntriesFromDailyEntries } from "@/utils/getEntriesFromDailyEntries";
+import getPageTitle from "@/utils/getPageTitle";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
@@ -90,7 +92,11 @@ export function ChartsPage() {
   }, []);
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Charts),
+      }}
+    >
       <Stack
         spacing={4}
         sx={{

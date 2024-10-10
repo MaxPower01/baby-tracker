@@ -9,6 +9,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { Section } from "@/components/Section";
 import { SectionStack } from "@/components/SectionStack";
 import { bottomBarNewEntryFabId } from "@/utils/constants";
+import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
@@ -33,14 +34,22 @@ export function HomePage() {
 
   if (user?.babyId == null || isNullOrWhiteSpace(user?.babyId)) {
     return (
-      <PageLayout>
+      <PageLayout
+        topBarProps={{
+          pageTitle: getPageTitle(PageId.Home),
+        }}
+      >
         <LoadingIndicator />
       </PageLayout>
     );
   }
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Home),
+      }}
+    >
       <SectionStack>
         <Section
           onClick={() =>

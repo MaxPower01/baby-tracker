@@ -5,8 +5,10 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import EntryForm from "@/pages/Entry/components/EntryForm";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { MenuProvider } from "@/components/MenuProvider";
+import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { getDefaultEntry } from "@/utils/getDefaultEntry";
+import getPageTitle from "@/utils/getPageTitle";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEntries } from "@/components/Entries/EntriesProvider";
@@ -52,16 +54,34 @@ export function EntryPage() {
   if (entry == null) {
     if (!isNewEntry && status === "busy") {
       return (
-        <PageLayout>
+        <PageLayout
+          topBarProps={{
+            pageTitle: getPageTitle(PageId.Entry),
+            renderBackButton: true,
+          }}
+          bottomBarProps={{ hide: true }}
+        >
           <LoadingIndicator />
         </PageLayout>
       );
     } else {
-      return <PageLayout></PageLayout>;
+      return (
+        <PageLayout
+          topBarProps={{
+            pageTitle: getPageTitle(PageId.Entry),
+          }}
+        ></PageLayout>
+      );
     }
   } else {
     return (
-      <PageLayout>
+      <PageLayout
+        topBarProps={{
+          pageTitle: getPageTitle(PageId.Entry),
+          renderBackButton: true,
+        }}
+        bottomBarProps={{ hide: true }}
+      >
         <MenuProvider>
           <EntryForm entry={entry} />
         </MenuProvider>

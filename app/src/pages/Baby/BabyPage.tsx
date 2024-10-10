@@ -1,25 +1,15 @@
-import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Typography, useTheme } from "@mui/material";
+import { useMemo, useState } from "react";
 
 import { BabiesLanding } from "@/pages/Baby/components/BabiesLanding";
 import BabyForm from "@/pages/Baby/components/BabyForm";
-import { BabyWizard } from "@/pages/Baby/components/BabyWizard";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
-import { ReactSVG } from "react-svg";
+import getPageTitle from "@/utils/getPageTitle";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useLayout } from "@/components/LayoutProvider";
 import { useParams } from "react-router-dom";
 
 export function BabyPage() {
-  const layout = useLayout();
-  useEffect(() => {
-    layout.setBottomBarVisibility("hidden");
-    return () => {
-      layout.setBottomBarVisibility("visible");
-    };
-  }, []);
-
   const { babyId } = useParams();
   const { user } = useAuthentication();
   const theme = useTheme();
@@ -35,7 +25,13 @@ export function BabyPage() {
     // }
     if (baby == null) {
       return (
-        <PageLayout>
+        <PageLayout
+          topBarProps={{
+            pageTitle: getPageTitle(PageId.Baby),
+            renderBackButton: true,
+          }}
+          bottomBarProps={{ hide: true }}
+        >
           <Typography
             variant={"body1"}
             sx={{
@@ -49,7 +45,13 @@ export function BabyPage() {
       );
     }
     return (
-      <PageLayout>
+      <PageLayout
+        topBarProps={{
+          pageTitle: getPageTitle(PageId.Baby),
+          renderBackButton: true,
+        }}
+        bottomBarProps={{ hide: true }}
+      >
         <BabyForm baby={baby} />;
       </PageLayout>
     );
@@ -57,14 +59,26 @@ export function BabyPage() {
 
   if (showForm) {
     return (
-      <PageLayout>
+      <PageLayout
+        topBarProps={{
+          pageTitle: getPageTitle(PageId.Baby),
+          renderBackButton: true,
+        }}
+        bottomBarProps={{ hide: true }}
+      >
         <BabyForm />
       </PageLayout>
     );
   }
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Baby),
+        renderBackButton: true,
+      }}
+      bottomBarProps={{ hide: true }}
+    >
       <BabiesLanding setShowForm={setShowForm} />
     </PageLayout>
   );

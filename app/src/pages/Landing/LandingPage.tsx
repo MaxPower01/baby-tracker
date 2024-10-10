@@ -29,9 +29,7 @@ export function LandingPage() {
 
   if (user == null) {
     return (
-      <PageLayout hideTopBar>
-        <CustomTopBar />
-
+      <PageLayout OverrideTopBar={CustomTopBar} bottomBarProps={{ hide: true }}>
         <Stack
           spacing={6}
           justifyContent={"center"}
@@ -97,9 +95,7 @@ export function LandingPage() {
   }
 
   return (
-    <PageLayout>
-      <CustomTopBar />
-
+    <PageLayout OverrideTopBar={CustomTopBar} bottomBarProps={{ hide: true }}>
       <Stack
         spacing={4}
         justifyContent={"center"}

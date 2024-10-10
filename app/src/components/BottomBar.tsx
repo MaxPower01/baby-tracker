@@ -14,7 +14,6 @@ import { bottomBarId, bottomBarNewEntryFabId } from "@/utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
@@ -29,7 +28,6 @@ import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useLayout } from "@/components/LayoutProvider";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -57,12 +55,11 @@ type BottomBarItem = {
   sx?: SxProps;
 };
 
-type Props = {
-  component: React.ElementType<any> | undefined;
+export type BottomBarProps = {
+  hide?: boolean;
 };
 
-export function BottomBar(props: Props) {
-  const layout = useLayout();
+export function BottomBar(props: BottomBarProps) {
   const { user } = useAuthentication();
   const babyId = useMemo(() => {
     return user?.babyId ?? "";
@@ -99,13 +96,13 @@ export function BottomBar(props: Props) {
     },
     {
       id: "graphics",
-      label: getPageTitle(getPath({ page: PageId.Graphics })),
-      onClick: () => navigate(getPath({ page: PageId.Graphics })),
+      label: getPageTitle(getPath({ page: PageId.Charts })),
+      onClick: () => navigate(getPath({ page: PageId.Charts })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
       color: "inherit",
       isCurrentPage:
-        isNullOrWhiteSpace(babyId) == false && pageId === PageId.Graphics,
+        isNullOrWhiteSpace(babyId) == false && pageId === PageId.Charts,
       isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
         opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
@@ -173,14 +170,14 @@ export function BottomBar(props: Props) {
     }
   }
 
-  if (layout.bottomBarIsVisible === false) {
+  if (props.hide == true) {
     return null;
   }
 
   return (
     <AppBar
       id={bottomBarId}
-      {...props}
+      component={"footer"}
       position="fixed"
       sx={{
         top: "auto",

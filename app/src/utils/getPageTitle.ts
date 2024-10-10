@@ -1,12 +1,15 @@
 import { PageId } from "@/enums/PageId";
 import getPageId from "@/utils/getPageId";
 
-export default function getPageTitle(pathname: string) {
-  const pageName = getPageId(pathname);
-  switch (pageName) {
+export default function getPageTitle(pathname: string, pageId?: PageId) {
+  if (pageId == null) {
+    pageId = getPageId(pathname);
+  }
+
+  switch (pageId) {
     case PageId.Home:
       return "Accueil";
-    case PageId.Graphics:
+    case PageId.Charts:
       return "Graphiques";
     case PageId.History:
       return "Historique";

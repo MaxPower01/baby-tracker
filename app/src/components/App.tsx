@@ -35,17 +35,5 @@ export function App() {
     }
   }, [user, babyId, dispatch]);
 
-  return (
-    <>
-      {/* {isNullOrWhiteSpace(babyId) == false && <TopBar component="header" />} */}
-
-      {user == null ? <PublicRoutes /> : <PrivateRoutes />}
-
-      {/* {isNullOrWhiteSpace(babyId) == false && (
-        <MenuProvider>
-          <BottomBar component={"footer"} />
-        </MenuProvider>
-      )} */}
-    </>
-  );
+  return <>{user == null ? <PublicRoutes /> : <PrivateRoutes />}</>;
 }

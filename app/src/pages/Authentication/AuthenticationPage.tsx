@@ -8,7 +8,7 @@ export function AuthenticationPage() {
   const theme = useTheme();
 
   return (
-    <PageLayout>
+    <PageLayout topBarProps={{ hide: true }} bottomBarProps={{ hide: true }}>
       <Stack
         spacing={4}
         justifyContent={"center"}

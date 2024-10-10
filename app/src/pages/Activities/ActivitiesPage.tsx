@@ -6,7 +6,7 @@ import {
   OnDragEndResponder,
   OnDragStartResponder,
 } from "react-beautiful-dnd";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   saveEntryTypesOrderInDB,
   selectEntryTypesOrder,
@@ -20,10 +20,10 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
+import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";
@@ -31,13 +31,6 @@ import { useSnackbar } from "@/components/SnackbarProvider";
 export default function ActivitiesPage() {
   const navigate = useNavigate();
   const { user } = useAuthentication();
-  const layout = useLayout();
-  useEffect(() => {
-    layout.setBottomBarVisibility("hidden");
-    return () => {
-      layout.setBottomBarVisibility("visible");
-    };
-  }, []);
   const { showSnackbar } = useSnackbar();
 
   const entryTypesOrder = useSelector(selectEntryTypesOrder);
@@ -133,7 +126,19 @@ export default function ActivitiesPage() {
   // See issue #2350 for more details: https://github.com/atlassian/react-beautiful-dnd/issues/2350
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Activities),
+        renderBackButton: true,
+      }}
+      OverrideBottomBar={() => (
+        <CustomBottomBar
+          onSaveButtonClick={saveChanges}
+          saveButtonDisabled={isSaving}
+          saveButtonLoading={isSaving}
+        />
+      )}
+    >
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         <Droppable droppableId={droppableId}>
           {(provided, snapshot) => (
@@ -214,12 +219,6 @@ export default function ActivitiesPage() {
           )}
         </Droppable>
       </DragDropContext>
-
-      <CustomBottomBar
-        onSaveButtonClick={saveChanges}
-        saveButtonDisabled={isSaving}
-        saveButtonLoading={isSaving}
-      />
     </PageLayout>
   );
 }

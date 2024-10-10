@@ -31,6 +31,7 @@ export function PrivateRoutes() {
               path={getPath({ page: PageId.Landing })}
               element={<LandingPage />}
             />
+
             <Route
               path="*"
               element={
@@ -51,6 +52,7 @@ export function PrivateRoutes() {
               path={getPath({ page: PageId.Home })}
               element={<HomePage />}
             />
+
             <Route
               path="*"
               element={<Navigate replace to={getPath({ page: PageId.Home })} />}
@@ -62,7 +64,7 @@ export function PrivateRoutes() {
             />
 
             <Route
-              path={getPath({ page: PageId.Graphics })}
+              path={getPath({ page: PageId.Charts })}
               element={<ChartsPage />}
             />
 

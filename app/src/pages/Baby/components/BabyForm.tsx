@@ -572,50 +572,6 @@ export default function BabyForm(props: Props) {
         </Box>
       </Modal>
 
-      {/* <AppBar
-        position="fixed"
-        component={"footer"}
-        sx={{
-          top: "auto",
-          bottom: 0,
-          backgroundColor: "background.default",
-          zIndex: (theme) => theme.zIndex.appBar + 1,
-        }}
-        color="transparent"
-      >
-        <Container maxWidth={CSSBreakpoint.Small}>
-          <Toolbar disableGutters>
-            <Stack
-              flexGrow={1}
-              sx={{
-                paddingTop: 2,
-                paddingBottom: 2,
-              }}
-              spacing={1.5}
-            >
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                fullWidth
-                size="large"
-                disabled={isSaving}
-                sx={{
-                  height: `calc(${theme.typography.button.fontSize} * 2.5)`,
-                }}
-              >
-                {isSaving == true ? (
-                  <LoadingIndicator size={theme.typography.button.fontSize} />
-                ) : isNullOrWhiteSpace(baby.id) == true ? (
-                  "Enregistrer"
-                ) : (
-                  "Enregistrer"
-                )}
-              </Button>
-            </Stack>
-          </Toolbar>
-        </Container>
-      </AppBar> */}
-
       <CustomBottomBar
         onSaveButtonClick={handleSubmit}
         saveButtonDisabled={isSaving}

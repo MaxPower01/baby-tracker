@@ -275,14 +275,30 @@ export function NewBabyPage() {
   ]);
 
   return (
-    <PageLayout hideTopBar hideBottomBar>
-      <CustomTopBar
-        renderBackButton={step !== 0}
-        onBackButtonClick={() => {
-          handleStepDecrement();
-        }}
-      />
-
+    <PageLayout
+      OverrideTopBar={() => (
+        <CustomTopBar
+          renderBackButton={step !== 0}
+          onBackButtonClick={() => {
+            handleStepDecrement();
+          }}
+        />
+      )}
+      OverrideBottomBar={() => (
+        <CustomBottomBar
+          overrideSaveButtonlabel={step === 3 ? "Créer le profil" : "Suivant"}
+          onSaveButtonClick={() => {
+            if (step === 3) {
+              createBaby();
+            } else {
+              handleStepIncrement();
+            }
+          }}
+          saveButtonDisabled={saveButtonDisabled || isSaving}
+          saveButtonLoading={isSaving}
+        />
+      )}
+    >
       <Stack
         spacing={4}
         justifyContent={"center"}
@@ -681,19 +697,6 @@ export function NewBabyPage() {
           </Stack>
         )}
       </Stack>
-
-      <CustomBottomBar
-        overrideSaveButtonlabel={step === 3 ? "Créer le profil" : "Suivant"}
-        onSaveButtonClick={() => {
-          if (step === 3) {
-            createBaby();
-          } else {
-            handleStepIncrement();
-          }
-        }}
-        saveButtonDisabled={saveButtonDisabled || isSaving}
-        saveButtonLoading={isSaving}
-      />
     </PageLayout>
   );
 }

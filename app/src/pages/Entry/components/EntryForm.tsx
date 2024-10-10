@@ -1,13 +1,12 @@
 import {
   Checkbox,
-  FormControl,
   FormControlLabel,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { ActivityContextPicker } from "@/pages/Activity/components/ActivityContextPicker";
@@ -33,7 +32,6 @@ import UrineAmountSelector from "@/components/UrineAmountSelector";
 import VolumeInputContainer from "@/components/VolumeInputContainer";
 import { WeightInput } from "@/components/WeightInput";
 import { computeEndDate } from "@/pages/Entry/utils/computeEndDate";
-import { customButtomBarSaveButtonId } from "@/utils/constants";
 import { entryTypeHasContextSelector } from "@/pages/Entry/utils/entryTypeHasContextSelector";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import { entryTypeHasSides } from "@/pages/Entry/utils/entryTypeHasSides";
@@ -51,7 +49,6 @@ import { getTimestamp } from "@/utils/getTimestamp";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 import { useEntries } from "@/components/Entries/EntriesProvider";
-import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/components/SnackbarProvider";
 
@@ -60,15 +57,7 @@ type EntryFormProps = {
 };
 
 export default function EntryForm(props: EntryFormProps) {
-  const layout = useLayout();
   const { saveEntry, status } = useEntries();
-
-  useEffect(() => {
-    layout.setBottomBarVisibility("hidden");
-    return () => {
-      layout.setBottomBarVisibility("visible");
-    };
-  }, []);
 
   const [entryId, setEntryId] = useState(props.entry.id);
 

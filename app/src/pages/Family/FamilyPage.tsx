@@ -6,31 +6,28 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useMemo } from "react";
 
 import CheckIcon from "@mui/icons-material/Check";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
-import { formatDateTime } from "@/utils/utils";
+import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 
 export function FamilyPage() {
   const { user } = useAuthentication();
   const theme = useTheme();
   const navigate = useNavigate();
-  const layout = useLayout();
-  useEffect(() => {
-    layout.setBottomBarVisibility("hidden");
-    return () => {
-      layout.setBottomBarVisibility("visible");
-    };
-  }, []);
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Family),
+        renderBackButton: true,
+      }}
+      bottomBarProps={{ hide: true }}
+    >
       <Stack
         spacing={2}
         justifyContent={"center"}

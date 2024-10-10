@@ -38,11 +38,11 @@ import { ReactSVG } from "react-svg";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
+import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import isDevelopment from "@/utils/isDevelopment";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useLayout } from "@/components/LayoutProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";
@@ -110,16 +110,9 @@ function ItemDescription(props: { text: string }) {
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const layout = useLayout();
   const { user } = useAuthentication();
   const [isSaving, setIsSaving] = React.useState(false);
   const { showSnackbar } = useSnackbar();
-  useEffect(() => {
-    layout.setBottomBarVisibility("hidden");
-    return () => {
-      layout.setBottomBarVisibility("visible");
-    };
-  }, []);
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
@@ -186,7 +179,13 @@ export function SettingsPage() {
   ]);
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.Settings),
+        renderBackButton: true,
+      }}
+      bottomBarProps={{ hide: true }}
+    >
       <Container maxWidth={CSSBreakpoint.ExtraSmall}>
         <Stack
           sx={{

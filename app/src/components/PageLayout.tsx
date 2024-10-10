@@ -1,16 +1,17 @@
+import { BottomBar, BottomBarProps } from "@/components/BottomBar";
 import { Container, useTheme } from "@mui/material";
+import { TopBar, TopBarProps } from "@/components/TopBar";
 
-import { BottomBar } from "@/components/BottomBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
-import { Main } from "@/components/Main";
 import { MenuProvider } from "@/components/MenuProvider";
 import React from "react";
-import { TopBar } from "@/components/TopBar";
 import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
 
 type Props = React.PropsWithChildren<{
-  hideTopBar?: boolean;
-  hideBottomBar?: boolean;
+  topBarProps?: TopBarProps;
+  OverrideTopBar?: React.ElementType;
+  bottomBarProps?: BottomBarProps;
+  OverrideBottomBar?: React.ElementType;
 }>;
 
 export function PageLayout(props: Props) {
@@ -19,7 +20,9 @@ export function PageLayout(props: Props) {
 
   return (
     <>
-      {props.hideTopBar != true && <TopBar component="header" />}
+      {props.OverrideTopBar == null && <TopBar {...props.topBarProps} />}
+
+      {props.OverrideTopBar != null && <props.OverrideTopBar />}
 
       <Container
         component={"main"}
@@ -47,9 +50,13 @@ export function PageLayout(props: Props) {
         {props.children}
       </Container>
 
-      <MenuProvider>
-        <BottomBar component={"footer"} />
-      </MenuProvider>
+      {props.OverrideBottomBar == null && (
+        <MenuProvider>
+          <BottomBar {...props.bottomBarProps} />
+        </MenuProvider>
+      )}
+
+      {props.OverrideBottomBar != null && <props.OverrideBottomBar />}
     </>
   );
 }

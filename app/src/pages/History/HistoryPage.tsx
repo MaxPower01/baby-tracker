@@ -9,6 +9,7 @@ import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { EntryTypesChips } from "@/pages/Activities/components/EntryTypesChips";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { SearchToolbar } from "@/components/SearchToolbar";
 import { Section } from "@/components/Section";
@@ -19,6 +20,7 @@ import { filterTimePeriodEntries } from "@/utils/filterTimePeriodEntries";
 import { getEntriesFromDailyEntries } from "@/utils/getEntriesFromDailyEntries";
 import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getFilteredEntries } from "@/utils/getFilteredEntries";
+import getPageTitle from "@/utils/getPageTitle";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { resetFiltersButtonId } from "@/utils/constants";
@@ -102,7 +104,11 @@ export function HistoryPage() {
   );
 
   return (
-    <PageLayout>
+    <PageLayout
+      topBarProps={{
+        pageTitle: getPageTitle(PageId.History),
+      }}
+    >
       <Stack
         spacing={4}
         sx={{

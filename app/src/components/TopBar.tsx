@@ -24,11 +24,13 @@ import { useSelector } from "react-redux";
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 
-type Props = {
-  component: React.ElementType<any> | undefined;
+export type TopBarProps = {
+  hide?: boolean;
+  pageTitle?: string;
+  renderBackButton?: boolean;
 };
 
-export function TopBar(props: Props) {
+export function TopBar(props: TopBarProps) {
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -69,10 +71,14 @@ export function TopBar(props: Props) {
     navigate(-1);
   };
 
+  if (props.hide == true) {
+    return null;
+  }
+
   return (
     <AppBar
       id="topbar"
-      {...props}
+      component={"header"}
       position="sticky"
       sx={{
         top: 0,
@@ -86,7 +92,7 @@ export function TopBar(props: Props) {
     >
       <Container maxWidth={CSSBreakpoint.Small}>
         <Toolbar disableGutters>
-          {shouldRenderBackButton && (
+          {props.renderBackButton == true && (
             <IconButton
               onClick={handleBackButtonClick}
               sx={{
@@ -96,14 +102,17 @@ export function TopBar(props: Props) {
               <ArrowBackIcon />
             </IconButton>
           )}
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.customPalette.text.primary,
-            }}
-          >
-            {pageTitle}
-          </Typography>
+
+          {props.pageTitle != null && (
+            <Typography
+              variant="h6"
+              sx={{
+                color: theme.customPalette.text.primary,
+              }}
+            >
+              {pageTitle}
+            </Typography>
+          )}
 
           <Box sx={{ flexGrow: 1 }} />
 
