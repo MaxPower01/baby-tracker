@@ -17,29 +17,30 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // TODO: Uncomment when DnD is done
-  <React.StrictMode>
-    <StoreProvider>
-      <AuthenticationProvider>
-        <BabiesProvider>
-          <FiltersProvider>
-            <EntriesProvider>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="fr-ca"
-              >
-                <ThemeProvider>
-                  <SnackbarProvider>
-                    <CssBaseline />
-                    <BrowserRouter>
-                      <App />
-                    </BrowserRouter>
-                  </SnackbarProvider>
-                </ThemeProvider>
-              </LocalizationProvider>
-            </EntriesProvider>
-          </FiltersProvider>
-        </BabiesProvider>
-      </AuthenticationProvider>
-    </StoreProvider>
-  </React.StrictMode>
+  // Also, there's some problems with the redirects when this is enabled, so it's disabled for now
+  // <React.StrictMode>
+  <StoreProvider>
+    <AuthenticationProvider>
+      <BabiesProvider>
+        <FiltersProvider>
+          <EntriesProvider>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="fr-ca"
+            >
+              <ThemeProvider>
+                <SnackbarProvider>
+                  <CssBaseline />
+                  <BrowserRouter>
+                    <App />
+                  </BrowserRouter>
+                </SnackbarProvider>
+              </ThemeProvider>
+            </LocalizationProvider>
+          </EntriesProvider>
+        </FiltersProvider>
+      </BabiesProvider>
+    </AuthenticationProvider>
+  </StoreProvider>
+  // </React.StrictMode>
 );
