@@ -8,7 +8,6 @@ import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import { EntriesProvider } from "@/components/Entries/EntriesProvider";
 import { FiltersProvider } from "@/components/Filters/FiltersProvider";
-import { LayoutProvider } from "@/components/LayoutProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -30,12 +29,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               >
                 <ThemeProvider>
                   <SnackbarProvider>
-                    <LayoutProvider>
-                      <CssBaseline />
-                      <BrowserRouter>
-                        <App />
-                      </BrowserRouter>
-                    </LayoutProvider>
+                    <CssBaseline />
+                    <BrowserRouter>
+                      <App />
+                    </BrowserRouter>
                   </SnackbarProvider>
                 </ThemeProvider>
               </LocalizationProvider>
