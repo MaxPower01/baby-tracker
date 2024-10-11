@@ -1,12 +1,8 @@
-import { Container, useTheme } from "@mui/material";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
 
 import { AccessRequirement } from "@/enums/AccessRequirement";
 import ActivitiesPage from "@/pages/Activities/ActivitiesPage";
 import { BabyPage } from "@/pages/Baby/BabyPage";
-import { BottomBar } from "@/components/BottomBar";
-import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { ChartsPage } from "@/pages/Charts/ChartsPage";
 import { EntryPage } from "@/pages/Entry/EntryPage";
 import { FamilyPage } from "@/pages/Family/FamilyPage";
@@ -14,19 +10,12 @@ import { HistoryPage } from "@/pages/History/HistoryPage";
 import { HomePage } from "@/pages/Home/HomePage";
 import { LandingPage } from "@/pages/Landing/LandingPage";
 import { LoadingPage } from "@/pages/Loading/LoadingPage";
-import { MenuProvider } from "@/components/MenuProvider";
 import { NewBabyPage } from "@/pages/NewBaby/NewBabyPage";
 import NotFoundPage from "@/pages/NotFound/NotFoundPage";
 import { PageId } from "@/enums/PageId";
-import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { PublicRoutes } from "@/components/PublicRoutes";
 import { SettingsPage } from "@/pages/Settings/SettingsPage";
-import { TopBar } from "@/components/TopBar";
 import getPath from "@/utils/getPath";
-import { isNullOrWhiteSpace } from "@/utils/utils";
-import { topbarContainerId } from "@/utils/constants";
-import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 
 // let didInit = false;
