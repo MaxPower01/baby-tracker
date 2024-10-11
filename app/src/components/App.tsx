@@ -1,17 +1,12 @@
 import { Container, useTheme } from "@mui/material";
 import { Navigate, Route, Routes } from "react-router-dom";
-<<<<<<< HEAD
 import { useEffect, useMemo, useState } from "react";
-=======
-import { useEffect, useMemo } from "react";
->>>>>>> 2096f89b9f78a09f0393134a83667e6e604bbaf3
 
 import { AccessRequirement } from "@/enums/AccessRequirement";
 import ActivitiesPage from "@/pages/Activities/ActivitiesPage";
 import { BabyPage } from "@/pages/Baby/BabyPage";
 import { BottomBar } from "@/components/BottomBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
-<<<<<<< HEAD
 import { ChartsPage } from "@/pages/Charts/ChartsPage";
 import { EntryPage } from "@/pages/Entry/EntryPage";
 import { FamilyPage } from "@/pages/Family/FamilyPage";
@@ -22,10 +17,6 @@ import { LoadingPage } from "@/pages/Loading/LoadingPage";
 import { MenuProvider } from "@/components/MenuProvider";
 import { NewBabyPage } from "@/pages/NewBaby/NewBabyPage";
 import NotFoundPage from "@/pages/NotFound/NotFoundPage";
-=======
-import { LandingPage } from "@/pages/Landing/LandingPage";
-import { MenuProvider } from "@/components/MenuProvider";
->>>>>>> 2096f89b9f78a09f0393134a83667e6e604bbaf3
 import { PageId } from "@/enums/PageId";
 import { PrivateRoutes } from "@/components/PrivateRoutes";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -71,7 +62,6 @@ export function App() {
               }
             />
 
-<<<<<<< HEAD
             <Route
               path={getPath({ page: PageId.NewBaby })}
               element={
@@ -187,22 +177,6 @@ export function App() {
       </Routes>
 
       {/* {user == null ? <PublicRoutes /> : <PrivateRoutes />} */}
-=======
-  return (
-    <>
-      <Routes>
-        <Route
-          path={getPath({ page: PageId.Landing })}
-          element={<LandingPage />}
-        />
-        <Route
-          path="*"
-          element={<Navigate replace to={getPath({ page: PageId.Landing })} />}
-        />
-      </Routes>
-
-      {user == null ? <PublicRoutes /> : <PrivateRoutes />}
->>>>>>> 2096f89b9f78a09f0393134a83667e6e604bbaf3
     </>
   );
 }
