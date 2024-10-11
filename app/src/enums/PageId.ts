@@ -1,6 +1,5 @@
 export enum PageId {
   Activities = "activities",
-  Authentication = "authentication",
   Baby = "baby",
   Charts = "charts",
   Entry = "entry",

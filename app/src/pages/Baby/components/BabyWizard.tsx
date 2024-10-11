@@ -25,14 +25,14 @@ import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Baby } from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/types/Baby";
 import BabyForm from "@/pages/Baby/components/BabyForm";
 import { PageId } from "@/enums/PageId";
 import { SexId } from "@/enums/SexId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 
 export function BabyWizard() {

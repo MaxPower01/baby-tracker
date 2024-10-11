@@ -4,7 +4,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import getPath from "@/utils/getPath";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 

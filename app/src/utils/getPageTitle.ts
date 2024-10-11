@@ -19,8 +19,6 @@ export default function getPageTitle(pathname: string, pageId?: PageId) {
         return "Modifier une entrée";
       }
       return "Ajouter une entrée";
-    case PageId.Authentication:
-      return "Connexion";
     case PageId.Family:
       return "Ma famille";
     case PageId.Settings:

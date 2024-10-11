@@ -38,7 +38,7 @@ import { db, storage } from "@/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Baby } from "@/pages/Authentication/types/Baby";
+import { Baby } from "@/types/Baby";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -51,7 +51,7 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 
 function LinearProgressWithLabel(

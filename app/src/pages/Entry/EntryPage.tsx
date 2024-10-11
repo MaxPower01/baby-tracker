@@ -10,7 +10,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { getDefaultEntry } from "@/utils/getDefaultEntry";
 import getPageTitle from "@/utils/getPageTitle";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 
 export function EntryPage() {

@@ -5,7 +5,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { LinearProgressWithLabel } from "@/components/LinearProgressWithLabel";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { storage } from "@/firebase";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 
 type Props = {
   imageUrls: string[];

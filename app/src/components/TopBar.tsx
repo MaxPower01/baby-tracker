@@ -17,7 +17,7 @@ import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useSelector } from "react-redux";
 
 // import { selectEditingEntryId } from "@/pages/History/state/entriesSlice";
@@ -42,24 +42,6 @@ export function TopBar(props: TopBarProps) {
   }, [user?.babyId]);
 
   // const editingEntryId = useSelector(selectEditingEntryId);
-
-  const { pathname } = useLocation();
-  const { pageName, pageTitle } = useMemo(() => {
-    return {
-      pageName: getPageId(pathname),
-      pageTitle: getPageTitle(pathname),
-    };
-  }, [pathname]);
-
-  const shouldRenderBackButton = useMemo(() => {
-    return (
-      pageName === PageId.Entry ||
-      pageName === PageId.Baby ||
-      pageName === PageId.Family ||
-      pageName === PageId.Settings ||
-      pageName === PageId.Activities
-    );
-  }, [pageName]);
 
   // const shouldRenderDeleteEntryButton = useMemo(() => {
   //   return editingEntryId != null && pageName === PageId.Entry;
@@ -110,7 +92,7 @@ export function TopBar(props: TopBarProps) {
                 color: theme.customPalette.text.primary,
               }}
             >
-              {pageTitle}
+              {props.pageTitle}
             </Typography>
           )}
 

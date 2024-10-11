@@ -27,7 +27,7 @@ import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",
@@ -91,7 +91,7 @@ export function BottomBar(props: BottomBarProps) {
         isNullOrWhiteSpace(babyId) == false && pageId === PageId.Home,
       isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
+        // opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -105,7 +105,7 @@ export function BottomBar(props: BottomBarProps) {
         isNullOrWhiteSpace(babyId) == false && pageId === PageId.Charts,
       isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
+        // opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -124,7 +124,7 @@ export function BottomBar(props: BottomBarProps) {
       isFloatingActionButton: true,
       sx: {
         display: isNullOrWhiteSpace(babyId) ? "none" : undefined,
-        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
+        // opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -138,7 +138,7 @@ export function BottomBar(props: BottomBarProps) {
         isNullOrWhiteSpace(babyId) == false && pageId === PageId.History,
       isDisabled: isNullOrWhiteSpace(babyId) == true,
       sx: {
-        opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
+        // opacity: isNullOrWhiteSpace(babyId) == true ? 0 : undefined,
       },
     },
     {
@@ -234,7 +234,9 @@ export function BottomBar(props: BottomBarProps) {
                       variant="body2"
                       textAlign="center"
                       sx={{
-                        color: theme.customPalette.text.secondary,
+                        color: isDisabled
+                          ? theme.customPalette.text.disabled
+                          : theme.customPalette.text.secondary,
                         fontWeight: isCurrentPage == true ? "bold" : 400,
                       }}
                     >

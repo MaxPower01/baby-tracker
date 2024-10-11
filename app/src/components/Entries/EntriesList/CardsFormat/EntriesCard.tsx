@@ -35,7 +35,7 @@ import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useMenu } from "@/components/MenuProvider";
 import { useNavigate } from "react-router-dom";

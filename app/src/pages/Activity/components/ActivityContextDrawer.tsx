@@ -58,7 +58,7 @@ import { getActivityContextTypeFromEntryType } from "@/pages/Activity/utils/getA
 import { getEntryTypeFromActivityContextType } from "@/pages/Activity/utils/getEntryTypeFromActivityContextType";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import { v4 as uuid } from "uuid";
