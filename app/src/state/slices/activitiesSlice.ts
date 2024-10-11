@@ -9,7 +9,7 @@ import { getInitialState, setLocalState } from "@/utils/utils";
 
 import ActivitiesState from "@/state/types/ActivitiesState";
 import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
-import CustomUser from "@/types/CustomUser";
+import { CustomUser } from "@/types/CustomUser";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
 import { RootState } from "@/state/store";
 import StoreReducerName from "@/enums/StoreReducerName";

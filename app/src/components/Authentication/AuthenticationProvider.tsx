@@ -23,7 +23,7 @@ import {
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { Baby } from "@/types/Baby";
-import CustomUser from "@/types/CustomUser";
+import { CustomUser } from "@/types/CustomUser";
 import { emailIsAuthorized } from "@/utils/emailIsAuthorized";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
@@ -95,53 +95,15 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
 
       getDoc(userDocRef)
         .then((docSnap) => {
-          if (docSnap.data() != null) {
-            const newUser = docSnap.data() as CustomUser;
-            if (docSnap.data()?.babies) {
-              const newBabies: Baby[] = [];
-              docSnap.data()?.babies.forEach(async (babyId: string) => {
-                const docRef = doc(db, "babies", babyId);
-                const docSnap = await getDoc(docRef);
-                const docData = docSnap.data();
-                if (docData) {
-                  const { birthDate, ...rest } = docData;
-                  const parsedBirthDate = birthDate.toDate();
-                  if (parsedBirthDate) {
-                    newBabies.push({
-                      id: babyId,
-                      birthDate: parsedBirthDate as Date,
-                      ...(rest as any),
-                    });
-                    // if (docSnap.id == newUser.babyId) {
-                    //   dispatch(
-                    //     saveActivityContextsInState({
-                    //       activityContexts: (
-                    //         docData.activityContexts as ActivityContext[]
-                    //       ).map((activityContext) =>
-                    //         JSON.stringify(activityContext)
-                    //       ),
-                    //     })
-                    //   );
-                    // }
-                  } else {
-                    throw new Error("Birth date is null");
-                  }
-                }
-              });
-              newUser.babies = newBabies;
-            }
-            // dispatchUserPreferences(newUser);
-            // setUser(newUser);
-            return resolve(newUser);
+          if (docSnap.exists() && docSnap.data() != null) {
+            return resolve(docSnap.data() as CustomUser);
           } else {
-            setUser(null);
             return resolve(null);
           }
         })
         .catch((error) => {
           console.error(error);
           return reject(error);
-          // setUser(null);
         });
     });
   };
@@ -155,23 +117,44 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       async (user) => {
         if (user) {
           // User is signed in
+
+          let babyId: string | null = null;
+
           fetchUserDoc(user)
             .then((newUser) => {
               if (newUser) {
+                babyId = newUser.babyId;
                 setUser(newUser);
               } else {
                 setUser(null);
               }
             })
             .catch((error) => {
-              console.error(error);
               setUser(null);
+              console.error(error);
             })
             .finally(() => {
-              setIsLoading(false);
+              if (babyId) {
+                fetchBabyDoc(babyId).then((baby) => {
+                  if (baby) {
+                    setUser((prevUser) => {
+                      if (prevUser) {
+                        return {
+                          ...prevUser,
+                          baby,
+                        };
+                      }
+                      return prevUser;
+                    });
+                  }
+                });
+              } else {
+                setIsLoading(false);
+              }
             });
         } else {
           // User is signed out
+
           setUser(null);
           setIsLoading(false);
         }

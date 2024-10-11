@@ -6,9 +6,10 @@ import { FirestoreDocument } from "@/types/FirestoreDocument";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { User } from "firebase/auth";
 
-export default interface CustomUser extends FirestoreDocument, User {
+export interface CustomUser extends FirestoreDocument, User {
   babyId: string;
-  babies: Baby[];
+  babies: string[];
+  baby: Baby;
   entryTypesOrder: EntryTypeId[];
   intervalMethodByEntryTypeId: Array<{
     entryTypeId: EntryTypeId;

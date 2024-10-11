@@ -1,5 +1,5 @@
 import { AccessRequirement } from "@/enums/AccessRequirement";
-import CustomUser from "@/types/CustomUser";
+import { CustomUser } from "@/types/CustomUser";
 import { Navigate } from "react-router-dom";
 import { PageId } from "@/enums/PageId";
 import React from "react";

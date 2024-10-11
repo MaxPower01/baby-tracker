@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { doc, updateDoc } from "firebase/firestore";
 import { getInitialState, setLocalState } from "@/utils/utils";
 
-import CustomUser from "@/types/CustomUser";
+import { CustomUser } from "@/types/CustomUser";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { LocalStorageKey } from "@/enums/LocalStorageKey";
