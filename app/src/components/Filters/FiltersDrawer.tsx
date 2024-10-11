@@ -27,7 +27,7 @@ import { getEntryTypeIdFromActivityContextType } from "@/utils/getEntryTypeIdFro
 import { resetFiltersButtonId } from "@/utils/constants";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 

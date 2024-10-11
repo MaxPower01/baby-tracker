@@ -19,7 +19,7 @@ import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useSelector } from "react-redux";
 
 // import { selectEditingEntryId } from "@/pages/History/state/entriesSlice";

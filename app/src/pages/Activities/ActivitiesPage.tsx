@@ -23,7 +23,7 @@ import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "@/components/SnackbarProvider";

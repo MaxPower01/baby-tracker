@@ -12,7 +12,7 @@ import { bottomBarNewEntryFabId } from "@/utils/constants";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEffect } from "react";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";

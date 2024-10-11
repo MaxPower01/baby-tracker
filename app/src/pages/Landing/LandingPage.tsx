@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 
-import AuthenticationForm from "@/pages/Authentication/components/AuthenticationForm";
+import AuthenticationForm from "@/components/Authentication/AuthenticationForm";
 import { CustomTopBar } from "@/components/CustomTopBar";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import getPath from "@/utils/getPath";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 
 export function LandingPage() {

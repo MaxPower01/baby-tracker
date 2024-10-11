@@ -20,7 +20,7 @@ import getPageTitle from "@/utils/getPageTitle";
 import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";

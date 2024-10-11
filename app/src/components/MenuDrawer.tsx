@@ -35,7 +35,7 @@ import { httpsCallable } from "firebase/functions";
 import isDevelopment from "@/utils/isDevelopment";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 import { writeBatch } from "firebase/firestore";
@@ -142,7 +142,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
             >
               {user == null ? (
                 <>
-                  <Stack spacing={1} alignItems="center">
+                  {/* <Stack spacing={1} alignItems="center">
                     <AccountCircleIcon
                       sx={{
                         fontSize: "6em",
@@ -165,7 +165,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
                     }
                   >
                     Se connecter
-                  </Button>
+                  </Button> */}
                 </>
               ) : (
                 <>

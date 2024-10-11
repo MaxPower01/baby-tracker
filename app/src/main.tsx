@@ -2,7 +2,7 @@ import "@/main.scss";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { App } from "@/components/App";
-import { AuthenticationProvider } from "@/pages/Authentication/components/AuthenticationProvider";
+import { AuthenticationProvider } from "@/components/Authentication/AuthenticationProvider";
 import { BabiesProvider } from "@/pages/Baby/components/BabiesProvider";
 import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";

@@ -27,7 +27,7 @@ import getPageId from "@/utils/getPageId";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 
 const FloatingActionButton = styled(Fab)({
   position: "absolute",

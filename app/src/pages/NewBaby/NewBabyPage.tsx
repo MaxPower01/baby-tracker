@@ -31,8 +31,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useCallback, useMemo, useState } from "react";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import AuthenticationForm from "@/pages/Authentication/components/AuthenticationForm";
-import { Baby } from "@/pages/Authentication/types/Baby";
+import AuthenticationForm from "@/components/Authentication/AuthenticationForm";
+import { Baby } from "@/types/Baby";
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import { CustomTopBar } from "@/components/CustomTopBar";
 import { PageId } from "@/enums/PageId";
@@ -45,7 +45,7 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 
 // function LinearProgressWithLabel(

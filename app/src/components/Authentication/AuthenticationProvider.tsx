@@ -22,9 +22,9 @@ import {
 } from "@/state/slices/settingsSlice";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
-import { Baby } from "@/pages/Authentication/types/Baby";
-import CustomUser from "@/pages/Authentication/types/CustomUser";
-import { emailIsAuthorized } from "@/pages/Authentication/utils/emailIsAuthorized";
+import { Baby } from "@/types/Baby";
+import CustomUser from "@/types/CustomUser";
+import { emailIsAuthorized } from "@/utils/emailIsAuthorized";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import isDevelopment from "@/utils/isDevelopment";
