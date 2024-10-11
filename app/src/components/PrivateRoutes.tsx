@@ -14,18 +14,15 @@ import { PageId } from "@/enums/PageId";
 import { SettingsPage } from "@/pages/Settings/SettingsPage";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
-import { useMemo } from "react";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 
 export function PrivateRoutes() {
   const { user } = useAuthentication();
-  const babyId = useMemo(() => {
-    return user?.babyId ?? "";
-  }, [user]);
+
   return (
     <Routes>
       <>
-        {isNullOrWhiteSpace(babyId) == true && (
+        {isNullOrWhiteSpace(user?.babyId) == true && (
           <>
             <Route
               path={getPath({ page: PageId.Landing })}
@@ -46,7 +43,7 @@ export function PrivateRoutes() {
           </>
         )}
 
-        {isNullOrWhiteSpace(babyId) == false && (
+        {isNullOrWhiteSpace(user?.babyId) == false && (
           <>
             <Route
               path={getPath({ page: PageId.Home })}

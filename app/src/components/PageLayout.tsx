@@ -5,7 +5,7 @@ import { TopBar, TopBarProps } from "@/components/TopBar";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import { MenuProvider } from "@/components/MenuProvider";
 import React from "react";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 
 type Props = React.PropsWithChildren<{
   topBarProps?: TopBarProps;

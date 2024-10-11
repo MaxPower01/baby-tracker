@@ -6,7 +6,7 @@ import BabyForm from "@/pages/Baby/components/BabyForm";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import getPageTitle from "@/utils/getPageTitle";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useParams } from "react-router-dom";
 
 export function BabyPage() {

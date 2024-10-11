@@ -18,7 +18,7 @@ import { getTimestamp } from "@/utils/getTimestamp";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
 

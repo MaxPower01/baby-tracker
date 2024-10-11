@@ -32,7 +32,7 @@ import { SexId } from "@/enums/SexId";
 import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { db } from "@/firebase";
 import getPath from "@/utils/getPath";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 
 export function BabyWizard() {

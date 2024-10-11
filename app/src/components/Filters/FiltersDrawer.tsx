@@ -22,10 +22,12 @@ import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { FiltersProps } from "@/components/Filters/FiltersPicker";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { getActivityContextTypesItems } from "@/utils/getActivityContextTypesItems";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryTypeIdFromActivityContextType } from "@/utils/getEntryTypeIdFromActivityContextType";
 import { resetFiltersButtonId } from "@/utils/constants";
 import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
 import { useSelector } from "react-redux";
 
@@ -71,6 +73,7 @@ type Props = {
 export function FiltersDrawer(props: Props) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const { user } = useAuthentication();
 
   // const selectedTimePeriod = useSelector(selectTimePeriodInFiltersState);
   // const selectedEntryTypes = useSelector(selectEntryTypesInFiltersState);
@@ -142,7 +145,7 @@ export function FiltersDrawer(props: Props) {
     [props]
   );
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
 
   return (
     <>

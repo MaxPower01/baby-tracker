@@ -32,7 +32,7 @@ import { getTimestampFromDateKey } from "@/utils/getTimestampFromDateKey";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { isRecentTimePeriod } from "@/utils/isRecentTimePeriod";
 import { isSameDay } from "@/utils/isSameDay";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 
 interface EntriesContextType {
   recentEntries: Entry[];

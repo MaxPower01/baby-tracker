@@ -1,17 +1,11 @@
 import {
   DocumentData,
-  FieldValue,
-  Timestamp,
   WithFieldValue,
-  collection,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
-  query,
   serverTimestamp,
   setDoc,
-  where,
 } from "firebase/firestore";
 import {
   User,
@@ -21,40 +15,51 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, googleAuthProvider } from "@/firebase";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   saveEntryTypesOrderInState,
   saveIntervalMethodByEntryTypeIdInState,
 } from "@/state/slices/settingsSlice";
-import { useEffect, useMemo, useState } from "react";
 
 import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
-import AuthenticationContext from "@/pages/Authentication/components/AuthenticationContext";
-import AuthenticationContextValue from "@/pages/Authentication/types/AuthenticationContextValue";
 import { Baby } from "@/pages/Authentication/types/Baby";
 import CustomUser from "@/pages/Authentication/types/CustomUser";
+import { emailIsAuthorized } from "@/pages/Authentication/utils/emailIsAuthorized";
 import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import isDevelopment from "@/utils/isDevelopment";
 import { saveActivityContextsInState } from "@/state/slices/activitiesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 
+interface AuthenticationContextType {
+  user: CustomUser | null;
+  setUser: React.Dispatch<React.SetStateAction<CustomUser | null>>;
+  googleSignInWithPopup: () => Promise<{
+    user: User | undefined;
+    isNewUser: boolean | undefined;
+  }>;
+  signOut: () => Promise<boolean>;
+  emailIsAuthorized: (email: string) => Promise<boolean>;
+}
+
+const AuthenticationContext = createContext<
+  AuthenticationContextType | undefined
+>(undefined);
+
+export function useAuthentication() {
+  const authentication = useContext(AuthenticationContext);
+  if (authentication == null) {
+    throw new Error(
+      "Authentication context is null. Make sure to call useAuthentication() inside of a <AuthenticationProvider />"
+    );
+  }
+  return authentication;
+}
+
 export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
   const dispatch = useAppDispatch();
 
   const [user, setUser] = useState<CustomUser | null>(null);
-
-  const checkIfEmailIsAuthorized = async (email: string): Promise<boolean> => {
-    const authorizedUsersDoc = await getDoc(
-      doc(db, "appSettings", "authorizedUsers")
-    );
-    if (authorizedUsersDoc.exists()) {
-      const authorizedUsers = authorizedUsersDoc.data();
-      if (authorizedUsers) {
-        return (authorizedUsers.emails as string[]).includes(email);
-      }
-    }
-    return false;
-  };
 
   const dispatchUserPreferences = (newUser: CustomUser) => {
     dispatch(
@@ -62,12 +67,15 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
         intervalMethodByEntryTypeId: newUser.intervalMethodByEntryTypeId,
       })
     );
+
     dispatch(
       saveEntryTypesOrderInState({
         entryTypesOrder: newUser.entryTypesOrder,
       })
     );
+
     const baby = newUser.babies?.find((baby) => baby.id === newUser.babyId);
+
     if (baby) {
       dispatch(
         saveActivityContextsInState({
@@ -226,8 +234,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
         }
 
         const isAuthorized =
-          isDevelopment() ||
-          (await checkIfEmailIsAuthorized(result.user.email));
+          isDevelopment() || (await emailIsAuthorized(result.user.email));
 
         const additionalUserInfo = getAdditionalUserInfo(result);
         isNewUser = additionalUserInfo?.isNewUser;
@@ -291,15 +298,15 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     });
   };
 
-  const context: AuthenticationContextValue = useMemo(() => {
+  const value: AuthenticationContextType = useMemo(() => {
     return {
       user,
       setUser,
       googleSignInWithPopup,
       signOut,
-      checkIfEmailIsAuthorized,
+      emailIsAuthorized,
     };
-  }, [user, setUser, googleSignInWithPopup, signOut]);
+  }, [user, setUser, googleSignInWithPopup, signOut, emailIsAuthorized]);
 
-  return <AuthenticationContext.Provider value={context} {...props} />;
+  return <AuthenticationContext.Provider value={value} {...props} />;
 }

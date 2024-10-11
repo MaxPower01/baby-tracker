@@ -17,7 +17,7 @@ import {
 
 import { Baby } from "@/pages/Authentication/types/Baby";
 import { db } from "@/firebase";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 
 interface BabiesContext {
   saveBaby: (baby: Baby) => Promise<Baby>;

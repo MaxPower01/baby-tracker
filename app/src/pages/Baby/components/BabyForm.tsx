@@ -51,7 +51,7 @@ import dayjsLocaleFrCa from "@/lib/dayjs/dayjsLocaleFrCa";
 import { getDefaultActivityContexts } from "@/pages/Activities/utils/getDefaultActivityContexts";
 import getPath from "@/utils/getPath";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useBabies } from "@/pages/Baby/components/BabiesProvider";
 
 function LinearProgressWithLabel(

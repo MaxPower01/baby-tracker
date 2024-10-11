@@ -10,16 +10,14 @@ import { TopBar } from "@/components/TopBar";
 import { isNullOrWhiteSpace } from "@/utils/utils";
 import { topbarContainerId } from "@/utils/constants";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 
 let didInit = false;
 let didInitUser = false;
 
 export function App() {
   const { user } = useAuthentication();
-  const babyId = useMemo(() => user?.babyId ?? "", [user]);
   const dispatch = useAppDispatch();
-  const theme = useTheme();
 
   useEffect(() => {
     if (!didInit) {
@@ -29,11 +27,11 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!isNullOrWhiteSpace(babyId) && !didInitUser) {
+    if (!isNullOrWhiteSpace(user?.babyId) && !didInitUser) {
       didInitUser = true;
       // Code here will run only once per app load if the user is not null
     }
-  }, [user, babyId, dispatch]);
+  }, [user, dispatch]);
 
   return <>{user == null ? <PublicRoutes /> : <PrivateRoutes />}</>;
 }

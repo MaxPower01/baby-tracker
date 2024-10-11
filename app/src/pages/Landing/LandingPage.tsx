@@ -15,7 +15,7 @@ import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import getPath from "@/utils/getPath";
-import { useAuthentication } from "@/pages/Authentication/hooks/useAuthentication";
+import { useAuthentication } from "@/pages/Authentication/components/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
 
 export function LandingPage() {
