@@ -121,7 +121,7 @@ export function ChartsPage() {
 
         {!entries.length && status === "idle" && (
           <EmptyState
-            context={EmptyStateContext.Graphics}
+            context={EmptyStateContext.Charts}
             override={{
               title: "Aucune entrée trouvée",
               description:

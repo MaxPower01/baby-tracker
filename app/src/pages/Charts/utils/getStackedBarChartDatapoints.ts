@@ -47,6 +47,7 @@ export function getStackedBarChartDatapoints(
           dateISOString: date.toISOString(),
           value: leftValue,
           category: DatapointCategory.Left,
+          isEmpty: filteredEntries.length === 0,
         },
         {
           id: uuid(),
@@ -54,6 +55,7 @@ export function getStackedBarChartDatapoints(
           dateISOString: date.toISOString(),
           value: rightValue,
           category: DatapointCategory.Right,
+          isEmpty: filteredEntries.length === 0,
         },
       ];
 

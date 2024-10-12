@@ -1,5 +1,5 @@
 export enum EmptyStateContext {
   Entries = 1,
-  Graphics = 2,
+  Charts = 2,
   ActivityContextDrawer = 3,
 }

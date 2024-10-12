@@ -8,4 +8,5 @@ export type BarChartDatapoint = {
    * If it's a volume, the value is in milliliters.
    */
   value: number;
+  isEmpty: boolean;
 };

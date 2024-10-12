@@ -33,10 +33,11 @@ export function getBarChartDatapoints(
           self.findIndex((t) => t.id === entry.id) === index
       );
 
-      const result = {
+      const result: BarChartDatapoint = {
         id: uuid(),
         date,
         value: getEntriesValue(filteredEntries, yAxisType),
+        isEmpty: filteredEntries.length === 0,
       };
 
       return result;

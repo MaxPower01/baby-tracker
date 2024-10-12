@@ -92,6 +92,8 @@ export function getEmptyStateDescription(props: EmptyStateProps) {
     }
   } else if (props.context == EmptyStateContext.Entries) {
     return "Commencez dès maintenant à enregistrer l’activité de votre bébé";
+  } else if (props.context == EmptyStateContext.Charts) {
+    return "Ajoutez des entrées pour accéder au graphique de cette activité";
   }
   return defaultDescription;
 }

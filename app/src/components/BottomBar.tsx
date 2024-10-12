@@ -95,7 +95,7 @@ export function BottomBar(props: BottomBarProps) {
       },
     },
     {
-      id: "graphics",
+      id: "charts",
       label: getPageTitle({ pathname: getPath({ page: PageId.Charts }) }),
       onClick: () => navigate(getPath({ page: PageId.Charts })),
       IconWrapper: IconButton,

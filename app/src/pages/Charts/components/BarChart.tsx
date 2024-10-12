@@ -3,9 +3,12 @@ import * as d3 from "d3";
 import { Box, Paper, Stack, useTheme } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 
+import { ActivityContextType } from "@/pages/Activity/enums/ActivityContextType";
 import { BarChartDatapoint } from "@/pages/Charts/types/BarChartDatapoint";
 import ChartHeader from "@/pages/Charts/components/ChartHeader";
 import { ChartLegend } from "@/pages/Charts/components/ChartLegend";
+import { EmptyState } from "@/components/EmptyState";
+import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
@@ -69,6 +72,11 @@ export function BarChart(props: Props) {
       barsCount,
       props.timePeriod,
     ]
+  );
+
+  const allEmpty = useMemo(
+    () => datapoints.every((datapoint) => datapoint.isEmpty),
+    [datapoints]
   );
 
   const chartLayout = useMemo(
@@ -385,53 +393,61 @@ export function BarChart(props: Props) {
 
   return (
     <Stack>
-      <ChartHeader
-        entryType={props.entryTypeId}
-        yAxisUnit={yAxisUnit}
-        xAxisUnit={props.xAxisUnit}
-        yAxisType={props.yAxisType}
-        datapoints={datapoints}
-      />
+      {allEmpty == true ? (
+        <>
+          <EmptyState context={EmptyStateContext.Charts} />
+        </>
+      ) : (
+        <>
+          <ChartHeader
+            entryType={props.entryTypeId}
+            yAxisUnit={yAxisUnit}
+            xAxisUnit={props.xAxisUnit}
+            yAxisType={props.yAxisType}
+            datapoints={datapoints}
+          />
 
-      <Box
-        id={outerContainerId}
-        sx={{
-          maxHeight: chartLayout.chartContainerHeight,
-          position: "relative",
-          userSelect: "none",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          id={innerContainerId}
-          sx={{
-            position: "relative",
-            width: "100%",
-            overflowX: "scroll",
-          }}
-        >
-          {renderSVG(chartSVGId, svgRef)}
-        </Box>
-        <Paper
-          id={chartOverlayId}
-          ref={overlayRef}
-          sx={{
-            pointerEvents: "none",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: chartLayout.chartHeight,
-            width: chartLayout.chartMarginLeft,
-            borderRadius: 0,
-            boxShadow: "none",
-            backgroundColor: props.backgroundColor,
-          }}
-        />
-        {renderSVG(chartSVGOverlayId, svgOverlayRef)}
-      </Box>
+          <Box
+            id={outerContainerId}
+            sx={{
+              maxHeight: chartLayout.chartContainerHeight,
+              position: "relative",
+              userSelect: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              id={innerContainerId}
+              sx={{
+                position: "relative",
+                width: "100%",
+                overflowX: "scroll",
+              }}
+            >
+              {renderSVG(chartSVGId, svgRef)}
+            </Box>
+            <Paper
+              id={chartOverlayId}
+              ref={overlayRef}
+              sx={{
+                pointerEvents: "none",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: chartLayout.chartHeight,
+                width: chartLayout.chartMarginLeft,
+                borderRadius: 0,
+                boxShadow: "none",
+                backgroundColor: props.backgroundColor,
+              }}
+            />
+            {renderSVG(chartSVGOverlayId, svgOverlayRef)}
+          </Box>
+        </>
+      )}
     </Stack>
   );
 }

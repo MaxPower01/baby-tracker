@@ -59,6 +59,10 @@ export function EmptyState(props: EmptyStateProps) {
       buttonLabel = "Ajouter une entrée";
       stickerSource = "/stickers/empty-state--entries.svg";
       shouldRender = true;
+    } else if (props.context === EmptyStateContext.Charts) {
+      buttonLabel = "Ajouter une entrée";
+      stickerSource = "/stickers/empty-state--charts.svg";
+      shouldRender = true;
     }
   }
   if (!shouldRender) {

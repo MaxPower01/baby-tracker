@@ -82,6 +82,8 @@ export function getEmptyStateTitle(props: EmptyStateProps) {
     }
   } else if (props.context == EmptyStateContext.Entries) {
     return "Aucune entrée pour le moment";
+  } else if (props.context == EmptyStateContext.Charts) {
+    return "Pas assez de données disponibles";
   }
   return defaultTitle;
 }
