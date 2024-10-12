@@ -98,7 +98,7 @@ export function HistoryPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.History),
+        pageTitle: getPageTitle({ pageId: PageId.History }),
       }}
     >
       <Stack

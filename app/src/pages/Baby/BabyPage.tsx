@@ -24,7 +24,7 @@ export function BabyPage() {
       return (
         <PageLayout
           topBarProps={{
-            pageTitle: getPageTitle(PageId.Baby),
+            pageTitle: getPageTitle({ pageId: PageId.Baby }),
             renderBackButton: true,
           }}
           bottomBarProps={{ hide: true }}
@@ -44,7 +44,7 @@ export function BabyPage() {
     return (
       <PageLayout
         topBarProps={{
-          pageTitle: getPageTitle(PageId.Baby),
+          pageTitle: getPageTitle({ pageId: PageId.Baby }),
           renderBackButton: true,
         }}
         bottomBarProps={{ hide: true }}
@@ -58,7 +58,7 @@ export function BabyPage() {
     return (
       <PageLayout
         topBarProps={{
-          pageTitle: getPageTitle(PageId.Baby),
+          pageTitle: getPageTitle({ pageId: PageId.Baby }),
           renderBackButton: true,
         }}
         bottomBarProps={{ hide: true }}
@@ -71,7 +71,7 @@ export function BabyPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Baby),
+        pageTitle: getPageTitle({ pageId: PageId.Baby }),
         renderBackButton: true,
       }}
       bottomBarProps={{ hide: true }}

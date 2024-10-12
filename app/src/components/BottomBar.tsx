@@ -70,7 +70,7 @@ export function BottomBar(props: BottomBarProps) {
   const { pageId, pageTitle } = useMemo(() => {
     return {
       pageId: getPageId(pathname),
-      pageTitle: getPageTitle(pathname),
+      pageTitle: getPageTitle({ pathname }),
     };
   }, [location.pathname]);
 
@@ -82,7 +82,7 @@ export function BottomBar(props: BottomBarProps) {
   const items: Array<BottomBarItem> = [
     {
       id: "home",
-      label: getPageTitle(getPath({ page: PageId.Home })),
+      label: getPageTitle({ pathname: getPath({ page: PageId.Home }) }),
       onClick: () => navigate(getPath({ page: PageId.Home })),
       IconWrapper: IconButton,
       Icon: HomeIcon,
@@ -96,7 +96,7 @@ export function BottomBar(props: BottomBarProps) {
     },
     {
       id: "graphics",
-      label: getPageTitle(getPath({ page: PageId.Charts })),
+      label: getPageTitle({ pathname: getPath({ page: PageId.Charts }) }),
       onClick: () => navigate(getPath({ page: PageId.Charts })),
       IconWrapper: IconButton,
       Icon: BarChartIcon,
@@ -130,7 +130,7 @@ export function BottomBar(props: BottomBarProps) {
     {
       id: "history",
       onClick: () => navigate(getPath({ page: PageId.History })),
-      label: getPageTitle(getPath({ page: PageId.History })),
+      label: getPageTitle({ pathname: getPath({ page: PageId.History }) }),
       IconWrapper: IconButton,
       Icon: DynamicFeedIcon,
       color: "inherit",

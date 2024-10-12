@@ -36,7 +36,7 @@ export function HomePage() {
     return (
       <PageLayout
         topBarProps={{
-          pageTitle: getPageTitle(PageId.Home),
+          pageTitle: getPageTitle({ pageId: PageId.Home }),
         }}
       >
         <LoadingIndicator />
@@ -47,7 +47,7 @@ export function HomePage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Home),
+        pageTitle: getPageTitle({ pageId: PageId.Home }),
       }}
     >
       <SectionStack>

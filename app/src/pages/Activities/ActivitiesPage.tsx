@@ -127,7 +127,7 @@ export default function ActivitiesPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Activities),
+        pageTitle: getPageTitle({ pageId: PageId.Activities }),
         renderBackButton: true,
       }}
       OverrideBottomBar={() => (

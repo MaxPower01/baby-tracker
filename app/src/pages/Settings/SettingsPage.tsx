@@ -181,7 +181,7 @@ export function SettingsPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Settings),
+        pageTitle: getPageTitle({ pageId: PageId.Settings }),
         renderBackButton: true,
       }}
       bottomBarProps={{ hide: true }}

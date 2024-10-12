@@ -24,7 +24,7 @@ export function FamilyPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Family),
+        pageTitle: getPageTitle({ pageId: PageId.Family }),
         renderBackButton: true,
       }}
       bottomBarProps={{ hide: true }}

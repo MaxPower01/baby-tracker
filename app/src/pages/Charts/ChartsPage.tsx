@@ -92,7 +92,7 @@ export function ChartsPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Charts),
+        pageTitle: getPageTitle({ pageId: PageId.Charts }),
       }}
     >
       <Stack
