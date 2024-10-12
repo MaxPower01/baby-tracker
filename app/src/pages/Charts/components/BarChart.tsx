@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
+import { PageId } from "@/enums/PageId";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { XAxisUnit } from "@/types/XAxisUnit";
 import { YAxisType } from "@/types/YAxisType";
@@ -22,8 +23,10 @@ import { getChartLegendItem } from "@/pages/Charts/utils/getChartLegendItem";
 import { getDatapointDate } from "@/pages/Charts/utils/getDatapointDate";
 import { getDatapointsValue } from "@/pages/Charts/utils/getDatapointsValue";
 import { getMinMax } from "@/pages/Charts/utils/getMinMax";
+import getPath from "@/utils/getPath";
 import { getYAxisTicksCount } from "@/pages/Charts/utils/getYAxisTicksCount";
 import { getYAxisUnit } from "@/pages/Charts/utils/getYAxisUnit";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { valueFormatter } from "@/pages/Charts/utils/valueFormatter";
 
@@ -38,6 +41,7 @@ type Props = {
 
 export function BarChart(props: Props) {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const svgOverlayRef = useRef<SVGSVGElement | null>(null);
@@ -395,7 +399,17 @@ export function BarChart(props: Props) {
     <Stack>
       {allEmpty == true ? (
         <>
-          <EmptyState context={EmptyStateContext.Charts} />
+          <EmptyState
+            context={EmptyStateContext.Charts}
+            onClick={() => {
+              navigate(
+                getPath({
+                  page: PageId.Entry,
+                  params: { type: props.entryTypeId.toString() },
+                })
+              );
+            }}
+          />
         </>
       ) : (
         <>
