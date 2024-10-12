@@ -42,7 +42,6 @@ export function CustomTopBar(props: Props) {
         top: 0,
         background: theme.palette.background.default,
         boxShadow: "none",
-        // backgroundImage: "none",
       }}
     >
       <Container maxWidth={CSSBreakpoint.Small}>

@@ -34,8 +34,8 @@ export function CustomBottomBar(props: Props) {
       sx={{
         top: "auto",
         bottom: 0,
-        backgroundColor: "background.default",
-        zIndex: theme.zIndex.appBar + 1,
+        backgroundColor: theme.palette.background.default,
+        boxShadow: "none",
       }}
       color="transparent"
     >
