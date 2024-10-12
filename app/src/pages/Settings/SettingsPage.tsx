@@ -19,8 +19,6 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import {
   saveIntervalMethodByEntryTypeIdInDB,
-  selectEntryTypesOrder,
-  selectIntervalMethodByEntryTypeId,
   selectThemeMode,
 } from "@/state/slices/settingsSlice";
 
@@ -37,6 +35,8 @@ import { PageLayout } from "@/components/PageLayout";
 import { ReactSVG } from "react-svg";
 import { ThemeMode } from "@/enums/ThemeMode";
 import WeightUnit from "@/pages/Settings/enums/WeightUnit";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
+import { getDefaultIntervalMethodByEntryTypeId } from "@/utils/getDefaultIntervalMethodByEntryTypeId";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
@@ -116,11 +116,11 @@ export function SettingsPage() {
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
 
-  const intervalMethodByEntryTypeId = useSelector(
-    selectIntervalMethodByEntryTypeId
-  );
+  const intervalMethodByEntryTypeId =
+    user?.intervalMethodByEntryTypeId ??
+    getDefaultIntervalMethodByEntryTypeId();
   const [
     localIntervalMethodByEntryTypeId,
     setLocalIntervalMethodByEntryTypeId,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ChartCard } from "@/pages/Charts/components/ChartCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -15,15 +15,13 @@ import { TimePeriodId } from "@/enums/TimePeriodId";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { entryTypeHasVolume } from "@/pages/Entry/utils/entryTypeHasVolume";
 import { filterTimePeriodEntries } from "@/utils/filterTimePeriodEntries";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntriesFromDailyEntries } from "@/utils/getEntriesFromDailyEntries";
 import getPageTitle from "@/utils/getPageTitle";
-import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
-import { useSelector } from "react-redux";
 
 export function ChartsPage() {
   const { timePeriod, reset } = useFilters();
@@ -36,7 +34,7 @@ export function ChartsPage() {
   // and in the Last14Days time period, only the new entries should be cached
   const cache = useRef<{ [timePeriod: string]: Entry[] }>({});
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
   const defaultEntryType = entryTypesOrder[0];
   const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(defaultEntryType);
 

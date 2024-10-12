@@ -1,9 +1,9 @@
 import {
   DocumentData,
+  Timestamp,
   WithFieldValue,
   doc,
   getDoc,
-  onSnapshot,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
@@ -15,20 +15,22 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, googleAuthProvider } from "@/firebase";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
-  saveEntryTypesOrderInState,
-  saveIntervalMethodByEntryTypeIdInState,
-} from "@/state/slices/settingsSlice";
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { ActivityContext } from "@/pages/Activity/types/ActivityContext";
 import { Baby } from "@/types/Baby";
 import { CustomUser } from "@/types/CustomUser";
+import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { emailIsAuthorized } from "@/utils/emailIsAuthorized";
-import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
+import { getDefaultIntervalMethodByEntryTypeId } from "@/utils/getDefaultIntervalMethodByEntryTypeId";
 import isDevelopment from "@/utils/isDevelopment";
-import { saveActivityContextsInState } from "@/state/slices/activitiesSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 
 interface AuthenticationContextType {
@@ -40,7 +42,7 @@ interface AuthenticationContextType {
     isNewUser: boolean | undefined;
   }>;
   signOut: () => Promise<boolean>;
-  emailIsAuthorized: (email: string) => Promise<boolean>;
+  saveEntryTypesOrder: (entryTypesOrder: EntryTypeId[]) => Promise<boolean>;
 }
 
 const AuthenticationContext = createContext<
@@ -108,6 +110,33 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     });
   };
 
+  const fetchBabyDoc = (babyId: string) => {
+    return new Promise<Baby | null>((resolve, reject) => {
+      const babyDocRef = doc(db, "babies", babyId);
+
+      getDoc(babyDocRef)
+        .then((docSnap) => {
+          if (docSnap.exists() && docSnap.data() != null) {
+            const baby = docSnap.data() as Baby;
+            const { birthDate: timestampBirthDate, ...rest } = baby;
+            const birthDate = (
+              timestampBirthDate as unknown as Timestamp
+            ).toDate();
+            return resolve({
+              ...rest,
+              birthDate,
+            });
+          } else {
+            return resolve(null);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          return reject(error);
+        });
+    });
+  };
+
   // Listen for changes in authentication state
   // and update the user state accordingly
 
@@ -134,21 +163,30 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
               console.error(error);
             })
             .finally(() => {
+              // User has a baby selected, so we need to fetch the baby doc
               if (babyId) {
-                fetchBabyDoc(babyId).then((baby) => {
-                  if (baby) {
-                    setUser((prevUser) => {
-                      if (prevUser) {
-                        return {
-                          ...prevUser,
-                          baby,
-                        };
-                      }
-                      return prevUser;
-                    });
-                  }
-                });
+                fetchBabyDoc(babyId)
+                  .then((baby) => {
+                    if (baby) {
+                      setUser((prevUser) => {
+                        if (prevUser) {
+                          return {
+                            ...prevUser,
+                            baby,
+                          };
+                        }
+                        return prevUser;
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
+                  });
               } else {
+                // User does not have a baby selected
                 setIsLoading(false);
               }
             });
@@ -164,62 +202,6 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       unsubscribeFromAuthChanges();
     };
   }, []);
-
-  useEffect(() => {
-    const babyId = user?.babyId;
-    if (babyId) {
-      const babyDocRef = doc(db, "babies", babyId);
-      // const unsubscribeFromBabyChanges = onSnapshot(babyDocRef, (doc) => {
-      //   try {
-      //     if (doc.exists()) {
-      //       const babyData = doc.data();
-      //       if (babyData) {
-      //         const { birthDate, ...rest } = babyData;
-      //         const parsedBirthDate = birthDate.toDate();
-      //         if (parsedBirthDate) {
-      //           let newUser = null;
-      //           setUser((prevUser) => {
-      //             if (prevUser) {
-      //               const newBabies = prevUser.babies.map((baby) => {
-      //                 if (baby.id === babyId) {
-      //                   return {
-      //                     id: babyId,
-      //                     birthDate: parsedBirthDate as Date,
-      //                     ...(rest as any),
-      //                   };
-      //                 }
-      //                 return baby;
-      //               });
-      //               newUser = {
-      //                 ...prevUser,
-      //                 babies: newBabies,
-      //               };
-      //               return newUser;
-      //             }
-      //             return prevUser;
-      //           });
-      //           // if (newUser != null) {
-      //           //   dispatchUserPreferences(newUser);
-      //           // }
-      //         } else {
-      //           throw new Error("Birth date is null");
-      //         }
-      //       } else {
-      //         throw new Error("Baby data is null");
-      //       }
-      //     } else {
-      //       // TODO: Handle case where baby doc does not exist (deleted by another user?)
-      //       throw new Error("Baby doc does not exist");
-      //     }
-      //   } catch (error) {
-      //     console.error("Error updating baby data in user", error);
-      //   }
-      // });
-      // return () => {
-      //   unsubscribeFromBabyChanges();
-      // };
-    }
-  }, [user?.babyId]);
 
   const googleSignInWithPopup = async () => {
     return new Promise<{
@@ -274,7 +256,7 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
           (data as CustomUser).babyId = "";
           (data as CustomUser).babies = [];
           (data as CustomUser).intervalMethodByEntryTypeId =
-            getDefaulIntervalMethodByEntryTypeId();
+            getDefaultIntervalMethodByEntryTypeId();
           (data as CustomUser).entryTypesOrder = getDefaultEntryTypesOrder();
           (data as CustomUser).createdAt = serverTimestamp();
         }
@@ -302,6 +284,34 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
     });
   };
 
+  const saveEntryTypesOrder = useCallback(
+    async (entryTypesOrder: EntryTypeId[]) => {
+      return new Promise<boolean>(async (resolve, reject) => {
+        try {
+          if (user == null || user.uid == null) {
+            return reject(false);
+          }
+          const userDocRef = doc(db, "users", user.uid);
+          await setDoc(userDocRef, { entryTypesOrder }, { merge: true });
+          setUser((prevUser) => {
+            if (prevUser) {
+              return {
+                ...prevUser,
+                entryTypesOrder,
+              };
+            }
+            return prevUser;
+          });
+          resolve(true);
+        } catch (error: any) {
+          console.error(error);
+          reject(false);
+        }
+      });
+    },
+    [user]
+  );
+
   const value: AuthenticationContextType = useMemo(() => {
     return {
       user,
@@ -309,15 +319,15 @@ export function AuthenticationProvider(props: React.PropsWithChildren<{}>) {
       isLoading,
       googleSignInWithPopup,
       signOut,
-      emailIsAuthorized,
+      saveEntryTypesOrder,
     };
   }, [
     user,
     setUser,
     googleSignInWithPopup,
     signOut,
-    emailIsAuthorized,
     isLoading,
+    saveEntryTypesOrder,
   ]);
 
   return <AuthenticationContext.Provider value={value} {...props} />;

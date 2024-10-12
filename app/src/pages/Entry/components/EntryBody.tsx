@@ -13,10 +13,11 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { IntervalMethodId } from "@/pages/Settings/enums/IntervalMethodId";
 import { entryTypeHasPoop } from "@/pages/Entry/utils/entryTypeHasPoop";
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
+import { getDefaultIntervalMethodByEntryTypeId } from "@/utils/getDefaultIntervalMethodByEntryTypeId";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { getPreviousEntryLabelPrefix } from "@/utils/getPreviousEntryLabelPrefix";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { selectIntervalMethodByEntryTypeId } from "@/state/slices/settingsSlice";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -29,6 +30,7 @@ export function EntryBody(props: Props) {
   const theme = useTheme();
   let poopTextureLabel = "";
   let poopTextureName = "";
+  const { user } = useAuthentication();
   let poopHasUndigestedPiecesLabel = "";
   if (entryTypeHasPoop(props.entry.entryTypeId)) {
     if (props.entry.poopTextureId != null) {
@@ -40,9 +42,9 @@ export function EntryBody(props: Props) {
       poopHasUndigestedPiecesLabel = `Morceaux non digérés`;
     }
   }
-  const intervalMethodByEntryTypeId = useSelector(
-    selectIntervalMethodByEntryTypeId
-  );
+  const intervalMethodByEntryTypeId =
+    user?.intervalMethodByEntryTypeId ??
+    getDefaultIntervalMethodByEntryTypeId();
 
   let timeSincePreviousEntry = null;
   if (props.previousEntry != null) {

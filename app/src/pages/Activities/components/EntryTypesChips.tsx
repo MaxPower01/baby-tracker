@@ -1,13 +1,12 @@
 import { Box, Stack, useTheme } from "@mui/material";
-import React, { useCallback, useState } from "react";
 
 import { Entry } from "@/pages/Entry/types/Entry";
 import { EntryTypeChip } from "@/pages/Activities/components/EntryTypeChip";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
-import { useSelector } from "react-redux";
 
 type Props = {
   entries: Entry[];
@@ -19,9 +18,11 @@ type Props = {
 export function EntryTypesChips(props: Props) {
   const theme = useTheme();
 
+  const { user } = useAuthentication();
+
   const dispatch = useAppDispatch();
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
 
   const { entryTypes, toggleEntryType } = useFilters();
 

@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ActivityContextsChips } from "@/pages/Activities/components/ActivityContextsChips";
-import { DailyEntriesCollection } from "@/types/DailyEntriesCollection";
 import { EmptyState } from "@/components/EmptyState";
 import { EmptyStateContext } from "@/enums/EmptyStateContext";
 import { EntriesList } from "@/components/Entries/EntriesList/EntriesList";
@@ -12,24 +11,17 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import { SearchToolbar } from "@/components/SearchToolbar";
-import { Section } from "@/components/Section";
-import { SortOrderId } from "@/enums/SortOrderId";
 import { Stack } from "@mui/material";
 import { TimePeriodId } from "@/enums/TimePeriodId";
 import { filterTimePeriodEntries } from "@/utils/filterTimePeriodEntries";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntriesFromDailyEntries } from "@/utils/getEntriesFromDailyEntries";
-import { getEntriesFromDailyEntriesCollection } from "@/pages/Entry/utils/getEntriesFromDailyEntriesCollection";
 import { getFilteredEntries } from "@/utils/getFilteredEntries";
 import getPageTitle from "@/utils/getPageTitle";
-import { getStartTimestampForTimePeriod } from "@/utils/getStartTimestampForTimePeriod";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { resetFiltersButtonId } from "@/utils/constants";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
-import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
-import { useSelector } from "react-redux";
 
 export function HistoryPage() {
   const { timePeriod, entryTypes, sortOrder, activityContexts, reset } =
@@ -43,7 +35,7 @@ export function HistoryPage() {
   // and in the Last14Days time period, only the new entries should be cached
   const cache = useRef<{ [timePeriod: string]: Entry[] }>({});
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
   const defaultEntryType = entryTypesOrder[0];
   const [entryTypeId, setEntryTypeId] = useState<EntryTypeId>(defaultEntryType);
 

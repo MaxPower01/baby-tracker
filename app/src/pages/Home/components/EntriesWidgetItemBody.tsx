@@ -16,14 +16,14 @@ import { PageId } from "@/enums/PageId";
 import { entryHasStopwatchRunning } from "@/pages/Entry/utils/entryHasStopwatchRunning";
 import { entryTypeHasStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwatch";
 import { getDateKeyFromTimestamp } from "@/utils/getDateKeyFromTimestamp";
+import { getDefaultIntervalMethodByEntryTypeId } from "@/utils/getDefaultIntervalMethodByEntryTypeId";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
 import { getTimeElapsedSinceLastEntry } from "@/utils/getTimeElapsedSinceLastEntry";
 import { isNullOrWhiteSpace } from "@/utils/utils";
-import { selectIntervalMethodByEntryTypeId } from "@/state/slices/settingsSlice";
 import { stopwatchDisplayTimeAfterStopInSeconds } from "@/utils/constants";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 type Props = {
   entryType: EntryTypeId;
@@ -35,14 +35,16 @@ type Props = {
 export function EntriesWidgetItemBody(props: Props) {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { user } = useAuthentication();
+
   const name = getEntryTypeName(props.entryType);
   const stopwatchIsRunning =
     props.mostRecentEntryOfType == null
       ? false
       : entryHasStopwatchRunning(props.mostRecentEntryOfType);
-  const intervalMethodByEntryTypeId = useSelector(
-    selectIntervalMethodByEntryTypeId
-  );
+  const intervalMethodByEntryTypeId =
+    user?.intervalMethodByEntryTypeId ??
+    getDefaultIntervalMethodByEntryTypeId();
   let from: "start" | "end" | undefined = undefined;
   if (props.mostRecentEntryOfType != null) {
     const entryTypeId = props.mostRecentEntryOfType.entryTypeId;

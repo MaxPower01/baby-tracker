@@ -5,7 +5,7 @@ import { entryTypesWithStopwatch } from "@/pages/Entry/utils/entryTypeHasStopwat
 
 const typesThatAreGroupedBetweenBeginnings = [EntryTypeId.BreastFeeding];
 
-export function getDefaulIntervalMethodByEntryTypeId() {
+export function getDefaultIntervalMethodByEntryTypeId() {
   return entryTypesWithStopwatch.map((entryTypeId) => ({
     entryTypeId: entryTypeId,
     methodId: typesThatAreGroupedBetweenBeginnings.includes(entryTypeId)

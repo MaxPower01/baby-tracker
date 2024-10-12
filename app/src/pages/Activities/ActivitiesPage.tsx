@@ -7,10 +7,6 @@ import {
   OnDragStartResponder,
 } from "react-beautiful-dnd";
 import React, { useCallback } from "react";
-import {
-  saveEntryTypesOrderInDB,
-  selectEntryTypesOrder,
-} from "@/state/slices/settingsSlice";
 
 import { CustomBottomBar } from "@/components/CustomBottomBar";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
@@ -19,6 +15,7 @@ import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPageTitle from "@/utils/getPageTitle";
 import getPath from "@/utils/getPath";
@@ -30,10 +27,10 @@ import { useSnackbar } from "@/components/SnackbarProvider";
 
 export default function ActivitiesPage() {
   const navigate = useNavigate();
-  const { user } = useAuthentication();
+  const { user, saveEntryTypesOrder } = useAuthentication();
   const { showSnackbar } = useSnackbar();
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
   const [localEntryTypesOrder, setLocalEntryTypesOrder] =
     React.useState(entryTypesOrder);
   const [isSaving, setIsSaving] = React.useState(false);
@@ -91,12 +88,7 @@ export default function ActivitiesPage() {
           return resolve(false);
         }
         setIsSaving(true);
-        await dispatch(
-          saveEntryTypesOrderInDB({
-            user: user,
-            entryTypesOrder: localEntryTypesOrder,
-          })
-        ).unwrap();
+        await saveEntryTypesOrder(localEntryTypesOrder);
         setIsSaving(false);
         navigate(
           getPath({
@@ -116,7 +108,14 @@ export default function ActivitiesPage() {
         return reject(error);
       }
     });
-  }, [dispatch, localEntryTypesOrder, isSaving, user, showSnackbar]);
+  }, [
+    dispatch,
+    localEntryTypesOrder,
+    isSaving,
+    user,
+    showSnackbar,
+    saveEntryTypesOrder,
+  ]);
 
   if (entryTypesOrder.length === 0) {
     return <LoadingIndicator />;

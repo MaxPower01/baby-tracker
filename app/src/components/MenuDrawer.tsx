@@ -15,20 +15,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { db, functions } from "@/firebase";
 import { useCallback, useMemo, useState } from "react";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import GetAppIcon from "@mui/icons-material/GetApp";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { PageId } from "@/enums/PageId";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SortIcon from "@mui/icons-material/Sort";
+import { functions } from "@/firebase";
 import { getMockEntries } from "@/utils/getMockEntries";
 import getPath from "@/utils/getPath";
 import { httpsCallable } from "firebase/functions";
@@ -38,7 +36,6 @@ import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useEntries } from "@/components/Entries/EntriesProvider";
 import { useNavigate } from "react-router-dom";
-import { writeBatch } from "firebase/firestore";
 
 export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
   const addParentFunction = httpsCallable(functions, "addParent");
@@ -56,10 +53,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
     return user?.babyId ?? "";
   }, [user?.babyId]);
 
-  const babyName = useMemo(() => {
-    if (user?.babies == null || isNullOrWhiteSpace(babyId)) return "";
-    return user?.babies.find((baby) => baby.id === babyId)?.name ?? "";
-  }, [babyId, user?.babies]);
+  const baby = user?.baby;
 
   const handleAddParent = useCallback(() => {
     if (
@@ -389,7 +383,7 @@ export function MenuDrawer(props: { isOpen: boolean; onClose: () => void }) {
       >
         <DialogTitle id="add-parent-dialog-title">
           Ajouter un parent
-          {!isNullOrWhiteSpace(babyId) && " pour " + babyName}
+          {!isNullOrWhiteSpace(babyId) && " pour " + baby?.name}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="add-parent-dialog-description">

@@ -336,15 +336,7 @@ export default function BabyForm(props: Props) {
             return {
               ...prev,
               babyId: docRef.id,
-              babies: [
-                ...prev.babies,
-                {
-                  id: docRef.id,
-                  name: name,
-                  birthDate: birthDate.toDate(),
-                  sex: sex,
-                },
-              ] as Baby[],
+              babies: [...prev.babies, docRef.id] as string[],
             };
           });
           navigate(

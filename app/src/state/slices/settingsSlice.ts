@@ -11,14 +11,14 @@ import { SettingsState } from "@/state/types/SettingsState";
 import StoreReducerName from "@/enums/StoreReducerName";
 import { ThemeMode } from "@/enums/ThemeMode";
 import { db } from "@/firebase";
-import { getDefaulIntervalMethodByEntryTypeId } from "@/utils/getDefaulIntervalMethodByEntryTypeId";
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
+import { getDefaultIntervalMethodByEntryTypeId } from "@/utils/getDefaultIntervalMethodByEntryTypeId";
 
 const key = LocalStorageKey.SettingsState;
 
 const defaultState: SettingsState = {
   themeMode: ThemeMode.Dark,
-  intervalMethodByEntryTypeId: getDefaulIntervalMethodByEntryTypeId(),
+  intervalMethodByEntryTypeId: getDefaultIntervalMethodByEntryTypeId(),
   entryTypesOrder: getDefaultEntryTypesOrder(),
   status: "idle",
 };
@@ -133,65 +133,11 @@ function _setStatusInState(
 const slice = createSlice({
   name: StoreReducerName.Settings,
   initialState: getInitialState(key, defaultState, parser),
-  reducers: {
-    saveIntervalMethodByEntryTypeIdInState: (
-      state,
-      action: PayloadAction<{
-        intervalMethodByEntryTypeId: Array<{
-          entryTypeId: EntryTypeId;
-          methodId: IntervalMethodId;
-        }>;
-      }>
-    ) => {
-      _saveIntervalMethodByEntryTypeIdInState(state, action.payload);
-    },
-    saveEntryTypesOrderInState: (
-      state,
-      action: PayloadAction<{ entryTypesOrder: EntryTypeId[] }>
-    ) => {
-      _saveEntryTypesOrderInState(state, action.payload);
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(saveEntryTypesOrderInDB.pending, (state) => {
-      _setStatusInState(state, "busy");
-    });
-    builder.addCase(saveEntryTypesOrderInDB.fulfilled, (state, action) => {
-      _saveEntryTypesOrderInState(state, { entryTypesOrder: action.payload });
-      _setStatusInState(state, "idle");
-    });
-    builder.addCase(saveEntryTypesOrderInDB.rejected, (state, action) => {
-      console.error(action.error);
-      _setStatusInState(state, "idle");
-    });
-    builder.addCase(saveIntervalMethodByEntryTypeIdInDB.pending, (state) => {
-      _setStatusInState(state, "busy");
-    });
-    builder.addCase(
-      saveIntervalMethodByEntryTypeIdInDB.fulfilled,
-      (state, action) => {
-        _saveIntervalMethodByEntryTypeIdInState(state, action.payload);
-        _setStatusInState(state, "idle");
-      }
-    );
-    builder.addCase(saveIntervalMethodByEntryTypeIdInDB.rejected, (state) => {
-      _setStatusInState(state, "idle");
-    });
-  },
+  reducers: {},
+  extraReducers: (builder) => {},
 });
-
-export const {
-  saveIntervalMethodByEntryTypeIdInState,
-  saveEntryTypesOrderInState,
-} = slice.actions;
 
 export const selectThemeMode = (state: RootState) =>
   state.settingsReducer.themeMode;
-
-export const selectIntervalMethodByEntryTypeId = (state: RootState) =>
-  state.settingsReducer.intervalMethodByEntryTypeId;
-
-export const selectEntryTypesOrder = (state: RootState) =>
-  state.settingsReducer.entryTypesOrder;
 
 export default slice.reducer;

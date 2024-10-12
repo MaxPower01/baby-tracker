@@ -26,56 +26,60 @@ export function BabyWidget(props: Props) {
     return `${baby.name.split(" ")[0]} a ${age}`;
   };
 
+  const baby = user?.baby;
+
+  if (baby == null) {
+    return null;
+  }
+
+  let avatarBackgroundColor = "#62CB5C";
+  if (baby.sex == "female") {
+    avatarBackgroundColor = "#EE64EC";
+  } else if (baby.sex == "male") {
+    avatarBackgroundColor = "#4F89E8";
+  }
+
+  const avatarWidth = isNullOrWhiteSpace(baby.avatar) ? 100 : 150;
+  const avatarFontSize = avatarWidth / 2.5;
+
   return (
     <Stack
       sx={{
         ...props.sx,
       }}
     >
-      {user.babies.map((baby) => {
-        let avatarBackgroundColor = "#62CB5C";
-        if (baby.sex == "female") {
-          avatarBackgroundColor = "#EE64EC";
-        } else if (baby.sex == "male") {
-          avatarBackgroundColor = "#4F89E8";
-        }
-        const avatarWidth = isNullOrWhiteSpace(baby.avatar) ? 100 : 150;
-        const avatarFontSize = avatarWidth / 2.5;
-        return (
-          <Stack
-            key={baby.id}
-            spacing={1}
-            justifyContent={"center"}
-            alignItems={"center"}
+      <Stack
+        key={baby.id}
+        spacing={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <Avatar
+          sx={{
+            width: avatarWidth,
+            height: avatarWidth,
+            fontSize: avatarFontSize,
+            backgroundColor: isNullOrWhiteSpace(baby.avatar)
+              ? avatarBackgroundColor
+              : theme.palette.divider,
+            border: "2px solid",
+            borderColor: "transparent",
+          }}
+          src={baby.avatar}
+        >
+          {baby.name.split(" ").map((name) => (name[0] ?? "").toUpperCase())}
+        </Avatar>
+        <Stack>
+          <Typography
+            variant="h6"
+            textAlign={"center"}
+            sx={{
+              color: theme.customPalette.text.primary,
+            }}
           >
-            <Avatar
-              sx={{
-                width: avatarWidth,
-                height: avatarWidth,
-                fontSize: avatarFontSize,
-                backgroundColor: isNullOrWhiteSpace(baby.avatar)
-                  ? avatarBackgroundColor
-                  : theme.palette.divider,
-                border: "2px solid",
-                borderColor: "transparent",
-              }}
-              src={baby.avatar}
-            >
-              {baby.name
-                .split(" ")
-                .map((name) => (name[0] ?? "").toUpperCase())}
-            </Avatar>
-            <Stack>
-              <Typography
-                variant="h6"
-                textAlign={"center"}
-                sx={{
-                  color: theme.customPalette.text.primary,
-                }}
-              >
-                {getBabyAgeLabel(baby)}
-              </Typography>
-              {/* {!isNullOrWhiteSpace(ageLabels.next) && (
+            {getBabyAgeLabel(baby)}
+          </Typography>
+          {/* {!isNullOrWhiteSpace(ageLabels.next) && (
                 <Typography
                   variant="body1"
                   color={theme.customPalette.text.secondary}
@@ -84,10 +88,8 @@ export function BabyWidget(props: Props) {
                   {ageLabels.next}
                 </Typography>
               )} */}
-            </Stack>
-          </Stack>
-        );
-      })}
+        </Stack>
+      </Stack>
     </Stack>
   );
 }

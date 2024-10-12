@@ -11,24 +11,24 @@ import {
   useTheme,
 } from "@mui/material";
 
-import ActivityType from "@/pages/Activity/enums/ActivityType";
 import { CSSBreakpoint } from "@/enums/CSSBreakpoint";
 import CloseIcon from "@mui/icons-material/Close";
 import { EntryTypeIcon } from "@/pages/Activities/components/EntryTypeIcon";
 import { EntryTypeId } from "@/pages/Entry/enums/EntryTypeId";
 import { PageId } from "@/enums/PageId";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import getPath from "@/utils/getPath";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 export function NewEntryDrawer(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
   const navigate = useNavigate();
+  const { user } = useAuthentication();
   const theme = useTheme();
   const handleItemClick = (entryType: EntryTypeId) => {
     navigate(
@@ -40,7 +40,7 @@ export function NewEntryDrawer(props: {
     props.onClose();
   };
 
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
 
   if ((entryTypesOrder?.length ?? 0) === 0) {
     return null;

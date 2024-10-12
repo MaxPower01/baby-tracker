@@ -34,11 +34,12 @@ import { activityContextTypeCanMultiSelect } from "@/pages/Activity/utils/activi
 import { getActivityContextPickerNewItemLabel } from "@/pages/Activity/utils/getActivityContextPickerNewItemLabel";
 import { getActivityContextPickerPlaceholder } from "@/pages/Activity/utils/getActivityContextPickerPlaceholder";
 import { getActivityContextType } from "@/pages/Activity/utils/getActivityContextType";
+import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryTypeName } from "@/utils/getEntryTypeName";
 import { getPoopTextureName } from "@/utils/getPoopTextureName";
 import { getTemperatureMethodName } from "@/utils/getTemperatureMethodName";
 import { parseEnumValue } from "@/utils/parseEnumValue";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
+import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
@@ -49,7 +50,7 @@ type Props = {
 
 export function EntryTypePicker(props: Props) {
   const theme = useTheme();
-  const entryTypesOrder = useSelector(selectEntryTypesOrder);
+  const { user } = useAuthentication();
   const renderItem = (entryTypeId: EntryTypeId) => {
     return (
       <Stack
@@ -75,7 +76,7 @@ export function EntryTypePicker(props: Props) {
     );
   };
 
-  const items = useSelector(selectEntryTypesOrder);
+  const entryTypesOrder = user?.entryTypesOrder ?? getDefaultEntryTypesOrder();
 
   const renderValue = (selected: EntryTypeId | null) => {
     if (selected === null) {
@@ -98,10 +99,10 @@ export function EntryTypePicker(props: Props) {
           onChange={(e) => props.setValue(e.target.value as EntryTypeId)}
           renderValue={renderItem}
         >
-          {items.map((item: EntryTypeId, index) => {
+          {entryTypesOrder.map((entryType: EntryTypeId, index) => {
             return (
-              <MenuItem key={index} value={item}>
-                {renderItem(item)}
+              <MenuItem key={index} value={entryType}>
+                {renderItem(entryType)}
               </MenuItem>
             );
           })}

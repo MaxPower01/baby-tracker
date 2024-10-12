@@ -1,5 +1,4 @@
 import { Typography, useTheme } from "@mui/material";
-import { useMemo, useState } from "react";
 
 import { BabiesLanding } from "@/pages/Baby/components/BabiesLanding";
 import BabyForm from "@/pages/Baby/components/BabyForm";
@@ -8,15 +7,13 @@ import { PageLayout } from "@/components/PageLayout";
 import getPageTitle from "@/utils/getPageTitle";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 export function BabyPage() {
   const { babyId } = useParams();
   const { user } = useAuthentication();
   const theme = useTheme();
-  const baby = useMemo(
-    () => user?.babies?.find((b) => b.id === babyId),
-    [user?.babies, babyId]
-  );
+  const baby = user?.baby;
   const [showForm, setShowForm] = useState(false);
 
   if (babyId != null) {

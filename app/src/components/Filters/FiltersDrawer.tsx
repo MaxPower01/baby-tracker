@@ -25,11 +25,9 @@ import { getActivityContextTypesItems } from "@/utils/getActivityContextTypesIte
 import { getDefaultEntryTypesOrder } from "@/pages/Entry/utils/getDefaultEntryTypesOrder";
 import { getEntryTypeIdFromActivityContextType } from "@/utils/getEntryTypeIdFromActivityContextType";
 import { resetFiltersButtonId } from "@/utils/constants";
-import { selectEntryTypesOrder } from "@/state/slices/settingsSlice";
 import { useAppDispatch } from "@/state/hooks/useAppDispatch";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useFilters } from "@/components/Filters/FiltersProvider";
-import { useSelector } from "react-redux";
 
 type SectionProps = {
   title: string;
