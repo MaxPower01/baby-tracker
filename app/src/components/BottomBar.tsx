@@ -236,8 +236,10 @@ export function BottomBar(props: BottomBarProps) {
                       sx={{
                         color: isDisabled
                           ? theme.customPalette.text.disabled
+                          : isCurrentPage == true
+                          ? theme.customPalette.text.primary
                           : theme.customPalette.text.secondary,
-                        fontWeight: isCurrentPage == true ? "bold" : 400,
+                        fontWeight: isCurrentPage == true ? 600 : 300,
                       }}
                     >
                       {label}

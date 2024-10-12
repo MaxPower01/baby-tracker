@@ -41,7 +41,7 @@ export function getBarChartDatapoints(
 
       return result;
     })
-    .sort((a, b) => d3.descending(a.date, b.date));
+    .sort((a, b) => d3.ascending(a.date, b.date));
 
   if (yAxisType === "duration" && xAxisUnit === "hours") {
     for (let i = 0; i < datapoints.length; i++) {
@@ -56,5 +56,5 @@ export function getBarChartDatapoints(
     }
   }
 
-  return datapoints;
+  return datapoints.sort((a, b) => d3.descending(a.date, b.date));
 }

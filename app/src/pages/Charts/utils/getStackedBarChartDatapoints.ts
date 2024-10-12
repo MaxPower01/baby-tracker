@@ -62,29 +62,5 @@ export function getStackedBarChartDatapoints(
     .sort((a, b) => d3.descending(a[0].date, b[0].date))
     .flat();
 
-  // if (yAxisType === "duration" && xAxisUnit === "hours") {
-  //   for (let i = 0; i < datapoints.length; i++) {
-  //     const datapoint = datapoints[i];
-  //     const stackedDatapoints = datapoints.filter(
-  //       (d) =>
-  //         d.category === datapoint.category &&
-  //         d.dateISOString === datapoint.dateISOString
-  //     );
-
-  //     if (!stackedDatapoints) continue;
-
-  //     const isLastOrBeforeLast =
-  //       i === datapoints.length - 1 || i === datapoints.length - 2;
-
-  //     if (isLastOrBeforeLast) continue;
-
-  //     const stackedValue = d3.sum(stackedDatapoints.map((d) => d.value));
-
-  //     if (stackedValue > 60) {
-  //       // TODO: Dispatch the excess to the next date's datapoints
-  //     }
-  //   }
-  // }
-
   return datapoints;
 }

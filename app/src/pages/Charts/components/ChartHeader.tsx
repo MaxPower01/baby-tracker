@@ -74,7 +74,7 @@ export default function ChartHeader(props: Props) {
   }, [legendItems]);
 
   return (
-    <Stack>
+    <Stack spacing={2}>
       <ChartLegend items={legendItems} />
 
       {legendItems.length > 1 && (
@@ -83,7 +83,7 @@ export default function ChartHeader(props: Props) {
           justifyContent={"flex-start"}
           alignItems={"center"}
         >
-          <Typography variant={"h6"}>
+          <Typography variant={"h5"}>
             <Box
               sx={{
                 display: "inline",
