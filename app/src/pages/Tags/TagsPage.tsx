@@ -7,7 +7,7 @@ export function TagsPage() {
   return (
     <PageLayout
       topBarProps={{
-        pageTitle: getPageTitle(PageId.Tags),
+        pageTitle: getPageTitle({ pageId: PageId.Tags }),
         renderBackButton: true,
       }}
     >

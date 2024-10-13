@@ -56,7 +56,7 @@ export function EntryPage() {
       return (
         <PageLayout
           topBarProps={{
-            pageTitle: getPageTitle(PageId.Entry),
+            pageTitle: getPageTitle({ pageId: PageId.Entry }),
             renderBackButton: true,
           }}
           bottomBarProps={{ hide: true }}
@@ -68,7 +68,7 @@ export function EntryPage() {
       return (
         <PageLayout
           topBarProps={{
-            pageTitle: getPageTitle(PageId.Entry),
+            pageTitle: getPageTitle({ pageId: PageId.Entry }),
           }}
         ></PageLayout>
       );
@@ -77,7 +77,7 @@ export function EntryPage() {
     return (
       <PageLayout
         topBarProps={{
-          pageTitle: getPageTitle(PageId.Entry),
+          pageTitle: getPageTitle({ pageId: PageId.Entry }),
           renderBackButton: true,
         }}
         bottomBarProps={{ hide: true }}
