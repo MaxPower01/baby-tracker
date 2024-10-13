@@ -238,6 +238,7 @@ export function NewBabyPage() {
             return {
               ...prev,
               babyId: docRef.id,
+              baby: newBaby,
               babies: [...prev.babies, docRef.id] as string[],
             };
           });
