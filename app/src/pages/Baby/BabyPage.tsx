@@ -5,6 +5,7 @@ import BabyForm from "@/pages/Baby/components/BabyForm";
 import { PageId } from "@/enums/PageId";
 import { PageLayout } from "@/components/PageLayout";
 import getPageTitle from "@/utils/getPageTitle";
+import { isNullOrWhiteSpace } from "@/utils/utils";
 import { useAuthentication } from "@/components/Authentication/AuthenticationProvider";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -15,6 +16,10 @@ export function BabyPage() {
   const theme = useTheme();
   const baby = user?.baby;
   const [showForm, setShowForm] = useState(false);
+
+  if (babyId && baby != null) {
+    baby.id = babyId;
+  }
 
   if (babyId != null) {
     // if (isLoading) {
@@ -49,7 +54,7 @@ export function BabyPage() {
         }}
         bottomBarProps={{ hide: true }}
       >
-        <BabyForm baby={baby} />;
+        <BabyForm baby={baby} />
       </PageLayout>
     );
   }

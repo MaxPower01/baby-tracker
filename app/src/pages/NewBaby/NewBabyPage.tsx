@@ -215,9 +215,10 @@ export function NewBabyPage() {
       parents: [user.uid],
       sex: sex.toString().toLowerCase(),
       avatar: "",
-      birthHeadCircumference: headCircumference,
-      birthSize: size,
-      birthWeight: weight,
+      birthHeadCircumference:
+        headCircumference == 0 ? 0 : Math.round(headCircumference * 100) / 100,
+      birthSize: size == 0 ? 0 : Math.round(size * 100) / 100,
+      birthWeight: weight == 0 ? 0 : Math.round(weight * 1000 * 100) / 100,
       activityContexts: getDefaultActivityContexts(),
     };
     const { id, birthDate: newBirthDate, ...rest } = newBaby;

@@ -36,7 +36,7 @@ export function useBabies() {
 }
 
 export function BabiesProvider(props: React.PropsWithChildren<{}>) {
-  const { user } = useAuthentication();
+  const { user, setUser } = useAuthentication();
   const [babies, setBabies] = useState<Baby[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,6 +61,20 @@ export function BabiesProvider(props: React.PropsWithChildren<{}>) {
           birthDate: Timestamp.fromDate(birthDate),
         })
           .then(() => {
+            setUser((prev) => {
+              if (!prev) {
+                return null;
+              }
+              return {
+                ...prev,
+                babyId: id,
+                baby: {
+                  ...(rest as Baby),
+                  birthDate,
+                },
+                babies: [...prev.babies, id] as string[],
+              };
+            });
             resolve(baby);
           })
           .catch((error) => {
