@@ -31,141 +31,137 @@ export function App() {
   // }, []);
 
   return (
-    <>
-      <Routes>
-        {isLoading == true ? (
-          <>
-            <Route path="*" element={<LoadingPage />} />
-          </>
-        ) : (
-          <>
-            <Route
-              path={getPath({ page: PageId.Landing })}
-              element={
-                <ProtectedRoute
-                  requirement={AccessRequirement.NoBabySelected}
-                  redirect={getPath({ page: PageId.Home })}
-                >
-                  <LandingPage />
-                </ProtectedRoute>
-              }
-            />
+    <Routes>
+      {isLoading == true ? (
+        <>
+          <Route path="*" element={<LoadingPage />} />
+        </>
+      ) : (
+        <>
+          <Route
+            path={getPath({ page: PageId.Landing })}
+            element={
+              <ProtectedRoute
+                requirement={AccessRequirement.NoBabySelected}
+                redirect={getPath({ page: PageId.Home })}
+              >
+                <LandingPage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path={getPath({ page: PageId.NewBaby })}
-              element={
-                <ProtectedRoute requirement={AccessRequirement.Authenticated}>
-                  <NewBabyPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path={getPath({ page: PageId.NewBaby })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.Authenticated}>
+                <NewBabyPage />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path={getPath({ page: PageId.Home })}
-              element={
-                <ProtectedRoute
-                  requirement={AccessRequirement.BabySelected}
-                  redirect={getPath({ page: PageId.Landing })}
-                >
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path={getPath({ page: PageId.Home })}
+            element={
+              <ProtectedRoute
+                requirement={AccessRequirement.BabySelected}
+                redirect={getPath({ page: PageId.Landing })}
+              >
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path={getPath({ page: PageId.Family })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.BabySelected}>
+                <FamilyPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={getPath({ page: PageId.Charts })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.BabySelected}>
+                <ChartsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={getPath({ page: PageId.History })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.BabySelected}>
+                <HistoryPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={getPath({ page: PageId.Settings })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.BabySelected}>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={getPath({ page: PageId.Activities })}
+            element={
+              <ProtectedRoute requirement={AccessRequirement.BabySelected}>
+                <ActivitiesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path={getPath({ page: PageId.Entry })}>
+            <Route path="" element={<EntryPage />} />
+            <Route path=":dateKey/:entryId" element={<EntryPage />} />
+            <Route path="*" element={<Navigate replace to="" />} />
+          </Route>
+
+          <Route path={getPath({ page: PageId.Baby })}>
             <Route
-              path={getPath({ page: PageId.Family })}
+              path=":babyId"
               element={
                 <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                  <FamilyPage />
+                  <BabyPage />
                 </ProtectedRoute>
               }
             />
-
-            <Route
-              path={getPath({ page: PageId.Charts })}
-              element={
-                <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                  <ChartsPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path={getPath({ page: PageId.History })}
-              element={
-                <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                  <HistoryPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path={getPath({ page: PageId.Settings })}
-              element={
-                <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                  <SettingsPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path={getPath({ page: PageId.Activities })}
-              element={
-                <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                  <ActivitiesPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route path={getPath({ page: PageId.Entry })}>
-              <Route path="" element={<EntryPage />} />
-              <Route path=":dateKey/:entryId" element={<EntryPage />} />
-              <Route path="*" element={<Navigate replace to="" />} />
-            </Route>
-
-            <Route path={getPath({ page: PageId.Baby })}>
-              <Route
-                path=":babyId"
-                element={
-                  <ProtectedRoute requirement={AccessRequirement.BabySelected}>
-                    <BabyPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="*"
-                element={
-                  <Navigate replace to={getPath({ page: PageId.NewBaby })} />
-                }
-              />
-            </Route>
-
-            <Route
-              path=""
-              element={
-                user == null || user.babyId == null ? (
-                  <Navigate replace to={getPath({ page: PageId.Landing })} />
-                ) : (
-                  <Navigate replace to={getPath({ page: PageId.Home })} />
-                )
-              }
-            />
-
             <Route
               path="*"
               element={
-                user == null ? (
-                  <Navigate replace to={getPath({ page: PageId.Landing })} />
-                ) : (
-                  <NotFoundPage />
-                )
+                <Navigate replace to={getPath({ page: PageId.NewBaby })} />
               }
             />
-          </>
-        )}
-      </Routes>
+          </Route>
 
-      {/* {user == null ? <PublicRoutes /> : <PrivateRoutes />} */}
-    </>
+          <Route
+            path=""
+            element={
+              user == null || user.babyId == null ? (
+                <Navigate replace to={getPath({ page: PageId.Landing })} />
+              ) : (
+                <Navigate replace to={getPath({ page: PageId.Home })} />
+              )
+            }
+          />
+
+          <Route
+            path="*"
+            element={
+              user == null ? (
+                <Navigate replace to={getPath({ page: PageId.Landing })} />
+              ) : (
+                <NotFoundPage />
+              )
+            }
+          />
+        </>
+      )}
+    </Routes>
   );
 }
