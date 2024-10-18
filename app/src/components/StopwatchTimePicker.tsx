@@ -4,19 +4,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControl,
   MenuItem,
   MenuList,
-  Select,
   Stack,
   SxProps,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import formatStopwatchTime from "@/utils/formatStopwatchTime";
 

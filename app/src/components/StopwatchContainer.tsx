@@ -203,322 +203,320 @@ export function StopwatchContainer(props: Props) {
     fontSize: "1.25em",
   };
 
-  return (
-    <>
-      <Stack
-        spacing={1}
-        direction={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={{
-          width: "100%",
-        }}
-      >
-        {props.size === "big" && (
+  return (<>
+    <Stack
+      spacing={1}
+      direction={"column"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      sx={{
+        width: "100%",
+      }}
+    >
+      {props.size === "big" && (
+        <Stack
+          direction={"row"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            width: "100%",
+          }}
+        >
           <Stack
             direction={"row"}
-            justifyContent={"center"}
+            justifyContent={"space-around"}
             alignItems={"center"}
             sx={{
               width: "100%",
             }}
           >
-            <Stack
-              direction={"row"}
-              justifyContent={"space-around"}
-              alignItems={"center"}
-              sx={{
-                width: "100%",
-              }}
-            >
-              {props.hasSides && (
-                <IconButton
-                  sx={{
-                    position: "relative",
-                  }}
-                  disabled={props.isDisabled}
-                >
-                  <EditIcon />
-                  <StopwatchTimePicker
-                    time={props.leftTime}
-                    setTime={props.setLeftTime}
-                    isDisabled={props.isDisabled}
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      opacity: 0,
-                      zIndex: 1,
-                    }}
-                  />
-                </IconButton>
-              )}
-              <Box
+            {props.hasSides && (
+              <IconButton
                 sx={{
                   position: "relative",
                 }}
+                disabled={props.isDisabled}
               >
-                <Stack
-                  direction={"row"}
-                  spacing={1}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+                <EditIcon />
+                <StopwatchTimePicker
+                  time={props.leftTime}
+                  setTime={props.setLeftTime}
+                  isDisabled={props.isDisabled}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    zIndex: 1,
+                  }}
+                />
+              </IconButton>
+            )}
+            <Box
+              sx={{
+                position: "relative",
+              }}
+            >
+              <Stack
+                direction={"row"}
+                spacing={1}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Typography
+                  variant={props.size === "big" ? "h4" : "body2"}
+                  fontWeight={props.size === "big" ? undefined : 600}
+                  textAlign={"center"}
+                  sx={{
+                    color:
+                      props.size === "big"
+                        ? theme.customPalette.text.primary
+                        : theme.palette.primary.main,
+                  }}
                 >
-                  <Typography
-                    variant={props.size === "big" ? "h4" : "body2"}
-                    fontWeight={props.size === "big" ? undefined : 600}
-                    textAlign={"center"}
+                  {title}
+                </Typography>
+                {!props.hasSides && (
+                  <IconButton
                     sx={{
-                      color:
-                        props.size === "big"
-                          ? theme.customPalette.text.primary
-                          : theme.palette.primary.main,
+                      position: "absolute",
+                      right: 0,
+                      transform: `translateX(calc(100% + ${theme.spacing(
+                        1
+                      )}))`,
+                    }}
+                    disabled={props.isDisabled}
+                    onClick={() => {
+                      const stopwatchContainer =
+                        document.getElementById(stopwatchContainerId);
+                      if (stopwatchContainer) {
+                        stopwatchContainer.click();
+                      }
                     }}
                   >
-                    {title}
-                  </Typography>
-                  {!props.hasSides && (
-                    <IconButton
-                      sx={{
-                        position: "absolute",
-                        right: 0,
-                        transform: `translateX(calc(100% + ${theme.spacing(
-                          1
-                        )}))`,
-                      }}
-                      disabled={props.isDisabled}
-                      onClick={() => {
-                        const stopwatchContainer =
-                          document.getElementById(stopwatchContainerId);
-                        if (stopwatchContainer) {
-                          stopwatchContainer.click();
-                        }
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                </Stack>
-                {!props.hasSides && (
-                  <StopwatchTimePicker
-                    id={stopwatchContainerId}
-                    time={props.leftTime}
-                    setTime={props.setLeftTime}
-                    isDisabled={props.isDisabled}
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      opacity: 0,
-                      zIndex: 1,
-                    }}
-                  />
+                    <EditIcon />
+                  </IconButton>
                 )}
-              </Box>
-              {props.hasSides && (
-                <IconButton
+              </Stack>
+              {!props.hasSides && (
+                <StopwatchTimePicker
+                  id={stopwatchContainerId}
+                  time={props.leftTime}
+                  setTime={props.setLeftTime}
+                  isDisabled={props.isDisabled}
                   sx={{
-                    position: "relative",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    zIndex: 1,
                   }}
-                  disabled={props.isDisabled}
-                >
-                  <EditIcon />
-                  <StopwatchTimePicker
-                    time={props.rightTime}
-                    setTime={props.setRightTime}
-                    isDisabled={props.isDisabled}
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      opacity: 0,
-                      zIndex: 1,
-                    }}
-                  />
-                </IconButton>
+                />
               )}
-            </Stack>
+            </Box>
+            {props.hasSides && (
+              <IconButton
+                sx={{
+                  position: "relative",
+                }}
+                disabled={props.isDisabled}
+              >
+                <EditIcon />
+                <StopwatchTimePicker
+                  time={props.rightTime}
+                  setTime={props.setRightTime}
+                  isDisabled={props.isDisabled}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    zIndex: 1,
+                  }}
+                />
+              </IconButton>
+            )}
           </Stack>
-        )}
+        </Stack>
+      )}
 
-        <Stack
-          direction={"row"}
-          justifyContent={
-            props.size === "big"
-              ? props.hasSides
-                ? "space-between"
-                : "center"
-              : "space-around"
-          }
-          alignItems={"center"}
-          spacing={2}
-          sx={{
-            width: "100%",
+      <Stack
+        direction={"row"}
+        justifyContent={
+          props.size === "big"
+            ? props.hasSides
+              ? "space-between"
+              : "center"
+            : "space-around"
+        }
+        alignItems={"center"}
+        spacing={2}
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Stopwatch
+          size={props.size}
+          label={props.hasSides ? "Gauche" : undefined}
+          time={props.leftTime}
+          isDisabled={props.isDisabled}
+          setTime={props.setLeftTime}
+          isRunning={props.leftIsRunning}
+          setIsRunning={props.setLeftIsRunning}
+          lastUpdateTime={props.leftLastUpdateTime}
+          setLastUpdateTime={props.setLeftLastUpdateTime}
+          hideTimeLabel={!props.hasSides || props.size === "small"}
+          showTitle={props.size === "small"}
+          onPlayPause={(time, isRunning, lastUpdateTime) => {
+            if (props.onPlayPause) {
+              props.onPlayPause("left", time, isRunning, lastUpdateTime);
+            }
           }}
-        >
+        />
+
+        {props.hasSides && (
           <Stopwatch
             size={props.size}
-            label={props.hasSides ? "Gauche" : undefined}
-            time={props.leftTime}
+            label={"Droite"}
+            time={props.rightTime}
             isDisabled={props.isDisabled}
-            setTime={props.setLeftTime}
-            isRunning={props.leftIsRunning}
-            setIsRunning={props.setLeftIsRunning}
-            lastUpdateTime={props.leftLastUpdateTime}
-            setLastUpdateTime={props.setLeftLastUpdateTime}
-            hideTimeLabel={!props.hasSides || props.size === "small"}
+            setTime={props.setRightTime}
+            isRunning={props.rightIsRunning}
+            setIsRunning={props.setRightIsRunning}
+            lastUpdateTime={props.rightLastUpdateTime}
+            setLastUpdateTime={props.setRightLastUpdateTime}
+            hideTimeLabel={props.size === "small"}
             showTitle={props.size === "small"}
             onPlayPause={(time, isRunning, lastUpdateTime) => {
               if (props.onPlayPause) {
-                props.onPlayPause("left", time, isRunning, lastUpdateTime);
+                props.onPlayPause("right", time, isRunning, lastUpdateTime);
               }
             }}
           />
-
-          {props.hasSides && (
-            <Stopwatch
-              size={props.size}
-              label={"Droite"}
-              time={props.rightTime}
-              isDisabled={props.isDisabled}
-              setTime={props.setRightTime}
-              isRunning={props.rightIsRunning}
-              setIsRunning={props.setRightIsRunning}
-              lastUpdateTime={props.rightLastUpdateTime}
-              setLastUpdateTime={props.setRightLastUpdateTime}
-              hideTimeLabel={props.size === "small"}
-              showTitle={props.size === "small"}
-              onPlayPause={(time, isRunning, lastUpdateTime) => {
-                if (props.onPlayPause) {
-                  props.onPlayPause("right", time, isRunning, lastUpdateTime);
-                }
-              }}
-            />
-          )}
-        </Stack>
+        )}
       </Stack>
-
-      <Dialog
-        open={dialogIsOpen}
-        onClose={() => setDialogIsOpen(false)}
-        aria-labelledby="stopwatch-dialog-title"
-        aria-describedby="stopwatch-dialog-description"
-        fullWidth
+    </Stack>
+    <Dialog
+      open={dialogIsOpen}
+      onClose={() => setDialogIsOpen(false)}
+      aria-labelledby="stopwatch-dialog-title"
+      aria-describedby="stopwatch-dialog-description"
+      fullWidth
+    >
+      <DialogTitle id="stopwatch-dialog-title">Modifier la durée</DialogTitle>
+      <DialogContent
+        sx={{
+          width: "100%",
+        }}
       >
-        <DialogTitle id="stopwatch-dialog-title">Modifier la durée</DialogTitle>
-        <DialogContent
+        <Box
           sx={{
+            maxHeight: "70vh",
             width: "100%",
           }}
         >
-          <Box
+          <Stack
+            direction={"row"}
+            spacing={2}
+            justifyContent={"center"}
+            alignItems={"center"}
             sx={{
-              maxHeight: "70vh",
+              marginTop: 2,
+              marginBottom: 2,
               width: "100%",
             }}
           >
-            <Stack
-              direction={"row"}
-              spacing={2}
-              justifyContent={"center"}
-              alignItems={"center"}
+            <TextField
+              variant={textFieldVariant}
+              type="number"
+              select
+              label="Heures"
+              name="hours"
+              placeholder="00"
+              value={hours}
+              onChange={handleInputChange}
               sx={{
-                marginTop: 2,
-                marginBottom: 2,
-                width: "100%",
+                ...textfieldStyle,
               }}
-            >
-              <TextField
-                variant={textFieldVariant}
-                type="number"
-                select
-                label="Heures"
-                name="hours"
-                placeholder="00"
-                value={hours}
-                onChange={handleInputChange}
-                sx={{
-                  ...textfieldStyle,
-                }}
-                SelectProps={{
-                  sx: {
-                    ...selectStyle,
-                  },
-                }}
-                InputProps={{
+              slotProps={{
+                input: {
                   "aria-valuemin": 0,
                   "aria-colcount": 2,
                   sx: {
                     ...inputStyle,
                   },
-                }}
-              >
-                {Array.from(Array(100).keys()).map((value) => {
-                  return (
-                    <MenuItem key={`${value}-hours`} value={value}>
-                      {value}
-                    </MenuItem>
-                  );
-                })}
-              </TextField>
-              <TextField
-                variant={textFieldVariant}
-                type="number"
-                name="minutes"
-                placeholder="00"
-                select
-                label="Minutes"
-                value={minutes}
-                sx={{
-                  ...textfieldStyle,
-                }}
-                onChange={handleInputChange}
-                SelectProps={{
+                },
+
+                select: {
                   sx: {
                     ...selectStyle,
                   },
-                }}
-                InputProps={{
+                }
+              }}>
+              {Array.from(Array(100).keys()).map((value) => {
+                return (
+                  <MenuItem key={`${value}-hours`} value={value}>
+                    {value}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <TextField
+              variant={textFieldVariant}
+              type="number"
+              name="minutes"
+              placeholder="00"
+              select
+              label="Minutes"
+              value={minutes}
+              sx={{
+                ...textfieldStyle,
+              }}
+              onChange={handleInputChange}
+              slotProps={{
+                input: {
                   "aria-valuemin": 0,
                   "aria-valuemax": 59,
                   "aria-colcount": 2,
                   sx: {
                     ...inputStyle,
                   },
-                }}
-              >
-                {Array.from(Array(60).keys()).map((value) => {
-                  return (
-                    <MenuItem key={`${value}-minutes`} value={value}>
-                      {value}
-                    </MenuItem>
-                  );
-                })}
-              </TextField>
-              <TextField
-                select
-                variant={textFieldVariant}
-                type="number"
-                name="seconds"
-                label="Secondes"
-                placeholder="00"
-                sx={{
-                  ...textfieldStyle,
-                }}
-                value={seconds}
-                onChange={handleInputChange}
-                SelectProps={{
+                },
+
+                select: {
                   sx: {
                     ...selectStyle,
                   },
-                }}
-                InputProps={{
+                }
+              }}>
+              {Array.from(Array(60).keys()).map((value) => {
+                return (
+                  <MenuItem key={`${value}-minutes`} value={value}>
+                    {value}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <TextField
+              select
+              variant={textFieldVariant}
+              type="number"
+              name="seconds"
+              label="Secondes"
+              placeholder="00"
+              sx={{
+                ...textfieldStyle,
+              }}
+              value={seconds}
+              onChange={handleInputChange}
+              slotProps={{
+                input: {
                   // endAdornment: (
                   //   <InputAdornment position="end">s</InputAdornment>
                   // ),
@@ -536,38 +534,43 @@ export function StopwatchContainer(props: Props) {
                   sx: {
                     ...inputStyle,
                   },
-                }}
-              >
-                {Array.from(Array(60).keys()).map((value) => {
-                  return (
-                    <MenuItem key={`${value}-seconds`} value={value}>
-                      {value}
-                    </MenuItem>
-                  );
-                })}
-              </TextField>
-            </Stack>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              // onChange({
-              //   time: drawerTime,
-              //   isRunning: false,
-              //   isStartStop: false,
-              //   lastUpdateTime: Date.now(),
-              // });
-              setDialogIsOpen(false);
-            }}
-          >
-            Annuler
-          </Button>
-          <Button onClick={() => setDialogIsOpen(false)} variant="contained">
-            Sauvegarder
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
+                },
+
+                select: {
+                  sx: {
+                    ...selectStyle,
+                  },
+                }
+              }}>
+              {Array.from(Array(60).keys()).map((value) => {
+                return (
+                  <MenuItem key={`${value}-seconds`} value={value}>
+                    {value}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+          </Stack>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {
+            // onChange({
+            //   time: drawerTime,
+            //   isRunning: false,
+            //   isStartStop: false,
+            //   lastUpdateTime: Date.now(),
+            // });
+            setDialogIsOpen(false);
+          }}
+        >
+          Annuler
+        </Button>
+        <Button onClick={() => setDialogIsOpen(false)} variant="contained">
+          Sauvegarder
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </>);
 }
