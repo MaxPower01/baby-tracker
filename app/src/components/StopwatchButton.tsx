@@ -1,5 +1,5 @@
 import { Button, Typography, useTheme } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -16,6 +16,7 @@ type Props = {
   isRunning: boolean;
   hideTimeLabel?: boolean;
   handleClick: () => void;
+  handleLongPress?: () => void;
 };
 
 export function StopwatchButton(props: Props) {
@@ -31,6 +32,46 @@ export function StopwatchButton(props: Props) {
   const borderRadius = props.size === "big" ? "50%" : undefined;
 
   const timeLabel = formatStopwatchTime(props.time);
+
+  const [isLongPress, setIsLongPress] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    timerRef.current = setTimeout(() => {
+      setIsLongPress(true);
+      handleLongPress();
+    }, 500); // Adjust the long press duration (500ms in this case)
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    if (!isLongPress) {
+      handleClick();
+    }
+    setIsLongPress(false);
+  };
+
+  const handleClick = () => {
+    if (props.isDisabled) {
+      return;
+    }
+    props.handleClick();
+  };
+
+  const handleLongPress = () => {
+    if (props.isDisabled) {
+      return;
+    }
+
+    if (props.handleLongPress) {
+      props.handleLongPress();
+    }
+  };
+
   return (
     <Button
       color="primary"
@@ -48,7 +89,9 @@ export function StopwatchButton(props: Props) {
         padding: `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`,
         minWidth: "0",
       }}
-      onClick={props.handleClick}
+      // onClick={props.handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {props.size === "big" && (
         <>
